@@ -51,7 +51,7 @@ remotes::install_github("showteeth/DEbChIP")
 
 ## Usage
 ### Vignette
-Detailed usage is available in [vignette](https://github.com/showteeth).
+Detailed usage is available in [vignette](https://github.com/showteeth/DEbChIP/blob/main/vignettes/DEbChIP_User_Guide.html).
 
 ### Function list
 <table>
@@ -187,7 +187,7 @@ Detailed usage is available in [vignette](https://github.com/showteeth).
 <hr />
 
 ## Contact
-For any question, feature request or bug report please write an email to songyb18@mails.tsinghua.edu.cn.
+For any question, feature request or bug report please write an email to songyb0519@gmail.com.
 
 <hr />
 
