@@ -1,0 +1,62 @@
+Package: DEbChIP
+Title: DEbChIP - Toolbox to explore, visualize, interpret RNA-seq data and integrate with ChIP-seq data
+Version: 0.1.0
+Authors@R: 
+    person(given = "Yabing",
+           family = "Song",
+           role = c("aut", "cre"),
+           email = "songyb0519@gmail.com",
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: DEbChIP aims to explore, analyze, visualize and interpret RNA-seq data. It contains five functional panels: Quality Control (QC),
+    Principal Component Analysis (PCA), Differential Expression Analysis (DEA), Functional Enrichment Analysis (FEA), Integrate with ChIP-seq (DEbChIP), Utils.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
+Depends:
+    R (>= 4.0.0)
+Imports: 
+    BiocGenerics,
+    BiocManager,
+    circlize,
+    clusterProfiler (>= 3.18.1),
+    ComplexHeatmap,
+    cowplot,
+    DEFormats,
+    DESeq2,
+    dplyr,
+    edgeR,
+    enrichplot,
+    GenomicFeatures,
+    GenomicRanges,
+    ggplot2,
+    ggplotify,
+    ggrepel,
+    graphics,
+    grDevices,
+    grid,
+    magrittr,
+    matrixStats,
+    NOISeq,
+    PCAtools,
+    plot3D,
+    purrr,
+    RColorBrewer,
+    reshape2,
+    rrcov,
+    stats,
+    stringr,
+    SummarizedExperiment,
+    sva,
+    tibble,
+    tidyr,
+    utils,
+    ChIPseeker,
+    GenomeInfoDb,
+    ggvenn
+Suggests: 
+    rmarkdown,
+    knitr
+Remotes:
+    GuangchuangYu/enrichplot
+VignetteBuilder: knitr

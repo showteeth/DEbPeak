@@ -1,0 +1,7 @@
+condition
+Nf1	NF
+Nf2	NF
+Nf3	NF
+Rx1	RX
+Rx2	RX
+Rx3	RX
