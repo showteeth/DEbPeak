@@ -2,7 +2,7 @@
 % Please edit documentation in R/DE_visualization.R
 \name{RankPlot}
 \alias{RankPlot}
-\title{Rank plot for differentially expressed genes.}
+\title{Rank plot for Differentially Expressed Genes.}
 \usage{
 RankPlot(
   deres,
@@ -52,7 +52,7 @@ the second column should not be in \code{deres}.}
 A ggplot2 object.
 }
 \description{
-Rank plot for differentially expressed genes.
+Rank plot for Differentially Expressed Genes.
 }
 \examples{
 library(DESeq2)

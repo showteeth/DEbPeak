@@ -2,7 +2,7 @@
 % Please edit documentation in R/DE_visualization.R
 \name{VolcanoPlot}
 \alias{VolcanoPlot}
-\title{VolcanoPlot for differentially expressed genes.}
+\title{VolcanoPlot for Differentially Expressed Genes.}
 \usage{
 VolcanoPlot(
   deres,
@@ -63,7 +63,7 @@ Default: NULL (use rownames of \code{deres} or Gene column of \code{gene.df}).}
 A ggplot2 object.
 }
 \description{
-VolcanoPlot for differentially expressed genes.
+VolcanoPlot for Differentially Expressed Genes.
 }
 \examples{
 library(DESeq2)

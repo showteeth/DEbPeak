@@ -41,9 +41,11 @@ Conduct Peak Annotation.
 }
 \examples{
 library(DEbChIP)
-peak.file = system.file("extdata", "debchip_peaks.bed", package = "DEbChIP")
-peak.df = GetConsensusPeak(peak.file = peak.file)
-peak.profile = PeakProfile(peak.df ,species="Mouse", by = "gene", region.type = "body", nbin = 800)
-peak.anno = AnnoPeak(peak.df = peak.df,species = "Mouse",
-                     seq.style = "UCSC",up.dist = 20000,down.dist = 20000)
+peak.file <- system.file("extdata", "debchip_peaks.bed", package = "DEbChIP")
+peak.df <- GetConsensusPeak(peak.file = peak.file)
+peak.profile <- PeakProfile(peak.df, species = "Mouse", by = "gene", region.type = "body", nbin = 800)
+peak.anno <- AnnoPeak(
+  peak.df = peak.df, species = "Mouse",
+  seq.style = "UCSC", up.dist = 20000, down.dist = 20000
+)
 }

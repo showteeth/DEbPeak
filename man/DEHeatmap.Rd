@@ -2,7 +2,7 @@
 % Please edit documentation in R/DE_visualization.R
 \name{DEHeatmap}
 \alias{DEHeatmap}
-\title{Heatmap for differentially expressed genes.}
+\title{Heatmap for Differentially Expressed Genes.}
 \usage{
 DEHeatmap(
   deobj,
@@ -64,7 +64,7 @@ the second column should not be in \code{deres}.}
 A \code{\link{Heatmap-class}}.
 }
 \description{
-Heatmap for differentially expressed genes.
+Heatmap for Differentially Expressed Genes.
 }
 \examples{
 library(DESeq2)

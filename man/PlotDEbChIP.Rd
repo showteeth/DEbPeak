@@ -21,29 +21,35 @@ Create Integrated Summary Plot.
 library(DEbChIP)
 library(DESeq2)
 # ChIP-Seq data
-peak.file = system.file("extdata", "debchip_peaks.bed", package = "DEbChIP")
-peak.df = GetConsensusPeak(peak.file = peak.file)
-peak.profile = PeakProfile(peak.df ,species="Mouse", by = "gene", region.type = "body", nbin = 800)
-peak.anno = AnnoPeak(peak.df = peak.df,species = "Mouse",
-                     seq.style = "UCSC",up.dist = 20000,down.dist = 20000)
+peak.file <- system.file("extdata", "debchip_peaks.bed", package = "DEbChIP")
+peak.df <- GetConsensusPeak(peak.file = peak.file)
+peak.profile <- PeakProfile(peak.df, species = "Mouse", by = "gene", region.type = "body", nbin = 800)
+peak.anno <- AnnoPeak(
+  peak.df = peak.df, species = "Mouse",
+  seq.style = "UCSC", up.dist = 20000, down.dist = 20000
+)
 # RNA-Seq data
 count.file <- system.file("extdata", "debchip_count.txt", package = "DEbChIP")
 meta.file <- system.file("extdata", "debchip_meta.txt", package = "DEbChIP")
 count.matrix <- read.table(file = count.file, header = T, sep = "\t")
 meta.info <- read.table(file = meta.file, header = T)
 # create DESeqDataSet object
-dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info,
-                                      design = ~condition)
+dds <- DESeq2::DESeqDataSetFromMatrix(
+  countData = count.matrix, colData = meta.info,
+  design = ~condition
+)
 # set control level
 dds$condition <- relevel(dds$condition, ref = "NF")
 # conduct differential expressed genes analysis
 dds <- DESeq(dds)
 # extract results
-dds.results <- results(dds,contrast=c("condition",'RX','NF'))
-dds.results.ordered <- dds.results[order(dds.results$log2FoldChange,decreasing = TRUE),]
+dds.results <- results(dds, contrast = c("condition", "RX", "NF"))
+dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing = TRUE), ]
 # Integrated with RNA-Seq
-debchip.res = DEbChIP(de.res = dds.results.ordered,chip.res = peak.anno.df,
-                      chip.anno.key = "Promoter", merge.key="SYMBOL")
+debchip.res <- DEbChIP(
+  de.res = dds.results.ordered, chip.res = peak.anno.df,
+  chip.anno.key = "Promoter", merge.key = "SYMBOL"
+)
 # DE and ChIP venn plot
-debchip.plot = PlotDEbChIP(debchip.res,show_percentage=FALSE)
+debchip.plot <- PlotDEbChIP(debchip.res, show_percentage = FALSE)
 }

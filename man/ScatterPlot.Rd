@@ -2,7 +2,7 @@
 % Please edit documentation in R/DE_visualization.R
 \name{ScatterPlot}
 \alias{ScatterPlot}
-\title{ScatterPlot for differentially expressed genes.}
+\title{ScatterPlot for Differentially Expressed Genes.}
 \usage{
 ScatterPlot(
   deobj,
@@ -64,7 +64,7 @@ the second column should not be in \code{deres}.}
 A ggplot2 object.
 }
 \description{
-ScatterPlot for differentially expressed genes.
+ScatterPlot for Differentially Expressed Genes.
 }
 \examples{
 library(DESeq2)

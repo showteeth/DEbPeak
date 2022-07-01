@@ -53,7 +53,8 @@ Imports:
     utils,
     ChIPseeker,
     GenomeInfoDb,
-    ggvenn
+    ggvenn,
+    viridis
 Suggests: 
     rmarkdown,
     knitr

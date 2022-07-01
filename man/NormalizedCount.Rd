@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{NormalizedCount}
 \alias{NormalizedCount}
-\title{Perform counts normalization.}
+\title{Perform Counts Normalization.}
 \usage{
 NormalizedCount(
   deobj,
@@ -21,7 +21,7 @@ NormalizedCount(
 Matrix contains normalized counts.
 }
 \description{
-Perform counts normalization.
+Perform Counts Normalization.
 }
 \examples{
 library(DESeq2)

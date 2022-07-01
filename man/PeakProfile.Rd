@@ -2,7 +2,7 @@
 % Please edit documentation in R/ChIP_peak_annotation.R
 \name{PeakProfile}
 \alias{PeakProfile}
-\title{Create ChIP peak binding profile.}
+\title{Create ChIP Peak Binding Profile.}
 \usage{
 PeakProfile(
   peak.df,
@@ -58,11 +58,11 @@ Parameter of \code{\link{plotPeakProf2}}. When set NULL, use \code{down.dist}. D
 List contains all profile plots.
 }
 \description{
-Create ChIP peak binding profile.
+Create ChIP Peak Binding Profile.
 }
 \examples{
 library(DEbChIP)
-peak.file = system.file("extdata", "debchip_peaks.bed", package = "DEbChIP")
-peak.df = GetConsensusPeak(peak.file = peak.file)
-peak.profile = PeakProfile(peak.df ,species="Mouse", by = "gene", region.type = "body", nbin = 800)
+peak.file <- system.file("extdata", "debchip_peaks.bed", package = "DEbChIP")
+peak.df <- GetConsensusPeak(peak.file = peak.file)
+peak.profile <- PeakProfile(peak.df, species = "Mouse", by = "gene", region.type = "body", nbin = 800)
 }

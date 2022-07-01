@@ -2,7 +2,7 @@
 % Please edit documentation in R/differential_expression_analysis.R
 \name{ConductDESeq2}
 \alias{ConductDESeq2}
-\title{Conduct differential expression analysis with DESeq2.}
+\title{Conduct Differential Axpression Analysis with DESeq2.}
 \usage{
 ConductDESeq2(
   counts.folder,
@@ -164,7 +164,7 @@ the second column should not be SYMBOL, ENSEMBL, ENTREZID.}
 \item{gsea.pvalue}{Cutoff value of pvalue. Default: 0.05.}
 }
 \description{
-Conduct differential expression analysis with DESeq2.
+Conduct Differential Axpression Analysis with DESeq2.
 }
 \examples{
 library(DESeq2)

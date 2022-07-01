@@ -2,7 +2,7 @@
 % Please edit documentation in R/gene_set_enrichment_analysis.R
 \name{ConductGSEA}
 \alias{ConductGSEA}
-\title{Conduct gene set enrichment analysis (GSEA).}
+\title{Conduct Gene Set Enrichment Analysis (GSEA).}
 \usage{
 ConductGSEA(
   deres,
@@ -61,7 +61,7 @@ ConductGSEA(
 NULL or list contains all results (\code{GSEA} is FALSE)
 }
 \description{
-Conduct gene set enrichment analysis (GSEA).
+Conduct Gene Set Enrichment Analysis (GSEA).
 }
 \examples{
 library(airway)

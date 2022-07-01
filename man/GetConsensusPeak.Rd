@@ -2,7 +2,7 @@
 % Please edit documentation in R/ChIP_consensus_peak.R
 \name{GetConsensusPeak}
 \alias{GetConsensusPeak}
-\title{Get consensus peak with MSPC}
+\title{Get Consensus Peak with MSPC.}
 \usage{
 GetConsensusPeak(
   peak.file,
@@ -48,10 +48,10 @@ Chosen from Lowest and Highest. Default: Lowest.}
 A dataframe contains all consensus peak.
 }
 \description{
-Get consensus peak with MSPC
+Get Consensus Peak with MSPC.
 }
 \examples{
 library(DEbChIP)
-peak.file = system.file("extdata", "debchip_peaks.bed", package = "DEbChIP")
-peak.df = GetConsensusPeak(peak.file = peak.file)
+peak.file <- system.file("extdata", "debchip_peaks.bed", package = "DEbChIP")
+peak.df <- GetConsensusPeak(peak.file = peak.file)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/functional_enrichment.R
 \name{ConductFE}
 \alias{ConductFE}
-\title{Conduct functional enrichment analysis.}
+\title{Conduct Functional Enrichment Analysis.}
 \usage{
 ConductFE(
   deres,
@@ -73,7 +73,7 @@ ConductFE(
 If \code{save} is TRUE, return NULL (all results are in \code{out.folder}), else retutn list contains all results.
 }
 \description{
-Conduct functional enrichment analysis.
+Conduct Functional Enrichment Analysis.
 }
 \examples{
 library(DESeq2)

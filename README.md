@@ -27,7 +27,7 @@ The goal of DEbChIP is to assist in the processing of RNA-seq data. It contains 
 
 To enhance the ease of use of the tool, we have also developed an **interactive tool** for `DEbChIP` that allows users to submit files to the web page and set parameters to get the desired results. Unlike the standalone R package, *the interactive web page has built-in `DESeq2` for differential expression analysis*, while the R package can accept user input results from `DESeq2` or `edgeR`, which will be **more flexible**.
 
-By the way, all plots generated are ***publication-ready***, and most of them are based on `ggplot2`, so that users can easily modify them according to their needs.
+By the way, all plots generated are **publication-ready** , and most of them are based on `ggplot2`, so that users can easily modify them according to their needs. We also provide **various color palettes**, including **discrete** and **continuous**, **color blind friendly** and **multiple categorical variables**.
 
 <hr />
 
