@@ -1,37 +1,3 @@
-# 存在的问题：
-# * gene id的对应问题
-
-# https://bioconductor.org/packages/3.15/data/annotation/
-# BiocManager::install(c("TxDb.Athaliana.BioMart.plantsmart28","TxDb.Btaurus.UCSC.bosTau9.refGene",
-#                        "TxDb.Celegans.UCSC.ce11.refGene","TxDb.Cfamiliaris.UCSC.canFam3.refGene",
-#                        "TxDb.Dmelanogaster.UCSC.dm6.ensGene","TxDb.Drerio.UCSC.danRer11.refGene",
-#                        "TxDb.Ggallus.UCSC.galGal6.refGene","TxDb.Hsapiens.UCSC.hg38.knownGene",
-#                        "TxDb.Mmulatta.UCSC.rheMac10.refGene","TxDb.Mmusculus.UCSC.mm10.knownGene",
-#                        "TxDb.Ptroglodytes.UCSC.panTro6.refGene","TxDb.Sscrofa.UCSC.susScr11.refGene",
-#                        "TxDb.Rnorvegicus.UCSC.rn6.refGene","TxDb.Scerevisiae.UCSC.sacCer3.sgdGene"))
-
-# TxDb.Athaliana.BioMart.plantsmart28: Arabidopsis thaliana
-# TxDb.Btaurus.UCSC.bosTau9.refGene: Bos taurus
-# TxDb.Celegans.UCSC.ce11.refGene: Caenorhabditis elegans
-# TxDb.Cfamiliaris.UCSC.canFam3.refGene: Canis familiaris
-# TxDb.Dmelanogaster.UCSC.dm6.ensGene: Drosophila melanogaster
-# TxDb.Drerio.UCSC.danRer11.refGene: Danio rerio
-# TxDb.Ggallus.UCSC.galGal6.refGene: Gallus gallus
-# TxDb.Hsapiens.UCSC.hg38.knownGene: Homo sapiens
-# TxDb.Mmulatta.UCSC.rheMac10.refGene: Macaca mulatta
-# TxDb.Mmusculus.UCSC.mm10.knownGene: Mus musculus
-# TxDb.Ptroglodytes.UCSC.panTro6.refGene: Pan troglodytes
-# TxDb.Sscrofa.UCSC.susScr11.refGene: Sus scrofa
-# TxDb.Rnorvegicus.UCSC.rn6.refGene: Rattus norvegicus
-# TxDb.Scerevisiae.UCSC.sacCer3.sgdGene: Saccharomyces cerevisiae
-
-# genes(TxDb.Mmulatta.UCSC.rheMac10.refGene, columns=c("TXID", "TXNAME", "GENEID"))
-#
-# library(TxDb.Hsapiens.UCSC.hg38.knownGene)
-# #
-# seqlevelsStyle(TxDb.Hsapiens.UCSC.hg38.knownGene)
-
-
 # get txdb and orgdb for species
 GetSpeciesAnno <- function(species) {
   spe_names <- c(
@@ -195,6 +161,7 @@ PeakProfile <- function(peak.df, species = c(
 #' @importFrom ggplotify as.ggplot
 #' @importFrom cowplot plot_grid
 #' @import ChIPseeker
+#' @import ggupset
 #' @export
 #'
 #' @examples
@@ -248,7 +215,7 @@ AnnoPeak <- function(peak.df, species = c(
   # annotation
   txdb.obj <- get(txdb)
   if (seq.style != "None") {
-    seqlevelsStyle(txdb.obj) <- seq.style
+    GenomeInfoDb::seqlevelsStyle(txdb.obj) <- seq.style
     peak.seqs <- GenomeInfoDb::seqlevels(peak.gr)
     # to avoid Unable to find an inherited method for function 'NSBS' for signature '"SortedByQueryHits"'
     txdb.obj <- keepSeqlevels(x = txdb.obj, value = peak.seqs)

@@ -5,8 +5,8 @@ Authors@R:
     person(given = "Yabing",
            family = "Song",
            role = c("aut", "cre"),
-           email = "songyb0519@gmail.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+           email = "songyb0519@gmail.com")
+Maintainer: Yabing Song <songyb0519@gmail.com>
 Description: DEbChIP aims to explore, analyze, visualize and interpret RNA-seq data. It contains five functional panels: Quality Control (QC),
     Principal Component Analysis (PCA), Differential Expression Analysis (DEA), Functional Enrichment Analysis (FEA), Integrate with ChIP-seq (DEbChIP), Utils.
 License: MIT + file LICENSE
@@ -16,7 +16,6 @@ RoxygenNote: 7.1.1
 Depends:
     R (>= 4.0.0)
 Imports: 
-    BiocGenerics,
     BiocManager,
     circlize,
     clusterProfiler (>= 3.18.1),
@@ -32,6 +31,8 @@ Imports:
     ggplot2,
     ggplotify,
     ggrepel,
+    ggvenn,
+    ggupset,
     graphics,
     grDevices,
     grid,
@@ -44,6 +45,7 @@ Imports:
     RColorBrewer,
     reshape2,
     rrcov,
+    rlang,
     stats,
     stringr,
     SummarizedExperiment,
@@ -53,11 +55,16 @@ Imports:
     utils,
     ChIPseeker,
     GenomeInfoDb,
-    ggvenn,
-    viridis
+    viridis,
+    patchwork
 Suggests: 
     rmarkdown,
-    knitr
+    knitr,
+    msigdbr,
+    htmltools,
+    BiocStyle,
+    airway
 Remotes:
-    GuangchuangYu/enrichplot
+    YuLab-SMU/enrichplot
+    YuLab-SMU/ChIPseeker
 VignetteBuilder: knitr

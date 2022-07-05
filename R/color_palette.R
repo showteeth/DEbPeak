@@ -135,15 +135,15 @@ SeuratCustomPalette <- function(low = "white",
                                 high = "red",
                                 mid = NULL,
                                 k = 50) {
-  low <- col2rgb(col = low) / 255
-  high <- col2rgb(col = high) / 255
+  low <- grDevices::col2rgb(col = low) / 255
+  high <- grDevices::col2rgb(col = high) / 255
   if (is.null(x = mid)) {
     r <- seq(from = low[1], to = high[1], len = k)
     g <- seq(from = low[2], to = high[2], len = k)
     b <- seq(from = low[3], to = high[3], len = k)
   } else {
     k2 <- round(x = k / 2)
-    mid <- col2rgb(col = mid) / 255
+    mid <- grDevices::col2rgb(col = mid) / 255
     r <- c(
       seq(from = low[1], to = mid[1], len = k2),
       seq(from = mid[1], to = high[1], len = k2)
@@ -157,7 +157,7 @@ SeuratCustomPalette <- function(low = "white",
       seq(from = mid[3], to = high[3], len = k2)
     )
   }
-  return(rgb(red = r, green = g, blue = b))
+  return(grDevices::rgb(red = r, green = g, blue = b))
 }
 
 
@@ -176,6 +176,7 @@ SeuratCustomPalette <- function(low = "white",
 #' @return A vector of colors.
 #' @importFrom viridis viridis
 #' @importFrom graphics image
+#' @importFrom grDevices col2rgb rgb
 #' @export
 #'
 #' @examples

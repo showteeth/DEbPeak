@@ -57,11 +57,11 @@
 #' @importFrom magrittr %>%
 #' @importFrom tibble rownames_to_column column_to_rownames deframe
 #' @importFrom SummarizedExperiment colData assay
-#' @importFrom grDevices colorRampPalette
+#' @importFrom grDevices colorRampPalette pdf dev.off
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom NOISeq readData dat explo.plot
 #' @importFrom DEFormats as.DESeqDataSet
-#' @importFrom stats dist cor prcomp
+#' @importFrom stats dist cor prcomp as.formula
 #' @importFrom ggplotify as.ggplot
 #' @importFrom grid grid.grabExpr
 #' @importFrom cowplot plot_grid
@@ -85,14 +85,17 @@
 #' @importFrom enrichplot dotplot gseaplot2
 #' @importFrom stringr str_wrap
 #' @importFrom BiocManager install
+#' @importFrom utils write.csv
 #' @export
 #'
 #' @examples
-#' library(DESeq2)
-#' library(DEbChIP)
-#' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
-#' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
-#' ConductDESeq2(count.matrix.file = count.file, meta.file = meta.file, group.key = "condition", count.type = "htseq-count", ref.group = "WT")
+#' # library(DESeq2)
+#' # library(DEbChIP)
+#' # count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
+#' # meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
+#' # gmt.file <- system.file("extdata", "c5.go.cc.v7.5.1.entrez.gmt", package = "DEbChIP")
+#' # ConductDESeq2(count.matrix.file = count.file, meta.file = meta.file, group.key = "condition",
+#' #               count.type = "htseq-count", ref.group = "WT", signif = "pvalue", l2fc.threashold = 0.3, gmt.file = gmt.file)
 ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, group.key = NULL,
                           count.type = c("htseq-count", "featurecounts"), min.count = 10, ref.group = NULL, out.folder = NULL,
                           qc.ndepth = 10, qc.legend.inset = -0.2, transform.method = c("rlog", "vst", "ntd"),
@@ -114,7 +117,7 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
   norm.type <- match.arg(arg = norm.type)
 
   # create DESeqDataSet section
-  meta.info <- read.table(file = meta.file, header = T)
+  meta.info <- read.table(file = meta.file, header = TRUE)
   if (is.null(group.key)) {
     group.key <- colnames(meta.info)[1]
   } else if (!group.key %in% colnames(meta.info)) {
@@ -122,20 +125,20 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
   }
   if (!is.null(count.matrix.file)) {
     message("Create DESeqDataSet from count matrix!")
-    count.matrix <- read.table(file = count.matrix.file, header = T, sep = "\t")
+    count.matrix <- read.table(file = count.matrix.file, header = TRUE, sep = "\t")
     # create raw dds
     raw.dds <- DESeq2::DESeqDataSetFromMatrix(
       countData = count.matrix,
       colData = meta.info,
-      design = as.formula(paste0("~", group.key))
+      design = stats::as.formula(paste0("~", group.key))
     )
   } else {
-    count.files <- list.files(path = counts.folder, full.names = T)
+    count.files <- list.files(path = counts.folder, full.names = TRUE)
     sample.names <- gsub(pattern = "\\.txt", replacement = "", basename(count.files))
     if (count.type == "htseq-count") {
       message("Create DESeqDataSet from count obtained from htseq-count!")
       # create matrix
-      count.list <- lapply(as.character(count.files), function(fn) read.table(fn, fill = TRUE, stringsAsFactors = F))
+      count.list <- lapply(as.character(count.files), function(fn) read.table(fn, fill = TRUE, stringsAsFactors = FALSE))
       if (!all(sapply(count.list, function(a) all(a$V1 == count.list[[1]]$V1)))) {
         stop("Gene IDs (first column) differ between files.")
       }
@@ -150,7 +153,7 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
       message("Create DESeqDataSet from count obtained from featureCounts!")
       # create matrix
       count.list <- lapply(as.character(count.files), function(fn) {
-        read.table(fn, fill = TRUE, comment.char = "#", header = T, stringsAsFactors = F)
+        read.table(fn, fill = TRUE, comment.char = "#", header = TRUE, stringsAsFactors = FALSE)
       })
       if (!all(sapply(count.list, function(a) all(a[, 1] == count.list[[1]][, 1])))) {
         stop("Gene IDs (first column) differ between files.")
@@ -162,7 +165,7 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
     raw.dds <- DESeq2::DESeqDataSetFromMatrix(
       countData = count.list.pure,
       colData = meta.info,
-      design = as.formula(paste0("~", group.key))
+      design = stats::as.formula(paste0("~", group.key))
     )
   }
   # set output folder
@@ -172,12 +175,12 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
   # conduct Count quality Control
   # on raw dds
   message("Conduct Quality Control on Counts!")
-  pdf(file.path(out.folder, "CountQC_CPM.pdf"), width = 10, height = 6)
+  grDevices::pdf(file.path(out.folder, "CountQC_CPM.pdf"), width = 10, height = 6)
   CountQC(deobj = raw.dds, group.key = group.key, type = "cpm", legend.inset = qc.legend.inset)
-  dev.off()
-  pdf(file.path(out.folder, "CountQC_saturation.pdf"), width = 10, height = 6)
+  grDevices::dev.off()
+  grDevices::pdf(file.path(out.folder, "CountQC_saturation.pdf"), width = 10, height = 6)
   CountQC(deobj = raw.dds, group.key = group.key, type = "saturation", ndepth = qc.ndepth, min.count = min.count)
-  dev.off()
+  grDevices::dev.off()
 
   # filter with counts and save results to dds
   message("Raw gene number: ", nrow(raw.dds))
@@ -187,9 +190,9 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
 
   # get sample relation
   message("Conduct Quality Control on Samples!")
-  pdf(file.path(out.folder, "SampleQC_dist_pcc.pdf"), width = 20, height = 10)
+  grDevices::pdf(file.path(out.folder, "SampleQC_dist_pcc.pdf"), width = 20, height = 10)
   SampleRelation(deobj = dds, transform.method = transform.method, anno.key = group.key)
-  dev.off()
+  grDevices::dev.off()
 
   # conduct PCA analysis
   message("Conduct PCA analysis!")
@@ -199,31 +202,31 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
   )
   dds <- pca.results$deobj
   pca.results.folder <- file.path(out.folder, "PCA")
-  dir.create(pca.results.folder, showWarnings = FALSE, recursive = T)
+  dir.create(pca.results.folder, showWarnings = FALSE, recursive = TRUE)
   setwd(pca.results.folder)
 
-  pdf("PCA_overview.pdf", width = 20, height = 15)
+  grDevices::pdf("PCA_overview.pdf", width = 20, height = 15)
   pca.results$plot
-  dev.off()
+  grDevices::dev.off()
   pca.info <- pca.results$pca
-  pdf("PCA_screen_plot.pdf", width = 10, height = 6)
+  grDevices::pdf("PCA_screen_plot.pdf", width = 10, height = 6)
   PCAtools::screeplot(pca.info, axisLabSize = 18, titleLabSize = 22)
-  dev.off()
-  pdf("PCA_biplot.pdf", width = 8, height = 8)
+  grDevices::dev.off()
+  grDevices::pdf("PCA_biplot.pdf", width = 8, height = 8)
   PCAtools::biplot(pca.info, x = pca.x, y = pca.y, showLoadings = TRUE, labSize = 5, pointSize = 5, sizeLoadingsNames = 5)
-  dev.off()
-  pdf("PCA_pairs_plot.pdf", width = 8, height = 8)
+  grDevices::dev.off()
+  grDevices::pdf("PCA_pairs_plot.pdf", width = 8, height = 8)
   PCAtools::pairsplot(pca.info, colby = group.key)
-  dev.off()
-  pdf("PCA_loading_bar.pdf", width = 10, height = 6)
+  grDevices::dev.off()
+  grDevices::pdf("PCA_loading_bar.pdf", width = 10, height = 6)
   LoadingPlot(pca = pca.info, type = "bar", pc = loding.pc, gene.num = loading.gene.num)
-  dev.off()
-  pdf("PCA_loading_heat.pdf", width = 10, height = 6)
+  grDevices::dev.off()
+  grDevices::pdf("PCA_loading_heat.pdf", width = 10, height = 6)
   LoadingPlot(pca = pca.info, deobj = dds, type = "heat", pc = loding.pc, gene.num = loading.gene.num)
-  dev.off()
-  pdf("PCA_3DPCA.pdf", width = 8, height = 8)
+  grDevices::dev.off()
+  grDevices::pdf("PCA_3DPCA.pdf", width = 8, height = 8)
   PCA3D(pca = pca.info, x = pca.x, y = pca.y, z = pca.z, color.key = group.key, main = "3D PCA")
-  dev.off()
+  grDevices::dev.off()
 
   # prepare org db
   if (!require(org.db, quietly = TRUE, character.only = TRUE)) {
@@ -240,7 +243,7 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
     # on PC positive genes
     pc.positive.genes <- pc.gene.df[pc.gene.df["Type"] == "Positive", "Gene"]
     pc.positive.folder <- file.path(pca.results.folder, pc, "Positive")
-    dir.create(pc.positive.folder, showWarnings = FALSE, recursive = T)
+    dir.create(pc.positive.folder, showWarnings = FALSE, recursive = TRUE)
     SingleFE(
       genes = pc.positive.genes, out.folder = pc.positive.folder, regulation = paste0(pc, "_Positive"),
       gene.type = gene.type, enrich.type = enrich.type, go.type = go.type, enrich.pvalue = enrich.pvalue,
@@ -250,7 +253,7 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
     # on PC negative genes
     pc.negative.genes <- pc.gene.df[pc.gene.df["Type"] == "Negative", "Gene"]
     pc.negative.folder <- file.path(pca.results.folder, pc, "Negative")
-    dir.create(pc.negative.folder, showWarnings = FALSE, recursive = T)
+    dir.create(pc.negative.folder, showWarnings = FALSE, recursive = TRUE)
     SingleFE(
       genes = pc.negative.genes, out.folder = pc.negative.folder, regulation = paste0(pc, "_Negative"),
       gene.type = gene.type, enrich.type = enrich.type, go.type = go.type, enrich.pvalue = enrich.pvalue,
@@ -283,14 +286,14 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
     tidyr::drop_na()
   # create output folder
   deg.results.folder <- file.path(out.folder, "DEG")
-  dir.create(deg.results.folder, showWarnings = FALSE, recursive = T)
+  dir.create(deg.results.folder, showWarnings = FALSE, recursive = TRUE)
   setwd(deg.results.folder)
   # save degs
   out.deg.str <- paste0(signif, signif.threashold, "_FC", l2fc.threashold, ".csv")
-  write.csv(as.data.frame(dds.results.sig),
+  utils::write.csv(as.data.frame(dds.results.sig),
     file = paste("Condition", treat.group, ref.group, out.deg.str, sep = "_")
   )
-  write.csv(as.data.frame(dds.results.ordered),
+  utils::write.csv(as.data.frame(dds.results.ordered),
     file = paste("Condition", treat.group, ref.group, "all.csv", sep = "_")
   )
   # save normalized counts
@@ -298,55 +301,55 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
   if (log.counts) {
     normalized.counts <- as.matrix(log2(normalized.counts + 1))
   }
-  write.csv(as.data.frame(normalized.counts),
+  utils::write.csv(as.data.frame(normalized.counts),
     file = "normalized_counts.csv"
   )
 
   message("Visualize Differential Expression Analysis!")
-  pdf("DEG_VolcanoPlot.pdf", width = 8, height = 10)
+  grDevices::pdf("DEG_VolcanoPlot.pdf", width = 8, height = 10)
   VolcanoPlot(dds.results.ordered,
     signif = signif, signif.threashold = signif.threashold, l2fc.threashold = l2fc.threashold,
     label.num = deg.label.num, label.df = deg.label.df, label.key = deg.label.key, label.color = deg.label.color
   )
-  dev.off()
-  pdf("DEG_ScatterPlot.pdf", width = 8, height = 9)
+  grDevices::dev.off()
+  grDevices::pdf("DEG_ScatterPlot.pdf", width = 8, height = 9)
   ScatterPlot(
     deobj = dds, deres = dds.results.ordered, group.key = group.key, ref.group = ref.group,
     signif = signif, signif.threashold = signif.threashold, l2fc.threashold = l2fc.threashold,
     label.num = deg.label.num, label.df = deg.label.df, label.key = deg.label.key, label.color = deg.label.color
   )
-  dev.off()
-  pdf("DEG_MAPlot.pdf", width = 10, height = 8)
+  grDevices::dev.off()
+  grDevices::pdf("DEG_MAPlot.pdf", width = 10, height = 8)
   MAPlot(dds.results.ordered,
     signif = signif, signif.threashold = signif.threashold, l2fc.threashold = l2fc.threashold,
     label.num = deg.label.num, label.df = deg.label.df, label.key = deg.label.key, label.color = deg.label.color
   )
-  dev.off()
-  pdf("DEG_RankPlot.pdf", width = 8, height = 9)
+  grDevices::dev.off()
+  grDevices::pdf("DEG_RankPlot.pdf", width = 8, height = 9)
   RankPlot(dds.results.ordered,
     signif = signif, signif.threashold = signif.threashold, l2fc.threashold = l2fc.threashold,
     label.num = deg.label.num, label.df = deg.label.df, label.key = deg.label.key, label.color = deg.label.color
   )
-  dev.off()
-  pdf("DEG_GenePlot.pdf", width = 8, height = 9)
+  grDevices::dev.off()
+  grDevices::pdf("DEG_GenePlot.pdf", width = 8, height = 9)
   GenePlot(
     deobj = dds, deres = dds.results.ordered, group.key = group.key, ref.group = ref.group,
     signif = signif, signif.threashold = signif.threashold, l2fc.threashold = l2fc.threashold,
     gene.num = deg.label.num, gene.df = deg.label.df, label.key = deg.label.key
   )
-  dev.off()
-  pdf("DEG_Heatmap.pdf", width = 10, height = 8)
+  grDevices::dev.off()
+  grDevices::pdf("DEG_Heatmap.pdf", width = 10, height = 8)
   DEHeatmap(
     deobj = dds, deres = dds.results.ordered, group.key = group.key, ref.group = ref.group,
     signif = signif, signif.threashold = signif.threashold, l2fc.threashold = l2fc.threashold, gene.df = deg.label.df, label.key = deg.label.key
   )
-  dev.off()
+  grDevices::dev.off()
   setwd(out.folder)
 
   message("Conduct Functional Enrichment Analysis!")
   # create output folder
   fe.results.folder <- file.path(out.folder, "FE")
-  dir.create(fe.results.folder, showWarnings = FALSE, recursive = T)
+  dir.create(fe.results.folder, showWarnings = FALSE, recursive = TRUE)
   setwd(fe.results.folder)
   ConductFE(
     deres = dds.results.ordered, out.folder = fe.results.folder, signif = signif, signif.threashold = signif.threashold, l2fc.threashold = l2fc.threashold,
@@ -358,7 +361,7 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
   message("Conduct Gene Set Enrichment Analysis!")
   # create output folder
   gsea.results.folder <- file.path(out.folder, "GSEA")
-  dir.create(gsea.results.folder, showWarnings = FALSE, recursive = T)
+  dir.create(gsea.results.folder, showWarnings = FALSE, recursive = TRUE)
   setwd(gsea.results.folder)
   ConductGSEA(
     deres = dds.results.ordered, gmt.file = gmt.file, gene.sets = gene.sets, out.folder = gsea.results.folder, gene.key = fe.gene.key, gene.type = gene.type,

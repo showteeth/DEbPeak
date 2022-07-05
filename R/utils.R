@@ -15,18 +15,21 @@
 #' @examples
 #' library(DEbChIP)
 #' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
-#' count.matrix <- read.table(file = count.file, header = T, sep = "\t")
+#' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
 #' IDConversion(count.matrix, gene.type = "ENSEMBL", sort.key = NULL)
 IDConversion <- function(deres, gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"), org.db = "org.Mm.eg.db", gene.map = NULL, sort.key = "log2FoldChange") {
   # check parameters
   gene.type <- match.arg(arg = gene.type)
 
+  # library
+  suppressWarnings(suppressMessages(library(org.db, character.only = TRUE)))
+
   de.df <- as.data.frame(deres) %>% tibble::rownames_to_column(var = "Gene")
 
   if (!is.null(gene.map)) {
-    final.df <- merge(de.df, gene.map, by = "Gene", all.x = T) %>%
+    final.df <- merge(de.df, gene.map, by = "Gene", all.x = TRUE) %>%
       as.data.frame() %>%
-      dplyr::distinct(Gene, .keep_all = T) %>%
+      dplyr::distinct(Gene, .keep_all = TRUE) %>%
       tibble::column_to_rownames(var = "Gene")
   } else {
     de.df <- de.df %>% dplyr::mutate(Gene2Convert = gsub(pattern = "\\.[0-9]*$", replacement = "", x = as.character(Gene)))
@@ -34,11 +37,11 @@ IDConversion <- function(deres, gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"), 
     convert.df <- clusterProfiler::bitr(de.df[, "Gene2Convert"],
       fromType = gene.type,
       toType = convert.types,
-      OrgDb = get(org.db), drop = F
+      OrgDb = get(org.db), drop = FALSE
     )
-    final.df <- merge(de.df, convert.df, by.x = "Gene2Convert", by.y = gene.type, all.x = T) %>%
+    final.df <- merge(de.df, convert.df, by.x = "Gene2Convert", by.y = gene.type, all.x = TRUE) %>%
       as.data.frame() %>%
-      dplyr::distinct(Gene2Convert, .keep_all = T) %>%
+      dplyr::distinct(Gene2Convert, .keep_all = TRUE) %>%
       dplyr::select(-Gene2Convert) %>%
       tibble::column_to_rownames(var = "Gene")
   }
@@ -90,8 +93,8 @@ RPKM2TPM <- function(RPKM) {
 #' library(DEbChIP)
 #' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
 #' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
-#' count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-#' meta.info <- read.table(file = meta.file, header = T)
+#' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+#' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
 #' keep.genes <- rowSums(DESeq2::counts(dds, normalized = FALSE)) >= 10
 #' dds <- dds[keep.genes, ]

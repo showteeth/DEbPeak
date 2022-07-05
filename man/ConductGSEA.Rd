@@ -20,7 +20,7 @@ ConductGSEA(
   plot.resolution = 300,
   plot.width = 10,
   plot.height = 6,
-  save = T,
+  save = TRUE,
   ...
 )
 }
@@ -66,11 +66,14 @@ Conduct Gene Set Enrichment Analysis (GSEA).
 \examples{
 library(airway)
 library(msigdbr)
+library(DESeq2)
 library(DEbChIP)
-dds <- DESeqDataSet(airway, design = ~ cell + dex)
-dds <- DESeq(dds)
+# load the data
+data(airway)
+dds <- DESeq2::DESeqDataSet(airway, design = ~ cell + dex)
+dds <- DESeq2::DESeq(dds)
 dds.results <- results(dds, contrast = c("dex", "trt", "untrt"))
 dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing = TRUE), ]
 h_t2g <- msigdbr(species = "Homo sapiens", category = "C5") \%>\% dplyr::select(gs_name, entrez_gene)
-gsea.results <- ConductGSEA(deres = dds.results.ordered, gmt.file = NULL, gene.sets = h_t2g, org.db = "org.Hs.eg.db", pvalue = 0.05, save = F)
+gsea.results <- ConductGSEA(deres = dds.results.ordered, gmt.file = NULL, gene.sets = h_t2g, org.db = "org.Hs.eg.db", pvalue = 0.05, save = FALSE)
 }

@@ -66,8 +66,8 @@ PreparePCA <- function(deobj, var.genes = NULL, remove.sample = NULL, transform.
 #' library(DEbChIP)
 #' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
 #' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
-#' count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-#' meta.info <- read.table(file = meta.file, header = T)
+#' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+#' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
 #' keep.genes <- rowSums(DESeq2::counts(dds, normalized = FALSE)) >= 10
 #' dds <- dds[keep.genes, ]
@@ -124,8 +124,8 @@ PCA <- function(deobj, var.genes = NULL, remove.sample = NULL, transform.method 
 #' library(DEbChIP)
 #' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
 #' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
-#' count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-#' meta.info <- read.table(file = meta.file, header = T)
+#' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+#' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
 #' keep.genes <- rowSums(DESeq2::counts(dds, normalized = FALSE)) >= 10
 #' dds <- dds[keep.genes, ]
@@ -155,7 +155,7 @@ OutlierDetection <- function(deobj, var.genes = NULL, remove.sample = NULL, tran
   if (length(outliers) > 0) {
     outliers.df <- data.frame(SampleName = outliers, Type = "outlier")
     message("Detecting ", length(outliers), " outlier(s): ", paste(outliers, collapse = ","))
-    plot.df <- as.data.frame(merge(plot.df, outliers.df, by = "SampleName", all.x = T))
+    plot.df <- as.data.frame(merge(plot.df, outliers.df, by = "SampleName", all.x = TRUE))
   } else {
     plot.df$Type <- NA
   }
@@ -194,7 +194,7 @@ OutlierDetection <- function(deobj, var.genes = NULL, remove.sample = NULL, tran
 #' @importFrom DEFormats as.DESeqDataSet
 #' @importFrom SummarizedExperiment colData assay
 #' @importFrom matrixStats rowVars
-#' @importFrom DESeq2 rlog vst normTransform counts
+#' @importFrom DESeq2 rlog vst normTransform counts DESeqDataSetFromMatrix
 #' @importFrom stats prcomp
 #' @importFrom PCAtools biplot
 #' @importFrom sva ComBat_seq
@@ -209,15 +209,18 @@ OutlierDetection <- function(deobj, var.genes = NULL, remove.sample = NULL, tran
 #' library(DEbChIP)
 #' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
 #' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
-#' count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-#' meta.info <- read.table(file = meta.file, header = T)
+#' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+#' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
 #' keep.genes <- rowSums(DESeq2::counts(dds, normalized = FALSE)) >= 10
 #' dds <- dds[keep.genes, ]
-#' pcs_res <- QCPCA(deobj = dds, var.genes = NULL, remove.sample = NULL, transform.method = "rlog", outlier.detection = T, rpca.method = "PcaGrid")
+#' pcs_res <- QCPCA(
+#'   deobj = dds, var.genes = NULL, remove.sample = NULL, transform.method = "rlog",
+#'   outlier.detection = TRUE, rpca.method = "PcaGrid"
+#' )
 QCPCA <- function(deobj, var.genes = NULL, remove.sample = NULL, transform.method = c("rlog", "vst", "ntd"),
                   batch = NULL, raw.deobj = NULL, min.count = 10, colby = NULL, legend.pos = c("bottom", "top", "left", "right", "none"),
-                  outlier.detection = T, rpca.method = c("PcaGrid", "PcaHubert"), k = 2, ...) {
+                  outlier.detection = TRUE, rpca.method = c("PcaGrid", "PcaHubert"), k = 2, ...) {
   # check parameters
   transform.method <- match.arg(arg = transform.method)
   legend.pos <- match.arg(arg = legend.pos)
@@ -255,7 +258,7 @@ QCPCA <- function(deobj, var.genes = NULL, remove.sample = NULL, transform.metho
       design <- raw.deobj@design
       adjusted.count <- sva::ComBat_seq(as.matrix(raw.counts), batch = as.character(metadata[, batch]), group = NULL)
       # create dds with corrected counts
-      deobj <- DESeqDataSetFromMatrix(
+      deobj <- DESeq2::DESeqDataSetFromMatrix(
         countData = adjusted.count,
         colData = metadata,
         design = design
@@ -324,8 +327,8 @@ QCPCA <- function(deobj, var.genes = NULL, remove.sample = NULL, transform.metho
 #' library(DEbChIP)
 #' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
 #' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
-#' count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-#' meta.info <- read.table(file = meta.file, header = T)
+#' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+#' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
 #' keep.genes <- rowSums(DESeq2::counts(dds, normalized = FALSE)) >= 10
 #' dds <- dds[keep.genes, ]
@@ -342,7 +345,7 @@ PCABasic <- function(pca, x = "PC1", y = "PC2", explain.threashold = 90, loading
   plot.list[["screen"]] <- screen.plot
   # biplot
   bi.plot <- PCAtools::biplot(pca,
-    x = x, y = y, colby = colby, legendPosition = legend.pos, showLoadings = T, ntopLoadings = loading.num,
+    x = x, y = y, colby = colby, legendPosition = legend.pos, showLoadings = TRUE, ntopLoadings = loading.num,
     sizeLoadingsNames = loading.label.size, colLoadingsNames = loading.label.color
   )
   plot.list[["biplot"]] <- bi.plot
@@ -372,8 +375,8 @@ PCABasic <- function(pca, x = "PC1", y = "PC2", explain.threashold = 90, loading
 #' library(DEbChIP)
 #' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
 #' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
-#' count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-#' meta.info <- read.table(file = meta.file, header = T)
+#' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+#' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
 #' keep.genes <- rowSums(DESeq2::counts(dds, normalized = FALSE)) >= 10
 #' dds <- dds[keep.genes, ]
@@ -460,7 +463,7 @@ LoadingHeat <- function(deobj, pca, pc = 1:5, gene.num = 10, ncol = 2) {
     pcu.norm.matrix.scale[pcu.norm.matrix.scale > 2] <- 2
     pcu.norm.matrix.scale[pcu.norm.matrix.scale <- 2] <- -2
     pcu.heat <- ComplexHeatmap::pheatmap(pcu.norm.matrix.scale,
-      cluster_cols = F, legend = F, name = " ",
+      cluster_cols = FALSE, legend = FALSE, name = " ",
       main = paste0("Loading heatmap of ", pcu)
     )
     plot.list[[pcu]] <- ggplotify::as.ggplot(grid::grid.grabExpr(ComplexHeatmap::draw(pcu.heat)))
@@ -500,8 +503,8 @@ LoadingHeat <- function(deobj, pca, pc = 1:5, gene.num = 10, ncol = 2) {
 #' library(DEbChIP)
 #' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
 #' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
-#' count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-#' meta.info <- read.table(file = meta.file, header = T)
+#' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+#' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
 #' keep.genes <- rowSums(DESeq2::counts(dds, normalized = FALSE)) >= 10
 #' dds <- dds[keep.genes, ]
@@ -560,17 +563,17 @@ LoadingPlot <- function(pca, deobj = NULL, type = c("bar", "heat"), pc = 1:5, ge
 #' library(DEbChIP)
 #' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
 #' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
-#' count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-#' meta.info <- read.table(file = meta.file, header = T)
+#' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+#' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
 #' keep.genes <- rowSums(DESeq2::counts(dds, normalized = FALSE)) >= 10
 #' dds <- dds[keep.genes, ]
 #' pca_res <- PCA(deobj = dds, transform.method = "rlog")
-#' LoadingGO(pca_res, gene.type = "ENSEMBL", go.type = "BP", padj.method = "BH", save = T)
+#' LoadingGO(pca_res, gene.type = "ENSEMBL", go.type = "BP", padj.method = "BH", save = TRUE)
 LoadingGO <- function(pca, pc = 1, gene.num = 200, out.folder = NULL, gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"), go.type = c("ALL", "BP", "MF", "CC"),
                       enrich.pvalue = 0.05, enrich.qvalue = 0.05, org.db = "org.Mm.eg.db",
                       padj.method = c("BH", "holm", "hochberg", "hommel", "bonferroni", "BY", "fdr", "none"),
-                      show.term = 15, str.width = 30, plot.resolution = 300, plot.width = 7, plot.height = 9, save = T) {
+                      show.term = 15, str.width = 30, plot.resolution = 300, plot.width = 7, plot.height = 9, save = TRUE) {
   # check parameter
   gene.type <- match.arg(arg = gene.type)
   go.type <- match.arg(arg = go.type)
@@ -637,19 +640,28 @@ LoadingGO <- function(pca, pc = 1, gene.num = 200, out.folder = NULL, gene.type 
 #' @param cex Point size. Default: 1.5.
 #' @param col Point edge color. Default: black.
 #' @param ticktype Axis ticktype, chosen from: detailed and simple. Default: detailed.
-#' @param bty The type of the box, the default draws only the back panels, chosen from: f, b, b2, g, bl, bl2, u, n. Default: g.
+#' @param bty The type of the box, the default draws only the back panels,
+#' chosen from: f, b, b2, g, bl, bl2, u, n. Default: g.
 #' @param box Should the bounding box for the surface be displayed. Default: TRUE.
 #' @param theta Angles defining the viewing direction. \code{theta} gives the azimuthal direction. Default: 140.
 #' @param phi Angles defining the viewing direction. \code{phi} gives the colatitude direction. Default: 20.
-#' @param d a value which can be used to vary the strength of the perspective transformation. Values of d greater than 1 will lessen the perspective effect and values less and 1 will exaggerate it. Default: 3.
+#' @param d a value which can be used to vary the strength of the perspective transformation.
+#' Values of d greater than 1 will lessen the perspective effect and
+#' values less and 1 will exaggerate it. Default: 3.
 #' @param colkey \code{\link{colkey}}. Default: FALSE.
 #' @param label.size Label font size. Default: 0.5.
 #' @param legend.pos Legend position. Default: bottom.
-#' @param legend.horiz Logical; if TRUE, set the legend horizontally rather than vertically (specifying horiz overrides the ncol specification). Default: TRUE.
-#' @param legend.inset Inset distance(s) from the margins as a fraction of the plot region when legend is placed by keyword. Default: -0.1.
-#' @param legend.bg The background color for the legend box. (Note that this is only used if bty != "n".). Default: white.
-#' @param legend.bty The type of box to be drawn around the legend. The allowed values are "o" (the default) and "n". Default: n.
-#' @param legend.ncol The number of columns in which to set the legend items (default is 1, a vertical legend). Default: NULL.
+#' @param legend.horiz Logical; if TRUE, set the legend horizontally rather than
+#' vertically (specifying horiz overrides the ncol specification). Default: TRUE.
+#' @param legend.inset Inset distance(s) from the margins as a fraction of the plot region when
+#' legend is placed by keyword. Default: -0.1.
+#' @param legend.bg The background color for the legend box.
+#' Note that this is only used if bty != "n". Default: white.
+#' @param legend.bty The type of box to be drawn around the legend,
+#' chosen from 0 and n. Default: n.
+#' @param legend.ncol The number of columns in which to set the legend items.
+#' Default: NULL (set the legend horizontally).
+#' @param main Title of the plot. Default: NULL.
 #' @param ... Parameters for \code{\link{scatter3D}}.
 #'
 #' @return 3D PCA plot.
@@ -663,8 +675,8 @@ LoadingGO <- function(pca, pc = 1, gene.num = 200, out.folder = NULL, gene.type 
 #' library(DEbChIP)
 #' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
 #' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
-#' count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-#' meta.info <- read.table(file = meta.file, header = T)
+#' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+#' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
 #' keep.genes <- rowSums(DESeq2::counts(dds, normalized = FALSE)) >= 10
 #' dds <- dds[keep.genes, ]

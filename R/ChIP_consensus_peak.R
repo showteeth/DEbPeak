@@ -33,7 +33,7 @@ GetConsensusPeak <- function(peak.file, peak.folder = NULL, mspc.path = NULL, re
 
   # prepare input files
   if (!is.null(peak.folder)) {
-    peak.file <- list.files(path = peak.folder, full.names = T)
+    peak.file <- list.files(path = peak.folder, full.names = TRUE)
   }
   # check peak file number
   if (length(peak.file) < 1) {

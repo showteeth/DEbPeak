@@ -11,6 +11,7 @@
 #' @importFrom tibble rownames_to_column
 #' @importFrom dplyr mutate case_when mutate_at vars
 #' @importFrom tidyr drop_na
+#' @importFrom rlang :=
 #' @export
 #'
 #' @examples
@@ -18,8 +19,8 @@
 #' library(DEbChIP)
 #' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
 #' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
-#' count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-#' meta.info <- read.table(file = meta.file, header = T)
+#' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+#' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
 #' keep.genes <- rowSums(DESeq2::counts(dds, normalized = FALSE)) >= 10
 #' dds <- dds[keep.genes, ]
@@ -174,8 +175,8 @@ PrepareDEPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc
 #' library(DEbChIP)
 #' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
 #' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
-#' count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-#' meta.info <- read.table(file = meta.file, header = T)
+#' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+#' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
 #' keep.genes <- rowSums(DESeq2::counts(dds, normalized = FALSE)) >= 10
 #' dds <- dds[keep.genes, ]
@@ -240,7 +241,6 @@ VolcanoPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.t
       return(p)
     }
   } else if (nrow(label.df) >= 1) {
-    library(ggrepel)
     if (is.null(label.key)) {
       label.key <- "Label"
       label.df[, label.key] <- label.df$Gene
@@ -338,8 +338,8 @@ VolcanoPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.t
 #' library(DEbChIP)
 #' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
 #' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
-#' count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-#' meta.info <- read.table(file = meta.file, header = T)
+#' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+#' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
 #' keep.genes <- rowSums(DESeq2::counts(dds, normalized = FALSE)) >= 10
 #' dds <- dds[keep.genes, ]
@@ -426,7 +426,6 @@ ScatterPlot <- function(deobj, deres, group.key = NULL, ref.group = NULL, base =
   down.de.df <- de.df %>% dplyr::filter(regulation == "Down_regulated")
   if (is.null(label.df)) {
     if (!is.null(label.num)) {
-      library(ggrepel)
       label.data.up <- up.de.df %>% dplyr::top_n(n = label.num, wt = log2FoldChange)
       label.data.down <- down.de.df %>% dplyr::top_n(n = label.num, wt = -log2FoldChange)
       if (is.null(label.key)) {
@@ -439,7 +438,6 @@ ScatterPlot <- function(deobj, deres, group.key = NULL, ref.group = NULL, base =
       return(p)
     }
   } else if (nrow(label.df) >= 1) {
-    library(ggrepel)
     if (is.null(label.key)) {
       label.key <- "Label"
       label.df[, label.key] <- label.df$Gene
@@ -529,8 +527,8 @@ ScatterPlot <- function(deobj, deres, group.key = NULL, ref.group = NULL, base =
 #' library(DEbChIP)
 #' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
 #' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
-#' count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-#' meta.info <- read.table(file = meta.file, header = T)
+#' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+#' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
 #' keep.genes <- rowSums(DESeq2::counts(dds, normalized = FALSE)) >= 10
 #' dds <- dds[keep.genes, ]
@@ -571,7 +569,6 @@ MAPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.threas
     theme(panel.background = element_rect(color = "black"))
   if (is.null(label.df)) {
     if (!is.null(label.num)) {
-      library(ggrepel)
       label.data.up <- up.de.df %>% dplyr::top_n(n = label.num, wt = log2FoldChange)
       label.data.down <- down.de.df %>% dplyr::top_n(n = label.num, wt = -log2FoldChange)
       if (is.null(label.key)) {
@@ -584,7 +581,6 @@ MAPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.threas
       return(p)
     }
   } else if (nrow(label.df) >= 1) {
-    library(ggrepel)
     if (is.null(label.key)) {
       label.key <- "Label"
       label.df[, label.key] <- label.df$Gene
@@ -674,8 +670,8 @@ MAPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.threas
 #' library(DEbChIP)
 #' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
 #' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
-#' count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-#' meta.info <- read.table(file = meta.file, header = T)
+#' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+#' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
 #' keep.genes <- rowSums(DESeq2::counts(dds, normalized = FALSE)) >= 10
 #' dds <- dds[keep.genes, ]
@@ -713,7 +709,6 @@ RankPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.thre
     theme(panel.background = element_rect(color = "black"))
   if (is.null(label.df)) {
     if (!is.null(label.num)) {
-      library(ggrepel)
       label.data.up <- up.deg.df %>% dplyr::top_n(n = label.num, wt = log2FoldChange)
       label.data.down <- down.deg.df %>% dplyr::top_n(n = label.num, wt = -log2FoldChange)
       if (is.null(label.key)) {
@@ -726,7 +721,6 @@ RankPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.thre
       return(p)
     }
   } else if (nrow(label.df) >= 1) {
-    library(ggrepel)
     if (is.null(label.key)) {
       label.key <- "Label"
       label.df[, label.key] <- label.df$Gene
@@ -823,8 +817,8 @@ RankPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.thre
 #' library(DEbChIP)
 #' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
 #' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
-#' count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-#' meta.info <- read.table(file = meta.file, header = T)
+#' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+#' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
 #' keep.genes <- rowSums(DESeq2::counts(dds, normalized = FALSE)) >= 10
 #' dds <- dds[keep.genes, ]
@@ -963,8 +957,8 @@ GenePlot <- function(deobj, deres, group.key = NULL, ref.group = NULL, base = 10
 #' library(DEbChIP)
 #' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
 #' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
-#' count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-#' meta.info <- read.table(file = meta.file, header = T)
+#' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+#' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
 #' keep.genes <- rowSums(DESeq2::counts(dds, normalized = FALSE)) >= 10
 #' dds <- dds[keep.genes, ]
@@ -1076,7 +1070,7 @@ DEHeatmap <- function(deobj, deres, group.key = NULL, ref.group = NULL, group.co
   if (is.null(mark.genes)) {
     ht <- ComplexHeatmap::Heatmap(plot.matrix,
       show_row_names = FALSE,
-      show_column_dend = FALSE, show_row_dend = F,
+      show_column_dend = FALSE, show_row_dend = FALSE,
       name = "Z-score", col = exp.color.map,
       row_order = rownames(plot.matrix), column_order = colnames(plot.matrix), row_names_side = "right",
       heatmap_width = unit(heatmap.width, "cm"), heatmap_height = unit(heatmap.height, "cm"),
@@ -1098,7 +1092,7 @@ DEHeatmap <- function(deobj, deres, group.key = NULL, ref.group = NULL, group.co
     # create heatmap
     ht <- ComplexHeatmap::Heatmap(plot.matrix,
       show_row_names = FALSE,
-      show_column_dend = FALSE, show_row_dend = F,
+      show_column_dend = FALSE, show_row_dend = FALSE,
       name = "Z-score", col = exp.color.map,
       row_order = rownames(plot.matrix), column_order = colnames(plot.matrix), row_names_side = "right",
       heatmap_width = unit(heatmap.width, "cm"), heatmap_height = unit(heatmap.height, "cm"),

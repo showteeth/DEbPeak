@@ -31,8 +31,8 @@ peak.anno <- AnnoPeak(
 # RNA-Seq data
 count.file <- system.file("extdata", "debchip_count.txt", package = "DEbChIP")
 meta.file <- system.file("extdata", "debchip_meta.txt", package = "DEbChIP")
-count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-meta.info <- read.table(file = meta.file, header = T)
+count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+meta.info <- read.table(file = meta.file, header = TRUE)
 # create DESeqDataSet object
 dds <- DESeq2::DESeqDataSetFromMatrix(
   countData = count.matrix, colData = meta.info,
@@ -47,7 +47,7 @@ dds.results <- results(dds, contrast = c("condition", "RX", "NF"))
 dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing = TRUE), ]
 # Integrated with RNA-Seq
 debchip.res <- DEbChIP(
-  de.res = dds.results.ordered, chip.res = peak.anno.df,
+  de.res = dds.results.ordered, chip.res = peak.anno[["df"]],
   chip.anno.key = "Promoter", merge.key = "SYMBOL"
 )
 # DE and ChIP venn plot

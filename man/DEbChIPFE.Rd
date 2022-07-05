@@ -21,7 +21,7 @@ DEbChIPFE(
   plot.resolution = 300,
   plot.width = 7,
   plot.height = 9,
-  save = T
+  save = TRUE
 )
 }
 \arguments{
@@ -37,6 +37,9 @@ DEbChIPFE(
 
 \item{enrich.qvalue}{Cutoff value of qvalue. Default: 0.05.}
 
+\item{species}{Species used, chosen from "Human","Mouse","Rat","Fly","Arabidopsis","Yeast","Zebrafish","Worm","Bovine","Pig","Chicken","Rhesus",
+"Canine","Xenopus","Anopheles","Chimp","E coli strain Sakai","Myxococcus xanthus DK 1622". Default: "Human".}
+
 \item{padj.method}{One of "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none". Default: BH.}
 
 \item{show.term}{Number of enrichment term to show. Default: 15.}
@@ -50,8 +53,6 @@ DEbChIPFE(
 \item{plot.height}{The height of plot. Default: 9.}
 
 \item{save}{Logical value, whether to save all results. Default: TRUE.}
-
-\item{org.db}{Organism database. Default: org.Mm.eg.db.}
 }
 \value{
 If \code{save} is TRUE, return NULL (all results are in \code{out.folder}), else retutn list contains all results.
@@ -73,8 +74,8 @@ peak.anno <- AnnoPeak(
 # RNA-Seq data
 count.file <- system.file("extdata", "debchip_count.txt", package = "DEbChIP")
 meta.file <- system.file("extdata", "debchip_meta.txt", package = "DEbChIP")
-count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-meta.info <- read.table(file = meta.file, header = T)
+count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+meta.info <- read.table(file = meta.file, header = TRUE)
 # create DESeqDataSet object
 dds <- DESeq2::DESeqDataSetFromMatrix(
   countData = count.matrix, colData = meta.info,
@@ -89,9 +90,9 @@ dds.results <- results(dds, contrast = c("condition", "RX", "NF"))
 dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing = TRUE), ]
 # Integrated with RNA-Seq
 debchip.res <- DEbChIP(
-  de.res = dds.results.ordered, chip.res = peak.anno.df,
+  de.res = dds.results.ordered, chip.res = peak.anno[["df"]],
   chip.anno.key = "Promoter", merge.key = "SYMBOL"
 )
 # functional enrichment on genes
-fe.results <- DEbChIPFE(de.chip = debchip.res, gene.type = "ENTREZID", species = "Mouse", save = F)
+fe.results <- DEbChIPFE(de.chip = debchip.res, gene.type = "ENTREZID", species = "Mouse", save = FALSE)
 }

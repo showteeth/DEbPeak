@@ -29,7 +29,7 @@ KEGG_func <- function(pvalue, qvalue, entrez_id, organism, org_db, padj.method) 
 SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"), enrich.type = c("ALL", "GO", "KEGG"), go.type = c("ALL", "BP", "MF", "CC"),
                      enrich.pvalue = 0.05, enrich.qvalue = 0.05, org.db = "org.Mm.eg.db", organism = "mmu",
                      padj.method = c("BH", "holm", "hochberg", "hommel", "bonferroni", "BY", "fdr", "none"),
-                     show.term = 15, str.width = 30, plot.resolution = 300, plot.width = 7, plot.height = 9, save = T) {
+                     show.term = 15, str.width = 30, plot.resolution = 300, plot.width = 7, plot.height = 9, save = TRUE) {
   # convert gene types
   # remove gene version information
   genes <- gsub(pattern = "\\.[0-9]*$", replacement = "", x = genes)
@@ -58,10 +58,10 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
       MF_enrich <- clusterProfiler::filter(GO_enrich, ONTOLOGY == "MF")
       CC_enrich <- clusterProfiler::filter(GO_enrich, ONTOLOGY == "CC")
       # write GO enrich results
-      GO_enrich_df <- na.omit(as.data.frame(GO_enrich))
+      GO_enrich_df <- stats::na.omit(as.data.frame(GO_enrich))
       if (save) {
         go_out_file <- file.path(out.folder, paste0(regulation, "_ALL_GO.csv"))
-        write.table(GO_enrich_df, file = go_out_file, row.names = F, quote = F, sep = ",")
+        utils::write.table(GO_enrich_df, file = go_out_file, row.names = FALSE, quote = FALSE, sep = ",")
       } else {
         all.results[["GO"]][["table"]] <- GO_enrich_df
       }
@@ -70,14 +70,14 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
         pvalue = enrich.pvalue, qvalue = enrich.qvalue, entrez_id = entrez.id,
         organism = organism, org_db = org.db, padj.method = padj.method
       )
-      result_KEGG <- na.omit(as.data.frame(KEGG_enrich))
+      result_KEGG <- stats::na.omit(as.data.frame(KEGG_enrich))
       if (save) {
         kegg_out_file <- file.path(out.folder, paste0(regulation, "_KEGG.csv"))
-        write.table(result_KEGG, file = kegg_out_file, row.names = F, quote = F, sep = ",")
+        utils::write.table(result_KEGG, file = kegg_out_file, row.names = FALSE, quote = FALSE, sep = ",")
       } else {
         all.results[["KEGG"]][["table"]] <- result_KEGG
       }
-      if (nrow(na.omit(as.data.frame(BP_enrich))) >= 1) {
+      if (nrow(stats::na.omit(as.data.frame(BP_enrich))) >= 1) {
         p1 <- dotplot(BP_enrich, showCategory = show.term, title = paste0("Biological Process of ", regulation, " Genes")) +
           theme(plot.title = element_text(hjust = 0.5)) +
           scale_y_discrete(labels = function(enrich) stringr::str_wrap(enrich, width = str.width))
@@ -87,7 +87,7 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
           geom_text(aes(0, 0, label = "N/A")) +
           xlab(NULL)
       }
-      if (nrow(na.omit(as.data.frame(MF_enrich))) >= 1) {
+      if (nrow(stats::na.omit(as.data.frame(MF_enrich))) >= 1) {
         p2 <- dotplot(MF_enrich, showCategory = show.term, title = paste0("Molecular Function of ", regulation, " Genes")) +
           theme(plot.title = element_text(hjust = 0.5)) +
           scale_y_discrete(labels = function(enrich) stringr::str_wrap(enrich, width = str.width))
@@ -97,7 +97,7 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
           geom_text(aes(0, 0, label = "N/A")) +
           xlab(NULL)
       }
-      if (nrow(na.omit(as.data.frame(CC_enrich))) >= 1) {
+      if (nrow(stats::na.omit(as.data.frame(CC_enrich))) >= 1) {
         p3 <- dotplot(CC_enrich, showCategory = show.term, title = paste0("Cellular Component of ", regulation, " Genes")) +
           theme(plot.title = element_text(hjust = 0.5)) +
           scale_y_discrete(labels = function(enrich) stringr::str_wrap(enrich, width = str.width))
@@ -107,7 +107,7 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
           geom_text(aes(0, 0, label = "N/A")) +
           xlab(NULL)
       }
-      if (nrow(na.omit(as.data.frame(KEGG_enrich))) >= 1) {
+      if (nrow(stats::na.omit(as.data.frame(KEGG_enrich))) >= 1) {
         p4 <- dotplot(KEGG_enrich, showCategory = show.term, title = paste0("KEGG Enrichment of ", regulation, " Genes")) +
           theme(plot.title = element_text(hjust = 0.5)) +
           scale_y_discrete(labels = function(enrich) stringr::str_wrap(enrich, width = str.width))
@@ -133,12 +133,12 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
           plot = p4, dpi = plot.resolution, width = plot.width, height = plot.height
         )
         # save pdf file
-        pdf(paste(regulation, "Functional_Enrichment.pdf", sep = "_"))
+        grDevices::pdf(paste(regulation, "Functional_Enrichment.pdf", sep = "_"))
         print(p1)
         print(p2)
         print(p3)
         print(p4)
-        dev.off()
+        grDevices::dev.off()
       } else {
         all.results[["GO"]][["plot"]] <- patchwork::wrap_plots(p1, p2, p3, ncol = 1)
         all.results[["KEGG"]][["plot"]] <- p4
@@ -149,19 +149,19 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
         pvalue = enrich.pvalue, qvalue = enrich.qvalue, GO_type = go.type,
         entrez_id = entrez.id, org_db = org.db, padj.method = padj.method
       )
-      go_df <- na.omit(as.data.frame(part_go))
+      go_df <- stats::na.omit(as.data.frame(part_go))
 
       message("conduct KEGG enrichment analysis.")
       KEGG_enrich <- KEGG_func(
         pvalue = enrich.pvalue, qvalue = enrich.qvalue, entrez_id = entrez.id,
         organism = organism, org_db = org.db, padj.method = padj.method
       )
-      result_KEGG <- na.omit(as.data.frame(KEGG_enrich))
+      result_KEGG <- stats::na.omit(as.data.frame(KEGG_enrich))
       if (save) {
         go_out_file <- file.path(out.folder, paste0(regulation, "_", go.type, "_GO.csv"))
-        write.table(go_df, file = go_out_file, row.names = F, quote = F, sep = ",")
+        utils::write.table(go_df, file = go_out_file, row.names = FALSE, quote = FALSE, sep = ",")
         kegg_out_file <- file.path(out.folder, paste0(regulation, "_KEGG.csv"))
-        write.table(result_KEGG, file = kegg_out_file, row.names = F, quote = F, sep = ",")
+        utils::write.table(result_KEGG, file = kegg_out_file, row.names = FALSE, quote = FALSE, sep = ",")
       } else {
         all.results[["GO"]][["table"]] <- go_df
         all.results[["KEGG"]][["table"]] <- result_KEGG
@@ -178,7 +178,7 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
         plot.title <- paste0("Cellular Component of ", regulation, " Genes")
       }
 
-      if (nrow(na.omit(as.data.frame(part_go))) >= 1) {
+      if (nrow(stats::na.omit(as.data.frame(part_go))) >= 1) {
         p1 <- dotplot(part_go, showCategory = show.term, title = plot.title) +
           theme(plot.title = element_text(hjust = 0.5)) +
           scale_y_discrete(labels = function(enrich) stringr::str_wrap(enrich, width = str.width))
@@ -188,7 +188,7 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
           geom_text(aes(0, 0, label = "N/A")) +
           xlab(NULL)
       }
-      if (nrow(na.omit(as.data.frame(KEGG_enrich))) >= 1) {
+      if (nrow(stats::na.omit(as.data.frame(KEGG_enrich))) >= 1) {
         p2 <- dotplot(KEGG_enrich, showCategory = show.term, title = paste0("KEGG Enrichment of ", regulation, " Genes")) +
           theme(plot.title = element_text(hjust = 0.5)) +
           scale_y_discrete(labels = function(enrich) stringr::str_wrap(enrich, width = str.width))
@@ -206,10 +206,10 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
           plot = p2, dpi = plot.resolution, width = plot.width, height = plot.height
         )
         # save pdf file
-        pdf(paste(regulation, "Functional_Enrichment.pdf", sep = "_"))
+        grDevices::pdf(paste(regulation, "Functional_Enrichment.pdf", sep = "_"))
         print(p1)
         print(p2)
-        dev.off()
+        grDevices::dev.off()
       } else {
         all.results[["GO"]][["plot"]] <- p1
         all.results[["KEGG"]][["table"]] <- p2
@@ -226,15 +226,15 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
       MF_enrich <- clusterProfiler::filter(GO_enrich, ONTOLOGY == "MF")
       CC_enrich <- clusterProfiler::filter(GO_enrich, ONTOLOGY == "CC")
       # write GO enrich results
-      GO_enrich_df <- na.omit(as.data.frame(GO_enrich))
+      GO_enrich_df <- stats::na.omit(as.data.frame(GO_enrich))
       if (save) {
         go_out_file <- file.path(out.folder, paste0(regulation, "_ALL_GO.csv"))
-        write.table(GO_enrich_df, file = go_out_file, row.names = F, quote = F, sep = ",")
+        utils::write.table(GO_enrich_df, file = go_out_file, row.names = FALSE, quote = FALSE, sep = ",")
       } else {
         all.results[["GO"]][["table"]] <- GO_enrich_df
       }
 
-      if (nrow(na.omit(as.data.frame(BP_enrich))) >= 1) {
+      if (nrow(stats::na.omit(as.data.frame(BP_enrich))) >= 1) {
         p1 <- dotplot(BP_enrich, showCategory = show.term, title = paste0("Biological Process of ", regulation, " Genes")) +
           theme(plot.title = element_text(hjust = 0.5)) +
           scale_y_discrete(labels = function(enrich) stringr::str_wrap(enrich, width = str.width))
@@ -244,7 +244,7 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
           geom_text(aes(0, 0, label = "N/A")) +
           xlab(NULL)
       }
-      if (nrow(na.omit(as.data.frame(MF_enrich))) >= 1) {
+      if (nrow(stats::na.omit(as.data.frame(MF_enrich))) >= 1) {
         p2 <- dotplot(MF_enrich, showCategory = show.term, title = paste0("Molecular Function of ", regulation, " Genes")) +
           theme(plot.title = element_text(hjust = 0.5)) +
           scale_y_discrete(labels = function(enrich) stringr::str_wrap(enrich, width = str.width))
@@ -254,7 +254,7 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
           geom_text(aes(0, 0, label = "N/A")) +
           xlab(NULL)
       }
-      if (nrow(na.omit(as.data.frame(CC_enrich))) >= 1) {
+      if (nrow(stats::na.omit(as.data.frame(CC_enrich))) >= 1) {
         p3 <- dotplot(CC_enrich, showCategory = show.term, title = paste0("Cellular Component of ", regulation, " Genes")) +
           theme(plot.title = element_text(hjust = 0.5)) +
           scale_y_discrete(labels = function(enrich) stringr::str_wrap(enrich, width = str.width))
@@ -277,11 +277,11 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
           plot = p3, dpi = plot.resolution, width = plot.width, height = plot.height
         )
         # save pdf file
-        pdf(paste(regulation, "Functional_Enrichment.pdf", sep = "_"))
+        grDevices::pdf(paste(regulation, "Functional_Enrichment.pdf", sep = "_"))
         print(p1)
         print(p2)
         print(p3)
-        dev.off()
+        grDevices::dev.off()
       } else {
         all.results[["GO"]][["plot"]] <- patchwork::wrap_plots(p1, p2, p3, ncol = 1)
       }
@@ -291,10 +291,10 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
         pvalue = enrich.pvalue, qvalue = enrich.qvalue, GO_type = go.type,
         entrez_id = entrez.id, org_db = org.db, padj.method = padj.method
       )
-      go_df <- na.omit(as.data.frame(part_go))
+      go_df <- stats::na.omit(as.data.frame(part_go))
       if (save) {
         go_out_file <- file.path(out.folder, paste0(regulation, "_", go.type, "_GO.csv"))
-        write.table(go_df, file = go_out_file, row.names = F, quote = F, sep = ",")
+        utils::write.table(go_df, file = go_out_file, row.names = FALSE, quote = FALSE, sep = ",")
       } else {
         all.results[["GO"]][["table"]] <- go_df
       }
@@ -308,7 +308,7 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
         go_png_file <- paste(regulation, "Cellular_Component.png", sep = "_")
         plot.title <- paste0("Cellular Component of ", regulation, " Genes")
       }
-      if (nrow(na.omit(as.data.frame(part_go))) >= 1) {
+      if (nrow(stats::na.omit(as.data.frame(part_go))) >= 1) {
         p1 <- dotplot(part_go, showCategory = show.term, title = plot.title) +
           theme(plot.title = element_text(hjust = 0.5)) +
           scale_y_discrete(labels = function(enrich) stringr::str_wrap(enrich, width = str.width))
@@ -320,9 +320,9 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
       }
       if (save) {
         ggsave(go_png_file, plot = p1, dpi = plot.resolution, width = plot.width, height = plot.height)
-        pdf(paste(regulation, "Functional_Enrichment.pdf", sep = "_"))
+        grDevices::pdf(paste(regulation, "Functional_Enrichment.pdf", sep = "_"))
         print(p1)
-        dev.off()
+        grDevices::dev.off()
       } else {
         all.results[["GO"]][["plot"]] <- p1
       }
@@ -333,14 +333,14 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
       pvalue = enrich.pvalue, qvalue = enrich.qvalue, entrez_id = entrez.id,
       organism = organism, org_db = org.db, padj.method = padj.method
     )
-    result_KEGG <- na.omit(as.data.frame(KEGG_enrich))
+    result_KEGG <- stats::na.omit(as.data.frame(KEGG_enrich))
     if (save) {
       kegg_out_file <- file.path(out.folder, paste0(regulation, "_KEGG.csv"))
-      write.table(result_KEGG, file = kegg_out_file, row.names = F, quote = F, sep = ",")
+      utils::write.table(result_KEGG, file = kegg_out_file, row.names = FALSE, quote = FALSE, sep = ",")
     } else {
       all.results[["KEGG"]][["table"]] <- result_KEGG
     }
-    if (nrow(na.omit(as.data.frame(KEGG_enrich))) >= 1) {
+    if (nrow(stats::na.omit(as.data.frame(KEGG_enrich))) >= 1) {
       p1 <- dotplot(KEGG_enrich, showCategory = show.term, title = paste0("KEGG Enrichment of ", regulation, " Genes")) +
         theme(plot.title = element_text(hjust = 0.5)) +
         scale_y_discrete(labels = function(enrich) stringr::str_wrap(enrich, width = str.width))
@@ -354,9 +354,9 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
       ggsave(paste(regulation, "KEGG_Enrichment.png", sep = "_"),
         plot = p1, dpi = plot.resolution, width = plot.width, height = plot.height
       )
-      pdf(paste(regulation, "Functional_Enrichment.pdf", sep = "_"))
+      grDevices::pdf(paste(regulation, "Functional_Enrichment.pdf", sep = "_"))
       print(p1)
-      dev.off()
+      grDevices::dev.off()
     } else {
       all.results[["KEGG"]][["plot"]] <- p1
     }
@@ -399,6 +399,9 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
 #' @importFrom stringr str_wrap
 #' @importFrom BiocManager install
 #' @importFrom patchwork wrap_plots
+#' @importFrom stats na.omit
+#' @importFrom utils write.table
+#' @importFrom grDevices pdf dev.off
 #' @export
 #'
 #' @examples
@@ -406,8 +409,8 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
 #' library(DEbChIP)
 #' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
 #' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
-#' count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-#' meta.info <- read.table(file = meta.file, header = T)
+#' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+#' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
 #' keep.genes <- rowSums(DESeq2::counts(dds, normalized = FALSE)) >= 10
 #' dds <- dds[keep.genes, ]
@@ -421,7 +424,7 @@ ConductFE <- function(deres, out.folder = NULL, signif = "padj", signif.threasho
                       enrich.type = c("ALL", "GO", "KEGG"), go.type = c("ALL", "BP", "MF", "CC"),
                       enrich.pvalue = 0.05, enrich.qvalue = 0.05, organism = "mmu",
                       padj.method = c("BH", "holm", "hochberg", "hommel", "bonferroni", "BY", "fdr", "none"),
-                      show.term = 15, str.width = 30, plot.resolution = 300, plot.width = 7, plot.height = 9, save = T) {
+                      show.term = 15, str.width = 30, plot.resolution = 300, plot.width = 7, plot.height = 9, save = TRUE) {
   # check parameter
   gene.type <- match.arg(arg = gene.type)
   enrich.type <- match.arg(arg = enrich.type)

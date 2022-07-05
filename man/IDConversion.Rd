@@ -32,6 +32,6 @@ Gene ID Conversion.
 \examples{
 library(DEbChIP)
 count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
-count.matrix <- read.table(file = count.file, header = T, sep = "\t")
+count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
 IDConversion(count.matrix, gene.type = "ENSEMBL", sort.key = NULL)
 }

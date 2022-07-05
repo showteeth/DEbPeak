@@ -14,7 +14,7 @@ QCPCA(
   min.count = 10,
   colby = NULL,
   legend.pos = c("bottom", "top", "left", "right", "none"),
-  outlier.detection = T,
+  outlier.detection = TRUE,
   rpca.method = c("PcaGrid", "PcaHubert"),
   k = 2,
   ...
@@ -58,10 +58,13 @@ library(DESeq2)
 library(DEbChIP)
 count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
 meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
-count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-meta.info <- read.table(file = meta.file, header = T)
+count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+meta.info <- read.table(file = meta.file, header = TRUE)
 dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
 keep.genes <- rowSums(DESeq2::counts(dds, normalized = FALSE)) >= 10
 dds <- dds[keep.genes, ]
-pcs_res <- QCPCA(deobj = dds, var.genes = NULL, remove.sample = NULL, transform.method = "rlog", outlier.detection = T, rpca.method = "PcaGrid")
+pcs_res <- QCPCA(
+  deobj = dds, var.genes = NULL, remove.sample = NULL, transform.method = "rlog",
+  outlier.detection = TRUE, rpca.method = "PcaGrid"
+)
 }

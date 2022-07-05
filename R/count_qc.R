@@ -25,34 +25,34 @@ CPMPlot <- function(dat, samples = NULL, toplot = "global",
 
   # creat plot
   if ((exists("ylab") && !is.character(ylab)) || !exists("ylab")) ylab <- ""
-  barplot(as.numeric(datos[1, ]),
+  graphics::barplot(as.numeric(datos[1, ]),
     col = miscolores[1], las = 2, main = "", ylab = "", density = 70,
     ylim = c(0, 100), cex.axis = 0.8, names.arg = "", ...
   )
   for (i in 2:(length(mytotal) - 2)) {
-    barplot(as.numeric(datos[i, ]),
+    graphics::barplot(as.numeric(datos[i, ]),
       col = miscolores[i], las = 2, main = "", ylab = "", add = TRUE,
       density = 70, ylim = c(0, 100), cex.axis = 0.8, names.arg = "", ...
     )
   }
-  bp <- barplot(as.numeric(datos[(length(mytotal) - 1), ]),
+  bp <- graphics::barplot(as.numeric(datos[(length(mytotal) - 1), ]),
     col = miscolores[(length(mytotal) - 1)], las = 2,
     add = TRUE, names.arg = colnames(datos), cex.axis = 0.8,
     density = 70, ylim = c(0, 100), cex.names = 0.8, ...
   )
-  for (j in 1:(length(mytotal) - 1)) abline(h = mytotal[j], col = miscolores[j], lwd = 2)
+  for (j in 1:(length(mytotal) - 1)) graphics::abline(h = mytotal[j], col = miscolores[j], lwd = 2)
 
   # add text
   if (length(samples) <= 10) {
-    mtext(side = 3, text = datos["depth", ], adj = 0.5, at = bp, cex = 0.8)
+    graphics::mtext(side = 3, text = datos["depth", ], adj = 0.5, at = bp, cex = 0.8)
   } else {
-    mtext(side = 3, text = datos["depth", ], at = bp, cex = 0.7, las = 2)
+    graphics::mtext(side = 3, text = datos["depth", ], at = bp, cex = 0.7, las = 2)
   }
   # add legend
   if (is.null(legend.col)) {
     legend.col <- length(mytotal) - 1
   }
-  legend("bottom", rownames(datos)[-length(mytotal)],
+  graphics::legend("bottom", rownames(datos)[-length(mytotal)],
     fill = miscolores,
     density = 70, bty = "n", ncol = legend.col, inset = legend.inset, xpd = TRUE
   )
@@ -75,6 +75,7 @@ CPMPlot <- function(dat, samples = NULL, toplot = "global",
 #' @importFrom tibble rownames_to_column
 #' @importFrom SummarizedExperiment colData
 #' @importFrom grDevices colorRampPalette
+#' @importFrom graphics barplot abline mtext legend title
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom NOISeq readData dat explo.plot
 #' @importFrom DESeq2 counts
@@ -85,8 +86,8 @@ CPMPlot <- function(dat, samples = NULL, toplot = "global",
 #' library(DEbChIP)
 #' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
 #' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
-#' count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-#' meta.info <- read.table(file = meta.file, header = T)
+#' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+#' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
 #' CountQC(deobj = dds, group.key = "condition", type = "cpm")
 #' CountQC(deobj = dds, group.key = "condition", type = "saturation")
@@ -124,13 +125,13 @@ CountQC <- function(deobj, group.key = NULL, type = c("saturation", "cpm"), min.
       toplot = 1, samples = 1:ncol(data),
       yleftlim = NULL, yrightlim = NULL, col.main = "white"
     )
-    title("Sequencing Saturation")
+    graphics::title("Sequencing Saturation")
   } else if (type == "cpm") {
     countsbio.data <- NOISeq::dat(data, factor = NULL, type = "countsbio", ...)
     CPMPlot(countsbio.data@dat,
       samples = NULL, toplot = 1,
       cat.colors = cat.colors, legend.col = legend.col, legend.inset = legend.inset
     )
-    title("CPM Threshold", ylab = "Percentage (%)")
+    graphics::title("CPM Threshold", ylab = "Percentage (%)")
   }
 }

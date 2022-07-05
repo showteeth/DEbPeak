@@ -21,7 +21,7 @@ LoadingGO(
   plot.resolution = 300,
   plot.width = 7,
   plot.height = 9,
-  save = T
+  save = TRUE
 )
 }
 \arguments{
@@ -68,11 +68,11 @@ library(DESeq2)
 library(DEbChIP)
 count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
 meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
-count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-meta.info <- read.table(file = meta.file, header = T)
+count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+meta.info <- read.table(file = meta.file, header = TRUE)
 dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
 keep.genes <- rowSums(DESeq2::counts(dds, normalized = FALSE)) >= 10
 dds <- dds[keep.genes, ]
 pca_res <- PCA(deobj = dds, transform.method = "rlog")
-LoadingGO(pca_res, gene.type = "ENSEMBL", go.type = "BP", padj.method = "BH", save = T)
+LoadingGO(pca_res, gene.type = "ENSEMBL", go.type = "BP", padj.method = "BH", save = TRUE)
 }

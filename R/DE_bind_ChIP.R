@@ -30,8 +30,8 @@
 #' # RNA-Seq data
 #' count.file <- system.file("extdata", "debchip_count.txt", package = "DEbChIP")
 #' meta.file <- system.file("extdata", "debchip_meta.txt", package = "DEbChIP")
-#' count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-#' meta.info <- read.table(file = meta.file, header = T)
+#' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+#' meta.info <- read.table(file = meta.file, header = TRUE)
 #' # create DESeqDataSet object
 #' dds <- DESeq2::DESeqDataSetFromMatrix(
 #'   countData = count.matrix, colData = meta.info,
@@ -46,7 +46,7 @@
 #' dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing = TRUE), ]
 #' # Integrated with RNA-Seq
 #' debchip.res <- DEbChIP(
-#'   de.res = dds.results.ordered, chip.res = peak.anno.df,
+#'   de.res = dds.results.ordered, chip.res = peak.anno[["df"]],
 #'   chip.anno.key = "Promoter", merge.key = "SYMBOL"
 #' )
 DEbChIP <- function(de.res, chip.res, chip.anno.key = c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic", "All"),
@@ -118,8 +118,8 @@ DEbChIP <- function(de.res, chip.res, chip.anno.key = c("Promoter", "5' UTR", "3
 #' # RNA-Seq data
 #' count.file <- system.file("extdata", "debchip_count.txt", package = "DEbChIP")
 #' meta.file <- system.file("extdata", "debchip_meta.txt", package = "DEbChIP")
-#' count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-#' meta.info <- read.table(file = meta.file, header = T)
+#' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+#' meta.info <- read.table(file = meta.file, header = TRUE)
 #' # create DESeqDataSet object
 #' dds <- DESeq2::DESeqDataSetFromMatrix(
 #'   countData = count.matrix, colData = meta.info,
@@ -134,7 +134,7 @@ DEbChIP <- function(de.res, chip.res, chip.anno.key = c("Promoter", "5' UTR", "3
 #' dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing = TRUE), ]
 #' # Integrated with RNA-Seq
 #' debchip.res <- DEbChIP(
-#'   de.res = dds.results.ordered, chip.res = peak.anno.df,
+#'   de.res = dds.results.ordered, chip.res = peak.anno[["df"]],
 #'   chip.anno.key = "Promoter", merge.key = "SYMBOL"
 #' )
 #' # DE and ChIP venn plot
@@ -166,7 +166,8 @@ PlotDEbChIP <- function(de.chip, ...) {
 #' @param go.type GO enrichment type, chosen from ALL, BP, MF, CC. Default: ALL.
 #' @param enrich.pvalue Cutoff value of pvalue. Default: 0.05.
 #' @param enrich.qvalue Cutoff value of qvalue. Default: 0.05.
-#' @param org.db Organism database. Default: org.Mm.eg.db.
+#' @param species Species used, chosen from "Human","Mouse","Rat","Fly","Arabidopsis","Yeast","Zebrafish","Worm","Bovine","Pig","Chicken","Rhesus",
+#' "Canine","Xenopus","Anopheles","Chimp","E coli strain Sakai","Myxococcus xanthus DK 1622". Default: "Human".
 #' @param padj.method One of "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none". Default: BH.
 #' @param show.term Number of enrichment term to show. Default: 15.
 #' @param str.width Length of enrichment term in plot. Default: 30.
@@ -202,8 +203,8 @@ PlotDEbChIP <- function(de.chip, ...) {
 #' # RNA-Seq data
 #' count.file <- system.file("extdata", "debchip_count.txt", package = "DEbChIP")
 #' meta.file <- system.file("extdata", "debchip_meta.txt", package = "DEbChIP")
-#' count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-#' meta.info <- read.table(file = meta.file, header = T)
+#' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+#' meta.info <- read.table(file = meta.file, header = TRUE)
 #' # create DESeqDataSet object
 #' dds <- DESeq2::DESeqDataSetFromMatrix(
 #'   countData = count.matrix, colData = meta.info,
@@ -218,18 +219,18 @@ PlotDEbChIP <- function(de.chip, ...) {
 #' dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing = TRUE), ]
 #' # Integrated with RNA-Seq
 #' debchip.res <- DEbChIP(
-#'   de.res = dds.results.ordered, chip.res = peak.anno.df,
+#'   de.res = dds.results.ordered, chip.res = peak.anno[["df"]],
 #'   chip.anno.key = "Promoter", merge.key = "SYMBOL"
 #' )
 #' # functional enrichment on genes
-#' fe.results <- DEbChIPFE(de.chip = debchip.res, gene.type = "ENTREZID", species = "Mouse", save = F)
+#' fe.results <- DEbChIPFE(de.chip = debchip.res, gene.type = "ENTREZID", species = "Mouse", save = FALSE)
 DEbChIPFE <- function(de.chip, out.folder = NULL, gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"), go.type = c("ALL", "BP", "MF", "CC"),
                       enrich.pvalue = 0.05, enrich.qvalue = 0.05, species = c(
                         "Human", "Mouse", "Rat", "Fly", "Arabidopsis", "Yeast", "Zebrafish", "Worm", "Bovine", "Pig", "Chicken", "Rhesus",
                         "Canine", "Xenopus", "Anopheles", "Chimp", "E coli strain Sakai", "Myxococcus xanthus DK 1622"
                       ),
                       padj.method = c("BH", "holm", "hochberg", "hommel", "bonferroni", "BY", "fdr", "none"),
-                      show.term = 15, str.width = 30, plot.resolution = 300, plot.width = 7, plot.height = 9, save = T) {
+                      show.term = 15, str.width = 30, plot.resolution = 300, plot.width = 7, plot.height = 9, save = TRUE) {
   # check parameter
   gene.type <- match.arg(arg = gene.type)
   go.type <- match.arg(arg = go.type)

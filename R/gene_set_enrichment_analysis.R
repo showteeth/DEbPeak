@@ -24,21 +24,27 @@
 #' @importFrom tidyr drop_na
 #' @import clusterProfiler
 #' @importFrom enrichplot gseaplot2
+#' @importFrom stats na.omit
+#' @importFrom utils write.csv
+#' @importFrom grDevices pdf dev.off
 #' @export
 #'
 #' @examples
 #' library(airway)
 #' library(msigdbr)
+#' library(DESeq2)
 #' library(DEbChIP)
-#' dds <- DESeqDataSet(airway, design = ~ cell + dex)
-#' dds <- DESeq(dds)
+#' # load the data
+#' data(airway)
+#' dds <- DESeq2::DESeqDataSet(airway, design = ~ cell + dex)
+#' dds <- DESeq2::DESeq(dds)
 #' dds.results <- results(dds, contrast = c("dex", "trt", "untrt"))
 #' dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing = TRUE), ]
 #' h_t2g <- msigdbr(species = "Homo sapiens", category = "C5") %>% dplyr::select(gs_name, entrez_gene)
-#' gsea.results <- ConductGSEA(deres = dds.results.ordered, gmt.file = NULL, gene.sets = h_t2g, org.db = "org.Hs.eg.db", pvalue = 0.05, save = F)
+#' gsea.results <- ConductGSEA(deres = dds.results.ordered, gmt.file = NULL, gene.sets = h_t2g, org.db = "org.Hs.eg.db", pvalue = 0.05, save = FALSE)
 ConductGSEA <- function(deres, gmt.file, gene.sets = NULL, out.folder = NULL, gene.key = NULL, gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"), org.db = "org.Mm.eg.db",
                         minGSSize = 10, maxGSSize = 500, pvalue = 0.05, padj.method = c("BH", "holm", "hochberg", "hommel", "bonferroni", "BY", "fdr", "none"),
-                        plot.resolution = 300, plot.width = 10, plot.height = 6, save = T, ...) {
+                        plot.resolution = 300, plot.width = 10, plot.height = 6, save = TRUE, ...) {
   # check parameter
   gene.type <- match.arg(arg = gene.type)
   padj.method <- match.arg(arg = padj.method)
@@ -77,9 +83,9 @@ ConductGSEA <- function(deres, gmt.file, gene.sets = NULL, out.folder = NULL, ge
     convert.df <- clusterProfiler::bitr(de.df[, gene.key],
       fromType = gene.type,
       toType = c("ENTREZID"),
-      OrgDb = get(org.db), drop = F
+      OrgDb = get(org.db), drop = FALSE
     )
-    de.df <- merge(de.df, convert.df, by.x = gene.key, by.y = gene.type, allx.x = T) %>%
+    de.df <- merge(de.df, convert.df, by.x = gene.key, by.y = gene.type, allx.x = TRUE) %>%
       tidyr::drop_na() %>%
       dplyr::select(c("ENTREZID", "log2FoldChange")) %>%
       dplyr::distinct(ENTREZID, .keep_all = TRUE)
@@ -110,7 +116,7 @@ ConductGSEA <- function(deres, gmt.file, gene.sets = NULL, out.folder = NULL, ge
   }
 
   gsea.info <- as.data.frame(gsea)
-  if (nrow(na.omit(gsea.info)) >= 1) {
+  if (nrow(stats::na.omit(gsea.info)) >= 1) {
     p1 <- enrichplot::gseaplot2(gsea, geneSetID = 1, title = gsea$Description[1])
   } else {
     p1 <- ggplot() +
@@ -121,15 +127,15 @@ ConductGSEA <- function(deres, gmt.file, gene.sets = NULL, out.folder = NULL, ge
   if (save) {
     # save results
     gsea.out.file <- file.path(out.folder, "GSEA_enrich_result.csv")
-    write.csv(gsea.info, file = gsea.out.file, row.names = F)
+    utils::write.csv(gsea.info, file = gsea.out.file, row.names = FALSE)
 
     ggsave(file.path(out.folder, "GSEA_enrich_result.png"),
       plot = p1, dpi = plot.resolution,
       width = plot.width, height = plot.height
     )
-    pdf(file.path(out.folder, "GSEA_enrich_result.pdf"))
+    grDevices::pdf(file.path(out.folder, "GSEA_enrich_result.pdf"))
     print(p1)
-    dev.off()
+    grDevices::dev.off()
   } else {
     all_results[["gsea"]] <- gsea
     all_results[["table"]] <- gsea.info

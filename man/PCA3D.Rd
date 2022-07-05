@@ -50,7 +50,8 @@ PCA3D(
 
 \item{ticktype}{Axis ticktype, chosen from: detailed and simple. Default: detailed.}
 
-\item{bty}{The type of the box, the default draws only the back panels, chosen from: f, b, b2, g, bl, bl2, u, n. Default: g.}
+\item{bty}{The type of the box, the default draws only the back panels,
+chosen from: f, b, b2, g, bl, bl2, u, n. Default: g.}
 
 \item{box}{Should the bounding box for the surface be displayed. Default: TRUE.}
 
@@ -58,7 +59,9 @@ PCA3D(
 
 \item{phi}{Angles defining the viewing direction. \code{phi} gives the colatitude direction. Default: 20.}
 
-\item{d}{a value which can be used to vary the strength of the perspective transformation. Values of d greater than 1 will lessen the perspective effect and values less and 1 will exaggerate it. Default: 3.}
+\item{d}{a value which can be used to vary the strength of the perspective transformation.
+Values of d greater than 1 will lessen the perspective effect and
+values less and 1 will exaggerate it. Default: 3.}
 
 \item{colkey}{\code{\link{colkey}}. Default: FALSE.}
 
@@ -66,15 +69,22 @@ PCA3D(
 
 \item{legend.pos}{Legend position. Default: bottom.}
 
-\item{legend.horiz}{Logical; if TRUE, set the legend horizontally rather than vertically (specifying horiz overrides the ncol specification). Default: TRUE.}
+\item{legend.horiz}{Logical; if TRUE, set the legend horizontally rather than
+vertically (specifying horiz overrides the ncol specification). Default: TRUE.}
 
-\item{legend.inset}{Inset distance(s) from the margins as a fraction of the plot region when legend is placed by keyword. Default: -0.1.}
+\item{legend.inset}{Inset distance(s) from the margins as a fraction of the plot region when
+legend is placed by keyword. Default: -0.1.}
 
-\item{legend.bg}{The background color for the legend box. (Note that this is only used if bty != "n".). Default: white.}
+\item{legend.bg}{The background color for the legend box.
+Note that this is only used if bty != "n". Default: white.}
 
-\item{legend.bty}{The type of box to be drawn around the legend. The allowed values are "o" (the default) and "n". Default: n.}
+\item{legend.bty}{The type of box to be drawn around the legend,
+chosen from 0 and n. Default: n.}
 
-\item{legend.ncol}{The number of columns in which to set the legend items (default is 1, a vertical legend). Default: NULL.}
+\item{legend.ncol}{The number of columns in which to set the legend items.
+Default: NULL (set the legend horizontally).}
+
+\item{main}{Title of the plot. Default: NULL.}
 
 \item{...}{Parameters for \code{\link{scatter3D}}.}
 }
@@ -89,8 +99,8 @@ library(DESeq2)
 library(DEbChIP)
 count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
 meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
-count.matrix <- read.table(file = count.file, header = T, sep = "\t")
-meta.info <- read.table(file = meta.file, header = T)
+count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+meta.info <- read.table(file = meta.file, header = TRUE)
 dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
 keep.genes <- rowSums(DESeq2::counts(dds, normalized = FALSE)) >= 10
 dds <- dds[keep.genes, ]

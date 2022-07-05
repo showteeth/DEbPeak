@@ -167,9 +167,11 @@ the second column should not be SYMBOL, ENSEMBL, ENTREZID.}
 Conduct Differential Axpression Analysis with DESeq2.
 }
 \examples{
-library(DESeq2)
-library(DEbChIP)
-count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
-meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
-ConductDESeq2(count.matrix.file = count.file, meta.file = meta.file, group.key = "condition", count.type = "htseq-count", ref.group = "WT")
+# library(DESeq2)
+# library(DEbChIP)
+# count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
+# meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
+# gmt.file <- system.file("extdata", "c5.go.cc.v7.5.1.entrez.gmt", package = "DEbChIP")
+# ConductDESeq2(count.matrix.file = count.file, meta.file = meta.file, group.key = "condition",
+#               count.type = "htseq-count", ref.group = "WT", signif = "pvalue", l2fc.threashold = 0.3, gmt.file = gmt.file)
 }

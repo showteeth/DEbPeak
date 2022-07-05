@@ -1,0 +1,28 @@
+.onLoad <- function(libname, pkgname) {
+  # set global variables in order to avoid CHECK notes
+  utils::globalVariables("regulation")
+  utils::globalVariables("ENTREZID")
+  utils::globalVariables("Sample")
+  utils::globalVariables("log2FoldChange")
+  utils::globalVariables("anno")
+  utils::globalVariables("geneId")
+  utils::globalVariables("Type")
+  utils::globalVariables("Loadding")
+  utils::globalVariables("PC")
+  utils::globalVariables("Gene")
+  utils::globalVariables("Label")
+  utils::globalVariables("Expression")
+  utils::globalVariables("Condition")
+  utils::globalVariables("Gene2Convert")
+  utils::globalVariables("abundance")
+  utils::globalVariables("Length")
+  utils::globalVariables("score_distance")
+  utils::globalVariables("orthogonal_distance")
+  utils::globalVariables("SampleName")
+  utils::globalVariables("Order")
+  utils::globalVariables("Group1")
+  utils::globalVariables("Group2")
+  utils::globalVariables("ONTOLOGY")
+
+  invisible()
+}
