@@ -1,6 +1,6 @@
 Package: DEbChIP
 Title: DEbChIP - Toolbox to explore, visualize, interpret RNA-seq data and integrate with ChIP-seq data
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: 
     person(given = "Yabing",
            family = "Song",

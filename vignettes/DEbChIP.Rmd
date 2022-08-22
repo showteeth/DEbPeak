@@ -33,7 +33,7 @@ htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 
 # Getting started
 
-`r Biocpkg("DEbChIP")` is an R package distributed as part of the [Bioconductor](http://bioconductor.org) project and [CRAN](https://cran.r-project.org/).
+`r Biocpkg("DEbChIP")` is an R package distributed as part of the [Bioconductor](http://bioconductor.org) project and [Github](https://github.com/showteeth/DEbChIP).
 To install the package, start R and enter:
   
 ```{r install, eval=FALSE}
