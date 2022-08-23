@@ -1,9 +1,9 @@
-# DEbChIP - Toolbox to explore, visualize, interpret RNA-seq data and integrate with ChIP-seq data.
+# DEbPeak - Explore, visualize, interpret RNA-seq data and decipher gene's regulation.
 
-<img src = "man/figures/DEbChIP.png" align = "right" width = "200"/>
+<img src = "man/figures/DEbPeak.png" align = "right" width = "200"/>
 
 ## Introduction
-The goal of DEbChIP is to assist in the processing of RNA-seq data. It contains **six functional modules**:
+`DEbPeak` aims to **explore**, **visualize**, **interpret** RNA-seq data and **decipher gene's regulation** by combining ChIP-seq and ATAC-seq data. It contains **six functional modules**:
 
 * **Quality Control (QC)**: QC on count matrix and samples. 
   - QC on count matrix: Proportion of genes detected in different samples under different CPM thresholds and the saturation of the number of genes detected.
@@ -16,42 +16,45 @@ The goal of DEbChIP is to assist in the processing of RNA-seq data. It contains 
 * **Functional Enrichment Analysis (FEA)**: GO enrichment analysis, KEGG enrichment analysis, Gene Set Enrichment Analysis (GSEA).
   - GO (Biological Process, Molecular Function, Cellular Component) and KEGG on differential expression genes
   - GSEA on all genes
-* **Integrate with ChIP-seq**: 
+* **Integrate with ChIP-seq/ATAC-seq**: 
   - Get consensus peaks: For multiple peak files, get consensus peaks; for single peak file, use it directly
-  - Peak profile plots: Heatmap of ChIP binding to TSS regions, Average Profile of ChIP peaks binding to TSS region, Profile of ChIP peaks binding to different regions.
+  - Peak profile plots: Heatmap of peak binding to TSS regions, Average Profile of ChIP peaks binding to TSS region, Profile of ChIP peaks binding to different regions.
   - Peak annotaion
-  - Integrate with RNA-seq: Integrate with RNA-seq to find direct targets, including up-regulated and down-regulated.
-  - Integrate summary: Summary the integrated results, get the overlap number of up-regulated genes and ChIP-seq results (UP), down-regulated genes and ChIP-seq results.
+  - Integrate RNA-seq and ChIP-seq/ATAC-seq: Integrate RNA-seq and ChIP-seq/ATAC-seq to find direct targets, including up-regulated and down-regulated.
+  - Integrate summary: Summary the integrated results, get the overlap number of up-regulated genes and ChIP-seq/ATAC-seq results (UP), down-regulated genes and ChIP-seq/ATAC-seq results.
   - GO enrichment on integrated results: GO enrichment on up-regulated targets and down-regulated targets.
+  - Find motif on integrated results: This is a step unique to ATAC-seq. Due to the nature of ATAC-seq, we usually need to find motif on integrated results to obtain potential regulatory factors.
 * **Utils**: useful functions when dealing with RNA-seq data, including gene name conversion and count normalization(DESeq2’s median of ratios, TMM, CPM, TPM, RPKM).
 
-To enhance the ease of use of the tool, we have also developed an **interactive tool** for `DEbChIP` that allows users to submit files to the web page and set parameters to get the desired results. Unlike the standalone R package, *the interactive web page has built-in `DESeq2` for differential expression analysis*, while the R package can accept user input results from `DESeq2` or `edgeR`, which will be **more flexible**.
+To enhance the ease of use of the tool, we have also developed an **interactive tool** for `DEbPeak` that allows users to submit files to the web page and set parameters to get the desired results. Unlike the standalone R package, *the interactive web page has built-in `DESeq2` for differential expression analysis*, while the R package can accept user input results from `DESeq2` or `edgeR`, which will be **more flexible**.
 
 By the way, all plots generated are **publication-ready** , and most of them are based on `ggplot2`, so that users can easily modify them according to their needs. We also provide **various color palettes**, including **discrete** and **continuous**, **color blind friendly** and **multiple categorical variables**.
 
 <hr />
 
 ## Installation
-You can install the released version of `DEbChIP` from [Bioconductor](https://bioconductor.org/) with:
+You can install the released version of `DEbPeak` from [Bioconductor](https://bioconductor.org/) with:
 ```R
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
-BiocManager::install("DEbChIP")
+BiocManager::install("DEbPeak")
 ```
 
 Or install the package via the Github repository:
 
 ``` r
 # install.package("remotes")   #In case you have not installed it.
-remotes::install_github("showteeth/DEbChIP")
+remotes::install_github("showteeth/DEbPeak")
 ```
+
+In general, it is **recommended** to install from [Github repository](https://github.com/showteeth/DEbPeak) (update more timely).
 
 <hr />
 
 ## Usage
 ### Vignette
-Detailed usage is available in [vignette](https://github.com/showteeth/DEbChIP/blob/main/vignettes/DEbChIP_User_Guide.html).
+Detailed usage is available in [vignette](https://github.com/showteeth/DEbPeak/blob/main/vignettes/DEbChIP_User_Guide.html).
 
 ### Function list
 <table>
@@ -148,29 +151,37 @@ Detailed usage is available in [vignette](https://github.com/showteeth/DEbChIP/b
     <td>Conduct Gene Set Enrichment Analysis (GSEA)</td>
   </tr>
   <tr>
-    <td rowspan="6">Integrate with ChIP-seq</td>
+    <td rowspan="8">Integrate with ChIP-seq/ATAC-seq</td>
     <td><code>GetConsensusPeak</code></td>
     <td>Get Consensus Peak with MSPC</td>
   </tr>
   <tr>
     <td><code>PeakProfile</code></td>
-    <td>Create ChIP Peak Binding Profile</td>
+    <td>Create Peak Peak Binding Profile</td>
   </tr>
   <tr>
     <td><code>AnnoPeak</code></td>
     <td>Conduct Peak Annotation</td>
   </tr>
   <tr>
-    <td><code>DEbChIP</code></td>
-    <td>Integrate Differential Expression Results and Peak Annotation Results</td>
+    <td><code>DEbPeak</code></td>
+    <td>Integrate Differential Expression Results and Peak Annotation Results (ATAC-seq or ChIP-seq)</td>
   </tr>
   <tr>
-    <td><code>PlotDEbChIP</code></td>
+    <td><code>PlotDEbPeak</code></td>
     <td>Create Integrated Summary Plot</td>
   </tr>
   <tr>
-    <td><code>DEbChIPFE</code></td>
+    <td><code>DEbPeakFE</code></td>
     <td>GO Enrichment on Integrated Results</td>
+  </tr>
+  <tr>
+    <td><code>FindMotif</code></td>
+    <td>Find motif on integrated results (RNA-seq and ATAC-seq)</td>
+  </tr>
+  <tr>
+    <td><code>DEbCA</code></td>
+    <td>Integrate Differential Expression Results and Peak Annotation Results (Both ATAC-seq and ChIP-seq)</td>
   </tr>
   <tr>
     <td rowspan="2">Utils</td>
@@ -192,7 +203,7 @@ For any question, feature request or bug report please write an email to songyb0
 <hr />
 
 ## Code of Conduct
-Please note that the DEbChIP project is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
+Please note that the DEbPeak project is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
 
 <hr />
 

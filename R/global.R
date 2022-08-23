@@ -6,6 +6,8 @@
   utils::globalVariables("log2FoldChange")
   utils::globalVariables("anno")
   utils::globalVariables("geneId")
+  utils::globalVariables("geneId_ChIP")
+  utils::globalVariables("geneId_ATAC")
   utils::globalVariables("Type")
   utils::globalVariables("Loadding")
   utils::globalVariables("PC")

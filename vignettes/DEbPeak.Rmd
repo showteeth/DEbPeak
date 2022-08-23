@@ -1,0 +1,780 @@
+---
+title: >
+  DEbPeak User Guide
+author: 
+- name: Yabing Song
+  affiliation: 
+  - &id1 School of Life Sciences, Tsinghua University
+  email: songyb18@mails.tsinghua.edu.cn
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('DEbPeak')`"
+abstract: >
+  The goal of `DEbPeak` is to explore, visualize, interpret RNA-seq data and decipher gene's regulation by combining ChIP-seq and ATAC-seq data. It contains six functional modules: Quality Control (QC) on count matrix and samples, Principal Component Analysis (PCA) ,Differential Expression Gene Visualization (Volcano Plot, Scatter Plot, MA Plot, Rank Plot, Gene Plot, Heatmap), Functional Enrichment Analysis (GO enrichment analysis, KEGG enrichment analysis, Gene Set Enrichment Analysis), Integrate with ChIP-seq/ATAC-seq (Get consensus peaks, Peak profile plots, Peak annotaion, Integrate RNA-seq and ChIP-seq/ATAC-seq, Integrate summary, GO enrichment on integrated results, Find motif on integrated results), Utils (useful functions when dealing with RNA-seq data, including gene name conversion and count normalization). 
+output: 
+  BiocStyle::html_document:
+    toc_depth: 4
+    toc_float: true
+fig_caption: TRUE
+vignette: >
+  %\VignetteIndexEntry{DEbPeak}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+  
+```{r style, echo = FALSE, results = 'asis'}
+BiocStyle::markdown()
+```
+
+```{r setup, echo=FALSE, warning=FALSE}
+library(knitr)
+
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+```
+
+# Getting started
+
+`DEbPeak` is an R package distributed as part of the [Bioconductor](http://bioconductor.org) project and [Github](https://github.com/showteeth/DEbPeak).
+To install the package, start R and enter:
+  
+```{r install, eval=FALSE}
+# install via Bioconductor
+if (!requireNamespace("BiocManager", quietly=TRUE))
+  install.packages("BiocManager")
+BiocManager::install("DEbPeak")
+# install via Github
+# install.package("remotes")   #In case you have not installed it.
+remotes::install_github("showteeth/DEbPeak")
+```
+
+Once `r Rpackage("DEbPeak")` is installed, it can be loaded by the following command.
+
+```{r library, message=FALSE, warning=FALSE}
+library("DEbPeak")
+```
+
+-----------
+  
+# Introduction
+<img src = "../man/figures/DEbPeak.png" align = "right" width = "200"/>
+
+`DEbPeak` aims to **explore**, **visualize**, **interpret** RNA-seq data and **decipher gene's regulation** by combining ChIP-seq and ATAC-seq data. It contains **six functional modules**:
+
+* **Quality Control (QC)**: QC on count matrix and samples. 
+  - QC on count matrix: Proportion of genes detected in different samples under different CPM thresholds and the saturation of the number of genes detected.
+  - QC on samples: Euclidean distance and pearson correlation coefficient of samples across different conditions, sample similarity on selected principal components (check batch informatio and conduct batch correction) and outlier detection with robust PCA.
+* **Principal Component Analysis (PCA)**: this module can be divided into three sub modules, basic info, loading related and 3D visualization.
+  - basic info: screen plot (help to select the useful PCs), biplot (sample similarity with corresponding loading genes) and PC pairs plot (sample similarity under different PC combinations).
+  - loading related: visualize positive and negative loading genes on selected PCs, conduct GO enrichment analysis on selected loading genes of selected PC.
+  - 3D visualization: visualize samples on three selected PCs.
+* **Differential Expression Gene Visualization**: this module includes six powerful visualization methods (Volcano Plot, Scatter Plot, MA Plot, Rank Plot, Gene Plot, Heatmap).
+* **Functional Enrichment Analysis (FEA)**: GO enrichment analysis, KEGG enrichment analysis, Gene Set Enrichment Analysis (GSEA).
+  - GO (Biological Process, Molecular Function, Cellular Component) and KEGG on differential expression genes
+  - GSEA on all genes
+* **Integrate with ChIP-seq/ATAC-seq**: 
+  - Get consensus peaks: For multiple peak files, get consensus peaks; for single peak file, use it directly
+  - Peak profile plots: Heatmap of peak binding to TSS regions, Average Profile of ChIP peaks binding to TSS region, Profile of ChIP peaks binding to different regions.
+  - Peak annotaion
+  - Integrate RNA-seq and ChIP-seq/ATAC-seq: Integrate RNA-seq and ChIP-seq/ATAC-seq to find direct targets, including up-regulated and down-regulated.
+  - Integrate summary: Summary the integrated results, get the overlap number of up-regulated genes and ChIP-seq/ATAC-seq results (UP), down-regulated genes and ChIP-seq/ATAC-seq results.
+  - GO enrichment on integrated results: GO enrichment on up-regulated targets and down-regulated targets.
+  - Find motif on integrated results: This is a step unique to ATAC-seq. Due to the nature of ATAC-seq, we usually need to find motif on integrated results to obtain potential regulatory factors.
+* **Utils**: useful functions when dealing with RNA-seq data, including gene name conversion and count normalization(DESeq2’s median of ratios, TMM, CPM, TPM, RPKM).
+
+To enhance the ease of use of the tool, we have also developed an **interactive tool** for `DEbPeak` that allows users to submit files to the web page and set parameters to get the desired results. Unlike the standalone R package, *the interactive web page has built-in `DESeq2` for differential expression analysis*, while the R package can accept user input results from `DESeq2` or `edgeR`, which will be **more flexible**.
+
+By the way, all plots generated are **publication-ready** , and most of them are based on `ggplot2`, so that users can easily modify them according to their needs. We also provide **various color palettes**, including **discrete** and **continuous**, **color blind friendly** and **multiple categorical variables**.
+
+-------------
+
+# Load the data
+The data used here are RNA-seq data of the external granule layer in the cerebellum of control and conditional SnoN knockout mice, the raw data are stored in [GSE120279](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE120279), they are used in [Robust principal component analysis for accurate outlier sample detection in RNA-seq data](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-020-03608-0).
+
+First, we create `DESeqDataSet` object with above dataset:
+```{r loadData, warning=FALSE}
+suppressWarnings(suppressMessages(library(DESeq2)))
+suppressWarnings(suppressMessages(library(DEbPeak)))
+count.file <- system.file("extdata", "snon_count.txt", package = "DEbPeak")
+meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbPeak")
+count.matrix <- read.table(file = count.file, header = T, sep = "\t")
+head(count.matrix)
+meta.info <- read.table(file = meta.file, header = T)
+head(meta.info)
+dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
+dds
+```
+
+----------
+  
+# Quality Control
+Quality control are of vital importance to get realiable results. Here, quality control includes two main aspects: **sequencing saturation (QC on count matrix)** and **sample similarity (QC on samples)**.
+
+## QC on count matrix
+### CPM threashold
+This plot shows proportion of genes detected in different samples at different CPM thresholds. Theoretically, all samples should be similarly distributed, so as to avoid false positive results obtained from detection problems.
+```{r qc_counts_cpm, warning=FALSE,fig.height = 6, fig.width = 6, fig.align = "center"}
+CountQC(deobj = dds, group.key = "condition", type = "cpm")
+```
+
+----------
+
+### sequencing saturation
+This plot shows the proportion of genes detected at different sequencing depths. If the proportion is too low, it indicates that many genes are not detected and therefore some important information may be missing, and increasing the sequencing volume can effectively solve this problem.
+```{r qc_counts_saturation, warning=FALSE,fig.height = 6, fig.width = 6, fig.align = "center"}
+CountQC(deobj = dds, group.key = "condition", type = "saturation")
+```
+
+----------
+
+## QC on samples
+QC on samples including four aspects:
+
+* Euclidean distance and pearson correlation coefficient: sample similarity on **the entire transcriptome**.
+* PCA: sample similarity on **selected principal components**.
+* outlier detection with robust PCA
+* batch correction
+
+### Euclidean distance and pearson correlation coefficient
+```{r qc_samples_sr, warning=FALSE,fig.height = 5, fig.width = 10, fig.align = "center"}
+SampleRelation(deobj = dds,transform.method = "rlog",anno.key = "condition")
+```
+
+----------
+
+### PCA
+```{r qc_samples_pca, warning=FALSE,fig.height = 8, fig.width = 6, fig.align = "center"}
+qc.pca.res=PCA(deobj = dds,transform.method = "rlog")
+PCAtools::biplot(qc.pca.res,x="PC1",y="PC2",colby="condition",legendPosition="bottom")
+```
+
+----------
+
+### outlier detection with robust PCA
+```{r qc_samples_outlier, warning=FALSE,fig.height = 6, fig.width = 7, fig.align = "center"}
+outlier.res=OutlierDetection(deobj = dds,var.genes = NULL,transform.method = "rlog")
+outlier.res$outlier
+outlier.res$plot
+```
+
+For batch correction and outlier detection, you can use the following codes:
+```{r qc_samples_box, warning=FALSE,eval=FALSE}
+# batch effect correction
+# this is a demo scripts
+batch.res=QCPCA(deobj = dds,var.genes = NULL,remove.sample=NULL,transform.method = "rlog",batch = "cell",
+                colby = "dex", outlier.detection = F)
+batch.res$plot
+# outlier detection
+outlier.res=QCPCA(deobj = dds,var.genes = NULL,remove.sample=NULL,transform.method = "rlog",
+                  outlier.detection = T,rpca.method = "PcaGrid")
+outlier.res$plot
+# the final dds
+dds=outlier.res$deobj # or outlier.res$plot
+```
+
+----------
+  
+# Principal Component Analysis
+## basic info
+```{r pca_basic, warning=FALSE, fig.align = "center"}
+# conduct PCA
+pca.res=PCA(deobj = dds,remove.sample = outlier.res$outlier,transform.method = "rlog")
+# get basic plots
+basic.plots=PCABasic(pca.res,colby="condition",legend.pos = "right")
+```
+
+### screen plot
+```{r pca_basic_screen, warning=FALSE, fig.height = 5, fig.width = 4, fig.align = "center"}
+basic.plots[["screen"]]
+```
+
+### biplot
+```{r pca_basic_biplot, warning=FALSE, fig.height = 10, fig.width = 8, fig.align = "center"}
+basic.plots[["biplot"]]
+```
+
+### PC pairs plot
+```{r pca_basic_pairs, warning=FALSE, fig.height = 8, fig.width = 8, fig.align = "center"}
+basic.plots[["pairs"]]
+```
+
+----------
+  
+## loading related
+### loading bar plot
+```{r pca_loading_bar, warning=FALSE,fig.height = 12, fig.width = 10, fig.align = "center"}
+# loading bar plot
+LoadingPlot(pca.res,type = "bar")
+```
+
+### loading heatmap
+```{r pca_loading_heatmap, warning=FALSE,fig.height = 12, fig.width = 10, fig.align = "center"}
+# loading heatmap
+LoadingPlot(pca.res,deobj = dds,type = "heat")
+```
+
+### export loading genes
+```{r pca_loading_export, warning=FALSE}
+# export loading genes on PC1 and PC2 (200 positive genes and 200 negative genes) 
+loading.gene.df=ExportPCGenes(pca = pca.res, pc = 1:2, gene.num = 200)
+head(loading.gene.df)
+```
+
+### GO enrichment on loading genes
+```{r loading_go, warning=FALSE}
+# save results to working folder
+# LoadingGO(pca.res,gene.type="ENSEMBL",go.type="BP",padj.method="BH",save = T)
+# return list
+loading.go.results=LoadingGO(pca.res,gene.type="ENSEMBL",go.type="BP",padj.method="BH",str.width = 50,save = F)
+```
+
+#### positive loading genes GO
+```{r loading_go_positive, warning=FALSE, fig.height = 8, fig.width = 7, fig.align = "center"}
+# positive loading genes
+positive_go_results=loading.go.results[["Positive"]][["GO"]]
+head(positive_go_results[["table"]])
+
+positive_go_results[["plot"]]
+```
+
+#### negative loading genes GO
+```{r loading_go_negative, warning=FALSE, fig.height = 8, fig.width = 7, fig.align = "center"}
+# negative loading genes
+negative_go_results=loading.go.results[["Negative"]][["GO"]]
+head(negative_go_results[["table"]])
+
+negative_go_results[["plot"]]
+```
+
+--------------
+
+## 3D visualization
+```{r pca_3d, warning=FALSE ,fig.height = 5, fig.width = 5, fig.align = "center"}
+PCA3D(pca = pca.res,color.key = "condition",main = "3D PCA")
+```
+
+--------------
+
+# Differential Expression Gene Visualization
+## Differential Expression Analysis
+First you should get differential expression genes. For `DESeq2` results:
+```{r degs_deseq2, warning=FALSE}
+# set control level
+dds$condition <- relevel(dds$condition, ref = "WT")
+# conduct differential expressed genes analysis
+dds <- DESeq(dds)
+# extract results
+dds.results <- results(dds,contrast=c("condition",'KO','WT'))
+dds.results.ordered <- dds.results[order(dds.results$log2FoldChange,decreasing = TRUE),]
+head(dds.results.ordered)
+```
+
+For `edgeR` results:
+```{r degs_edger, warning=FALSE}
+library(edgeR)
+snon.edgeR=DGEList(counts=count.matrix, group=meta.info$condition)
+keep <- filterByExpr(snon.edgeR,min.count=10)
+snon.edgeR <- snon.edgeR[keep, , keep.lib.sizes=FALSE]
+snon.edgeR <- calcNormFactors(snon.edgeR)
+snon.edgeR$samples$group <- relevel(snon.edgeR$samples$group, ref="WT")
+design <- model.matrix(~snon.edgeR$samples$group)
+snon.edgeR <- estimateDisp(snon.edgeR, design)
+fit <- glmQLFit(snon.edgeR, design)
+qlf <- glmQLFTest(fit, coef=2)
+all.res <- topTags(qlf,n=nrow(snon.edgeR$counts))$table
+head(all.res)
+```
+
+--------------
+
+## Visualization
+### VolcanoPlot
+```{r volcanoplot,warning=FALSE ,fig.height = 6, fig.width = 5, fig.align = "center"}
+# VolcanoPlot for DESeq2
+VolcanoPlot(dds.results.ordered,signif="pvalue",l2fc.threashold=0.3,label.num=2,
+            point.alpha = 0.8, label.color=c("purple","green"),tick.trans = NULL)
+
+# VolcanoPlot for edgeR
+VolcanoPlot(all.res,signif="PValue",l2fc.threashold=0.3,label.num=2,point.alpha = 0.8,
+            label.color=c("purple","green"),tick.trans = NULL)
+```
+
+### ScatterPlot
+```{r ScatterPlot,warning=FALSE ,fig.height = 6, fig.width = 6, fig.align = "center"}
+# ScatterPlot for DESeq2
+ScatterPlot(deobj = dds,deres = dds.results.ordered,group.key = "condition",
+            ref.group = "WT",signif="pvalue",l2fc.threashold=0.3,label.num = 2,
+            point.alpha = 0.8,label.color=c("purple","green"))
+# ScatterPlot for edgeR
+ScatterPlot(deobj = snon.edgeR,deres = all.res,group.key = "condition",
+            ref.group = "WT",signif="PValue",l2fc.threashold=0.3,label.num = 2,
+            point.alpha = 0.8,label.color=c("purple","green"))
+```
+
+### MAPlot
+```{r MAPlot,warning=FALSE ,fig.height = 6, fig.width = 8, fig.align = "center"}
+# MAPlot for DESeq2
+MAPlot(dds.results.ordered,signif="pvalue",l2fc.threashold=0.3,label.num=2,
+       point.alpha = 0.8, label.color=c("purple","green"))
+# MAPlot for edgeR
+MAPlot(all.res,signif="PValue",l2fc.threashold=0.3,label.num=2,point.alpha = 0.8,
+       label.color=c("purple","green"))
+```
+
+### RankPlot
+```{r RankPlot,warning=FALSE ,fig.height = 6, fig.width = 6, fig.align = "center"}
+# RankPlot for DESeq2
+RankPlot(dds.results.ordered,signif="pvalue",l2fc.threashold=0.3,label.num=2,
+         point.alpha = 0.8, label.color=c("purple","green"))
+# RankPlot for edgeR
+RankPlot(all.res,signif="PValue",l2fc.threashold=0.3,label.num=2,point.alpha = 0.8,
+         label.color=c("purple","green"))
+```
+
+### GenePlot
+```{r GenePlot,warning=FALSE ,fig.height = 6, fig.width = 6, fig.align = "center"}
+# GenePlot for DESeq2
+GenePlot(deobj = dds,deres = dds.results.ordered,group.key = "condition",
+         ref.group = "WT",fill.color=c("red","blue"), fill.alpha = 0.8,
+         gene.num =2,signif="pvalue",l2fc.threashold=0.3)
+# GenePlot for edgeR
+GenePlot(deobj = snon.edgeR,deres = all.res,group.key = "condition",
+         ref.group = "WT",fill.color=c("red","blue"),fill.alpha = 0.8,
+         gene.num =2,signif="PValue",l2fc.threashold=0.3)
+```
+
+### DEHeatmap
+```{r DEHeatmap,warning=FALSE ,fig.height = 10, fig.width = 10, fig.align = "center"}
+# DEHeatmap for DESeq2
+DEHeatmap(deobj = dds,deres = dds.results.ordered,group.key = "condition",
+          ref.group = "WT", signif="pvalue",l2fc.threashold=0.3)
+# DEHeatmap for edgeR
+DEHeatmap(deobj = snon.edgeR,deres = all.res,group.key = "condition",
+          ref.group = "WT", signif="PValue",l2fc.threashold=0.3)
+```
+
+---------------------
+
+# Functional Enrichment Analysis
+## GO enrichment
+```{r go, warning=FALSE}
+# save results to working directory
+# ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threashold = 0.3,enrich.type = "GO")
+all.go.results=ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threashold = 0.3,enrich.type = "GO",str.width = 50, save = F)
+```
+
+### Up regulated
+#### overview
+```{r go_up_overview, warning=FALSE}
+up.go.res=all.go.results[["UP"]][["GO"]]
+up.go.res.table=up.go.res[["table"]]
+head(up.go.res.table)
+```
+
+#### plot
+```{r go_up_plot,fig.height = 12, fig.width = 8, fig.align = "center", warning=FALSE}
+up.go.res[["plot"]]
+```
+
+---------------------
+
+### Down regulated
+#### overview
+```{r go_down_overview, warning=FALSE}
+down.go.res=all.go.results[["DOWN"]][["GO"]]
+down.go.res.table = down.go.res[["table"]]
+head(down.go.res.table)
+```
+
+#### plot
+```{r go_down_plot,fig.height = 12, fig.width = 8, fig.align = "center", warning=FALSE}
+down.go.res[["plot"]]
+```
+
+---------------------
+
+## KEGG enrichment
+```{r kegg, warning=FALSE}
+# save results to working directory
+# ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threashold = 0.3,enrich.type = "KEGG")
+all.kegg.results=ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threashold = 0.3,enrich.type = "KEGG", str.width = 50, save = F)
+```
+
+### Up
+#### overview
+```{r kegg_up_overview, warning=FALSE}
+up.kegg.res=all.kegg.results[["UP"]][["KEGG"]]
+up.kegg.res.table=up.kegg.res[["table"]]
+head(up.kegg.res.table)
+```
+
+#### plot
+```{r kegg_up_plot,fig.height = 6, fig.width = 8, fig.align = "center", warning=FALSE}
+up.kegg.res[["plot"]]
+```
+
+---------------------
+
+### Down
+#### overview
+```{r kegg_down_overview, warning=FALSE}
+down.kegg.res=all.kegg.results[["DOWN"]][["KEGG"]]
+down.kegg.res.table=down.kegg.res[["table"]]
+head(down.kegg.res.table)
+```
+
+#### plot
+```{r kegg_down_plot,fig.height = 6, fig.width = 8, fig.align = "center", warning=FALSE}
+down.kegg.res[["plot"]]
+```
+
+---------------------
+
+## GSEA
+For human, we can download gmt file from [MSigDB](http://www.gsea-msigdb.org/gsea/downloads.jsp). For other species, we can obtain gene sets via [msigdbr](https://igordot.github.io/msigdbr/reference/msigdbr.html).
+
+### msigdbr gene sets
+```{r msigdbr, warning=FALSE}
+library(msigdbr)
+# list all possible species
+msigdbr_species()
+# create gene sets
+m_t2g <- msigdbr(species = "Mus musculus", category = "C5", subcategory = "BP") %>% 
+  dplyr::select(gs_name, entrez_gene)
+head(m_t2g)
+```
+
+---------------------
+
+### Conduct GSEA
+```{r conduct_gsea, warning=FALSE}
+gsea.results=ConductGSEA(deres = dds.results.ordered,gmt.file = NULL,gene.sets = m_t2g,save = F)
+```
+
+---------------------
+
+### results overview
+```{r gsea_overview, warning=FALSE}
+gsea.results.table=gsea.results[["table"]]
+head(gsea.results.table)
+```
+
+---------------------
+
+### results plot
+```{r gsea_plot, fig.height = 6, fig.width = 8, fig.align = "center", warning=FALSE}
+gsea.results[["plot"]]
+```
+
+---------------------
+
+# All-in-one analysis
+To enhance the usability of the tool, we create a all-in-one analysis command, all results will be saved in specific directory:
+```{r all_in_one, message=FALSE, warning=FALSE, results='hide'}
+library(msigdbr)
+m_t2g <- msigdbr(species = "Mus musculus", category = "C5") %>%
+  dplyr::select(gs_name, entrez_gene)
+count.file <- system.file("extdata", "snon_count.txt", package = "DEbPeak")
+meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbPeak")
+ConductDESeq2(count.matrix.file = count.file, meta.file = meta.file, out.folder="/home/songyabing/R/learn/tmp/dekit",
+              signif = "pvalue", l2fc.threashold = 0.3,
+              group.key = "condition", ref.group = "WT",gmt.file = NULL, gene.sets = m_t2g)
+```
+
+The structrue of results folder:
+```{bash}
+tree /home/songyabing/R/learn/tmp/dekit
+```
+
+---------------------
+
+# Integrate RNA-seq and ChIP-seq/ATAC-seq
+The data used here contains RNA-seq and ChIP-seq datasets from [RUNX represses Pmp22 to drive neurofibromagenesis](https://www.science.org/doi/10.1126/sciadv.aau8389): 
+
+* RNA-seq: two genotypes and three samples per genotype, the raw data are stored in [GSE122774](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE122774)
+* ChIP-seq: two genotypes and one sample per genotype, the raw data are stored in [GSE122775](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE122775)
+* ATAC-seq: two genotypes and one sample per genotype, the raw data are stored in [GSE122776](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE122776)
+
+## Prepare DEGs
+```{r debchip_degs}
+# prepare count matrix and metadata
+debchip.count.file <- system.file("extdata", "debchip_count.txt", package = "DEbPeak")
+debchip.meta.file <- system.file("extdata", "debchip_meta.txt", package = "DEbPeak")
+debchip.count.matrix <- read.table(file = debchip.count.file, header = T, sep = "\t")
+debchip.meta.info <- read.table(file = debchip.meta.file, header = T)
+# create DESeqDataSet object
+debchip.dds <- DESeq2::DESeqDataSetFromMatrix(countData = debchip.count.matrix, 
+                                              colData = debchip.meta.info, 
+                                              design = ~condition)
+
+# set control level
+debchip.dds$condition <- relevel(debchip.dds$condition, ref = "NF")
+# conduct differential expressed genes analysis
+debchip.dds <- DESeq(debchip.dds)
+# extract results
+debchip.dds.results <- results(debchip.dds,contrast=c("condition",'RX','NF'))
+debchip.dds.results.ordered <- debchip.dds.results[order(debchip.dds.results$log2FoldChange,decreasing = TRUE),]
+head(debchip.dds.results.ordered)
+```
+
+---------------------
+
+## Prepare ChIP-seq data
+### Consensus peaks
+In this step, we will get consensus peaks with [MSPC](https://genometric.github.io/MSPC/docs/quick_start/) when multiple peak files are available, but when there is only one peak file, we will use it directly (**make sure this peak file contains five columns: "chr", "start", "stop", "name", "score"**).
+```{r debchip_consensus_peak}
+# get consensus peak
+peak.file = system.file("extdata", "debchip_peaks.bed", package = "DEbPeak")
+peak.df = GetConsensusPeak(peak.file = peak.file)
+head(peak.df)
+```
+
+---------------------
+
+### Peak profile
+Check the profle of consensus peaks:
+```{r debchip_peak_profile, fig.height = 6, fig.width = 10, fig.align = "center", warning=FALSE}
+# peak profile plot
+peak.profile = PeakProfile(peak.df ,species="Mouse", by = "gene", region.type = "body", nbin = 800)
+peak.profile$profile.plot
+```
+
+---------------------
+
+### Peak annotation
+Peak annotation with [ChIPseeker](https://bioconductor.org/packages/release/bioc/vignettes/ChIPseeker/inst/doc/ChIPseeker.html):
+```{r debchip_peak_annotation_df}
+# peak annotation
+peak.anno = AnnoPeak(peak.df = peak.df,species = "Mouse",seq.style = "UCSC",up.dist = 20000,down.dist = 20000)
+peak.anno.df = peak.anno$df
+head(peak.anno.df)
+```
+
+```{r debchip_peak_annotation_plot, fig.height = 10, fig.width = 14, fig.align = "center", warning=FALSE}
+peak.anno$plots
+```
+
+---------------------
+
+## Integrate ChIP-seq and RNA-seq
+In this step, we will integrate ChIP-seq and RNA-seq to get plausible direct targets of promoter (in this example, Runx).
+### Integrate
+```{r debchip_integrate}
+debchip.res = DEbPeak(de.res = debchip.dds.results.ordered, peak.res = peak.anno.df, peak.anno.key = "Promoter", merge.key="SYMBOL")
+head(debchip.res)
+```
+
+---------------------
+
+### Integrate summary
+```{r debchip_integrate_plot, fig.height = 4, fig.width = 4, fig.align = "center", warning=FALSE}
+# DE and ChIP venn plot
+debchip.plot = PlotDEbPeak(debchip.res, peak.type = "ChIP", show_percentage=FALSE)
+debchip.plot
+```
+
+---------------------
+
+### Functional enrichment
+```{r debchip_integrate_fe}
+# functional enrichment on direct targets
+debchip.fe.results = DEbPeakFE(de.peak = debchip.res, peak.type = "ChIP", gene.type = "ENTREZID", species="Mouse",save = F)
+```
+
+#### FE on up-regulated targets 
+```{r debchip_integrate_fe_up, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
+up.debchip.fe.results=debchip.fe.results[["UPbChIP"]][["GO"]]
+head(up.debchip.fe.results[["table"]])
+
+up.debchip.fe.results[["plot"]]
+```
+
+#### FE on down-regulated targets
+```{r debchip_integrate_fe_down, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
+down.debchip.fe.results=debchip.fe.results[["DOWNbChIP"]][["GO"]]
+head(down.debchip.fe.results[["table"]])
+
+down.debchip.fe.results[["plot"]]
+```
+
+---------------------
+## Integrate ATAC-seq and RNA-seq
+All above steps are suitable for integrating ATAC-seq and RNA-seq data, but the following step (**Find motif**) is usually unique to integrate ATAC-seq and RNA-seq data.
+### Find motif
+```{r debchip_integrate_motif, eval = FALSE}
+# debatac.res: similar to debchip.res
+ATAC.motif = FindMotif(inte.res = debatac.res, peak.anno.res = peak.anno.df, gene.key = "SYMBOL",
+                       homer.motif.path = '/path/to/findMotifsGenome.pl',
+                       genome = '/path/to/genome.fa',
+                       out.folder = NULL,other.paras = '-len 8,10,12 -size -100,50 -S 25')
+```
+
+---------------------
+
+## Integrate RNA-seq, ChIP-seq and ATAC-seq
+We have integrated RNA-seq and ChIP-seq data in the above steps, now we will continue to integrate ATAC-seq data based on the previous results.
+### Prepare ATAC-seq data
+#### Consensus peaks
+```{r debchip_atac_consensus_peak}
+# get consensus peak
+atac.peak.file <- system.file("extdata", "debatac_peaks.bed", package = "DEbPeak")
+atac.peak.df <- GetConsensusPeak(peak.file = atac.peak.file)
+head(atac.peak.df)
+```
+
+#### Peak profile
+Check the profle of consensus peaks:
+```{r debchip_atac_peak_profile, fig.height = 6, fig.width = 10, fig.align = "center", warning=FALSE}
+# peak profile plot
+atac.peak.profile <- PeakProfile(atac.peak.df, species = "Mouse", by = "gene", region.type = "body", nbin = 800)
+atac.peak.profile$profile.plot
+```
+
+#### Peak annotation
+Peak annotation with [ChIPseeker](https://bioconductor.org/packages/release/bioc/vignettes/ChIPseeker/inst/doc/ChIPseeker.html):
+```{r debchip_atac_peak_annotation_df}
+# peak annotation
+atac.peak.anno <- AnnoPeak(
+  peak.df = atac.peak.df, species = "Mouse",
+  seq.style = "UCSC", up.dist = 20000, down.dist = 20000
+)
+atac.peak.anno.df = atac.peak.anno$df
+head(atac.peak.anno.df)
+```
+
+```{r debchip_atac_peak_annotation_plot, fig.height = 10, fig.width = 14, fig.align = "center", warning=FALSE}
+atac.peak.anno$plots
+```
+
+---------------------
+
+### Integrate RNA-seq, ChIP-seq and ATAC-seq
+#### Integrate
+```{r debpeak_integrate}
+debpeak.res = DEbCA(de.res = debchip.dds.results.ordered, chip.peak.res = peak.anno.df,
+                    atac.peak.res = atac.peak.anno.df,
+                    peak.anno.key = "Promoter", merge.key = "SYMBOL")
+head(debpeak.res)
+```
+
+#### Integrate summary
+```{r debpeak_integrate_plot, fig.height = 4, fig.width = 4, fig.align = "center", warning=FALSE}
+# DE and ChIP venn plot
+debpeak.plot = PlotDEbPeak(debpeak.res, peak.type = "Peak", show_percentage=FALSE)
+debpeak.plot
+```
+
+#### Functional enrichment
+```{r debpeak_integrate_fe}
+# functional enrichment on direct targets
+debpeak.fe.results = DEbPeakFE(de.peak = debpeak.res, peak.type = "Peak", gene.type = "ENTREZID", species="Mouse",save = F)
+```
+
+##### FE on up-regulated targets 
+```{r debpeak_integrate_fe_up, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
+up.debpeak.fe.results=debpeak.fe.results[["UPbPeak"]][["GO"]]
+head(up.debpeak.fe.results[["table"]])
+
+up.debpeak.fe.results[["plot"]]
+```
+
+##### FE on down-regulated targets
+```{r debpeak_integrate_fe_down, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
+down.debpeak.fe.results=debpeak.fe.results[["DOWNbPeak"]][["GO"]]
+head(down.debpeak.fe.results[["table"]])
+
+down.debpeak.fe.results[["plot"]]
+```
+
+---------------------
+
+# Utils
+## Gene name conversion
+### results from DE analysis
+```{r convert_deres, warning=FALSE}
+# convert for DESeq2 results
+dds.results.ordered <- IDConversion(deres = dds.results.ordered, gene.type = "ENSEMBL",sort.key = "log2FoldChange")
+head(dds.results.ordered)
+```
+
+---------------------
+
+### normal matrix
+```{r convert_normal, warning=FALSE}
+count.matrix <- IDConversion(deres = count.matrix, gene.type = "ENSEMBL",sort.key=NULL)
+head(count.matrix)
+```
+
+---------------------
+
+## Count normalization
+Here, we provide five different normalization methods: **CPM**, **TMM**, **DESeq2’s median of ratios**, **RPKM** and **TPM**, of which **RPKM** and **TPM** need to provide gtf files to calculate gene length.
+
+### CPM
+*C*ounts *P*er *M*illion reads mapped (CPM) takes into account the **sequencing depth**. For each feature `i`, CPM is the count of sequenced fragments mapping to the feature scaled by the total number of reads times one million (to bring it up to a more convenient number).
+
+$$
+\mathrm{CPM}=\frac{\text { Number of reads mapped to gene } \times 10^{6}}{\text { Total number of mapped reads }}
+$$
+
+```{r cpm ,warning=FALSE}
+cpm.matrix=NormalizedCount(dds, norm.type="CPM")
+head(cpm.matrix)
+```
+
+---------------------
+
+### TMM
+edgeR’s *T*rimmed *M*ean of *M* values (TMM) takes into account the **sequencing depth**, **RNA composition**, and **gene length**. For detailed information, please refer to [A scaling normalization method for differential expression analysis of RNA-seq data](https://genomebiology.biomedcentral.com/articles/10.1186/gb-2010-11-3-r25).
+```{r tmm ,warning=FALSE}
+tmm.matrix=NormalizedCount(dds, norm.type="TMM")
+head(tmm.matrix)
+```
+
+---------------------
+
+### DESeq2’s median of ratios
+DESeq2’s median of ratios takes into account the **sequencing depth** and **RNA composition**. For detailed information, please refer to [Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0550-8).
+```{r deseq2_norm ,warning=FALSE}
+deseq2.matrix=NormalizedCount(dds, norm.type="DESeq2")
+head(deseq2.matrix)
+```
+
+---------------------
+
+### RPKM
+*R*eads *P*er *K*ilobase of exon per *M*illion reads mapped (RPKM) takes into account the **sequencing depth** and **gene length**. For each feature `i` as the count scaled by the feature's length times one thousand (to kilobase) and further scaled by the total number of reads times one million.
+
+$$
+\text { RPKM }=\frac{\text { Number of reads mapped to gene } \times 10^{3} \times 10^{6}}{\text { Total number of mapped reads } \times \text { gene length }}
+$$
+
+```{r rpkm, warning=FALSE, eval=F}
+rpkm.matrix=NormalizedCount(dds,gtf.file = '/path/to/gtf', norm.type="RPKM")
+```
+
+---------------------
+
+### TPM
+*T*ranscripts *P*er kilobase *M*illion (TPM) takes into account the **sequencing depth** and **gene length**. 
+
+$$
+\mathrm{TPM}=\frac{\frac{\text { total reads mapped to gene } \times 10^{3}}{\text { gene length }}}{\sum(\frac{\text { total reads mapped to gene } \times 10^{3}}{\text { gene length }})} \times 10^{6}
+$$
+
+TPM is proportional to RPKM:
+
+$$
+\mathrm{TPM}=\frac{R P K M}{\sum(R P K M)} \times 10^{6}
+$$
+
+```{r tpm, warning=FALSE, eval=F}
+tpm.matrix=NormalizedCount(dds,gtf.file = '/path/to/gtf', norm.type="TPM")
+```
+
+---------------------
+
+# Session info
+```{r session}
+sessionInfo()
+```
+
+

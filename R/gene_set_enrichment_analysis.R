@@ -33,7 +33,7 @@
 #' library(airway)
 #' library(msigdbr)
 #' library(DESeq2)
-#' library(DEbChIP)
+#' library(DEbPeak)
 #' # load the data
 #' data(airway)
 #' dds <- DESeq2::DESeqDataSet(airway, design = ~ cell + dex)

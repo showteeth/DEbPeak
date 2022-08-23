@@ -24,5 +24,6 @@ A vector of colors.
 Create Discrete Color Palette.
 }
 \examples{
+library(DEbPeak)
 DiscreteColorPalette(palette = "dark2_8")
 }

@@ -13,8 +13,8 @@
 #' @export
 #'
 #' @examples
-#' library(DEbChIP)
-#' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
+#' library(DEbPeak)
+#' count.file <- system.file("extdata", "snon_count.txt", package = "DEbPeak")
 #' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
 #' IDConversion(count.matrix, gene.type = "ENSEMBL", sort.key = NULL)
 IDConversion <- function(deres, gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"), org.db = "org.Mm.eg.db", gene.map = NULL, sort.key = "log2FoldChange") {
@@ -90,9 +90,9 @@ RPKM2TPM <- function(RPKM) {
 #'
 #' @examples
 #' library(DESeq2)
-#' library(DEbChIP)
-#' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
-#' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
+#' library(DEbPeak)
+#' count.file <- system.file("extdata", "snon_count.txt", package = "DEbPeak")
+#' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbPeak")
 #' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
 #' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)

@@ -30,8 +30,8 @@ Data frame contains gene id conversion results.
 Gene ID Conversion.
 }
 \examples{
-library(DEbChIP)
-count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
+library(DEbPeak)
+count.file <- system.file("extdata", "snon_count.txt", package = "DEbPeak")
 count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
 IDConversion(count.matrix, gene.type = "ENSEMBL", sort.key = NULL)
 }

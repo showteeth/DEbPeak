@@ -16,9 +16,9 @@
 #'
 #' @examples
 #' library(DESeq2)
-#' library(DEbChIP)
-#' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
-#' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
+#' library(DEbPeak)
+#' count.file <- system.file("extdata", "snon_count.txt", package = "DEbPeak")
+#' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbPeak")
 #' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
 #' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
@@ -172,9 +172,9 @@ PrepareDEPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc
 #'
 #' @examples
 #' library(DESeq2)
-#' library(DEbChIP)
-#' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
-#' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
+#' library(DEbPeak)
+#' count.file <- system.file("extdata", "snon_count.txt", package = "DEbPeak")
+#' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbPeak")
 #' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
 #' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
@@ -335,9 +335,9 @@ VolcanoPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.t
 #'
 #' @examples
 #' library(DESeq2)
-#' library(DEbChIP)
-#' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
-#' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
+#' library(DEbPeak)
+#' count.file <- system.file("extdata", "snon_count.txt", package = "DEbPeak")
+#' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbPeak")
 #' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
 #' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
@@ -524,9 +524,9 @@ ScatterPlot <- function(deobj, deres, group.key = NULL, ref.group = NULL, base =
 #'
 #' @examples
 #' library(DESeq2)
-#' library(DEbChIP)
-#' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
-#' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
+#' library(DEbPeak)
+#' count.file <- system.file("extdata", "snon_count.txt", package = "DEbPeak")
+#' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbPeak")
 #' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
 #' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
@@ -667,9 +667,9 @@ MAPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.threas
 #'
 #' @examples
 #' library(DESeq2)
-#' library(DEbChIP)
-#' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
-#' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
+#' library(DEbPeak)
+#' count.file <- system.file("extdata", "snon_count.txt", package = "DEbPeak")
+#' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbPeak")
 #' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
 #' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
@@ -814,9 +814,9 @@ RankPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.thre
 #'
 #' @examples
 #' library(DESeq2)
-#' library(DEbChIP)
-#' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
-#' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
+#' library(DEbPeak)
+#' count.file <- system.file("extdata", "snon_count.txt", package = "DEbPeak")
+#' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbPeak")
 #' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
 #' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)
@@ -954,9 +954,9 @@ GenePlot <- function(deobj, deres, group.key = NULL, ref.group = NULL, base = 10
 #'
 #' @examples
 #' library(DESeq2)
-#' library(DEbChIP)
-#' count.file <- system.file("extdata", "snon_count.txt", package = "DEbChIP")
-#' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbChIP")
+#' library(DEbPeak)
+#' count.file <- system.file("extdata", "snon_count.txt", package = "DEbPeak")
+#' meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbPeak")
 #' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
 #' meta.info <- read.table(file = meta.file, header = TRUE)
 #' dds <- DESeq2::DESeqDataSetFromMatrix(countData = count.matrix, colData = meta.info, design = ~condition)

@@ -38,6 +38,7 @@ A vector of colors.
 Create Continuous Color Map.
 }
 \examples{
+library(DEbPeak)
 # use existing color map
 ContinuousColorMap(maps = "viridis")
 # create color map with low, high, mid.

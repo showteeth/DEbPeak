@@ -16,6 +16,7 @@
 #' @export
 #'
 #' @examples
+#' library(DEbPeak)
 #' DiscreteColorPalette(palette = "dark2_8")
 DiscreteColorPalette <- function(palette = c(
                                    "dark2_8", "accent_8", "set2_8", "set1_9", "vega_10_scanpy",
@@ -180,6 +181,7 @@ SeuratCustomPalette <- function(low = "white",
 #' @export
 #'
 #' @examples
+#' library(DEbPeak)
 #' # use existing color map
 #' ContinuousColorMap(maps = "viridis")
 #' # create color map with low, high, mid.
