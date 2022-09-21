@@ -166,7 +166,7 @@ OutlierDetection <- function(deobj, var.genes = NULL, remove.sample = NULL, tran
     geom_hline(yintercept = pca@cutoff.od, color = "red") +
     geom_vline(xintercept = pca@cutoff.sd, color = "red") +
     theme_bw() +
-    geom_text_repel(aes(label = SampleName)) +
+    geom_text_repel(aes(label = SampleName), show.legend = FALSE) +
     labs(x = "Score distance", y = "Orthogonal distance", title = paste0("Outlier detection with ", rpca.method)) +
     theme(plot.title = element_text(hjust = 0.5))
   rpca.res <- list(outlier = outliers, plot = rpca.plot)

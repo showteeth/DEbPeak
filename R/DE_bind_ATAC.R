@@ -31,6 +31,8 @@ FindMotif <- function(inte.res, peak.anno.res, gene.key = "geneId", homer.motif.
   # set output folder
   if (is.null(out.folder)) {
     out.folder <- file.path(getwd(), "Motif")
+  } else {
+    out.folder <- file.path(out.folder, "Motif")
   }
 
   # prepare peak dataframe

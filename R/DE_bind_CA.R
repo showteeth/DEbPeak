@@ -114,6 +114,6 @@ DEbCA <- function(de.res, chip.peak.res, atac.peak.res, peak.anno.key = c("Promo
       !is.na(annotation_ATAC) & Type1 == "DOWNbChIP" ~ "DOWNbPeak"
     ))
   # process gene name
-  de.peak = de.peak %>% dplyr::mutate(geneId = ifelse(is.na(geneId_ChIP), geneId_ATAC, geneId_ChIP))
+  de.peak <- de.peak %>% dplyr::mutate(geneId = ifelse(is.na(geneId_ChIP), geneId_ATAC, geneId_ChIP))
   return(de.peak)
 }

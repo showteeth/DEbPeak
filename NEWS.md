@@ -3,6 +3,11 @@
 * Added `DEbCA` to support integrating RNA-seq, ChIP-seq and ATAC-seq.
 * Modified `PlotDEbPeak` to support integrating RNA-seq, ChIP-seq and ATAC-seq.
 
+<hr />
+
+## Minor changes
+* Fixed bugs in plot in `OutlierDetection`.
+
 -------------
 
 # DEbPeak 0.3.0
