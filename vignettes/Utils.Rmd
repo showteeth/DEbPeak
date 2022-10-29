@@ -1,0 +1,129 @@
+---
+title: "Utils"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+In RNA-seq analysis, it is common that we need to **convert gene IDs in Gene Symbol, ENSEMBL Gene ID, Entrez Gene ID** and **normalize the count matrix** with different methods for subsequent analysis. `DEbPeak` provides `IDConversion` to perform gene ID conversion, and provides five different normalization methods (**CPM**, **TMM**, **DESeq2’s median of ratios**, **RPKM** and **TPM**) to normalize the count matrix.
+
+<hr />
+
+## Example data
+We will used the results output by "Quality Control" vignette.
+
+```{r load_example}
+# library
+suppressWarnings(suppressMessages(library(DESeq2)))
+suppressWarnings(suppressMessages(library(DEbPeak)))
+# load data
+load(file = "/home/songyabing/R/learn/tmp/DEbPeak/example.RData")
+```
+
+<hr />
+
+## Differential Expression Analysis
+We will use `DESeq2` as example:
+```{r degs_deseq2, warning=FALSE}
+# set control level
+dds$condition <- relevel(dds$condition, ref = "WT")
+# conduct differential expressed genes analysis
+dds <- DESeq(dds)
+# extract results
+dds.results <- results(dds,contrast=c("condition",'KO','WT'))
+dds.results.ordered <- dds.results[order(dds.results$log2FoldChange,decreasing = TRUE),]
+head(dds.results.ordered)
+```
+
+<hr />
+
+## Gene ID conversion
+The raw matrix:
+```{r convert_normal_raw, warning=FALSE}
+head(count.matrix)
+```
+
+After gene IDs conversion:
+```{r convert_normal, warning=FALSE}
+count.matrix <- IDConversion(deres = count.matrix, gene.type = "ENSEMBL",sort.key=NULL)
+head(count.matrix)
+```
+
+<hr />
+
+## Count normalization
+Here, we provide five different normalization methods: **CPM**, **TMM**, **DESeq2’s median of ratios**, **RPKM** and **TPM**, of which **RPKM** and **TPM** need to provide gtf files to calculate gene length.
+
+### CPM
+*C*ounts *P*er *M*illion reads mapped (CPM) takes into account the **sequencing depth**. For each feature `i`, CPM is the count of sequenced fragments mapping to the feature scaled by the total number of reads times one million (to bring it up to a more convenient number).
+
+$$
+\mathrm{CPM}=\frac{\text { Number of reads mapped to gene } \times 10^{6}}{\text { Total number of mapped reads }}
+$$
+
+```{r cpm ,warning=FALSE}
+cpm.matrix=NormalizedCount(dds, norm.type="CPM")
+head(cpm.matrix)
+```
+
+<hr />
+
+### TMM
+edgeR’s *T*rimmed *M*ean of *M* values (TMM) takes into account the **sequencing depth**, **RNA composition**, and **gene length**. For detailed information, please refer to [A scaling normalization method for differential expression analysis of RNA-seq data](https://genomebiology.biomedcentral.com/articles/10.1186/gb-2010-11-3-r25).
+```{r tmm ,warning=FALSE}
+tmm.matrix=NormalizedCount(dds, norm.type="TMM")
+head(tmm.matrix)
+```
+
+<hr />
+
+### DESeq2’s median of ratios
+DESeq2’s median of ratios takes into account the **sequencing depth** and **RNA composition**. For detailed information, please refer to [Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0550-8).
+```{r deseq2_norm ,warning=FALSE}
+deseq2.matrix=NormalizedCount(dds, norm.type="DESeq2")
+head(deseq2.matrix)
+```
+
+<hr />
+
+### RPKM
+*R*eads *P*er *K*ilobase of exon per *M*illion reads mapped (RPKM) takes into account the **sequencing depth** and **gene length**. For each feature `i` as the count scaled by the feature's length times one thousand (to kilobase) and further scaled by the total number of reads times one million.
+
+$$
+\text { RPKM }=\frac{\text { Number of reads mapped to gene } \times 10^{3} \times 10^{6}}{\text { Total number of mapped reads } \times \text { gene length }}
+$$
+
+```{r rpkm, warning=FALSE, eval=F}
+rpkm.matrix=NormalizedCount(dds,gtf.file = '/path/to/gtf', norm.type="RPKM")
+```
+
+<hr />
+
+### TPM
+*T*ranscripts *P*er kilobase *M*illion (TPM) takes into account the **sequencing depth** and **gene length**. 
+
+$$
+\mathrm{TPM}=\frac{\frac{\text { total reads mapped to gene } \times 10^{3}}{\text { gene length }}}{\sum(\frac{\text { total reads mapped to gene } \times 10^{3}}{\text { gene length }})} \times 10^{6}
+$$
+
+TPM is proportional to RPKM:
+
+$$
+\mathrm{TPM}=\frac{R P K M}{\sum(R P K M)} \times 10^{6}
+$$
+
+```{r tpm, warning=FALSE, eval=F}
+tpm.matrix=NormalizedCount(dds,gtf.file = '/path/to/gtf', norm.type="TPM")
+```
+
+<hr />
+
+## Session info
+```{r session}
+sessionInfo()
+```
+
+<hr />

@@ -1,0 +1,165 @@
+---
+title: "PrincipalComponentAnalysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+Principal component analysis (PCA) is an unsupervised linear dimensionality reduction algorithm, and it can [retain most of the variation in the data set](https://www.nature.com/articles/nbt0308-303). Based on these properties, PCA has two main uses in RNA-seq analysis:
+
+* Quality control: 
+  - Evaluate sample similarity across different conditions
+  - Check batch information
+  - Detect outliers
+* Reveal biologically relevant information
+  - Find gene expression signatures ([ref1](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5317117/), [ref2](https://link.springer.com/article/10.1007/s13238-019-0648-6), [ref3](https://www.biorxiv.org/content/10.1101/2020.10.26.355750v3.full))
+  - Reveal underlying population heterogeneity, such as cell differentiation trajectory ([ref1](https://insight.jci.org/articles/view/159093), [ref2](https://www.pnas.org/doi/10.1073/pnas.1908180116)).
+
+For Quality Control, We have already covered in the previous vignette, here, we will focus on the "Reveal biologically relevant information"!
+
+<hr />
+
+## Example data
+This vignette follows the previous "Quality Control" vignette, so we will used the results output by "Quality Control" vignette.
+
+```{r load_example}
+# library
+suppressWarnings(suppressMessages(library(DESeq2)))
+suppressWarnings(suppressMessages(library(DEbPeak)))
+# load data
+load(file = "/home/songyabing/R/learn/tmp/DEbPeak/example.RData")
+```
+
+<hr />
+
+## PCA
+We will perform PCA with `prcomp`, and remove outlier samples detected by previous `QCPCA`.
+```{r pca_basic, message=FALSE, warning=FALSE, fig.align = "center"}
+# conduct PCA
+pca.res=PCA(deobj = dds,remove.sample = outlier.res$outlier,transform.method = "rlog")
+# get basic plots
+basic.plots=PCABasic(pca.res,colby="condition",legend.pos = "right")
+```
+
+### Screen plot
+A Scree Plot is a simple line plot that shows the total amount of variance that can be explained by each individual PC (Y-axis shows explained variance, X-axis shows the number of PCs). It can be used to **determine the number of PCs to be explored for downstream analysis**. Here, we created a **cumulative scree plot** based on [PCAtools](https://github.com/kevinblighe/PCAtools), the red dashed line represents 90% explained variance.
+```{r pca_basic_screen, message=FALSE, warning=FALSE, fig.height = 5, fig.width = 4, fig.align = "center"}
+basic.plots[["screen"]]
+```
+
+<hr />
+
+### Biplot
+Biplot contains informations from [two aspects](https://blog.bioturing.com/2018/06/18/how-to-read-pca-biplots-and-scree-plots/):
+
+* sample similarity (point)
+* how strongly each gene influences a principal component (vector)
+  - the vector will have projections on PCs, and the project values on each PC show how much weight they have on that PC. Positive values indicate that a vector/gene and a principal component are positively correlated whereas negative values indicate a negative correlation.
+  - the angle between vectors indicates how vectors/genes correlate with one another: a small angle implies positive correlation, a large one suggests negative correlation, and a 90 degree angle indicates no correlation between two vectors/genes.
+  
+The biplot is created based on [PCAtools](https://github.com/kevinblighe/PCAtools):
+```{r pca_basic_biplot, message=FALSE, warning=FALSE, fig.height = 10, fig.width = 8, fig.align = "center"}
+basic.plots[["biplot"]]
+```
+
+<hr />
+
+### PC pairs plot
+The PC pairs plot (based on [PCAtools](https://github.com/kevinblighe/PCAtools)) will show sample similarity across different PC combination:
+```{r pca_basic_pairs, message=FALSE, warning=FALSE, fig.height = 8, fig.width = 8, fig.align = "center"}
+basic.plots[["pairs"]]
+```
+
+<hr />
+  
+## Lodding-related analysis
+PCA loadings are the coefficients of the linear combination of the original variables from which the principal components (PCs) are constructed, which are simply the weights of the original variables. Here, lodding indicates how strongly each gene influences a principal component (Similar to vector in `Biplot`, but here we will evaluate each individual PC). Loadings range from -1 to 1, a high absolute value indicates that the gene strongly influences the component, and the sign of a loading indicates whether a whether a gene and a principal component are positively or negatively correlated. 
+
+The lodding-related analysis in `DEbPeak` contains four aspects: 
+
+* **Loading bar plot**: Visualize the genes with top n positive or negative loaddings of PCs
+* **Loading heatmap**: Log2-normalized counts of the genes with top n positive or negative loaddings of PCs across samples
+* **Export genes**: Export the genes with top n positive or negative loaddings of PCs
+* **GO enrichment**: GO enrichment on the genes with top n positive or negative loaddings of PCs
+
+### Loading bar plot
+```{r pca_loading_bar, message=FALSE, warning=FALSE,fig.height = 12, fig.width = 10, fig.align = "center"}
+# loading bar plot
+LoadingPlot(pca.res,type = "bar")
+```
+
+<hr />
+
+### Loading heatmap
+```{r pca_loading_heatmap, message=FALSE, warning=FALSE,fig.height = 12, fig.width = 10, fig.align = "center"}
+# loading heatmap
+LoadingPlot(pca.res,deobj = dds,type = "heat")
+```
+
+<hr />
+
+### Export genes
+```{r pca_loading_export, message=FALSE, warning=FALSE}
+# export loading genes on PC1 and PC2 (200 positive genes and 200 negative genes) 
+loading.gene.df=ExportPCGenes(pca = pca.res, pc = 1:2, gene.num = 200)
+head(loading.gene.df)
+```
+
+<hr />
+
+### GO enrichment
+```{r loading_go, message=FALSE, warning=FALSE}
+# save results to working folder
+# LoadingGO(pca.res,gene.type="ENSEMBL",go.type="BP",padj.method="BH",save = T)
+# return list
+loading.go.results=LoadingGO(pca.res,gene.type="ENSEMBL",go.type="BP",padj.method="BH",str.width = 50,save = F)
+```
+
+<hr />
+
+#### Genes with positive loaddings
+```{r loading_go_positive, warning=FALSE, fig.height = 8, fig.width = 7, fig.align = "center"}
+# positive loading genes
+positive_go_results=loading.go.results[["Positive"]][["GO"]]
+head(positive_go_results[["table"]])
+
+positive_go_results[["plot"]]
+```
+
+<hr />
+
+#### Genes with negative loaddings
+```{r loading_go_negative, warning=FALSE, fig.height = 8, fig.width = 7, fig.align = "center"}
+# negative loading genes
+negative_go_results=loading.go.results[["Negative"]][["GO"]]
+head(negative_go_results[["table"]])
+
+negative_go_results[["plot"]]
+```
+
+<hr />
+
+## 3D visualization
+To visualize three PCs simultaneously, `DEbPeak` provides `PCA3D` to create 3D PCA plot:
+```{r pca_3d, warning=FALSE ,fig.height = 5, fig.width = 5, fig.align = "center"}
+PCA3D(pca = pca.res,color.key = "condition",main = "3D PCA")
+```
+
+<hr />
+
+## Session info
+```{r session}
+sessionInfo()
+```
+
+<hr />
+
+
+
+
+
+
+

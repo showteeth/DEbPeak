@@ -1,0 +1,146 @@
+---
+title: "DifferentialExpressionAnalysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+Here, we will perform differential expression analysis based on `DESeq2` and `edgeR` to get differentially expressed genes (DEGs). With these DEGs, `DEbPeak` provides **six differents charts** to visualize these DEGs (**VolcanoPlot**, **ScatterPlot**, **MAPlot**, **RankPlot**, **GenePlot** and **DEHeatmap**).
+
+<hr />
+
+## Example data
+We will used the results output by "Quality Control" vignette.
+
+```{r load_example}
+# library
+suppressWarnings(suppressMessages(library(DESeq2)))
+suppressWarnings(suppressMessages(library(DEbPeak)))
+# load data
+load(file = "/home/songyabing/R/learn/tmp/DEbPeak/example.RData")
+```
+
+<hr />
+
+## Differential Expression Analysis
+Before visualizing the DEGs, you should get DEGs first. To increase flexibility, `DEbPeak` is compatible with both `DESeq2` and `edgeR` results. We provides standard commands to get DEGs with both `DESeq2` and `edgeR`. 
+
+### DESeq2
+```{r degs_deseq2, warning=FALSE}
+# set control level
+dds$condition <- relevel(dds$condition, ref = "WT")
+# conduct differential expressed genes analysis
+dds <- DESeq(dds)
+# extract results
+dds.results <- results(dds,contrast=c("condition",'KO','WT'))
+dds.results.ordered <- dds.results[order(dds.results$log2FoldChange,decreasing = TRUE),]
+head(dds.results.ordered)
+```
+
+<hr />
+
+### edgeR
+```{r degs_edger, warning=FALSE}
+library(edgeR)
+snon.edgeR=DGEList(counts=count.matrix, group=meta.info$condition)
+keep <- filterByExpr(snon.edgeR,min.count=10)
+snon.edgeR <- snon.edgeR[keep, , keep.lib.sizes=FALSE]
+snon.edgeR <- calcNormFactors(snon.edgeR)
+snon.edgeR$samples$group <- relevel(snon.edgeR$samples$group, ref="WT")
+design <- model.matrix(~snon.edgeR$samples$group)
+snon.edgeR <- estimateDisp(snon.edgeR, design)
+fit <- glmQLFit(snon.edgeR, design)
+qlf <- glmQLFTest(fit, coef=2)
+all.res <- topTags(qlf,n=nrow(snon.edgeR$counts))$table
+head(all.res)
+```
+
+<hr />
+
+## Visualization
+### VolcanoPlot
+```{r volcanoplot,warning=FALSE ,fig.height = 6, fig.width = 5, fig.align = "center"}
+# VolcanoPlot for DESeq2
+VolcanoPlot(dds.results.ordered,signif="pvalue",l2fc.threashold=0.3,label.num=2,
+            point.alpha = 0.8, label.color=c("purple","green"),tick.trans = NULL)
+
+# VolcanoPlot for edgeR
+VolcanoPlot(all.res,signif="PValue",l2fc.threashold=0.3,label.num=2,point.alpha = 0.8,
+            label.color=c("purple","green"),tick.trans = NULL)
+```
+
+<hr />
+
+### ScatterPlot
+```{r ScatterPlot,warning=FALSE ,fig.height = 6, fig.width = 6, fig.align = "center"}
+# ScatterPlot for DESeq2
+ScatterPlot(deobj = dds,deres = dds.results.ordered,group.key = "condition",
+            ref.group = "WT",signif="pvalue",l2fc.threashold=0.3,label.num = 2,
+            point.alpha = 0.8,label.color=c("purple","green"))
+# ScatterPlot for edgeR
+ScatterPlot(deobj = snon.edgeR,deres = all.res,group.key = "condition",
+            ref.group = "WT",signif="PValue",l2fc.threashold=0.3,label.num = 2,
+            point.alpha = 0.8,label.color=c("purple","green"))
+```
+
+<hr />
+
+### MAPlot
+```{r MAPlot,warning=FALSE ,fig.height = 6, fig.width = 8, fig.align = "center"}
+# MAPlot for DESeq2
+MAPlot(dds.results.ordered,signif="pvalue",l2fc.threashold=0.3,label.num=2,
+       point.alpha = 0.8, label.color=c("purple","green"))
+# MAPlot for edgeR
+MAPlot(all.res,signif="PValue",l2fc.threashold=0.3,label.num=2,point.alpha = 0.8,
+       label.color=c("purple","green"))
+```
+
+<hr />
+
+### RankPlot
+```{r RankPlot,warning=FALSE ,fig.height = 6, fig.width = 6, fig.align = "center"}
+# RankPlot for DESeq2
+RankPlot(dds.results.ordered,signif="pvalue",l2fc.threashold=0.3,label.num=2,
+         point.alpha = 0.8, label.color=c("purple","green"))
+# RankPlot for edgeR
+RankPlot(all.res,signif="PValue",l2fc.threashold=0.3,label.num=2,point.alpha = 0.8,
+         label.color=c("purple","green"))
+```
+
+<hr />
+
+### GenePlot
+```{r GenePlot,warning=FALSE ,fig.height = 6, fig.width = 6, fig.align = "center"}
+# GenePlot for DESeq2
+GenePlot(deobj = dds,deres = dds.results.ordered,group.key = "condition",
+         ref.group = "WT",fill.color=c("red","blue"), fill.alpha = 0.8,
+         gene.num =2,signif="pvalue",l2fc.threashold=0.3)
+# GenePlot for edgeR
+GenePlot(deobj = snon.edgeR,deres = all.res,group.key = "condition",
+         ref.group = "WT",fill.color=c("red","blue"),fill.alpha = 0.8,
+         gene.num =2,signif="PValue",l2fc.threashold=0.3)
+```
+
+<hr />
+
+### DEHeatmap
+```{r DEHeatmap,warning=FALSE ,fig.height = 10, fig.width = 10, fig.align = "center"}
+# DEHeatmap for DESeq2
+DEHeatmap(deobj = dds,deres = dds.results.ordered,group.key = "condition",
+          ref.group = "WT", signif="pvalue",l2fc.threashold=0.3)
+# DEHeatmap for edgeR
+DEHeatmap(deobj = snon.edgeR,deres = all.res,group.key = "condition",
+          ref.group = "WT", signif="PValue",l2fc.threashold=0.3)
+```
+
+<hr />
+
+## Session info
+```{r session}
+sessionInfo()
+```
+
+<hr />

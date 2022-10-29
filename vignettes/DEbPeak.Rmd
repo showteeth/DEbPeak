@@ -61,7 +61,7 @@ library("DEbPeak")
 
 * **Quality Control (QC)**: QC on count matrix and samples. 
   - QC on count matrix: Proportion of genes detected in different samples under different CPM thresholds and the saturation of the number of genes detected.
-  - QC on samples: Euclidean distance and pearson correlation coefficient of samples across different conditions, sample similarity on selected principal components (check batch informatio and conduct batch correction) and outlier detection with robust PCA.
+  - QC on samples: Euclidean distance and pearson correlation coefficient of samples across different conditions, sample similarity on selected principal components (check batch information and conduct batch correction) and outlier detection with robust PCA.
 * **Principal Component Analysis (PCA)**: this module can be divided into three sub modules, basic info, loading related and 3D visualization.
   - basic info: screen plot (help to select the useful PCs), biplot (sample similarity with corresponding loading genes) and PC pairs plot (sample similarity under different PC combinations).
   - loading related: visualize positive and negative loading genes on selected PCs, conduct GO enrichment analysis on selected loading genes of selected PC.
