@@ -18,6 +18,7 @@ We will used the results output by "Quality Control" vignette.
 ```{r load_example}
 # library
 suppressWarnings(suppressMessages(library(DESeq2)))
+suppressWarnings(suppressMessages(library(edgeR)))
 suppressWarnings(suppressMessages(library(DEbPeak)))
 # load data
 load(file = "/home/songyabing/R/learn/tmp/DEbPeak/example.RData")
@@ -44,7 +45,6 @@ head(dds.results.ordered)
 
 ### edgeR
 ```{r degs_edger, warning=FALSE}
-library(edgeR)
 snon.edgeR=DGEList(counts=count.matrix, group=meta.info$condition)
 keep <- filterByExpr(snon.edgeR,min.count=10)
 snon.edgeR <- snon.edgeR[keep, , keep.lib.sizes=FALSE]

@@ -8,4 +8,142 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Introduction
+Gene expression is controlled by transcription factors (TFs), which [binding to DNA recognition sites located near their target genes](https://www.nature.com/articles/s41467-019-14217-8). [Chromatin Immunoprecipitation Sequencing (ChIP-Seq) can be used to profile genome-wide protein–DNA interactions](https://www.nature.com/articles/nrg2641), such as identifying sites of TFs binding. Therefore, ChIP-Seq can be used to [reveal mechanisms involved in differential gene regulation](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4614920/).
+
+`DEbPeak` implements functions to integrate RNA-seq and ChIP-seq, which can be used to investigate the direct and indirect targets of a TF, thus revealing the regulation network of gene expression.
+
+<hr />
+
+## Example data
+The data used here contains RNA-seq and ChIP-seq datasets from [RUNX represses Pmp22 to drive neurofibromagenesis](https://www.science.org/doi/10.1126/sciadv.aau8389): 
+
+* RNA-seq: two genotypes and three samples per genotype, the raw data are stored in [GSE122774](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE122774)
+* ChIP-seq: two genotypes and one sample per genotype, the raw data are stored in [GSE122775](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE122775)
+
+## Differential Expression Analysis (RNA-seq)
+```{r debchip_degs}
+# library
+suppressWarnings(suppressMessages(library(DESeq2)))
+suppressWarnings(suppressMessages(library(DEbPeak)))
+
+# prepare count matrix and metadata
+debchip.count.file <- system.file("extdata", "debchip_count.txt", package = "DEbPeak")
+debchip.meta.file <- system.file("extdata", "debchip_meta.txt", package = "DEbPeak")
+debchip.count.matrix <- read.table(file = debchip.count.file, header = T, sep = "\t")
+debchip.meta.info <- read.table(file = debchip.meta.file, header = T)
+# create DESeqDataSet object
+debchip.dds <- DESeq2::DESeqDataSetFromMatrix(countData = debchip.count.matrix, 
+                                              colData = debchip.meta.info, 
+                                              design = ~condition)
+
+# set control level
+debchip.dds$condition <- relevel(debchip.dds$condition, ref = "NF")
+# conduct differential expressed genes analysis
+debchip.dds <- DESeq(debchip.dds)
+# extract results
+debchip.dds.results <- results(debchip.dds,contrast=c("condition",'RX','NF'))
+debchip.dds.results.ordered <- debchip.dds.results[order(debchip.dds.results$log2FoldChange,decreasing = TRUE),]
+head(debchip.dds.results.ordered)
+```
+
+<hr />
+
+## Process ChIP-seq data
+### Consensus peaks
+Due to the high noise of ChIP-seq experiments, control samples can be used to remove possible nonspecific interactions. Besides control samples, [replicates are another way to separate actual biological events from variability resulting from random chance](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3962196/). The peaks which have high consistency between replicates are likely to be genuine signals, and we call these peaks consensus peaks. In this step, we will get consensus peaks with [MSPC](https://genometric.github.io/MSPC/docs/quick_start/) when multiple peak files are available, but when there is only one peak file, we will use it directly (**make sure this peak file contains five columns: "chr", "start", "stop", "name", "score"**).
+```{r debchip_consensus_peak}
+# get consensus peak
+peak.file = system.file("extdata", "debchip_peaks.bed", package = "DEbPeak")
+peak.df = GetConsensusPeak(peak.file = peak.file)
+head(peak.df)
+```
+
+<hr />
+
+### Peak profile
+Check the profle of consensus peaks:
+```{r debchip_peak_profile, fig.height = 6, fig.width = 10, fig.align = "center", warning=FALSE}
+# peak profile plot
+peak.profile = PeakProfile(peak.df ,species="Mouse", by = "gene", region.type = "body", nbin = 800)
+peak.profile$profile.plot
+```
+
+<hr />
+
+### Peak annotation
+In this step, we will perform peak annotation with [ChIPseeker](https://bioconductor.org/packages/release/bioc/vignettes/ChIPseeker/inst/doc/ChIPseeker.html). This will include annotating peaks with its nearby genes, assigning genomic region of the peaks, et al.
+```{r debchip_peak_annotation_df}
+# peak annotation
+peak.anno = AnnoPeak(peak.df = peak.df,species = "Mouse",seq.style = "UCSC",up.dist = 20000,down.dist = 20000)
+peak.anno.df = peak.anno$df
+head(peak.anno.df)
+```
+
+```{r debchip_peak_annotation_plot, fig.height = 10, fig.width = 14, fig.align = "center", warning=FALSE}
+peak.anno$plots
+```
+
+<hr />
+
+## Integrate ChIP-seq and RNA-seq
+In this step, we will integrate ChIP-seq and RNA-seq to get plausible direct targets of TF (in this example, Runx).
+### Integrate
+```{r debchip_integrate}
+debchip.res = DEbPeak(de.res = debchip.dds.results.ordered, peak.res = peak.anno.df, peak.anno.key = "Promoter", merge.key="SYMBOL")
+head(debchip.res)
+```
+
+<hr />
+
+### Integrate summary
+```{r debchip_integrate_plot, fig.height = 4, fig.width = 4, fig.align = "center", warning=FALSE}
+# DE and ChIP venn plot
+debchip.plot = PlotDEbPeak(debchip.res, peak.type = "ChIP", show_percentage=FALSE)
+debchip.plot
+```
+
+<hr />
+
+## Functional enrichment
+```{r debchip_integrate_fe}
+# functional enrichment on direct targets
+debchip.fe.results = DEbPeakFE(de.peak = debchip.res, peak.type = "ChIP", gene.type = "ENTREZID", species="Mouse",save = F)
+```
+
+### FE on up-regulated targets 
+```{r debchip_integrate_fe_up, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
+up.debchip.fe.results=debchip.fe.results[["UPbChIP"]][["GO"]]
+head(up.debchip.fe.results[["table"]])
+
+up.debchip.fe.results[["plot"]]
+```
+
+<hr />
+
+### FE on down-regulated targets
+```{r debchip_integrate_fe_down, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
+down.debchip.fe.results=debchip.fe.results[["DOWNbChIP"]][["GO"]]
+head(down.debchip.fe.results[["table"]])
+
+down.debchip.fe.results[["plot"]]
+```
+
+<hr />
+
+## Save results
+Save results for downstream analysis:
+```{r save_image}
+save.image(file = "/home/songyabing/R/learn/tmp/DEbPeak/RNAandChIP.RData")
+```
+
+<hr />
+
+## Session info
+```{r session}
+sessionInfo()
+```
+
+<hr />
+
+
 

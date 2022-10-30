@@ -27,7 +27,6 @@ This vignette follows the previous "Quality Control" vignette, so we will used t
 
 ```{r load_example}
 # library
-suppressWarnings(suppressMessages(library(DESeq2)))
 suppressWarnings(suppressMessages(library(DEbPeak)))
 # load data
 load(file = "/home/songyabing/R/learn/tmp/DEbPeak/example.RData")

@@ -1,0 +1,99 @@
+---
+title: "IntegrateChIPATAC"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+## Introduction
+In previous vignettes, we have introduced intregrating RNA-seq with ATAC-seq and ChIP-seq separately. But we should keep in mind that [ATAC-seq and ChIP-seq are highly consistent and complementary](https://doi.org/10.1093/bib/bbac061). [Most TFs require open chromatin for binding to DNA recognition sites, ATAC-seq peaks generally overlap with TF ChIP-seq peaks but are often broader. Thus, TF ChIP-seq and ATAC-seq can mutually validate the quality and reliability of each other within the same experimental system](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-020-1929-3).
+
+To obtain more accurate gene regulation results, here we will integrate RNA-seq with ChIP-seq and ATAC-seq simultaneously.
+
+<hr />
+
+## Example data
+The data used here contains RNA-seq and ChIP-seq datasets from [RUNX represses Pmp22 to drive neurofibromagenesis](https://www.science.org/doi/10.1126/sciadv.aau8389): 
+
+* RNA-seq: two genotypes and three samples per genotype, the raw data are stored in [GSE122774](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE122774)
+* ChIP-seq: two genotypes and one sample per genotype, the raw data are stored in [GSE122775](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE122775)
+* ATAC-seq: two genotypes and one sample per genotype, the raw data are stored in [GSE122776](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE122776)
+
+<hr />
+
+## Load results
+The integration is based on results of "IntegrateChIP" vignette and "IntegrateATAC" vignette, load the results first.
+```{r load_example}
+# library
+suppressWarnings(suppressMessages(library(DESeq2)))
+suppressWarnings(suppressMessages(library(DEbPeak)))
+# load RNA-seq and ChIP-seq integration results
+load(file = "/home/songyabing/R/learn/tmp/DEbPeak/RNAandChIP.RData")
+# load RNA-seq and ATAC-seq integration results
+load(file = "/home/songyabing/R/learn/tmp/DEbPeak/RNAandATAC.RData")
+```
+
+<hr />
+
+## Integrate RNA-seq, ChIP-seq and ATAC-seq
+### Integrate
+```{r debpeak_integrate}
+debpeak.res = DEbCA(de.res = debchip.dds.results.ordered, chip.peak.res = peak.anno.df,
+                    atac.peak.res = atac.peak.anno.df,
+                    peak.anno.key = "Promoter", merge.key = "SYMBOL")
+head(debpeak.res)
+```
+
+<hr />
+
+### Integrate summary
+```{r debpeak_integrate_plot, fig.height = 4, fig.width = 4, fig.align = "center", warning=FALSE}
+# DE and ChIP venn plot
+debpeak.plot = PlotDEbPeak(debpeak.res, peak.type = "Peak", show_percentage=FALSE)
+debpeak.plot
+```
+
+<hr />
+
+## Functional enrichment
+```{r debpeak_integrate_fe}
+# functional enrichment on direct targets
+debpeak.fe.results = DEbPeakFE(de.peak = debpeak.res, peak.type = "Peak", gene.type = "ENTREZID", species="Mouse",save = F)
+```
+
+### FE on up-regulated targets 
+```{r debpeak_integrate_fe_up, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
+up.debpeak.fe.results=debpeak.fe.results[["UPbPeak"]][["GO"]]
+head(up.debpeak.fe.results[["table"]])
+
+up.debpeak.fe.results[["plot"]]
+```
+
+<hr />
+
+### FE on down-regulated targets
+```{r debpeak_integrate_fe_down, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
+down.debpeak.fe.results=debpeak.fe.results[["DOWNbPeak"]][["GO"]]
+head(down.debpeak.fe.results[["table"]])
+
+down.debpeak.fe.results[["plot"]]
+```
+
+<hr />
+
+## Session info
+```{r session}
+sessionInfo()
+```
+
+<hr />
+
+
+
+
+
+

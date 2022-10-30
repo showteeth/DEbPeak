@@ -1,0 +1,162 @@
+---
+title: "IntegrateATAC"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+[Eukaryotic chromatin is tightly packaged into nucleosomes, and the positioning of nucleosomes can regulate gene expression by changing the in vivo availability of binding sites to transcription factors (TFs)](https://epigeneticsandchromatin.biomedcentral.com/articles/10.1186/1756-8935-7-33). Assay of Transposase Accessible Chromatin sequencing (ATAC-seq) is a technique used to assess genome-wide chromatin accessibility. Thus, combining ATAC-seq with RNA-seq can be used to understanding the role of chromatin structure in regulating gene expression.
+
+<hr />
+
+## Example data
+The data used here contains RNA-seq and ChIP-seq datasets from [RUNX represses Pmp22 to drive neurofibromagenesis](https://www.science.org/doi/10.1126/sciadv.aau8389): 
+
+* RNA-seq: two genotypes and three samples per genotype, the raw data are stored in [GSE122774](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE122774)
+* ATAC-seq: two genotypes and one sample per genotype, the raw data are stored in [GSE122776](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE122776)
+
+## Differential Expression Analysis (RNA-seq)
+The RNA-seq data used here are same as used in "IntegrateChIP" vignette.
+```{r debatac_degs}
+# library
+suppressWarnings(suppressMessages(library(DESeq2)))
+suppressWarnings(suppressMessages(library(DEbPeak)))
+
+# prepare count matrix and metadata
+debatac.count.file <- system.file("extdata", "debchip_count.txt", package = "DEbPeak")
+debatac.meta.file <- system.file("extdata", "debchip_meta.txt", package = "DEbPeak")
+debatac.count.matrix <- read.table(file = debatac.count.file, header = T, sep = "\t")
+debatac.meta.info <- read.table(file = debatac.meta.file, header = T)
+# create DESeqDataSet object
+debatac.dds <- DESeq2::DESeqDataSetFromMatrix(countData = debatac.count.matrix, 
+                                              colData = debatac.meta.info, 
+                                              design = ~condition)
+
+# set control level
+debatac.dds$condition <- relevel(debatac.dds$condition, ref = "NF")
+# conduct differential expressed genes analysis
+debatac.dds <- DESeq(debatac.dds)
+# extract results
+debatac.dds.results <- results(debatac.dds,contrast=c("condition",'RX','NF'))
+debatac.dds.results.ordered <- debatac.dds.results[order(debatac.dds.results$log2FoldChange,decreasing = TRUE),]
+head(debatac.dds.results.ordered)
+```
+
+<hr />
+
+## Process ATAC-seq data
+### Consensus peaks
+```{r debatac_atac_consensus_peak}
+# get consensus peak
+atac.peak.file <- system.file("extdata", "debatac_peaks.bed", package = "DEbPeak")
+atac.peak.df <- GetConsensusPeak(peak.file = atac.peak.file)
+head(atac.peak.df)
+```
+
+<hr />
+
+### Peak profile
+Check the profle of consensus peaks:
+```{r debatac_atac_peak_profile, fig.height = 6, fig.width = 10, fig.align = "center", warning=FALSE}
+# peak profile plot
+atac.peak.profile <- PeakProfile(atac.peak.df, species = "Mouse", by = "gene", region.type = "body", nbin = 800)
+atac.peak.profile$profile.plot
+```
+
+<hr />
+
+### Peak annotation
+In this step, we will perform peak annotation with [ChIPseeker](https://bioconductor.org/packages/release/bioc/vignettes/ChIPseeker/inst/doc/ChIPseeker.html). This will include annotating peaks with its nearby genes, assigning genomic region of the peaks, et al.
+```{r debatac_atac_peak_annotation_df}
+# peak annotation
+atac.peak.anno <- AnnoPeak(
+  peak.df = atac.peak.df, species = "Mouse",
+  seq.style = "UCSC", up.dist = 20000, down.dist = 20000
+)
+atac.peak.anno.df = atac.peak.anno$df
+head(atac.peak.anno.df)
+```
+
+```{r debatac_atac_peak_annotation_plot, fig.height = 10, fig.width = 14, fig.align = "center", warning=FALSE}
+atac.peak.anno$plots
+```
+
+<hr />
+
+## Integrate ATAC-seq and RNA-seq
+In this step, we will integrate ATAC-seq and RNA-seq to explore the role of chromatin structure of promoter region in regulating target gene expression.
+### Integrate
+```{r debatac_integrate}
+debatac.res = DEbPeak(de.res = debatac.dds.results.ordered, peak.res = atac.peak.anno, peak.anno.key = "Promoter", merge.key="SYMBOL")
+head(debatac.res)
+```
+
+<hr />
+
+### Integrate summary
+```{r debatac_integrate_plot, fig.height = 4, fig.width = 4, fig.align = "center", warning=FALSE}
+# DE and ATAC venn plot
+debatac.plot = PlotDEbPeak(debatac.res, peak.type = "ChIP", show_percentage=FALSE)
+debatac.plot
+```
+
+<hr />
+
+## Functional enrichment
+```{r debatac_integrate_fe}
+# functional enrichment on direct targets
+debatac.fe.results = DEbPeakFE(de.peak = debatac.res, peak.type = "ATAC", gene.type = "ENTREZID", species="Mouse",save = F)
+```
+
+### FE on up-regulated targets 
+```{r debatac_integrate_fe_up, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
+up.debatac.fe.results=debatac.fe.results[["UPbATAC"]][["GO"]]
+head(up.debatac.fe.results[["table"]])
+
+up.debatac.fe.results[["plot"]]
+```
+
+<hr />
+
+### FE on down-regulated targets
+```{r debatac_integrate_fe_down, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
+down.debatac.fe.results=debatac.fe.results[["DOWNbATAC"]][["GO"]]
+head(down.debatac.fe.results[["table"]])
+
+down.debatac.fe.results[["plot"]]
+```
+
+<hr />
+
+## Find motif
+[Different from ChIP-seq which profile specific protein–DNA interactions (depends on the antibody provided), ATAC-seq can proflie global chromatin accessibility](https://link.springer.com/article/10.1186/s43556-020-00009-w). Thus, the peaks of ATAC-seq may originate from hundreds of TFs. To reveal the possible TFs involved, motif enrichment analysis is a good solution.
+```{r debatac_integrate_motif, eval = FALSE}
+# debatac.res: similar to debatac.res
+# this step is time consuming!
+ATAC.motif = FindMotif(inte.res = debatac.res, peak.anno.res = peak.anno.df, gene.key = "SYMBOL",
+                       homer.motif.path = '~/anaconda3/bin/findMotifsGenome.pl',
+                       genome = '/path/to/genome.fa',
+                       out.folder = NULL,other.paras = '-len 8,10,12 -size -100,50 -S 25')
+```
+
+<hr />
+
+## Save results
+Save results for downstream analysis:
+```{r save_image}
+save.image(file = "/home/songyabing/R/learn/tmp/DEbPeak/RNAandATAC.RData")
+```
+
+<hr />
+
+## Session info
+```{r session}
+sessionInfo()
+```
+
+<hr />
+
+
