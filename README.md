@@ -142,13 +142,17 @@ Detailed usage is available in [vignette](https://github.com/showteeth/DEbPeak/b
     <td>Conduct Differential Axpression Analysis with DESeq2</td>
   </tr>
   <tr>
-    <td rowspan="2">Functional Enrichment Analysis</td>
+    <td rowspan="3">Functional Enrichment Analysis</td>
     <td><code>ConductFE</code></td>
-    <td>Conduct Functional Enrichment Analysis</td>
+    <td>Conduct Functional Enrichment Analysis (GO and KEGG)</td>
   </tr>
   <tr>
     <td><code>ConductGSEA</code></td>
     <td>Conduct Gene Set Enrichment Analysis (GSEA)</td>
+  </tr>
+  <tr>
+    <td><code>VisGSEA</code></td>
+    <td>Visualize GSEA results</td>
   </tr>
   <tr>
     <td rowspan="8">Integrate with ChIP-seq/ATAC-seq</td>

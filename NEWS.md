@@ -1,12 +1,19 @@
+# DEbPeak 0.5.0
+## New features
+* Added `VisGSEA` to visualize GSEA results.
+
+-------------
+
 # DEbPeak 0.4.0
 ## New features
 * Added `DEbCA` to support integrating RNA-seq, ChIP-seq and ATAC-seq.
 * Modified `PlotDEbPeak` to support integrating RNA-seq, ChIP-seq and ATAC-seq.
+* Updated all vignettes.
 
 <hr />
 
 ## Minor changes
-* Fixed bugs in plot in `OutlierDetection`.
+* Fixed bugs in plot.
 
 -------------
 

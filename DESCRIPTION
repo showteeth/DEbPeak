@@ -1,6 +1,6 @@
 Package: DEbPeak
 Title: DEbPeak - Explore, visualize, interpret RNA-seq data and decipher gene's regulation
-Version: 0.4.0
+Version: 0.5.0
 Authors@R: 
     person(given = "Yabing",
            family = "Song",

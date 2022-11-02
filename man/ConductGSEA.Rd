@@ -17,9 +17,6 @@ ConductGSEA(
   pvalue = 0.05,
   padj.method = c("BH", "holm", "hochberg", "hommel", "bonferroni", "BY", "fdr",
     "none"),
-  plot.resolution = 300,
-  plot.width = 10,
-  plot.height = 6,
   save = TRUE,
   ...
 )
@@ -46,12 +43,6 @@ ConductGSEA(
 \item{pvalue}{Cutoff value of pvalue. Default: 0.05.}
 
 \item{padj.method}{One of "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none". Default: BH.}
-
-\item{plot.resolution}{Resolution of plot. Default: 300.}
-
-\item{plot.width}{The width of plot. Default: 7.}
-
-\item{plot.height}{The height of plot. Default: 9.}
 
 \item{save}{Logical value, whether to save results. Default: TRUE.}
 

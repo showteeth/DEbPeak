@@ -11,9 +11,6 @@
 #' @param maxGSSize Maximal size of genes annotated for testing. Default: 500.
 #' @param pvalue Cutoff value of pvalue. Default: 0.05.
 #' @param padj.method One of "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none". Default: BH.
-#' @param plot.resolution Resolution of plot. Default: 300.
-#' @param plot.width The width of plot. Default: 7.
-#' @param plot.height The height of plot. Default: 9.
 #' @param save Logical value, whether to save results. Default: TRUE.
 #' @param ... Parameters for \code{\link{GSEA}}.
 #'
@@ -23,10 +20,7 @@
 #' @importFrom purrr set_names
 #' @importFrom tidyr drop_na
 #' @import clusterProfiler
-#' @importFrom enrichplot gseaplot2
-#' @importFrom stats na.omit
 #' @importFrom utils write.csv
-#' @importFrom grDevices pdf dev.off
 #' @export
 #'
 #' @examples
@@ -44,7 +38,7 @@
 #' gsea.results <- ConductGSEA(deres = dds.results.ordered, gmt.file = NULL, gene.sets = h_t2g, org.db = "org.Hs.eg.db", pvalue = 0.05, save = FALSE)
 ConductGSEA <- function(deres, gmt.file, gene.sets = NULL, out.folder = NULL, gene.key = NULL, gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"), org.db = "org.Mm.eg.db",
                         minGSSize = 10, maxGSSize = 500, pvalue = 0.05, padj.method = c("BH", "holm", "hochberg", "hommel", "bonferroni", "BY", "fdr", "none"),
-                        plot.resolution = 300, plot.width = 10, plot.height = 6, save = TRUE, ...) {
+                        save = TRUE, ...) {
   # check parameter
   gene.type <- match.arg(arg = gene.type)
   padj.method <- match.arg(arg = padj.method)
@@ -116,30 +110,59 @@ ConductGSEA <- function(deres, gmt.file, gene.sets = NULL, out.folder = NULL, ge
   }
 
   gsea.info <- as.data.frame(gsea)
-  if (nrow(stats::na.omit(gsea.info)) >= 1) {
-    p1 <- enrichplot::gseaplot2(gsea, geneSetID = 1, title = gsea$Description[1])
-  } else {
-    p1 <- ggplot() +
-      theme_void() +
-      geom_text(aes(0, 0, label = "N/A")) +
-      xlab(NULL)
-  }
   if (save) {
     # save results
     gsea.out.file <- file.path(out.folder, "GSEA_enrich_result.csv")
     utils::write.csv(gsea.info, file = gsea.out.file, row.names = FALSE)
-
-    ggsave(file.path(out.folder, "GSEA_enrich_result.png"),
-      plot = p1, dpi = plot.resolution,
-      width = plot.width, height = plot.height
-    )
-    grDevices::pdf(file.path(out.folder, "GSEA_enrich_result.pdf"))
-    print(p1)
-    grDevices::dev.off()
   } else {
     all_results[["gsea"]] <- gsea
     all_results[["table"]] <- gsea.info
-    all_results[["plot"]] <- p1
   }
   return(all_results)
+}
+
+#' Visualize GSEA results.
+#'
+#' @param gsea.res GSEA results, should be gseaResult object.
+#' @param gs.id Gene set ID name used to create plot, can be single or multiple. Default: NULL.
+#' @param ncol The plot column when \code{gs.id} is larger than 1. Default: 1.
+#' @param ... Parameters for \code{\link{gseaplot2}}.
+#'
+#' @return A ggplot2 or patchwork object.
+#' @export
+#'
+#' @importFrom enrichplot gseaplot2
+#' @importFrom patchwork wrap_plots
+#' @importFrom ggplot2 ggplot theme_void geom_text xlab aes
+#'
+#' @examples
+#' # VisGSEA(gsea.res = gsea.results$gsea, gs.id = c("GOCC_CONTRACTILE_FIBER", "GOMF_SIGNALING_RECEPTOR_REGULATOR_ACTIVITY"))
+VisGSEA <- function(gsea.res, gs.id = NULL, ncol = 1, ...) {
+  # check results
+  if (is.null(gs.id)) {
+    stop("Please provide gene set id with gs.id!")
+  }
+  # check gsea
+  if (nrow(gsea.res) >= 1) {
+    gsea.df <- as.data.frame(gsea.res)
+    if (length(intersect(gs.id, gsea.df$ID)) >= 1) {
+      gs.id <- intersect(gs.id, gsea.df$ID)
+      if (length(gs.id) == 1) {
+        gsea.plot <- enrichplot::gseaplot2(gsea.res, geneSetID = gs.id, title = gs.id, ...)
+      } else if (length(gs.id) > 1) {
+        gsea.plot.list <- lapply(gs.id, function(x) {
+          enrichplot::gseaplot2(gsea.res, geneSetID = x, title = x, ...)
+        })
+        gsea.plot <- patchwork::wrap_plots(gsea.plot.list, ncol = ncol)
+      }
+    } else {
+      stop("Please provide valid gene set id(s)!")
+    }
+  } else {
+    gsea.plot <- ggplot() +
+      theme_void() +
+      geom_text(aes(0, 0, label = "N/A")) +
+      xlab(NULL)
+  }
+  return(gsea.plot)
 }
