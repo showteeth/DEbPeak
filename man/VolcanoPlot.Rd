@@ -7,8 +7,8 @@
 VolcanoPlot(
   deres,
   signif = "padj",
-  signif.threashold = 0.05,
-  l2fc.threashold = 1,
+  signif.threshold = 0.05,
+  l2fc.threshold = 1,
   point.alpha = 0.6,
   point.size.vec = c(2, 4),
   linetype = 2,
@@ -28,16 +28,16 @@ VolcanoPlot(
 \item{signif}{Significance criterion. For DESeq2 results, can be chosen from padj, pvalue.
 For edgeR results, can be chosen from FDR, PValue. Default: padj.}
 
-\item{signif.threashold}{Significance threashold to get differentially expressed genes. Default: 0.05.}
+\item{signif.threshold}{Significance threshold to get differentially expressed genes. Default: 0.05.}
 
-\item{l2fc.threashold}{Log2 fold change threashold to get differentially expressed genes. Default: 1.}
+\item{l2fc.threshold}{Log2 fold change threshold to get differentially expressed genes. Default: 1.}
 
 \item{point.alpha}{Opacity of a geom. Default: 0.6.}
 
 \item{point.size.vec}{Point size for regular(DEG or non-DEG) and(or) labeled points.
 Default: 2 for regular and 4 for labeled points.}
 
-\item{linetype}{Threashold linetype. Default: 2.}
+\item{linetype}{Threshold linetype. Default: 2.}
 
 \item{point.color.vec}{Point color for Down, Not, Up regulated genes.
 Default: red for Up, grey for Not and blue for Down.}
@@ -79,5 +79,5 @@ dds$condition <- relevel(dds$condition, ref = "WT")
 dds <- DESeq(dds)
 dds.results <- results(dds, contrast = c("condition", "KO", "WT"))
 dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing = TRUE), ]
-VolcanoPlot(dds.results.ordered, signif = "pvalue", l2fc.threashold = 0.3, label.num = 2, point.alpha = 0.8, label.color = c("purple", "green"), tick.trans = NULL)
+VolcanoPlot(dds.results.ordered, signif = "pvalue", l2fc.threshold = 0.3, label.num = 2, point.alpha = 0.8, label.color = c("purple", "green"), tick.trans = NULL)
 }

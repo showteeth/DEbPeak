@@ -1,3 +1,12 @@
+# DEbPeak 0.6.0
+## New features
+* Changed `CountQC` realted plots to ggplot2.
+
+## Minor changes
+* Fixed some spelling mistakes (`threashold` -> `threshold`).
+
+-------------
+
 # DEbPeak 0.5.0
 ## New features
 * Added `VisGSEA` to visualize GSEA results.
@@ -9,8 +18,6 @@
 * Added `DEbCA` to support integrating RNA-seq, ChIP-seq and ATAC-seq.
 * Modified `PlotDEbPeak` to support integrating RNA-seq, ChIP-seq and ATAC-seq.
 * Updated all vignettes.
-
-<hr />
 
 ## Minor changes
 * Fixed bugs in plot.

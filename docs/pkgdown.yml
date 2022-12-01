@@ -1,0 +1,18 @@
+pandoc: '2.12'
+pkgdown: 1.6.1
+pkgdown_sha: ~
+articles:
+  DEbPeak_All: DEbPeak_All.html
+  DifferentialExpressionAnalysis: DifferentialExpressionAnalysis.html
+  FunctionalEnrichmentAnalysis: FunctionalEnrichmentAnalysis.html
+  IntegrateATAC: IntegrateATAC.html
+  IntegrateChIP: IntegrateChIP.html
+  IntegrateChIPATAC: IntegrateChIPATAC.html
+  PrincipalComponentAnalysis: PrincipalComponentAnalysis.html
+  QualityControl: QualityControl.html
+  Utils: Utils.html
+last_built: 2022-11-27T16:59Z
+urls:
+  reference: https://showteeth.github.io/DEbPeak//reference
+  article: https://showteeth.github.io/DEbPeak//articles
+

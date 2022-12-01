@@ -80,7 +80,7 @@ atac.peak.anno.df = atac.peak.anno$df
 head(atac.peak.anno.df)
 ```
 
-```{r debatac_atac_peak_annotation_plot, fig.height = 10, fig.width = 14, fig.align = "center", warning=FALSE}
+```{r debatac_atac_peak_annotation_plot, fig.height = 14, fig.width = 14, fig.align = "center", warning=FALSE}
 atac.peak.anno$plots
 ```
 
@@ -90,7 +90,7 @@ atac.peak.anno$plots
 In this step, we will integrate ATAC-seq and RNA-seq to explore the role of chromatin structure of promoter region in regulating target gene expression.
 ### Integrate
 ```{r debatac_integrate}
-debatac.res = DEbPeak(de.res = debatac.dds.results.ordered, peak.res = atac.peak.anno, peak.anno.key = "Promoter", merge.key="SYMBOL")
+debatac.res = DEbPeak(de.res = debatac.dds.results.ordered, peak.res = atac.peak.anno.df, peak.anno.key = "Promoter", merge.key="SYMBOL")
 head(debatac.res)
 ```
 

@@ -11,8 +11,8 @@ ScatterPlot(
   ref.group = NULL,
   base = 10,
   signif = "padj",
-  signif.threashold = 0.05,
-  l2fc.threashold = 1,
+  signif.threshold = 0.05,
+  l2fc.threshold = 1,
   point.alpha = 0.6,
   point.size.vec = c(2, 4),
   linetype = 2,
@@ -37,9 +37,9 @@ ScatterPlot(
 
 \item{signif}{Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.}
 
-\item{signif.threashold}{Significance threashold to get differentially expressed genes. Default: 0.05.}
+\item{signif.threshold}{Significance threshold to get differentially expressed genes. Default: 0.05.}
 
-\item{l2fc.threashold}{Log2 fold change threashold to get differentially expressed genes. Default: 1.}
+\item{l2fc.threshold}{Log2 fold change threshold to get differentially expressed genes. Default: 1.}
 
 \item{point.alpha}{Opacity of a geom. Default: 0.6.}
 
@@ -80,5 +80,5 @@ dds$condition <- relevel(dds$condition, ref = "WT")
 dds <- DESeq(dds)
 dds.results <- results(dds, contrast = c("condition", "KO", "WT"))
 dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing = TRUE), ]
-ScatterPlot(deobj = dds, deres = dds.results.ordered, group.key = "condition", ref.group = "WT", signif = "pvalue", l2fc.threashold = 0.3, label.num = 2, point.alpha = 0.8, label.color = c("purple", "green"))
+ScatterPlot(deobj = dds, deres = dds.results.ordered, group.key = "condition", ref.group = "WT", signif = "pvalue", l2fc.threshold = 0.3, label.num = 2, point.alpha = 0.8, label.color = c("purple", "green"))
 }

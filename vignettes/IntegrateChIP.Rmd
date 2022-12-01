@@ -79,7 +79,7 @@ peak.anno.df = peak.anno$df
 head(peak.anno.df)
 ```
 
-```{r debchip_peak_annotation_plot, fig.height = 10, fig.width = 14, fig.align = "center", warning=FALSE}
+```{r debchip_peak_annotation_plot, fig.height = 14, fig.width = 14, fig.align = "center", warning=FALSE}
 peak.anno$plots
 ```
 

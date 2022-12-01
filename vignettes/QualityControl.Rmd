@@ -40,9 +40,9 @@ dds
 <hr />
   
 ## QC on count matrix
-### CPM threashold
+### CPM threshold
 This plot shows proportion of genes detected in different samples at different CPM thresholds. Theoretically, all samples should be similarly distributed, so as to avoid false positive results obtained from detection problems.
-```{r qc_counts_cpm, warning=FALSE,fig.height = 6, fig.width = 6, fig.align = "center"}
+```{r qc_counts_cpm, warning=FALSE,fig.height = 5, fig.width = 7, fig.align = "center"}
 CountQC(deobj = dds, group.key = "condition", type = "cpm")
 ```
 
@@ -50,7 +50,7 @@ CountQC(deobj = dds, group.key = "condition", type = "cpm")
 
 ### sequencing saturation
 This plot shows the proportion of genes detected at different sequencing depths. If the proportion is too low, it indicates that many genes are not detected and therefore some important information may be missing, and increasing the sequencing volume can effectively solve this problem.
-```{r qc_counts_saturation, warning=FALSE,fig.height = 6, fig.width = 6, fig.align = "center"}
+```{r qc_counts_saturation, warning=FALSE,fig.height = 5, fig.width = 7, fig.align = "center"}
 CountQC(deobj = dds, group.key = "condition", type = "saturation")
 ```
 
@@ -65,14 +65,14 @@ QC on samples including four aspects:
 * batch correction
 
 ### Euclidean distance and pearson correlation coefficient
-```{r qc_samples_sr, warning=FALSE,fig.height = 5, fig.width = 10, fig.align = "center"}
+```{r qc_samples_sr, warning=FALSE,fig.height = 5, fig.width = 14, fig.align = "center"}
 SampleRelation(deobj = dds,transform.method = "rlog",anno.key = "condition")
 ```
 
 <hr />
 
 ### PCA
-```{r qc_samples_pca, warning=FALSE,fig.height = 8, fig.width = 6, fig.align = "center"}
+```{r qc_samples_pca, warning=FALSE,fig.height = 6, fig.width = 6, fig.align = "center"}
 qc.pca.res=PCA(deobj = dds,transform.method = "rlog")
 PCAtools::biplot(qc.pca.res,x="PC1",y="PC2",colby="condition",legendPosition="bottom")
 ```

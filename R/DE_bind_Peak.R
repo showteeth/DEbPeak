@@ -4,8 +4,8 @@
 #' @param peak.res Dataframe contains all peak annotation results.
 #' @param peak.anno.key Peak location, chosen from "Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic","All". Default: "Promoter".
 #' @param signif Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.
-#' @param signif.threashold Significance threashold to get differentially expressed genes. Default: 0.05.
-#' @param l2fc.threashold Log2 fold change threashold to get differentially expressed genes. Default: 1.
+#' @param signif.threshold Significance threshold to get differentially expressed genes. Default: 0.05.
+#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes. Default: 1.
 #' @param label.key Which column to use as label. Default: NULL (use rownames of \code{deres}).
 #' @param merge.key The columns used for merging, chosen from geneId, ENSEMBL, SYMBOL. Default: geneId.
 #'
@@ -50,7 +50,7 @@
 #'   peak.anno.key = "Promoter", merge.key = "SYMBOL"
 #' )
 DEbPeak <- function(de.res, peak.res, peak.anno.key = c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic", "All"),
-                    signif = "padj", signif.threashold = 0.05, l2fc.threashold = 1, label.key = NULL, merge.key = c("geneId", "ENSEMBL", "SYMBOL")) {
+                    signif = "padj", signif.threshold = 0.05, l2fc.threshold = 1, label.key = NULL, merge.key = c("geneId", "ENSEMBL", "SYMBOL")) {
 
   # check parameters
   peak.anno.key <- match.arg(arg = peak.anno.key)
@@ -66,8 +66,8 @@ DEbPeak <- function(de.res, peak.res, peak.anno.key = c("Promoter", "5' UTR", "3
 
   # prepare DE results
   de.df <- PrepareDEPlot(
-    deres = de.res, signif = signif, signif.threashold = signif.threashold,
-    l2fc.threashold = l2fc.threashold, label.key = label.key
+    deres = de.res, signif = signif, signif.threshold = signif.threshold,
+    l2fc.threshold = l2fc.threshold, label.key = label.key
   )
   # remove gene version information
   de.df$Gene <- gsub(pattern = "\\.[0-9]*$", replacement = "", x = de.df$Gene)

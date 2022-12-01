@@ -308,7 +308,7 @@ QCPCA <- function(deobj, var.genes = NULL, remove.sample = NULL, transform.metho
 #' @param pca PCA results of \code{\link{PCA}}.
 #' @param x The principal component to display on the x axis. Default: PC1.
 #' @param y The principal component to display on the y axis. Default: PC2.
-#' @param explain.threashold The threashold of explained variance. Default: 90.
+#' @param explain.threshold The threshold of explained variance. Default: 90.
 #' @param loading.num Select loading gene number based on absolute ordered variable loading for each PC in the biplot. Default: 5.
 #' @param loading.label.size Size of loading label. Default: 3.
 #' @param loading.label.color Color of loading label. Default: red.
@@ -334,14 +334,14 @@ QCPCA <- function(deobj, var.genes = NULL, remove.sample = NULL, transform.metho
 #' dds <- dds[keep.genes, ]
 #' pca_res <- PCA(deobj = dds, transform.method = "rlog")
 #' PCABasic(pca_res, colby = "condition")
-PCABasic <- function(pca, x = "PC1", y = "PC2", explain.threashold = 90, loading.num = 5, loading.label.size = 3, loading.label.color = "red",
+PCABasic <- function(pca, x = "PC1", y = "PC2", explain.threshold = 90, loading.num = 5, loading.label.size = 3, loading.label.color = "red",
                      colby = NULL, pair.pc = 5, pair.label.size = 14, legend.pos = c("right", "bottom", "top", "left", "none")) {
   # check parameters
   legend.pos <- match.arg(arg = legend.pos)
 
   plot.list <- list()
   # screen plot
-  screen.plot <- PCAtools::screeplot(pca, hline = explain.threashold)
+  screen.plot <- PCAtools::screeplot(pca, hline = explain.threshold)
   plot.list[["screen"]] <- screen.plot
   # biplot
   bi.plot <- PCAtools::biplot(pca,

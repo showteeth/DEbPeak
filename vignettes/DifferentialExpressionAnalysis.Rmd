@@ -64,11 +64,11 @@ head(all.res)
 ### VolcanoPlot
 ```{r volcanoplot,warning=FALSE ,fig.height = 6, fig.width = 5, fig.align = "center"}
 # VolcanoPlot for DESeq2
-VolcanoPlot(dds.results.ordered,signif="pvalue",l2fc.threashold=0.3,label.num=2,
+VolcanoPlot(dds.results.ordered,signif="pvalue",l2fc.threshold=0.3,label.num=2,
             point.alpha = 0.8, label.color=c("purple","green"),tick.trans = NULL)
 
 # VolcanoPlot for edgeR
-VolcanoPlot(all.res,signif="PValue",l2fc.threashold=0.3,label.num=2,point.alpha = 0.8,
+VolcanoPlot(all.res,signif="PValue",l2fc.threshold=0.3,label.num=2,point.alpha = 0.8,
             label.color=c("purple","green"),tick.trans = NULL)
 ```
 
@@ -78,11 +78,11 @@ VolcanoPlot(all.res,signif="PValue",l2fc.threashold=0.3,label.num=2,point.alpha 
 ```{r ScatterPlot,warning=FALSE ,fig.height = 6, fig.width = 6, fig.align = "center"}
 # ScatterPlot for DESeq2
 ScatterPlot(deobj = dds,deres = dds.results.ordered,group.key = "condition",
-            ref.group = "WT",signif="pvalue",l2fc.threashold=0.3,label.num = 2,
+            ref.group = "WT",signif="pvalue",l2fc.threshold=0.3,label.num = 2,
             point.alpha = 0.8,label.color=c("purple","green"))
 # ScatterPlot for edgeR
 ScatterPlot(deobj = snon.edgeR,deres = all.res,group.key = "condition",
-            ref.group = "WT",signif="PValue",l2fc.threashold=0.3,label.num = 2,
+            ref.group = "WT",signif="PValue",l2fc.threshold=0.3,label.num = 2,
             point.alpha = 0.8,label.color=c("purple","green"))
 ```
 
@@ -91,10 +91,10 @@ ScatterPlot(deobj = snon.edgeR,deres = all.res,group.key = "condition",
 ### MAPlot
 ```{r MAPlot,warning=FALSE ,fig.height = 6, fig.width = 8, fig.align = "center"}
 # MAPlot for DESeq2
-MAPlot(dds.results.ordered,signif="pvalue",l2fc.threashold=0.3,label.num=2,
+MAPlot(dds.results.ordered,signif="pvalue",l2fc.threshold=0.3,label.num=2,
        point.alpha = 0.8, label.color=c("purple","green"))
 # MAPlot for edgeR
-MAPlot(all.res,signif="PValue",l2fc.threashold=0.3,label.num=2,point.alpha = 0.8,
+MAPlot(all.res,signif="PValue",l2fc.threshold=0.3,label.num=2,point.alpha = 0.8,
        label.color=c("purple","green"))
 ```
 
@@ -103,10 +103,10 @@ MAPlot(all.res,signif="PValue",l2fc.threashold=0.3,label.num=2,point.alpha = 0.8
 ### RankPlot
 ```{r RankPlot,warning=FALSE ,fig.height = 6, fig.width = 6, fig.align = "center"}
 # RankPlot for DESeq2
-RankPlot(dds.results.ordered,signif="pvalue",l2fc.threashold=0.3,label.num=2,
+RankPlot(dds.results.ordered,signif="pvalue",l2fc.threshold=0.3,label.num=2,
          point.alpha = 0.8, label.color=c("purple","green"))
 # RankPlot for edgeR
-RankPlot(all.res,signif="PValue",l2fc.threashold=0.3,label.num=2,point.alpha = 0.8,
+RankPlot(all.res,signif="PValue",l2fc.threshold=0.3,label.num=2,point.alpha = 0.8,
          label.color=c("purple","green"))
 ```
 
@@ -117,11 +117,11 @@ RankPlot(all.res,signif="PValue",l2fc.threashold=0.3,label.num=2,point.alpha = 0
 # GenePlot for DESeq2
 GenePlot(deobj = dds,deres = dds.results.ordered,group.key = "condition",
          ref.group = "WT",fill.color=c("red","blue"), fill.alpha = 0.8,
-         gene.num =2,signif="pvalue",l2fc.threashold=0.3)
+         gene.num =2,signif="pvalue",l2fc.threshold=0.3)
 # GenePlot for edgeR
 GenePlot(deobj = snon.edgeR,deres = all.res,group.key = "condition",
          ref.group = "WT",fill.color=c("red","blue"),fill.alpha = 0.8,
-         gene.num =2,signif="PValue",l2fc.threashold=0.3)
+         gene.num =2,signif="PValue",l2fc.threshold=0.3)
 ```
 
 <hr />
@@ -130,10 +130,10 @@ GenePlot(deobj = snon.edgeR,deres = all.res,group.key = "condition",
 ```{r DEHeatmap,warning=FALSE ,fig.height = 10, fig.width = 10, fig.align = "center"}
 # DEHeatmap for DESeq2
 DEHeatmap(deobj = dds,deres = dds.results.ordered,group.key = "condition",
-          ref.group = "WT", signif="pvalue",l2fc.threashold=0.3)
+          ref.group = "WT", signif="pvalue",l2fc.threshold=0.3)
 # DEHeatmap for edgeR
 DEHeatmap(deobj = snon.edgeR,deres = all.res,group.key = "condition",
-          ref.group = "WT", signif="PValue",l2fc.threashold=0.3)
+          ref.group = "WT", signif="PValue",l2fc.threshold=0.3)
 ```
 
 <hr />

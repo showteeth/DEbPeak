@@ -369,8 +369,8 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
 #' @param deres Data frame contains all genes.
 #' @param out.folder Folder to save enrichment results. Default: wording directory.
 #' @param signif Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.
-#' @param signif.threashold Significance threashold to get differentially expressed genes. Default: 0.05.
-#' @param l2fc.threashold Log2 fold change threashold to get differentially expressed genes. Default: 1.
+#' @param signif.threshold Significance threshold to get differentially expressed genes. Default: 0.05.
+#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes. Default: 1.
 #' @param gene.key Column name in \code{deres} to conduct analysis. Default: NULL (use rownames of \code{deres}).
 #' @param gene.type Gene name type. Chosen from ENSEMBL, ENTREZID,SYMBOL. Default: ENSEMBL.
 #' @param org.db Organism database. Default: org.Mm.eg.db.
@@ -418,8 +418,8 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
 #' dds <- DESeq(dds)
 #' dds.results <- results(dds, contrast = c("condition", "KO", "WT"))
 #' dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing = TRUE), ]
-#' ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threashold = 0.3)
-ConductFE <- function(deres, out.folder = NULL, signif = "padj", signif.threashold = 0.05, l2fc.threashold = 1,
+#' ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threshold = 0.3)
+ConductFE <- function(deres, out.folder = NULL, signif = "padj", signif.threshold = 0.05, l2fc.threshold = 1,
                       gene.key = NULL, gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"), org.db = "org.Mm.eg.db",
                       enrich.type = c("ALL", "GO", "KEGG"), go.type = c("ALL", "BP", "MF", "CC"),
                       enrich.pvalue = 0.05, enrich.qvalue = 0.05, organism = "mmu",
@@ -439,7 +439,7 @@ ConductFE <- function(deres, out.folder = NULL, signif = "padj", signif.threasho
   suppressWarnings(suppressMessages(library(org.db, character.only = TRUE)))
 
   # preapare DE dataframe
-  de.df <- PrepareDEPlot(deres = deres, signif = signif, signif.threashold = signif.threashold, l2fc.threashold = l2fc.threashold, label.key = gene.key)
+  de.df <- PrepareDEPlot(deres = deres, signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold, label.key = gene.key)
   up.de.df <- de.df %>% dplyr::filter(regulation == "Up_regulated")
   down.de.df <- de.df %>% dplyr::filter(regulation == "Down_regulated")
   if (is.null(gene.key)) {

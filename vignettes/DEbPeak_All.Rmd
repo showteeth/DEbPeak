@@ -109,7 +109,7 @@ dds
 Quality control are of vital importance to get realiable results. Here, quality control includes two main aspects: **sequencing saturation (QC on count matrix)** and **sample similarity (QC on samples)**.
 
 ## QC on count matrix
-### CPM threashold
+### CPM threshold
 This plot shows proportion of genes detected in different samples at different CPM thresholds. Theoretically, all samples should be similarly distributed, so as to avoid false positive results obtained from detection problems.
 ```{r qc_counts_cpm, warning=FALSE,fig.height = 6, fig.width = 6, fig.align = "center"}
 CountQC(deobj = dds, group.key = "condition", type = "cpm")
@@ -289,11 +289,11 @@ head(all.res)
 ### VolcanoPlot
 ```{r volcanoplot,warning=FALSE ,fig.height = 6, fig.width = 5, fig.align = "center"}
 # VolcanoPlot for DESeq2
-VolcanoPlot(dds.results.ordered,signif="pvalue",l2fc.threashold=0.3,label.num=2,
+VolcanoPlot(dds.results.ordered,signif="pvalue",l2fc.threshold=0.3,label.num=2,
             point.alpha = 0.8, label.color=c("purple","green"),tick.trans = NULL)
 
 # VolcanoPlot for edgeR
-VolcanoPlot(all.res,signif="PValue",l2fc.threashold=0.3,label.num=2,point.alpha = 0.8,
+VolcanoPlot(all.res,signif="PValue",l2fc.threshold=0.3,label.num=2,point.alpha = 0.8,
             label.color=c("purple","green"),tick.trans = NULL)
 ```
 
@@ -301,31 +301,31 @@ VolcanoPlot(all.res,signif="PValue",l2fc.threashold=0.3,label.num=2,point.alpha 
 ```{r ScatterPlot,warning=FALSE ,fig.height = 6, fig.width = 6, fig.align = "center"}
 # ScatterPlot for DESeq2
 ScatterPlot(deobj = dds,deres = dds.results.ordered,group.key = "condition",
-            ref.group = "WT",signif="pvalue",l2fc.threashold=0.3,label.num = 2,
+            ref.group = "WT",signif="pvalue",l2fc.threshold=0.3,label.num = 2,
             point.alpha = 0.8,label.color=c("purple","green"))
 # ScatterPlot for edgeR
 ScatterPlot(deobj = snon.edgeR,deres = all.res,group.key = "condition",
-            ref.group = "WT",signif="PValue",l2fc.threashold=0.3,label.num = 2,
+            ref.group = "WT",signif="PValue",l2fc.threshold=0.3,label.num = 2,
             point.alpha = 0.8,label.color=c("purple","green"))
 ```
 
 ### MAPlot
 ```{r MAPlot,warning=FALSE ,fig.height = 6, fig.width = 8, fig.align = "center"}
 # MAPlot for DESeq2
-MAPlot(dds.results.ordered,signif="pvalue",l2fc.threashold=0.3,label.num=2,
+MAPlot(dds.results.ordered,signif="pvalue",l2fc.threshold=0.3,label.num=2,
        point.alpha = 0.8, label.color=c("purple","green"))
 # MAPlot for edgeR
-MAPlot(all.res,signif="PValue",l2fc.threashold=0.3,label.num=2,point.alpha = 0.8,
+MAPlot(all.res,signif="PValue",l2fc.threshold=0.3,label.num=2,point.alpha = 0.8,
        label.color=c("purple","green"))
 ```
 
 ### RankPlot
 ```{r RankPlot,warning=FALSE ,fig.height = 6, fig.width = 6, fig.align = "center"}
 # RankPlot for DESeq2
-RankPlot(dds.results.ordered,signif="pvalue",l2fc.threashold=0.3,label.num=2,
+RankPlot(dds.results.ordered,signif="pvalue",l2fc.threshold=0.3,label.num=2,
          point.alpha = 0.8, label.color=c("purple","green"))
 # RankPlot for edgeR
-RankPlot(all.res,signif="PValue",l2fc.threashold=0.3,label.num=2,point.alpha = 0.8,
+RankPlot(all.res,signif="PValue",l2fc.threshold=0.3,label.num=2,point.alpha = 0.8,
          label.color=c("purple","green"))
 ```
 
@@ -334,21 +334,21 @@ RankPlot(all.res,signif="PValue",l2fc.threashold=0.3,label.num=2,point.alpha = 0
 # GenePlot for DESeq2
 GenePlot(deobj = dds,deres = dds.results.ordered,group.key = "condition",
          ref.group = "WT",fill.color=c("red","blue"), fill.alpha = 0.8,
-         gene.num =2,signif="pvalue",l2fc.threashold=0.3)
+         gene.num =2,signif="pvalue",l2fc.threshold=0.3)
 # GenePlot for edgeR
 GenePlot(deobj = snon.edgeR,deres = all.res,group.key = "condition",
          ref.group = "WT",fill.color=c("red","blue"),fill.alpha = 0.8,
-         gene.num =2,signif="PValue",l2fc.threashold=0.3)
+         gene.num =2,signif="PValue",l2fc.threshold=0.3)
 ```
 
 ### DEHeatmap
 ```{r DEHeatmap,warning=FALSE ,fig.height = 10, fig.width = 10, fig.align = "center"}
 # DEHeatmap for DESeq2
 DEHeatmap(deobj = dds,deres = dds.results.ordered,group.key = "condition",
-          ref.group = "WT", signif="pvalue",l2fc.threashold=0.3)
+          ref.group = "WT", signif="pvalue",l2fc.threshold=0.3)
 # DEHeatmap for edgeR
 DEHeatmap(deobj = snon.edgeR,deres = all.res,group.key = "condition",
-          ref.group = "WT", signif="PValue",l2fc.threashold=0.3)
+          ref.group = "WT", signif="PValue",l2fc.threshold=0.3)
 ```
 
 ---------------------
@@ -357,8 +357,8 @@ DEHeatmap(deobj = snon.edgeR,deres = all.res,group.key = "condition",
 ## GO enrichment
 ```{r go, warning=FALSE}
 # save results to working directory
-# ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threashold = 0.3,enrich.type = "GO")
-all.go.results=ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threashold = 0.3,enrich.type = "GO",str.width = 50, save = F)
+# ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threshold = 0.3,enrich.type = "GO")
+all.go.results=ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threshold = 0.3,enrich.type = "GO",str.width = 50, save = F)
 ```
 
 ### Up regulated
@@ -394,8 +394,8 @@ down.go.res[["plot"]]
 ## KEGG enrichment
 ```{r kegg, warning=FALSE}
 # save results to working directory
-# ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threashold = 0.3,enrich.type = "KEGG")
-all.kegg.results=ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threashold = 0.3,enrich.type = "KEGG", str.width = 50, save = F)
+# ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threshold = 0.3,enrich.type = "KEGG")
+all.kegg.results=ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threshold = 0.3,enrich.type = "KEGG", str.width = 50, save = F)
 ```
 
 ### Up
@@ -474,14 +474,14 @@ m_t2g <- msigdbr(species = "Mus musculus", category = "C5") %>%
   dplyr::select(gs_name, entrez_gene)
 count.file <- system.file("extdata", "snon_count.txt", package = "DEbPeak")
 meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbPeak")
-ConductDESeq2(count.matrix.file = count.file, meta.file = meta.file, out.folder="/home/songyabing/R/learn/tmp/dekit",
-              signif = "pvalue", l2fc.threashold = 0.3,
+ConductDESeq2(count.matrix.file = count.file, meta.file = meta.file, out.folder="/home/songyabing/R/learn/tmp/dekit/AllInOne",
+              signif = "pvalue", l2fc.threshold = 0.3,
               group.key = "condition", ref.group = "WT",gmt.file = NULL, gene.sets = m_t2g)
 ```
 
 The structrue of results folder:
 ```{bash}
-tree /home/songyabing/R/learn/tmp/dekit
+tree /home/songyabing/R/learn/tmp/dekit/AllInOne
 ```
 
 ---------------------

@@ -8,8 +8,8 @@ ConductFE(
   deres,
   out.folder = NULL,
   signif = "padj",
-  signif.threashold = 0.05,
-  l2fc.threashold = 1,
+  signif.threshold = 0.05,
+  l2fc.threshold = 1,
   gene.key = NULL,
   gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"),
   org.db = "org.Mm.eg.db",
@@ -35,9 +35,9 @@ ConductFE(
 
 \item{signif}{Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.}
 
-\item{signif.threashold}{Significance threashold to get differentially expressed genes. Default: 0.05.}
+\item{signif.threshold}{Significance threshold to get differentially expressed genes. Default: 0.05.}
 
-\item{l2fc.threashold}{Log2 fold change threashold to get differentially expressed genes. Default: 1.}
+\item{l2fc.threshold}{Log2 fold change threshold to get differentially expressed genes. Default: 1.}
 
 \item{gene.key}{Column name in \code{deres} to conduct analysis. Default: NULL (use rownames of \code{deres}).}
 
@@ -89,5 +89,5 @@ dds$condition <- relevel(dds$condition, ref = "WT")
 dds <- DESeq(dds)
 dds.results <- results(dds, contrast = c("condition", "KO", "WT"))
 dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing = TRUE), ]
-ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threashold = 0.3)
+ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threshold = 0.3)
 }

@@ -14,7 +14,6 @@ ConductDESeq2(
   ref.group = NULL,
   out.folder = NULL,
   qc.ndepth = 10,
-  qc.legend.inset = -0.2,
   transform.method = c("rlog", "vst", "ntd"),
   var.genes = NULL,
   batch = NULL,
@@ -41,8 +40,8 @@ ConductDESeq2(
   show.term = 15,
   str.width = 30,
   signif = "padj",
-  signif.threashold = 0.05,
-  l2fc.threashold = 1,
+  signif.threshold = 0.05,
+  l2fc.threshold = 1,
   gene.map = NULL,
   gtf.file = NULL,
   norm.type = c("DESeq2", "TMM", "CPM", "RPKM", "TPM"),
@@ -77,8 +76,6 @@ ConductDESeq2(
 \item{out.folder}{Folder to save enrichment results. Default: wording directory.}
 
 \item{qc.ndepth}{Number of different sequencing depths to be simulated and plotted apart from the real depth. Default: 10. This parameter is only used by type "saturation".}
-
-\item{qc.legend.inset}{Inset distance(s) from the margins as a fraction of the plot region when legend is placed by keyword. Default: -0.2.}
 
 \item{transform.method}{Data transformation methods, chosen from rlog, vst and ntd. Default: rlog.}
 
@@ -130,9 +127,9 @@ ConductDESeq2(
 
 \item{signif}{Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.}
 
-\item{signif.threashold}{Significance threashold to get differentially expressed genes. Default: 0.05.}
+\item{signif.threshold}{Significance threshold to get differentially expressed genes. Default: 0.05.}
 
-\item{l2fc.threashold}{Log2 fold change threashold to get differentially expressed genes. Default: 1.}
+\item{l2fc.threshold}{Log2 fold change threshold to get differentially expressed genes. Default: 1.}
 
 \item{gene.map}{Use data frame instead of \code{org.db} to conduct gene id conversion, first column should be Gene. Default: NULL.}
 
@@ -173,5 +170,5 @@ Conduct Differential Axpression Analysis with DESeq2.
 # meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbPeak")
 # gmt.file <- system.file("extdata", "c5.go.cc.v7.5.1.entrez.gmt", package = "DEbPeak")
 # ConductDESeq2(count.matrix.file = count.file, meta.file = meta.file, group.key = "condition",
-#               count.type = "htseq-count", ref.group = "WT", signif = "pvalue", l2fc.threashold = 0.3, gmt.file = gmt.file)
+#               count.type = "htseq-count", ref.group = "WT", signif = "pvalue", l2fc.threshold = 0.3, gmt.file = gmt.file)
 }

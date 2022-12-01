@@ -9,7 +9,6 @@
 #' @param ref.group Reference group name. When set NULL, select first element of groups. Default: NULL.
 #' @param out.folder Folder to save enrichment results. Default: wording directory.
 #' @param qc.ndepth Number of different sequencing depths to be simulated and plotted apart from the real depth. Default: 10. This parameter is only used by type "saturation".
-#' @param qc.legend.inset Inset distance(s) from the margins as a fraction of the plot region when legend is placed by keyword. Default: -0.2.
 #' @param transform.method Data transformation methods, chosen from rlog, vst and ntd. Default: rlog.
 #' @param var.genes Select genes with larger variance for PCA analysis. Default: all genes.
 #' @param batch Batch column to conduct batch correction. Default value is NULL, do not conduct batch correction.
@@ -35,8 +34,8 @@
 #' @param show.term Number of enrichment term to show. Default: 15.
 #' @param str.width Length of enrichment term in plot. Default: 30.
 #' @param signif Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.
-#' @param signif.threashold Significance threashold to get differentially expressed genes. Default: 0.05.
-#' @param l2fc.threashold Log2 fold change threashold to get differentially expressed genes. Default: 1.
+#' @param signif.threshold Significance threshold to get differentially expressed genes. Default: 0.05.
+#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes. Default: 1.
 #' @param gene.map Use data frame instead of \code{org.db} to conduct gene id conversion, first column should be Gene. Default: NULL.
 #' @param gtf.file Gene annotation file used to get gene length, used if \code{norm.type=="RPKM"} or \code{norm.type=="TPM"}. Default: NULL.
 #' @param norm.type Normalization method, chosen from DESeq2, TMM, CPM, RPKM, TPM. Default: DESeq2.
@@ -59,7 +58,7 @@
 #' @importFrom SummarizedExperiment colData assay
 #' @importFrom grDevices colorRampPalette pdf dev.off
 #' @importFrom RColorBrewer brewer.pal
-#' @importFrom NOISeq readData dat explo.plot
+#' @importFrom NOISeq readData dat
 #' @importFrom DEFormats as.DESeqDataSet
 #' @importFrom stats dist cor prcomp as.formula
 #' @importFrom ggplotify as.ggplot
@@ -70,6 +69,7 @@
 #' @importFrom reshape2 melt
 #' @importFrom purrr set_names
 #' @importFrom dplyr filter group_by top_n mutate arrange desc select case_when mutate_at pull
+#' @importFrom scales comma
 #' @importFrom rrcov PcaGrid PcaHubert
 #' @import ggplot2
 #' @importFrom ggrepel geom_text_repel
@@ -95,15 +95,15 @@
 #' # meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbPeak")
 #' # gmt.file <- system.file("extdata", "c5.go.cc.v7.5.1.entrez.gmt", package = "DEbPeak")
 #' # ConductDESeq2(count.matrix.file = count.file, meta.file = meta.file, group.key = "condition",
-#' #               count.type = "htseq-count", ref.group = "WT", signif = "pvalue", l2fc.threashold = 0.3, gmt.file = gmt.file)
+#' #               count.type = "htseq-count", ref.group = "WT", signif = "pvalue", l2fc.threshold = 0.3, gmt.file = gmt.file)
 ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, group.key = NULL,
-                          count.type = c("htseq-count", "featurecounts"), min.count = 10, ref.group = NULL, out.folder = NULL,
-                          qc.ndepth = 10, qc.legend.inset = -0.2, transform.method = c("rlog", "vst", "ntd"),
+                          count.type = c("htseq-count", "featurecounts"), min.count = 10, ref.group = NULL,
+                          out.folder = NULL, qc.ndepth = 10, transform.method = c("rlog", "vst", "ntd"),
                           var.genes = NULL, batch = NULL, outlier.detection = T, rpca.method = c("PcaGrid", "PcaHubert"), k = 2,
                           pca.x = "PC1", pca.y = "PC2", pca.z = "PC3", loding.pc = 1:5, loading.gene.num = 10, loading.ncol = 2, enrich.loading.pc = 1:5, enrich.loading.gene = 200,
                           gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"), enrich.type = c("ALL", "GO", "KEGG"), go.type = c("ALL", "BP", "MF", "CC"),
                           enrich.pvalue = 0.05, enrich.qvalue = 0.05, org.db = "org.Mm.eg.db", organism = "mmu", padj.method = c("BH", "holm", "hochberg", "hommel", "bonferroni", "BY", "fdr", "none"),
-                          show.term = 15, str.width = 30, signif = "padj", signif.threashold = 0.05, l2fc.threashold = 1, gene.map = NULL, gtf.file = NULL, norm.type = c("DESeq2", "TMM", "CPM", "RPKM", "TPM"), log.counts = TRUE,
+                          show.term = 15, str.width = 30, signif = "padj", signif.threshold = 0.05, l2fc.threshold = 1, gene.map = NULL, gtf.file = NULL, norm.type = c("DESeq2", "TMM", "CPM", "RPKM", "TPM"), log.counts = TRUE,
                           deg.label.df = NULL, deg.label.key = NULL, deg.label.num = 2, deg.label.color = NULL,
                           fe.gene.key = NULL, gmt.file, gene.sets = NULL, minGSSize = 10, maxGSSize = 500, gsea.pvalue = 0.05) {
   # check parameters
@@ -176,7 +176,7 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
   # on raw dds
   message("Conduct Quality Control on Counts!")
   grDevices::pdf(file.path(out.folder, "CountQC_CPM.pdf"), width = 10, height = 6)
-  CountQC(deobj = raw.dds, group.key = group.key, type = "cpm", legend.inset = qc.legend.inset)
+  CountQC(deobj = raw.dds, group.key = group.key, type = "cpm")
   grDevices::dev.off()
   grDevices::pdf(file.path(out.folder, "CountQC_saturation.pdf"), width = 10, height = 6)
   CountQC(deobj = raw.dds, group.key = group.key, type = "saturation", ndepth = qc.ndepth, min.count = min.count)
@@ -282,14 +282,14 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
   dds.results.ordered <- IDConversion(deres = dds.results.ordered, gene.type = gene.type, org.db = org.db, gene.map = gene.map)
 
   dds.results.selected <- as.data.frame(dds.results.ordered) %>% tibble::rownames_to_column(var = "Gene")
-  dds.results.sig <- dds.results.selected[dds.results.selected[signif] <= signif.threashold & abs(dds.results.selected["log2FoldChange"]) >= l2fc.threashold, ] %>%
+  dds.results.sig <- dds.results.selected[dds.results.selected[signif] <= signif.threshold & abs(dds.results.selected["log2FoldChange"]) >= l2fc.threshold, ] %>%
     tidyr::drop_na()
   # create output folder
   deg.results.folder <- file.path(out.folder, "DEG")
   dir.create(deg.results.folder, showWarnings = FALSE, recursive = TRUE)
   setwd(deg.results.folder)
   # save degs
-  out.deg.str <- paste0(signif, signif.threashold, "_FC", l2fc.threashold, ".csv")
+  out.deg.str <- paste0(signif, signif.threshold, "_FC", l2fc.threshold, ".csv")
   utils::write.csv(as.data.frame(dds.results.sig),
     file = paste("Condition", treat.group, ref.group, out.deg.str, sep = "_")
   )
@@ -308,40 +308,40 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
   message("Visualize Differential Expression Analysis!")
   grDevices::pdf("DEG_VolcanoPlot.pdf", width = 8, height = 10)
   VolcanoPlot(dds.results.ordered,
-    signif = signif, signif.threashold = signif.threashold, l2fc.threashold = l2fc.threashold,
+    signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold,
     label.num = deg.label.num, label.df = deg.label.df, label.key = deg.label.key, label.color = deg.label.color
   )
   grDevices::dev.off()
   grDevices::pdf("DEG_ScatterPlot.pdf", width = 8, height = 9)
   ScatterPlot(
     deobj = dds, deres = dds.results.ordered, group.key = group.key, ref.group = ref.group,
-    signif = signif, signif.threashold = signif.threashold, l2fc.threashold = l2fc.threashold,
+    signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold,
     label.num = deg.label.num, label.df = deg.label.df, label.key = deg.label.key, label.color = deg.label.color
   )
   grDevices::dev.off()
   grDevices::pdf("DEG_MAPlot.pdf", width = 10, height = 8)
   MAPlot(dds.results.ordered,
-    signif = signif, signif.threashold = signif.threashold, l2fc.threashold = l2fc.threashold,
+    signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold,
     label.num = deg.label.num, label.df = deg.label.df, label.key = deg.label.key, label.color = deg.label.color
   )
   grDevices::dev.off()
   grDevices::pdf("DEG_RankPlot.pdf", width = 8, height = 9)
   RankPlot(dds.results.ordered,
-    signif = signif, signif.threashold = signif.threashold, l2fc.threashold = l2fc.threashold,
+    signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold,
     label.num = deg.label.num, label.df = deg.label.df, label.key = deg.label.key, label.color = deg.label.color
   )
   grDevices::dev.off()
   grDevices::pdf("DEG_GenePlot.pdf", width = 8, height = 9)
   GenePlot(
     deobj = dds, deres = dds.results.ordered, group.key = group.key, ref.group = ref.group,
-    signif = signif, signif.threashold = signif.threashold, l2fc.threashold = l2fc.threashold,
+    signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold,
     gene.num = deg.label.num, gene.df = deg.label.df, label.key = deg.label.key
   )
   grDevices::dev.off()
   grDevices::pdf("DEG_Heatmap.pdf", width = 10, height = 8)
   DEHeatmap(
     deobj = dds, deres = dds.results.ordered, group.key = group.key, ref.group = ref.group,
-    signif = signif, signif.threashold = signif.threashold, l2fc.threashold = l2fc.threashold, gene.df = deg.label.df, label.key = deg.label.key
+    signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold, gene.df = deg.label.df, label.key = deg.label.key
   )
   grDevices::dev.off()
   setwd(out.folder)
@@ -352,7 +352,7 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
   dir.create(fe.results.folder, showWarnings = FALSE, recursive = TRUE)
   setwd(fe.results.folder)
   ConductFE(
-    deres = dds.results.ordered, out.folder = fe.results.folder, signif = signif, signif.threashold = signif.threashold, l2fc.threashold = l2fc.threashold,
+    deres = dds.results.ordered, out.folder = fe.results.folder, signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold,
     gene.key = fe.gene.key, gene.type = gene.type, enrich.type = enrich.type, go.type = go.type, enrich.pvalue = enrich.pvalue,
     enrich.qvalue = enrich.qvalue, org.db = org.db, organism = organism, padj.method = padj.method, show.term = show.term, str.width = str.width
   )

@@ -1,0 +1,41 @@
+destination: docs
+
+url: https://showteeth.github.io/DEbPeak/
+
+template:
+  bootstrap: 5
+  bootswatch: flatly
+
+navbar:
+  left:
+    - icon: fa-home fa-lg
+      href: index.html
+    - text: Getting Started
+      href: articles/DEbPeak_All.html
+    - text: Articles
+      menu:
+      - text: Quality Control
+        href: articles/QualityControl.html
+      - text: Principal Component Analysis
+        href: articles/PrincipalComponentAnalysis.html
+      - text: Differential Expression Analysis
+        href: articles/DifferentialExpressionAnalysis.html
+      - text: Functional Enrichment Analysis
+        href: articles/FunctionalEnrichmentAnalysis.html
+      - text: Integrate RNA-seq and ChIP-seq
+        href: articles/IntegrateChIP.html
+      - text: Integrate RNA-seq and ATAC-seq
+        href: articles/IntegrateATAC.html
+      - text: Integrate RNA-seq ChIP-seq and ATAC-seq
+        href: articles/IntegrateChIPATAC.html
+      - text: Utils
+        href: articles/Utils.html
+      - text: Web server tutorial
+        href: articles/Tutorial.html
+    - text: Reference
+      href: reference/index.html
+    - text: Change log
+      href: news/index.html
+  right:
+    - icon: fa-github fa-lg
+      href: https://github.com/showteeth/DEbPeak

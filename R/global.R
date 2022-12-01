@@ -25,6 +25,7 @@
   utils::globalVariables("Group1")
   utils::globalVariables("Group2")
   utils::globalVariables("ONTOLOGY")
+  utils::globalVariables("Rank")
 
   invisible()
 }

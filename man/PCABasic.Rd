@@ -8,7 +8,7 @@ PCABasic(
   pca,
   x = "PC1",
   y = "PC2",
-  explain.threashold = 90,
+  explain.threshold = 90,
   loading.num = 5,
   loading.label.size = 3,
   loading.label.color = "red",
@@ -25,7 +25,7 @@ PCABasic(
 
 \item{y}{The principal component to display on the y axis. Default: PC2.}
 
-\item{explain.threashold}{The threashold of explained variance. Default: 90.}
+\item{explain.threshold}{The threshold of explained variance. Default: 90.}
 
 \item{loading.num}{Select loading gene number based on absolute ordered variable loading for each PC in the biplot. Default: 5.}
 

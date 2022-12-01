@@ -49,8 +49,8 @@ head(dds.results.ordered)
 ## GO enrichment
 ```{r go, message=FALSE, warning=FALSE}
 # save results to working directory
-# ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threashold = 0.3,enrich.type = "GO")
-all.go.results=ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threashold = 0.3,enrich.type = "GO",str.width = 50, save = F)
+# ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threshold = 0.3,enrich.type = "GO")
+all.go.results=ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threshold = 0.3,enrich.type = "GO",str.width = 50, save = F)
 ```
 
 ### Up regulated genes
@@ -90,8 +90,8 @@ down.go.res[["plot"]]
 ## KEGG enrichment
 ```{r kegg, message=FALSE, warning=FALSE}
 # save results to working directory
-# ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threashold = 0.3,enrich.type = "KEGG")
-all.kegg.results=ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threashold = 0.3,enrich.type = "KEGG", str.width = 50, save = F)
+# ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threshold = 0.3,enrich.type = "KEGG")
+all.kegg.results=ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threshold = 0.3,enrich.type = "KEGG", str.width = 50, save = F)
 ```
 
 ### Up regulated genes
@@ -163,7 +163,8 @@ head(gsea.results.table)
 
 ### Visualization
 ```{r gsea_plot, fig.height = 6, fig.width = 8, fig.align = "center", warning=FALSE}
-gsea.results[["plot"]]
+# empty GSEA results, do not visualize
+# VisGSEA(gsea.res = gsea.results$gsea, gs.id = c(1,2))
 ```
 
 <hr />

@@ -33,15 +33,7 @@ By the way, all plots generated are **publication-ready** , and most of them are
 <hr />
 
 ## Installation
-You can install the released version of `DEbPeak` from [Bioconductor](https://bioconductor.org/) with:
-```R
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-
-BiocManager::install("DEbPeak")
-```
-
-Or install the package via the Github repository:
+You can install the package via the Github repository:
 
 ``` r
 # install.package("remotes")   #In case you have not installed it.

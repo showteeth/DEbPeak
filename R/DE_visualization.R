@@ -3,8 +3,8 @@
 #' @param deres Data frame contains all genes.
 #' @param signif Significance criterion. For DESeq2 results, can be chosen from padj, pvalue.
 #' For edgeR results, can be chosen from FDR, PValue. Default: padj.
-#' @param signif.threashold Significance threashold to get differentially expressed genes. Default: 0.05.
-#' @param l2fc.threashold Log2 fold change threashold to get differentially expressed genes. Default: 1.
+#' @param signif.threshold Significance threshold to get differentially expressed genes. Default: 0.05.
+#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes. Default: 1.
 #'
 #' @return A data frame.
 #' @importFrom magrittr %>%
@@ -29,10 +29,10 @@
 #' dds.results <- results(dds, contrast = c("condition", "KO", "WT"))
 #' dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing = TRUE), ]
 #' dds.degs <- ExtractDEG(
-#'   deres = dds.results.ordered, signif = "padj", signif.threashold = 0.05,
-#'   l2fc.threashold = 1
+#'   deres = dds.results.ordered, signif = "padj", signif.threshold = 0.05,
+#'   l2fc.threshold = 1
 #' )
-ExtractDEG <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.threashold = 1) {
+ExtractDEG <- function(deres, signif = "padj", signif.threshold = 0.05, l2fc.threshold = 1) {
   # make sure the input is dataframe
   deres <- as.data.frame(deres)
   if ("FDR" %in% colnames(deres)) {
@@ -49,9 +49,9 @@ ExtractDEG <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.th
     # classfy results
     de.df <- de.df %>%
       dplyr::mutate(regulation = dplyr::case_when(
-        logFC > l2fc.threashold & .data[[signif]] < signif.threashold ~ "Up_regulated",
-        logFC < -l2fc.threashold & .data[[signif]] < signif.threashold ~ "Down_regulated",
-        abs(logFC) <= l2fc.threashold | .data[[signif]] >= signif.threashold ~ "Not_regulated"
+        logFC > l2fc.threshold & .data[[signif]] < signif.threshold ~ "Up_regulated",
+        logFC < -l2fc.threshold & .data[[signif]] < signif.threshold ~ "Down_regulated",
+        abs(logFC) <= l2fc.threshold | .data[[signif]] >= signif.threshold ~ "Not_regulated"
       )) %>%
       dplyr::mutate_at(vars(regulation), as.factor) %>%
       tidyr::drop_na(regulation)
@@ -70,9 +70,9 @@ ExtractDEG <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.th
     # classfy results
     de.df <- de.df %>%
       dplyr::mutate(regulation = dplyr::case_when(
-        log2FoldChange > l2fc.threashold & .data[[signif]] < signif.threashold ~ "Up_regulated",
-        log2FoldChange < -l2fc.threashold & .data[[signif]] < signif.threashold ~ "Down_regulated",
-        abs(log2FoldChange) <= l2fc.threashold | .data[[signif]] >= signif.threashold ~ "Not_regulated"
+        log2FoldChange > l2fc.threshold & .data[[signif]] < signif.threshold ~ "Up_regulated",
+        log2FoldChange < -l2fc.threshold & .data[[signif]] < signif.threshold ~ "Down_regulated",
+        abs(log2FoldChange) <= l2fc.threshold | .data[[signif]] >= signif.threshold ~ "Not_regulated"
       )) %>%
       dplyr::mutate_at(vars(regulation), as.factor) %>%
       tidyr::drop_na(regulation)
@@ -83,7 +83,7 @@ ExtractDEG <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.th
 
 
 # classify up, down and not differentially expressed
-PrepareDEPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.threashold = 1, label.key = NULL) {
+PrepareDEPlot <- function(deres, signif = "padj", signif.threshold = 0.05, l2fc.threshold = 1, label.key = NULL) {
   deres <- as.data.frame(deres)
   if ("FDR" %in% colnames(deres)) {
     message("Differential expression analysis with edgeR!")
@@ -125,9 +125,9 @@ PrepareDEPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc
 
   de.df <- de.df %>%
     dplyr::mutate(regulation = dplyr::case_when(
-      log2FoldChange > l2fc.threashold & signif < signif.threashold ~ "Up_regulated",
-      log2FoldChange < -l2fc.threashold & signif < signif.threashold ~ "Down_regulated",
-      abs(log2FoldChange) <= l2fc.threashold | signif >= signif.threashold ~ "Not_regulated"
+      log2FoldChange > l2fc.threshold & signif < signif.threshold ~ "Up_regulated",
+      log2FoldChange < -l2fc.threshold & signif < signif.threshold ~ "Down_regulated",
+      abs(log2FoldChange) <= l2fc.threshold | signif >= signif.threshold ~ "Not_regulated"
     )) %>%
     dplyr::mutate_at(vars(regulation), as.factor) %>%
     tidyr::drop_na(regulation)
@@ -141,12 +141,12 @@ PrepareDEPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc
 #' @param deres Data frame contains all genes.
 #' @param signif Significance criterion. For DESeq2 results, can be chosen from padj, pvalue.
 #' For edgeR results, can be chosen from FDR, PValue. Default: padj.
-#' @param signif.threashold Significance threashold to get differentially expressed genes. Default: 0.05.
-#' @param l2fc.threashold Log2 fold change threashold to get differentially expressed genes. Default: 1.
+#' @param signif.threshold Significance threshold to get differentially expressed genes. Default: 0.05.
+#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes. Default: 1.
 #' @param point.alpha Opacity of a geom. Default: 0.6.
 #' @param point.size.vec Point size for regular(DEG or non-DEG) and(or) labeled points.
 #' Default: 2 for regular and 4 for labeled points.
-#' @param linetype Threashold linetype. Default: 2.
+#' @param linetype Threshold linetype. Default: 2.
 #' @param point.color.vec Point color for Down, Not, Up regulated genes.
 #' Default: red for Up, grey for Not and blue for Down.
 #' @param legend.pos Legend position. Default: top.
@@ -184,13 +184,13 @@ PrepareDEPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc
 #' dds <- DESeq(dds)
 #' dds.results <- results(dds, contrast = c("condition", "KO", "WT"))
 #' dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing = TRUE), ]
-#' VolcanoPlot(dds.results.ordered, signif = "pvalue", l2fc.threashold = 0.3, label.num = 2, point.alpha = 0.8, label.color = c("purple", "green"), tick.trans = NULL)
-VolcanoPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.threashold = 1,
+#' VolcanoPlot(dds.results.ordered, signif = "pvalue", l2fc.threshold = 0.3, label.num = 2, point.alpha = 0.8, label.color = c("purple", "green"), tick.trans = NULL)
+VolcanoPlot <- function(deres, signif = "padj", signif.threshold = 0.05, l2fc.threshold = 1,
                         point.alpha = 0.6, point.size.vec = c(2, 4), linetype = 2, point.color.vec = c("blue", "grey", "red"), legend.pos = "top",
                         label.num = NULL, label.df = NULL, label.key = NULL, label.color = NULL,
                         tick.trans = NULL, ticklabel.break = NULL) {
   # preapare DE dataframe
-  de.df <- PrepareDEPlot(deres = deres, signif = signif, signif.threashold = signif.threashold, l2fc.threashold = l2fc.threashold, label.key = label.key)
+  de.df <- PrepareDEPlot(deres = deres, signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold, label.key = label.key)
   up.de.df <- de.df %>% dplyr::filter(regulation == "Up_regulated")
   down.de.df <- de.df %>% dplyr::filter(regulation == "Down_regulated")
 
@@ -204,8 +204,8 @@ VolcanoPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.t
       size = point.size.vec[1], alpha = point.alpha
     ) +
     scale_color_manual(values = point.color.vec) +
-    geom_vline(xintercept = c(-l2fc.threashold, l2fc.threashold), lty = linetype) +
-    geom_hline(yintercept = -log10(signif.threashold), lty = linetype) +
+    geom_vline(xintercept = c(-l2fc.threshold, l2fc.threshold), lty = linetype) +
+    geom_hline(yintercept = -log10(signif.threshold), lty = linetype) +
     theme_classic(base_size = 14) +
     theme(legend.position = legend.pos) +
     labs(x = "log2FoldChange", y = paste0("-log10(", signif, ")"), color = "")
@@ -307,8 +307,8 @@ VolcanoPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.t
 #' @param ref.group Reference group name. When set NULL, select first element of groups. Default: NULL.
 #' @param base A positive or complex number: the base with respect to which logarithms are computed. Default: 10.
 #' @param signif Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.
-#' @param signif.threashold Significance threashold to get differentially expressed genes. Default: 0.05.
-#' @param l2fc.threashold Log2 fold change threashold to get differentially expressed genes. Default: 1.
+#' @param signif.threshold Significance threshold to get differentially expressed genes. Default: 0.05.
+#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes. Default: 1.
 #' @param point.alpha Opacity of a geom. Default: 0.6.
 #' @param point.size.vec Point size for regular(DEG or non-DEG) and(or) labeled points. Default: 2 for regular and 4 for labeled points.
 #' @param linetype Diagonal linetype. Default: 2.
@@ -347,9 +347,9 @@ VolcanoPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.t
 #' dds <- DESeq(dds)
 #' dds.results <- results(dds, contrast = c("condition", "KO", "WT"))
 #' dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing = TRUE), ]
-#' ScatterPlot(deobj = dds, deres = dds.results.ordered, group.key = "condition", ref.group = "WT", signif = "pvalue", l2fc.threashold = 0.3, label.num = 2, point.alpha = 0.8, label.color = c("purple", "green"))
+#' ScatterPlot(deobj = dds, deres = dds.results.ordered, group.key = "condition", ref.group = "WT", signif = "pvalue", l2fc.threshold = 0.3, label.num = 2, point.alpha = 0.8, label.color = c("purple", "green"))
 ScatterPlot <- function(deobj, deres, group.key = NULL, ref.group = NULL, base = 10,
-                        signif = "padj", signif.threashold = 0.05, l2fc.threashold = 1,
+                        signif = "padj", signif.threshold = 0.05, l2fc.threshold = 1,
                         point.alpha = 0.6, point.size.vec = c(2, 4), linetype = 2, point.color.vec = c("blue", "grey", "red"), legend.pos = "top",
                         label.num = NULL, label.df = NULL, label.key = NULL, label.color = NULL) {
   # identify analysis method
@@ -397,7 +397,7 @@ ScatterPlot <- function(deobj, deres, group.key = NULL, ref.group = NULL, base =
   # get log transformed matrix
   log.mean.matrix <- round(log(mean.matrix + 1, base = base), digits = 4)
   # preapare DE dataframe
-  de.df <- PrepareDEPlot(deres = deres, signif = signif, signif.threashold = signif.threashold, l2fc.threashold = l2fc.threashold, label.key = label.key)
+  de.df <- PrepareDEPlot(deres = deres, signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold, label.key = label.key)
   # merge info
   de.df <- merge(de.df, log.mean.matrix, by.x = "Gene", by.y = 0)
 
@@ -500,11 +500,11 @@ ScatterPlot <- function(deobj, deres, group.key = NULL, ref.group = NULL, base =
 #'
 #' @param deres Data frame contains all genes.
 #' @param signif Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.
-#' @param signif.threashold Significance threashold to get differentially expressed genes. Default: 0.05.
-#' @param l2fc.threashold Log2 fold change threashold to get differentially expressed genes. Default: 1.
+#' @param signif.threshold Significance threshold to get differentially expressed genes. Default: 0.05.
+#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes. Default: 1.
 #' @param point.alpha Opacity of a geom. Default: 0.6.
 #' @param point.size.vec Point size for regular(DEG or non-DEG) and(or) labeled points. Default: 2 for regular and 4 for labeled points.
-#' @param linetype Threashold linetype. Default: 2.
+#' @param linetype Threshold linetype. Default: 2.
 #' @param point.color.vec Point color for Down, Not, Up regulated genes. Default: red for Up, grey for Not and blue for Down.
 #' @param legend.pos Legend position. Default: top.
 #' @param label.num Gene number to label, choose according to log2FoldChange. When \code{label.df} is set NULL, use this to determine genes to label. Default: NULL.
@@ -536,12 +536,12 @@ ScatterPlot <- function(deobj, deres, group.key = NULL, ref.group = NULL, base =
 #' dds <- DESeq(dds)
 #' dds.results <- results(dds, contrast = c("condition", "KO", "WT"))
 #' dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing = TRUE), ]
-#' MAPlot(dds.results.ordered, signif = "pvalue", l2fc.threashold = 0.3, label.num = 2, point.alpha = 0.8, label.color = c("purple", "green"))
-MAPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.threashold = 1,
+#' MAPlot(dds.results.ordered, signif = "pvalue", l2fc.threshold = 0.3, label.num = 2, point.alpha = 0.8, label.color = c("purple", "green"))
+MAPlot <- function(deres, signif = "padj", signif.threshold = 0.05, l2fc.threshold = 1,
                    point.alpha = 0.6, point.size.vec = c(2, 4), linetype = 2, point.color.vec = c("blue", "grey", "red"), legend.pos = "top",
                    label.num = NULL, label.df = NULL, label.key = NULL, label.color = NULL) {
   # preapare DE dataframe
-  de.df <- PrepareDEPlot(deres = deres, signif = signif, signif.threashold = signif.threashold, l2fc.threashold = l2fc.threashold, label.key = label.key)
+  de.df <- PrepareDEPlot(deres = deres, signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold, label.key = label.key)
   # determine analysis method
   if ("FDR" %in% colnames(deres)) {
     x.label <- "Average log CPM"
@@ -562,7 +562,7 @@ MAPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.threas
       size = point.size.vec[1], alpha = point.alpha
     ) +
     scale_color_manual(values = point.color.vec) +
-    geom_hline(yintercept = c(-l2fc.threashold, l2fc.threashold), lty = linetype) +
+    geom_hline(yintercept = c(-l2fc.threshold, l2fc.threshold), lty = linetype) +
     theme_classic(base_size = 14) +
     theme(legend.position = legend.pos) +
     labs(x = x.label, color = "") +
@@ -643,11 +643,11 @@ MAPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.threas
 #'
 #' @param deres Data frame contains all genes.
 #' @param signif Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.
-#' @param signif.threashold Significance threashold to get differentially expressed genes. Default: 0.05.
-#' @param l2fc.threashold Log2 fold change threashold to get differentially expressed genes. Default: 1.
+#' @param signif.threshold Significance threshold to get differentially expressed genes. Default: 0.05.
+#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes. Default: 1.
 #' @param point.alpha Opacity of a geom. Default: 0.6.
 #' @param point.size.vec Point size for regular(DEG or non-DEG) and(or) labeled points. Default: 2 for regular and 4 for labeled points.
-#' @param linetype Threashold linetype. Default: 2.
+#' @param linetype Threshold linetype. Default: 2.
 #' @param point.color.vec Point color for Down, Up regulated genes. Default: red for Up and blue for Down.
 #' @param legend.pos Legend position. Default: top.
 #' @param label.num Gene number to label, choose according to log2FoldChange. When \code{label.df} is set NULL, use this to determine genes to label. Default: NULL.
@@ -679,12 +679,12 @@ MAPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.threas
 #' dds <- DESeq(dds)
 #' dds.results <- results(dds, contrast = c("condition", "KO", "WT"))
 #' dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing = TRUE), ]
-#' RankPlot(dds.results.ordered, signif = "pvalue", l2fc.threashold = 0.3, label.num = 2, point.alpha = 0.8, label.color = c("purple", "green"))
-RankPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.threashold = 1,
+#' RankPlot(dds.results.ordered, signif = "pvalue", l2fc.threshold = 0.3, label.num = 2, point.alpha = 0.8, point.color.vec = c("purple", "green"))
+RankPlot <- function(deres, signif = "padj", signif.threshold = 0.05, l2fc.threshold = 1,
                      point.alpha = 0.6, point.size.vec = c(2, 4), linetype = 2, point.color.vec = c("blue", "red"), legend.pos = "top",
                      label.num = NULL, label.df = NULL, label.key = NULL, label.color = NULL) {
   # preapare DE dataframe
-  de.df <- PrepareDEPlot(deres = deres, signif = signif, signif.threashold = signif.threashold, l2fc.threashold = l2fc.threashold, label.key = label.key)
+  de.df <- PrepareDEPlot(deres = deres, signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold, label.key = label.key)
   up.de.df <- de.df %>% dplyr::filter(regulation == "Up_regulated")
   down.de.df <- de.df %>% dplyr::filter(regulation == "Down_regulated")
   deg.df <- as.data.frame(rbind(up.de.df, down.de.df)) %>% dplyr::arrange(dplyr::desc(log2FoldChange))
@@ -794,8 +794,8 @@ RankPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.thre
 #' @param plot.col Column number of final plot. Default: 2.
 #' @param scales Scales same as \code{\link{facet_wrap}}.
 #' @param signif Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.
-#' @param signif.threashold Significance threashold to get differentially expressed genes. Default: 0.05.
-#' @param l2fc.threashold Log2 fold change threashold to get differentially expressed genes. Default: 1.
+#' @param signif.threshold Significance threshold to get differentially expressed genes. Default: 0.05.
+#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes. Default: 1.
 #' @param legend.pos Legend position. Default: top.
 #'
 #' @return A ggplot2 object.
@@ -826,10 +826,10 @@ RankPlot <- function(deres, signif = "padj", signif.threashold = 0.05, l2fc.thre
 #' dds <- DESeq(dds)
 #' dds.results <- results(dds, contrast = c("condition", "KO", "WT"))
 #' dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing = TRUE), ]
-#' GenePlot(deobj = dds, deres = dds.results.ordered, group.key = "condition", ref.group = "WT", fill.color = c("red", "blue"), fill.alpha = 0.8, gene.num = 2, signif = "pvalue", l2fc.threashold = 0.3)
+#' GenePlot(deobj = dds, deres = dds.results.ordered, group.key = "condition", ref.group = "WT", fill.color = c("red", "blue"), fill.alpha = 0.8, gene.num = 2, signif = "pvalue", l2fc.threshold = 0.3)
 GenePlot <- function(deobj, deres, group.key = NULL, ref.group = NULL, base = 10, fill.color = c("blue", "red"), fill.alpha = 0.6,
                      gene.df = NULL, label.key = NULL, gene.num = 2, plot.col = 2, scales = "free",
-                     signif = "padj", signif.threashold = 0.05, l2fc.threashold = 1, legend.pos = "top") {
+                     signif = "padj", signif.threshold = 0.05, l2fc.threshold = 1, legend.pos = "top") {
   # identify analysis method
   if (class(deobj) == "DGEList") {
     counts.matrix <- edgeR::cpm(deobj, normalized.lib.sizes = TRUE)
@@ -865,7 +865,7 @@ GenePlot <- function(deobj, deres, group.key = NULL, ref.group = NULL, base = 10
       stop("Please specify gene or gene.num!")
     } else {
       # preapare DE dataframe
-      de.df <- PrepareDEPlot(deres = deres, signif = signif, signif.threashold = signif.threashold, l2fc.threashold = l2fc.threashold, label.key = label.key)
+      de.df <- PrepareDEPlot(deres = deres, signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold, label.key = label.key)
       up.plot.df <- de.df %>%
         dplyr::filter(regulation == "Up_regulated") %>%
         dplyr::top_n(n = gene.num, wt = log2FoldChange)
@@ -929,8 +929,8 @@ GenePlot <- function(deobj, deres, group.key = NULL, ref.group = NULL, base = 10
 #' the second column should not be in \code{deres}.
 #' @param label.key Which column to use as label. Default: NULL. When set NULL, use rownames of \code{deres} or Gene column of \code{gene.df}.
 #' @param signif Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.
-#' @param signif.threashold Significance threashold to get differentially expressed genes. Default: 0.05.
-#' @param l2fc.threashold Log2 fold change threashold to get differentially expressed genes. Default: 1.
+#' @param signif.threshold Significance threshold to get differentially expressed genes. Default: 0.05.
+#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes. Default: 1.
 #' @param exp.range Z-score range to plot. Default: c(-2,2).
 #' @param exp.color Color map used for heatmap. Default: c("green","black","red").
 #' @param heatmap.height The height of whole heatmap. Default: 20cm.
@@ -966,9 +966,9 @@ GenePlot <- function(deobj, deres, group.key = NULL, ref.group = NULL, base = 10
 #' dds <- DESeq(dds)
 #' dds.results <- results(dds, contrast = c("condition", "KO", "WT"))
 #' dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing = TRUE), ]
-#' DEHeatmap(deobj = dds, deres = dds.results.ordered, group.key = "condition", ref.group = "WT", signif = "pvalue", l2fc.threashold = 0.3)
+#' DEHeatmap(deobj = dds, deres = dds.results.ordered, group.key = "condition", ref.group = "WT", signif = "pvalue", l2fc.threshold = 0.3)
 DEHeatmap <- function(deobj, deres, group.key = NULL, ref.group = NULL, group.color = c("blue", "red"), gene.df = NULL, label.key = NULL,
-                      signif = "padj", signif.threashold = 0.05, l2fc.threashold = 1,
+                      signif = "padj", signif.threshold = 0.05, l2fc.threshold = 1,
                       exp.range = c(-2, 2), exp.color = c("green", "black", "red"), heatmap.height = 20, heatmap.width = 20,
                       col.gap = 2, legend.height = 5, link.height = 4) {
   # identify analysis method
@@ -1003,7 +1003,7 @@ DEHeatmap <- function(deobj, deres, group.key = NULL, ref.group = NULL, group.co
   treat.samples <- metadata[metadata[, group.key] == treat.group, ] %>% dplyr::pull(Sample)
 
   # preapare DE dataframe
-  de.df <- PrepareDEPlot(deres = deres, signif = signif, signif.threashold = signif.threashold, l2fc.threashold = l2fc.threashold, label.key = label.key)
+  de.df <- PrepareDEPlot(deres = deres, signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold, label.key = label.key)
   deg.df <- de.df %>% dplyr::filter(regulation != "Not_regulated")
   # get plot genes
   if (is.null(gene.df)) {

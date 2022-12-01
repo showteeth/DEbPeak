@@ -11,8 +11,6 @@ CountQC(
   min.count = 0,
   ndepth = 10,
   cat.colors = NULL,
-  legend.col = NULL,
-  legend.inset = -0.2,
   ...
 )
 }
@@ -27,11 +25,7 @@ CountQC(
 
 \item{ndepth}{Number of different sequencing depths to be simulated and plotted apart from the real depth. Default: 10. This parameter is only used by type "saturation".}
 
-\item{cat.colors}{Color used for different CPM Threshold group. Default: NULL.}
-
-\item{legend.col}{Column number of legend. Default: NULL(length of CPM Threshold group).}
-
-\item{legend.inset}{Inset distance(s) from the margins as a fraction of the plot region when legend is placed by keyword. Default: -0.2.}
+\item{cat.colors}{Color used for different CPM Threshold groups or samples. Default: NULL (auto-selection).}
 
 \item{...}{Parameters for \code{\link{dat}}.}
 }

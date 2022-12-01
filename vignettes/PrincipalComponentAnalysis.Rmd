@@ -43,9 +43,9 @@ pca.res=PCA(deobj = dds,remove.sample = outlier.res$outlier,transform.method = "
 basic.plots=PCABasic(pca.res,colby="condition",legend.pos = "right")
 ```
 
-### Screen plot
+### Scree plot
 A Scree Plot is a simple line plot that shows the total amount of variance that can be explained by each individual PC (Y-axis shows explained variance, X-axis shows the number of PCs). It can be used to **determine the number of PCs to be explored for downstream analysis**. Here, we created a **cumulative scree plot** based on [PCAtools](https://github.com/kevinblighe/PCAtools), the red dashed line represents 90% explained variance.
-```{r pca_basic_screen, message=FALSE, warning=FALSE, fig.height = 5, fig.width = 4, fig.align = "center"}
+```{r pca_basic_screen, message=FALSE, warning=FALSE, fig.height = 5, fig.width = 6, fig.align = "center"}
 basic.plots[["screen"]]
 ```
 
@@ -60,7 +60,7 @@ Biplot contains informations from [two aspects](https://blog.bioturing.com/2018/
   - the angle between vectors indicates how vectors/genes correlate with one another: a small angle implies positive correlation, a large one suggests negative correlation, and a 90 degree angle indicates no correlation between two vectors/genes.
   
 The biplot is created based on [PCAtools](https://github.com/kevinblighe/PCAtools):
-```{r pca_basic_biplot, message=FALSE, warning=FALSE, fig.height = 10, fig.width = 8, fig.align = "center"}
+```{r pca_basic_biplot, message=FALSE, warning=FALSE, fig.height = 6, fig.width = 5, fig.align = "center"}
 basic.plots[["biplot"]]
 ```
 
