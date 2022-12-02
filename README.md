@@ -1,16 +1,40 @@
-# DEbPeak - Explore, visualize, interpret RNA-seq data and decipher gene's regulation.
+<style type="text/css" rel="stylesheet">
+.table {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+td, th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2;}
+
+tr:hover {background-color: #ddd;}
+
+th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
+}
+</style>
+
+# DEbPeak - Explore, visualize, interpret RNA-seq data and unravel the regulation of gene expression.
 
 <img src = "man/figures/DEbPeak.png" align = "right" width = "200"/>
 
 ## Introduction
-`DEbPeak` aims to **explore**, **visualize**, **interpret** RNA-seq data and **decipher gene's regulation** by combining ChIP-seq and ATAC-seq data. It contains **six functional modules**:
+`DEbPeak` aims to **explore**, **visualize**, **interpret** RNA-seq data and **unravel the regulation of gene expression** by combining ChIP-seq and ATAC-seq data. It contains **six functional modules**:
 
 * **Quality Control (QC)**: QC on count matrix and samples. 
   - QC on count matrix: Proportion of genes detected in different samples under different CPM thresholds and the saturation of the number of genes detected.
-  - QC on samples: Euclidean distance and pearson correlation coefficient of samples across different conditions, sample similarity on selected principal components (check batch informatio and conduct batch correction) and outlier detection with robust PCA.
+  - QC on samples: Euclidean distance and pearson correlation coefficient of samples across different conditions, sample similarity on selected principal components (check batch information and conduct batch correction) and outlier detection with robust PCA.
 * **Principal Component Analysis (PCA)**: this module can be divided into three sub modules, basic info, loading related and 3D visualization.
-  - basic info: screen plot (help to select the useful PCs), biplot (sample similarity with corresponding loading genes) and PC pairs plot (sample similarity under different PC combinations).
-  - loading related: visualize positive and negative loading genes on selected PCs, conduct GO enrichment analysis on selected loading genes of selected PC.
+  - Basic info: scree plot (help to select the useful PCs), biplot (sample similarity with corresponding genes with larger loadings) and PC pairs plot (sample similarity under different PC combinations).
+  - Loading related: visualize genes with larger positive and negative loadings on selected PCs, conduct GO enrichment analysis on genes with larger positive and negative loadings on selected PCs.
   - 3D visualization: visualize samples on three selected PCs.
 * **Differential Expression Gene Visualization**: this module includes six powerful visualization methods (Volcano Plot, Scatter Plot, MA Plot, Rank Plot, Gene Plot, Heatmap).
 * **Functional Enrichment Analysis (FEA)**: GO enrichment analysis, KEGG enrichment analysis, Gene Set Enrichment Analysis (GSEA).
@@ -26,11 +50,16 @@
   - Find motif on integrated results: This is a step unique to ATAC-seq. Due to the nature of ATAC-seq, we usually need to find motif on integrated results to obtain potential regulatory factors.
 * **Utils**: useful functions when dealing with RNA-seq data, including gene name conversion and count normalization(DESeq2’s median of ratios, TMM, CPM, TPM, RPKM).
 
-To enhance the ease of use of the tool, we have also developed an **interactive tool** for `DEbPeak` that allows users to submit files to the web page and set parameters to get the desired results. Unlike the standalone R package, *the interactive web page has built-in `DESeq2` for differential expression analysis*, while the R package can accept user input results from `DESeq2` or `edgeR`, which will be **more flexible**.
+To enhance the ease of use of the tool, we have also developed an **web server** for `DEbPeak` that allows users to submit files to the web page and set parameters to get the desired results. Unlike the standalone R package, *the web server has built-in `DESeq2` for differential expression analysis*, while the R package can accept user input results from `DESeq2` or `edgeR`, which will be **more flexible**.
 
 By the way, all plots generated are **publication-ready** , and most of them are based on `ggplot2`, so that users can easily modify them according to their needs. We also provide **various color palettes**, including **discrete** and **continuous**, **color blind friendly** and **multiple categorical variables**.
 
 <hr />
+
+## Framework
+<div align="center">
+<img src="man/figures/00_DEbPeak_framework.png"  title="DEbPeak_framework"  alt="DEbPeak_framework" />
+</div>
 
 ## Installation
 You can install the package via the Github repository:

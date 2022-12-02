@@ -117,7 +117,7 @@
       School of Life Sciences, Tsinghua University<br><a class="author_email" href="mailto:#"></a><a href="mailto:songyb18@mails.tsinghua.edu.cn" class="email">songyb18@mails.tsinghua.edu.cn</a>
       </address>
                   
-            <h4 class="date">28 十一月 2022</h4>
+            <h4 class="date">2 十二月 2022</h4>
       
       
       <div class="hidden name"><code>DEbPeak_All.Rmd</code></div>
@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
 <p><img src="../man/figures/DEbPeak.png" align="right" width="200"></p>
-<p><code>DEbPeak</code> aims to <strong>explore</strong>, <strong>visualize</strong>, <strong>interpret</strong> RNA-seq data and <strong>decipher gene’s regulation</strong> by combining ChIP-seq and ATAC-seq data. It contains <strong>six functional modules</strong>:</p>
+<p><code>DEbPeak</code> aims to <strong>explore</strong>, <strong>visualize</strong>, <strong>interpret</strong> RNA-seq data and <strong>unravel the regulation of gene expression</strong> by combining ChIP-seq and ATAC-seq data. It contains <strong>six functional modules</strong>:</p>
 <ul>
 <li>
 <strong>Quality Control (QC)</strong>: QC on count matrix and samples.
@@ -174,8 +174,8 @@ document.addEventListener("DOMContentLoaded", function() {
 <li>
 <strong>Principal Component Analysis (PCA)</strong>: this module can be divided into three sub modules, basic info, loading related and 3D visualization.
 <ul>
-<li>basic info: screen plot (help to select the useful PCs), biplot (sample similarity with corresponding loading genes) and PC pairs plot (sample similarity under different PC combinations).</li>
-<li>loading related: visualize positive and negative loading genes on selected PCs, conduct GO enrichment analysis on selected loading genes of selected PC.</li>
+<li>Basic info: scree plot (help to select the useful PCs), biplot (sample similarity with corresponding genes with larger loadings) and PC pairs plot (sample similarity under different PC combinations).</li>
+<li>Loading related: visualize genes with larger positive and negative loadings on selected PCs, conduct GO enrichment analysis on genes with larger positive and negative loadings on selected PCs.</li>
 <li>3D visualization: visualize samples on three selected PCs.</li>
 </ul>
 </li>
@@ -203,7 +203,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <li>
 <strong>Utils</strong>: useful functions when dealing with RNA-seq data, including gene name conversion and count normalization(DESeq2’s median of ratios, TMM, CPM, TPM, RPKM).</li>
 </ul>
-<p>To enhance the ease of use of the tool, we have also developed an <strong>interactive tool</strong> for <code>DEbPeak</code> that allows users to submit files to the web page and set parameters to get the desired results. Unlike the standalone R package, <em>the interactive web page has built-in <code>DESeq2</code> for differential expression analysis</em>, while the R package can accept user input results from <code>DESeq2</code> or <code>edgeR</code>, which will be <strong>more flexible</strong>.</p>
+<p>To enhance the ease of use of the tool, we have also developed an <strong>web server</strong> for <code>DEbPeak</code> that allows users to submit files to the web page and set parameters to get the desired results. Unlike the standalone R package, <em>the web server has built-in <code>DESeq2</code> for differential expression analysis</em>, while the R package can accept user input results from <code>DESeq2</code> or <code>edgeR</code>, which will be <strong>more flexible</strong>.</p>
 <p>By the way, all plots generated are <strong>publication-ready</strong> , and most of them are based on <code>ggplot2</code>, so that users can easily modify them according to their needs. We also provide <strong>various color palettes</strong>, including <strong>discrete</strong> and <strong>continuous</strong>, <strong>color blind friendly</strong> and <strong>multiple categorical variables</strong>.</p>
 <hr>
 </div>
@@ -887,11 +887,11 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="va">up.kegg.res.table</span><span class="op">=</span><span class="va">up.kegg.res</span><span class="op">[[</span><span class="st">"table"</span><span class="op">]</span><span class="op">]</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">up.kegg.res.table</span><span class="op">)</span></code></pre></div>
 <pre><code>##                ID            Description GeneRatio  BgRatio       pvalue
-## mmu04911 mmu04911      Insulin secretion     7/101  86/9011 4.694817e-05
-## mmu04024 mmu04024 cAMP signaling pathway    10/101 220/9011 1.693132e-04
+## mmu04911 mmu04911      Insulin secretion     7/101  86/9015 4.681757e-05
+## mmu04024 mmu04024 cAMP signaling pathway    10/101 220/9015 1.687093e-04
 ##            p.adjust      qvalue
-## mmu04911 0.01028165 0.009142539
-## mmu04024 0.01853980 0.016485764
+## mmu04911 0.01025305 0.009067824
+## mmu04024 0.01847367 0.016338166
 ##                                                                    geneID Count
 ## mmu04911                  Kcnmb2/Kcnn3/Creb5/Rapgef4/Creb3l2/Snap25/Adcy1     7
 ## mmu04024 Cftr/Atp2a3/Creb5/Rapgef4/Tiam1/Creb3l2/Sox9/Atp2b2/Crebbp/Adcy1    10</code></pre>
@@ -1242,22 +1242,22 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="sourceCode" id="cb164"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># peak profile plot</span>
 <span class="va">peak.profile</span> <span class="op">=</span> <span class="fu"><a href="../reference/PeakProfile.html">PeakProfile</a></span><span class="op">(</span><span class="va">peak.df</span> ,species<span class="op">=</span><span class="st">"Mouse"</span>, by <span class="op">=</span> <span class="st">"gene"</span>, region.type <span class="op">=</span> <span class="st">"body"</span>, nbin <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing promoter regions...  2022-11-28 01时28分22秒 
-## &gt;&gt; preparing tag matrix...        2022-11-28 01时28分23秒 
-## &gt;&gt; preparing start_site regions by ... 2022-11-28 01时28分23秒
-## &gt;&gt; preparing tag matrix...  2022-11-28 01时28分23秒 
-## &gt;&gt; generating figure...       2022-11-28 01时28分31秒</code></pre>
-<pre><code>## &gt;&gt; done...            2022-11-28 01时28分31秒</code></pre>
-<pre><code>## &gt;&gt; binning method is used...2022-11-28 01时28分31秒
-## &gt;&gt; preparing start_site regions by gene... 2022-11-28 01时28分31秒
-## &gt;&gt; preparing tag matrix by binning...  2022-11-28 01时28分31秒 
-## &gt;&gt; Running bootstrapping for tag matrix...        2022-11-28 01时28分36秒 
-## &gt;&gt; binning method is used...2022-11-28 01时28分36秒
-## &gt;&gt; preparing body regions by gene... 2022-11-28 01时28分36秒
-## &gt;&gt; preparing tag matrix by binning...  2022-11-28 01时28分36秒 
-## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2022-11-28 01时28分36秒
-## &gt;&gt; 1 peaks(0.1536098%), having lengths smaller than 800bp, are filtered... 2022-11-28 01时28分39秒
-## &gt;&gt; Running bootstrapping for tag matrix...        2022-11-28 01时29分14秒</code></pre>
+<pre><code>## &gt;&gt; preparing promoter regions...  2022-12-02 11时34分16秒 
+## &gt;&gt; preparing tag matrix...        2022-12-02 11时34分17秒 
+## &gt;&gt; preparing start_site regions by ... 2022-12-02 11时34分17秒
+## &gt;&gt; preparing tag matrix...  2022-12-02 11时34分17秒 
+## &gt;&gt; generating figure...       2022-12-02 11时34分27秒</code></pre>
+<pre><code>## &gt;&gt; done...            2022-12-02 11时34分27秒</code></pre>
+<pre><code>## &gt;&gt; binning method is used...2022-12-02 11时34分27秒
+## &gt;&gt; preparing start_site regions by gene... 2022-12-02 11时34分27秒
+## &gt;&gt; preparing tag matrix by binning...  2022-12-02 11时34分27秒 
+## &gt;&gt; Running bootstrapping for tag matrix...        2022-12-02 11时34分32秒 
+## &gt;&gt; binning method is used...2022-12-02 11时34分33秒
+## &gt;&gt; preparing body regions by gene... 2022-12-02 11时34分33秒
+## &gt;&gt; preparing tag matrix by binning...  2022-12-02 11时34分33秒 
+## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2022-12-02 11时34分33秒
+## &gt;&gt; 1 peaks(0.1536098%), having lengths smaller than 800bp, are filtered... 2022-12-02 11时34分36秒
+## &gt;&gt; Running bootstrapping for tag matrix...        2022-12-02 11时35分15秒</code></pre>
 <div class="sourceCode" id="cb168"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">peak.profile</span><span class="op">$</span><span class="va">profile.plot</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debchip_peak_profile-1.png" width="960" style="display: block; margin: auto;"></p>
@@ -1270,14 +1270,14 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="sourceCode" id="cb169"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># peak annotation</span>
 <span class="va">peak.anno</span> <span class="op">=</span> <span class="fu"><a href="../reference/AnnoPeak.html">AnnoPeak</a></span><span class="op">(</span>peak.df <span class="op">=</span> <span class="va">peak.df</span>,species <span class="op">=</span> <span class="st">"Mouse"</span>,seq.style <span class="op">=</span> <span class="st">"UCSC"</span>,up.dist <span class="op">=</span> <span class="fl">20000</span>,down.dist <span class="op">=</span> <span class="fl">20000</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-28 01时29分15秒 
-## &gt;&gt; identifying nearest features...        2022-11-28 01时29分16秒 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-28 01时29分16秒 
-## &gt;&gt; assigning genomic annotation...        2022-11-28 01时29分16秒 
-## &gt;&gt; adding gene annotation...          2022-11-28 01时29分27秒</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-12-02 11时35分16秒 
+## &gt;&gt; identifying nearest features...        2022-12-02 11时35分17秒 
+## &gt;&gt; calculating distance from peak to TSS...   2022-12-02 11时35分17秒 
+## &gt;&gt; assigning genomic annotation...        2022-12-02 11时35分17秒 
+## &gt;&gt; adding gene annotation...          2022-12-02 11时35分29秒</code></pre>
 <pre><code>## 'select()' returned 1:many mapping between keys and columns</code></pre>
-<pre><code>## &gt;&gt; assigning chromosome lengths           2022-11-28 01时29分28秒 
-## &gt;&gt; done...                    2022-11-28 01时29分28秒</code></pre>
+<pre><code>## &gt;&gt; assigning chromosome lengths           2022-12-02 11时35分29秒 
+## &gt;&gt; done...                    2022-12-02 11时35分29秒</code></pre>
 <pre><code>## Warning: Removed 6 rows containing non-finite values (stat_count).</code></pre>
 <div class="sourceCode" id="cb174"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">peak.anno.df</span> <span class="op">=</span> <span class="va">peak.anno</span><span class="op">$</span><span class="va">df</span>
@@ -1492,22 +1492,22 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="sourceCode" id="cb203"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># peak profile plot</span>
 <span class="va">atac.peak.profile</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PeakProfile.html">PeakProfile</a></span><span class="op">(</span><span class="va">atac.peak.df</span>, species <span class="op">=</span> <span class="st">"Mouse"</span>, by <span class="op">=</span> <span class="st">"gene"</span>, region.type <span class="op">=</span> <span class="st">"body"</span>, nbin <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing promoter regions...  2022-11-28 01时30分17秒 
-## &gt;&gt; preparing tag matrix...        2022-11-28 01时30分17秒 
-## &gt;&gt; preparing start_site regions by ... 2022-11-28 01时30分17秒
-## &gt;&gt; preparing tag matrix...  2022-11-28 01时30分17秒 
-## &gt;&gt; generating figure...       2022-11-28 01时30分23秒</code></pre>
-<pre><code>## &gt;&gt; done...            2022-11-28 01时30分27秒</code></pre>
-<pre><code>## &gt;&gt; binning method is used...2022-11-28 01时30分28秒
-## &gt;&gt; preparing start_site regions by gene... 2022-11-28 01时30分28秒
-## &gt;&gt; preparing tag matrix by binning...  2022-11-28 01时30分28秒 
-## &gt;&gt; Running bootstrapping for tag matrix...        2022-11-28 01时31分11秒 
-## &gt;&gt; binning method is used...2022-11-28 01时31分11秒
-## &gt;&gt; preparing body regions by gene... 2022-11-28 01时31分11秒
-## &gt;&gt; preparing tag matrix by binning...  2022-11-28 01时31分11秒 
-## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2022-11-28 01时31分11秒
-## &gt;&gt; 16 peaks(0.296077%), having lengths smaller than 800bp, are filtered... 2022-11-28 01时31分17秒
-## &gt;&gt; Running bootstrapping for tag matrix...        2022-11-28 01时34分11秒</code></pre>
+<pre><code>## &gt;&gt; preparing promoter regions...  2022-12-02 11时36分17秒 
+## &gt;&gt; preparing tag matrix...        2022-12-02 11时36分17秒 
+## &gt;&gt; preparing start_site regions by ... 2022-12-02 11时36分17秒
+## &gt;&gt; preparing tag matrix...  2022-12-02 11时36分17秒 
+## &gt;&gt; generating figure...       2022-12-02 11时36分24秒</code></pre>
+<pre><code>## &gt;&gt; done...            2022-12-02 11时36分28秒</code></pre>
+<pre><code>## &gt;&gt; binning method is used...2022-12-02 11时36分29秒
+## &gt;&gt; preparing start_site regions by gene... 2022-12-02 11时36分29秒
+## &gt;&gt; preparing tag matrix by binning...  2022-12-02 11时36分29秒 
+## &gt;&gt; Running bootstrapping for tag matrix...        2022-12-02 11时37分12秒 
+## &gt;&gt; binning method is used...2022-12-02 11时37分12秒
+## &gt;&gt; preparing body regions by gene... 2022-12-02 11时37分12秒
+## &gt;&gt; preparing tag matrix by binning...  2022-12-02 11时37分12秒 
+## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2022-12-02 11时37分13秒
+## &gt;&gt; 16 peaks(0.296077%), having lengths smaller than 800bp, are filtered... 2022-12-02 11时37分18秒
+## &gt;&gt; Running bootstrapping for tag matrix...        2022-12-02 11时40分13秒</code></pre>
 <div class="sourceCode" id="cb207"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">atac.peak.profile</span><span class="op">$</span><span class="va">profile.plot</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debchip_atac_peak_profile-1.png" width="960" style="display: block; margin: auto;"></p>
@@ -1522,14 +1522,14 @@ document.addEventListener("DOMContentLoaded", function() {
   peak.df <span class="op">=</span> <span class="va">atac.peak.df</span>, species <span class="op">=</span> <span class="st">"Mouse"</span>,
   seq.style <span class="op">=</span> <span class="st">"UCSC"</span>, up.dist <span class="op">=</span> <span class="fl">20000</span>, down.dist <span class="op">=</span> <span class="fl">20000</span>
 <span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-28 01时34分14秒 
-## &gt;&gt; identifying nearest features...        2022-11-28 01时34分14秒 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-28 01时34分14秒 
-## &gt;&gt; assigning genomic annotation...        2022-11-28 01时34分14秒 
-## &gt;&gt; adding gene annotation...          2022-11-28 01时34分16秒</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-12-02 11时40分16秒 
+## &gt;&gt; identifying nearest features...        2022-12-02 11时40分16秒 
+## &gt;&gt; calculating distance from peak to TSS...   2022-12-02 11时40分16秒 
+## &gt;&gt; assigning genomic annotation...        2022-12-02 11时40分16秒 
+## &gt;&gt; adding gene annotation...          2022-12-02 11时40分18秒</code></pre>
 <pre><code>## 'select()' returned 1:many mapping between keys and columns</code></pre>
-<pre><code>## &gt;&gt; assigning chromosome lengths           2022-11-28 01时34分17秒 
-## &gt;&gt; done...                    2022-11-28 01时34分17秒</code></pre>
+<pre><code>## &gt;&gt; assigning chromosome lengths           2022-12-02 11时40分18秒 
+## &gt;&gt; done...                    2022-12-02 11时40分18秒</code></pre>
 <pre><code>## Warning: Removed 23 rows containing non-finite values (stat_count).</code></pre>
 <div class="sourceCode" id="cb213"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">atac.peak.anno.df</span> <span class="op">=</span> <span class="va">atac.peak.anno</span><span class="op">$</span><span class="va">df</span>

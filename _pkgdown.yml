@@ -5,6 +5,8 @@ url: https://showteeth.github.io/DEbPeak/
 template:
   bootstrap: 5
   bootswatch: flatly
+  includes:
+    in_header: /home/songyabing/R/learn/tmp/DEbPeak/ManualFigures/header.html
 
 navbar:
   left:
@@ -30,8 +32,6 @@ navbar:
         href: articles/IntegrateChIPATAC.html
       - text: Utils
         href: articles/Utils.html
-      - text: Web server tutorial
-        href: articles/Tutorial.html
     - text: Reference
       href: reference/index.html
     - text: Change log

@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DEbPeak - Explore, visualize, interpret RNA-seq data and decipher gene's regulation • DEbPeak</title>
+<title>DEbPeak - Explore, visualize, interpret RNA-seq data and unravel the regulation of gene expression • DEbPeak</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="DEbPeak - Explore, visualize, interpret RNA-seq data and decipher gene's regulation">
-<meta property="og:description" content="DEbPeak aims to explore, visualize, interpret RNA-seq data and decipher gene's regulation by combining ChIP-seq and ATAC-seq data. 
+<script src="pkgdown.js"></script><meta property="og:title" content="DEbPeak - Explore, visualize, interpret RNA-seq data and unravel the regulation of gene expression">
+<meta property="og:description" content="DEbPeak aims to explore, visualize, interpret RNA-seq data and unravel the regulation of gene expression by combining ChIP-seq and ATAC-seq data. 
     It contains six functional panels: Quality Control (QC), Principal Component Analysis (PCA), Differential Expression Analysis (DEA), 
     Functional Enrichment Analysis (FEA), Integrate with ChIP-seq/ATAC-seq, Utils.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -107,27 +107,27 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="debpeak---explore-visualize-interpret-rna-seq-data-and-decipher-genes-regulation" class="section level1">
+<div id="debpeak---explore-visualize-interpret-rna-seq-data-and-unravel-the-regulation-of-gene-expression" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#debpeak---explore-visualize-interpret-rna-seq-data-and-decipher-genes-regulation" class="anchor"></a>DEbPeak - Explore, visualize, interpret RNA-seq data and decipher gene’s regulation.</h1></div>
+<a href="#debpeak---explore-visualize-interpret-rna-seq-data-and-unravel-the-regulation-of-gene-expression" class="anchor"></a>DEbPeak - Explore, visualize, interpret RNA-seq data and unravel the regulation of gene expression.</h1></div>
 <p><img src="reference/figures/DEbPeak.png" align="right" width="200"></p>
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p><code>DEbPeak</code> aims to <strong>explore</strong>, <strong>visualize</strong>, <strong>interpret</strong> RNA-seq data and <strong>decipher gene’s regulation</strong> by combining ChIP-seq and ATAC-seq data. It contains <strong>six functional modules</strong>:</p>
+<p><code>DEbPeak</code> aims to <strong>explore</strong>, <strong>visualize</strong>, <strong>interpret</strong> RNA-seq data and <strong>unravel the regulation of gene expression</strong> by combining ChIP-seq and ATAC-seq data. It contains <strong>six functional modules</strong>:</p>
 <ul>
 <li>
 <strong>Quality Control (QC)</strong>: QC on count matrix and samples.
 <ul>
 <li>QC on count matrix: Proportion of genes detected in different samples under different CPM thresholds and the saturation of the number of genes detected.</li>
-<li>QC on samples: Euclidean distance and pearson correlation coefficient of samples across different conditions, sample similarity on selected principal components (check batch informatio and conduct batch correction) and outlier detection with robust PCA.</li>
+<li>QC on samples: Euclidean distance and pearson correlation coefficient of samples across different conditions, sample similarity on selected principal components (check batch information and conduct batch correction) and outlier detection with robust PCA.</li>
 </ul>
 </li>
 <li>
 <strong>Principal Component Analysis (PCA)</strong>: this module can be divided into three sub modules, basic info, loading related and 3D visualization.
 <ul>
-<li>basic info: screen plot (help to select the useful PCs), biplot (sample similarity with corresponding loading genes) and PC pairs plot (sample similarity under different PC combinations).</li>
-<li>loading related: visualize positive and negative loading genes on selected PCs, conduct GO enrichment analysis on selected loading genes of selected PC.</li>
+<li>Basic info: scree plot (help to select the useful PCs), biplot (sample similarity with corresponding genes with larger loadings) and PC pairs plot (sample similarity under different PC combinations).</li>
+<li>Loading related: visualize genes with larger positive and negative loadings on selected PCs, conduct GO enrichment analysis on genes with larger positive and negative loadings on selected PCs.</li>
 <li>3D visualization: visualize samples on three selected PCs.</li>
 </ul>
 </li>
@@ -155,9 +155,16 @@
 <li>
 <strong>Utils</strong>: useful functions when dealing with RNA-seq data, including gene name conversion and count normalization(DESeq2’s median of ratios, TMM, CPM, TPM, RPKM).</li>
 </ul>
-<p>To enhance the ease of use of the tool, we have also developed an <strong>interactive tool</strong> for <code>DEbPeak</code> that allows users to submit files to the web page and set parameters to get the desired results. Unlike the standalone R package, <em>the interactive web page has built-in <code>DESeq2</code> for differential expression analysis</em>, while the R package can accept user input results from <code>DESeq2</code> or <code>edgeR</code>, which will be <strong>more flexible</strong>.</p>
+<p>To enhance the ease of use of the tool, we have also developed an <strong>web server</strong> for <code>DEbPeak</code> that allows users to submit files to the web page and set parameters to get the desired results. Unlike the standalone R package, <em>the web server has built-in <code>DESeq2</code> for differential expression analysis</em>, while the R package can accept user input results from <code>DESeq2</code> or <code>edgeR</code>, which will be <strong>more flexible</strong>.</p>
 <p>By the way, all plots generated are <strong>publication-ready</strong> , and most of them are based on <code>ggplot2</code>, so that users can easily modify them according to their needs. We also provide <strong>various color palettes</strong>, including <strong>discrete</strong> and <strong>continuous</strong>, <strong>color blind friendly</strong> and <strong>multiple categorical variables</strong>.</p>
 <hr>
+</div>
+<div id="framework" class="section level2">
+<h2 class="hasAnchor">
+<a href="#framework" class="anchor"></a>Framework</h2>
+<div align="center">
+<p><img src="reference/figures/00_DEbPeak_framework.png" title="DEbPeak_framework" alt="DEbPeak_framework"></p>
+</div>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
