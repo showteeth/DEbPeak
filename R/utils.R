@@ -130,7 +130,7 @@ NormalizedCount <- function(deobj, gtf.file = NULL, norm.type = c("DESeq2", "TMM
   } else {
     stop("Input object is either DESeq2 or edgeR results!")
   }
-  # use edgeR to calculate TMM, CPM and RPKM
+  # use edgeR to calculate TMM, CPM, TPM and RPKM
   if (norm.type == "TMM") {
     if (all(deobj$samples$norm.factors == 1)) {
       deobj <- edgeR::calcNormFactors(deobj)

@@ -58,7 +58,7 @@ By the way, all plots generated are **publication-ready** , and most of them are
 
 ## Framework
 <div align="center">
-<img src="man/figures/00_DEbPeak_framework.png"  title="DEbPeak_framework"  alt="DEbPeak_framework" />
+<img src="man/figures/DEbPeak_outline.png"  title="DEbPeak_framework"  alt="DEbPeak_framework" />
 </div>
 
 ## Installation
@@ -75,7 +75,16 @@ In general, it is **recommended** to install from [Github repository](https://gi
 
 ## Usage
 ### Vignette
-Detailed usage is available in [vignette](https://github.com/showteeth/DEbPeak/blob/main/vignettes/DEbChIP_User_Guide.html).
+Detailed usage is available in [here](https://showteeth.github.io/DEbPeak/). `DEbPeak` provides eight vignettes:
+
+* [Quality Control](https://showteeth.github.io/DEbPeak/articles/QualityControl.html)
+* [Principal Component Analysis](https://showteeth.github.io/DEbPeak/articles/PrincipalComponentAnalysis.html)
+* [Differential Expression Analysis](https://showteeth.github.io/DEbPeak/articles/DifferentialExpressionAnalysis.html)
+* [Functional Enrichment Analysis](https://showteeth.github.io/DEbPeak/articles/FunctionalEnrichmentAnalysis.html)
+* [Integrate RNA-seq and ChIP-seq](https://showteeth.github.io/DEbPeak/articles/IntegrateChIP.html)
+* [Integrate RNA-seq and ATAC-seq](https://showteeth.github.io/DEbPeak/articles/IntegrateATAC.html)
+* [Integrate RNA-seq ChIP-seq and ATAC-seq](https://showteeth.github.io/DEbPeak/articles/IntegrateChIPATAC.html)
+* [Utils](https://showteeth.github.io/DEbPeak/articles/Utils.html)
 
 ### Function list
 <table>
