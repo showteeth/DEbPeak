@@ -185,7 +185,7 @@ Detailed usage is available in [here](https://showteeth.github.io/DEbPeak/). `DE
     <td>Visualize GSEA results</td>
   </tr>
   <tr>
-    <td rowspan="8">Integrate with ChIP-seq/ATAC-seq</td>
+    <td rowspan="9">Integrate with ChIP-seq/ATAC-seq</td>
     <td><code>GetConsensusPeak</code></td>
     <td>Get Consensus Peak with MSPC</td>
   </tr>
@@ -196,6 +196,10 @@ Detailed usage is available in [here](https://showteeth.github.io/DEbPeak/). `DE
   <tr>
     <td><code>AnnoPeak</code></td>
     <td>Conduct Peak Annotation</td>
+  </tr>
+  <tr>
+    <td><code>PeakAnnoPie</code></td>
+    <td>Create Peak Annotation Pie Plot with ggplot2</td>
   </tr>
   <tr>
     <td><code>DEbPeak</code></td>

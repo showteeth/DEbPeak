@@ -1,6 +1,7 @@
 # DEbPeak 0.6.0
 ## New features
 * Changed `CountQC` realted plots to ggplot2.
+* Changed `AnnoPeak` pie plots to ggplot2.
 
 ## Minor changes
 * Fixed some spelling mistakes (`threashold` -> `threshold`).

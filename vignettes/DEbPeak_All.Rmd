@@ -548,6 +548,11 @@ head(peak.anno.df)
 peak.anno$plots
 ```
 
+The above pie plot is not based on `ggplot2`, here we provide function to create pie plot based on `ggplot2`:
+```{r debchip_peak_annotation_pie, fig.height = 10, fig.width = 10, fig.align = "center", warning=FALSE}
+PeakAnnoPie(peak.anno$anno.obj)
+```
+
 ---------------------
 
 ## Integrate ChIP-seq and RNA-seq
@@ -638,6 +643,11 @@ head(atac.peak.anno.df)
 
 ```{r debchip_atac_peak_annotation_plot, fig.height = 10, fig.width = 14, fig.align = "center", warning=FALSE}
 atac.peak.anno$plots
+```
+
+The above pie plot is not based on `ggplot2`, here we provide function to create pie plot based on `ggplot2`:
+```{r debchip_atac_peak_annotation_pie, fig.height = 10, fig.width = 10, fig.align = "center", warning=FALSE}
+PeakAnnoPie(atac.peak.anno$anno.obj)
 ```
 
 ---------------------

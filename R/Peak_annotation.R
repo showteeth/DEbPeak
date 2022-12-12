@@ -140,6 +140,35 @@ PeakProfile <- function(peak.df, species = c(
   return(plot.list)
 }
 
+#' Create Peak Annotation Pie Plot with ggplot2.
+#'
+#' @param peak.obj Peak annotation object, returned from \code{\link{annotatePeak}}.
+#' @param ... Parameters for \code{\link{ggpie}}.
+#'
+#' @return A ggplot2 object.
+#' @importFrom ggpie ggpie
+#' @export
+#'
+#' @examples
+#' library(DEbPeak)
+#' peak.file <- system.file("extdata", "debchip_peaks.bed", package = "DEbPeak")
+#' peak.df <- GetConsensusPeak(peak.file = peak.file)
+#' peak.anno <- AnnoPeak(
+#'   peak.df = peak.df, species = "Mouse",
+#'   seq.style = "UCSC", up.dist = 20000, down.dist = 20000
+#' )
+#' PeakAnnoPie(peak.anno$anno.obj)
+PeakAnnoPie <- function(peak.obj, ...) {
+  freq.stat <- peak.obj@annoStat
+  colnames(freq.stat) <- c("group", "count")
+  freq.stat$count <- round(freq.stat$count, 2)
+  pie.plot <- ggpie(
+    data = freq.stat, count_type = "count", label_pos = "out",
+    label_type = "horizon", label_info = "ratio", ...
+  ) +
+    theme(legend.title = element_blank())
+  return(pie.plot)
+}
 
 #' Conduct Peak Annotation.
 #'
@@ -245,7 +274,7 @@ AnnoPeak <- function(peak.df, species = c(
 
   # get return results
   anno.res <- list(
-    df = anno.df, plots = anno.plots,
+    anno.obj = peak.anno, df = anno.df, plots = anno.plots,
     pie = anno.pie, upset = anno.upset, distribution = anno.distribution
   )
   return(anno.res)

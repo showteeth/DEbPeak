@@ -84,6 +84,11 @@ head(atac.peak.anno.df)
 atac.peak.anno$plots
 ```
 
+The above pie plot is not based on `ggplot2`, here we provide function to create pie plot based on `ggplot2`:
+```{r debatac_atac_peak_annotation_pie, fig.height = 10, fig.width = 10, fig.align = "center", warning=FALSE}
+PeakAnnoPie(atac.peak.anno$anno.obj)
+```
+
 <hr />
 
 ## Integrate ATAC-seq and RNA-seq

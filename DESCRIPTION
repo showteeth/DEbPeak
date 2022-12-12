@@ -59,7 +59,8 @@ Imports:
     viridis,
     patchwork,
     data.table,
-    scales
+    scales,
+    ggpie
 Suggests: 
     rmarkdown,
     knitr,
