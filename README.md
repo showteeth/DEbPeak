@@ -222,9 +222,13 @@ Detailed usage is available in [here](https://showteeth.github.io/DEbPeak/). `DE
     <td>Integrate Differential Expression Results and Peak Annotation Results (Both ATAC-seq and ChIP-seq)</td>
   </tr>
   <tr>
-    <td rowspan="2">Utils</td>
+    <td rowspan="3">Utils</td>
     <td><code>IDConversion</code></td>
     <td>Gene ID Conversion</td>
+  </tr>
+  <tr>
+    <td><code>GetGeneLength</code></td>
+    <td>Get Gene Length from GTF.</td>
   </tr>
   <tr>
     <td><code>NormalizedCount</code></td>

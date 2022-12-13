@@ -54,6 +54,15 @@ head(count.matrix)
 
 <hr />
 
+## Get gene length
+The gene length is useful when perfrom count normalization (**RPKM** and **TPM**). Here, we provide `GetGeneLength` to calculate gene length:
+```{r geneLength}
+# this will get DEbPeak_geneLength.txt file in working directory, you can also provide out.file
+GetGeneLength(gtf.file = '/path/to/gtf', save = TRUE)
+```
+
+<hr />
+
 ## Count normalization
 Here, we provide five different normalization methods: **CPM**, **TMM**, **DESeq2’s median of ratios**, **RPKM** and **TPM**, of which **RPKM** and **TPM** need to provide gtf files to calculate gene length.
 
@@ -97,6 +106,7 @@ $$
 $$
 
 ```{r rpkm, warning=FALSE, eval=F}
+# you can either provide gtf.file or gene.length.file
 rpkm.matrix=NormalizedCount(dds,gtf.file = '/path/to/gtf', norm.type="RPKM")
 ```
 
@@ -116,6 +126,7 @@ $$
 $$
 
 ```{r tpm, warning=FALSE, eval=F}
+# you can either provide gtf.file or gene.length.file
 tpm.matrix=NormalizedCount(dds,gtf.file = '/path/to/gtf', norm.type="TPM")
 ```
 

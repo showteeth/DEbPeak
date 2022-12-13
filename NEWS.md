@@ -2,6 +2,8 @@
 ## New features
 * Changed `CountQC` realted plots to ggplot2.
 * Changed `AnnoPeak` pie plots to ggplot2.
+* Exported `GetGeneLength` to get gene length. 
+* Added `gene.length.file` to `NormalizedCount` to support gene length file as input.
 
 ## Minor changes
 * Fixed some spelling mistakes (`threashold` -> `threshold`).

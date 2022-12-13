@@ -7,6 +7,7 @@
 #' @param sort.key Column to sort the results. Default: log2FoldChange.
 #'
 #' @return Data frame contains gene id conversion results.
+#' @importFrom magrittr %>%
 #' @importFrom tibble rownames_to_column column_to_rownames
 #' @importFrom dplyr distinct mutate select arrange desc
 #' @importFrom clusterProfiler bitr
@@ -51,18 +52,41 @@ IDConversion <- function(deres, gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"), 
   return(final.df)
 }
 
-# get gene length from gene annotation file
-GetLength <- function(gtf.file) {
+#' Get Gene Length from GTF.
+#'
+#' @param gtf.file GTF file.
+#' @param save Logical value, whether to save the dataframe.Default: FALSE.
+#' @param out.file File to save gene length, used when \code{save} is TRUE. Default: NULL.
+#'
+#' @return A dataframe or NULL.
+#' @importFrom GenomicFeatures makeTxDbFromGFF exonsBy
+#' @importFrom GenomicRanges reduce width
+#' @importFrom magrittr %>%
+#' @importFrom tibble rownames_to_column
+#' @importFrom purrr set_names
+#' @importFrom utils write.table
+#' @export
+#'
+#' @examples
+#' # GetGeneLength(gtf.file, save = TRUE)
+GetGeneLength <- function(gtf.file, save = FALSE, out.file = NULL) {
   txdb <- GenomicFeatures::makeTxDbFromGFF(gtf.file, format = "gtf")
   exons.list <- GenomicFeatures::exonsBy(txdb, by = "gene")
   reduce.exons.list <- GenomicRanges::reduce(exons.list)
   gene.length <- sum(GenomicRanges::width(reduce.exons.list))
-  gene.length.df <- as.data.frame(gene.length) %>%
-    tibble::rownames_to_column(var = "Gene") %>%
+  gene.length.df <- as.data.frame(gene.length) %>% tibble::rownames_to_column(var = "Gene") %>%
     purrr::set_names(c("Gene", "Length"))
   # remove gene version information
   gene.length.df$Gene <- gsub(pattern = "\\.[0-9]*$", replacement = "", x = as.character(gene.length.df$Gene))
-  return(gene.length.df)
+  if(save){
+    if(is.null(out.file)){
+      utils::write.table(x = gene.length.df, file = "DEbPeak_geneLength.txt", sep = "\t", quote = FALSE, row.names = F)
+    }else{
+      utils::write.table(x = gene.length.df, file = out.file, sep = "\t", quote = FALSE, row.names = F)
+    }
+  }else{
+    return(gene.length.df)
+  }
 }
 
 # convert RPKM to TPM
@@ -74,9 +98,12 @@ RPKM2TPM <- function(RPKM) {
 #'
 #' @param deobj Object created by DESeq2 or edgeR.
 #' @param gtf.file Gene annotation file used to get gene length, used if \code{norm.type=="RPKM"} or \code{norm.type=="TPM"}. Default: NULL.
+#' @param gene.length.file Gene length file, tab-separated, should contains "Gene" and "Length" columns.
+#' Used if \code{norm.type=="RPKM"} or \code{norm.type=="TPM"}. Default: NULL.
 #' @param norm.type Normalization method, chosen from DESeq2, TMM, CPM, RPKM, TPM. Default: DESeq2.
 #'
 #' @return Matrix contains normalized counts.
+#' @importFrom magrittr %>%
 #' @importFrom DEFormats as.DESeqDataSet as.DGEList
 #' @importFrom SummarizedExperiment colData
 #' @importFrom DESeq2 estimateSizeFactors counts
@@ -86,6 +113,7 @@ RPKM2TPM <- function(RPKM) {
 #' @importFrom GenomicFeatures makeTxDbFromGFF exonsBy
 #' @importFrom GenomicRanges reduce width
 #' @importFrom purrr set_names
+#' @importFrom utils read.table
 #' @export
 #'
 #' @examples
@@ -101,7 +129,8 @@ RPKM2TPM <- function(RPKM) {
 #' dds$condition <- relevel(dds$condition, ref = "WT")
 #' dds <- DESeq(dds)
 #' NormalizedCount(dds, norm.type = "CPM")
-NormalizedCount <- function(deobj, gtf.file = NULL, norm.type = c("DESeq2", "TMM", "CPM", "RPKM", "TPM")) {
+NormalizedCount <- function(deobj, gtf.file = NULL, gene.length.file = NULL,
+                            norm.type = c("DESeq2", "TMM", "CPM", "RPKM", "TPM")) {
   # check parameters
   norm.type <- match.arg(arg = norm.type)
 
@@ -139,10 +168,16 @@ NormalizedCount <- function(deobj, gtf.file = NULL, norm.type = c("DESeq2", "TMM
   } else if (norm.type == "CPM") {
     normalized.matrix <- edgeR::cpm(deobj$counts)
   } else if (norm.type %in% c("RPKM", "TPM")) {
-    if (is.null(gtf.file)) {
-      stop("Calculate RPKM/TPM needs gtf file!")
+    if (!is.null(gtf.file)) {
+      gene.length <- GetGeneLength(gtf.file)
+    }else if (!is.null(gene.length.file)){
+      gene.length = utils::read.table(file = gene.length.file, header = TRUE, sep = "\t")
+      if(!all(c("Gene", "Length") %in% colnames(gene.length))){
+        stop("gene length file should contains 'Gene' and 'Length' columns!")
+      }
+    }else{
+      stop("Calculate RPKM/TPM needs gtf file or gene length file!")
     }
-    gene.length <- GetLength(gtf.file)
     raw.counts <- deobj$counts %>%
       as.data.frame() %>%
       tibble::rownames_to_column(var = "Gene") %>%
