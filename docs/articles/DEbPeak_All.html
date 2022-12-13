@@ -1238,22 +1238,22 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="sourceCode" id="cb164"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># peak profile plot</span>
 <span class="va">peak.profile</span> <span class="op">=</span> <span class="fu"><a href="../reference/PeakProfile.html">PeakProfile</a></span><span class="op">(</span><span class="va">peak.df</span> ,species<span class="op">=</span><span class="st">"Mouse"</span>, by <span class="op">=</span> <span class="st">"gene"</span>, region.type <span class="op">=</span> <span class="st">"body"</span>, nbin <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing promoter regions...  2022-12-12 12时25分49秒 
-## &gt;&gt; preparing tag matrix...        2022-12-12 12时25分50秒 
-## &gt;&gt; preparing start_site regions by ... 2022-12-12 12时25分50秒
-## &gt;&gt; preparing tag matrix...  2022-12-12 12时25分50秒 
-## &gt;&gt; generating figure...       2022-12-12 12时25分58秒</code></pre>
-<pre><code>## &gt;&gt; done...            2022-12-12 12时25分58秒</code></pre>
-<pre><code>## &gt;&gt; binning method is used...2022-12-12 12时25分58秒
-## &gt;&gt; preparing start_site regions by gene... 2022-12-12 12时25分58秒
-## &gt;&gt; preparing tag matrix by binning...  2022-12-12 12时25分58秒 
-## &gt;&gt; Running bootstrapping for tag matrix...        2022-12-12 12时26分03秒 
-## &gt;&gt; binning method is used...2022-12-12 12时26分03秒
-## &gt;&gt; preparing body regions by gene... 2022-12-12 12时26分03秒
-## &gt;&gt; preparing tag matrix by binning...  2022-12-12 12时26分03秒 
-## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2022-12-12 12时26分03秒
-## &gt;&gt; 1 peaks(0.1536098%), having lengths smaller than 800bp, are filtered... 2022-12-12 12时26分06秒
-## &gt;&gt; Running bootstrapping for tag matrix...        2022-12-12 12时26分42秒</code></pre>
+<pre><code>## &gt;&gt; preparing promoter regions...  2022-12-12 21时46分31秒 
+## &gt;&gt; preparing tag matrix...        2022-12-12 21时46分32秒 
+## &gt;&gt; preparing start_site regions by ... 2022-12-12 21时46分32秒
+## &gt;&gt; preparing tag matrix...  2022-12-12 21时46分32秒 
+## &gt;&gt; generating figure...       2022-12-12 21时46分42秒</code></pre>
+<pre><code>## &gt;&gt; done...            2022-12-12 21时46分42秒</code></pre>
+<pre><code>## &gt;&gt; binning method is used...2022-12-12 21时46分42秒
+## &gt;&gt; preparing start_site regions by gene... 2022-12-12 21时46分42秒
+## &gt;&gt; preparing tag matrix by binning...  2022-12-12 21时46分42秒 
+## &gt;&gt; Running bootstrapping for tag matrix...        2022-12-12 21时46分46秒 
+## &gt;&gt; binning method is used...2022-12-12 21时46分47秒
+## &gt;&gt; preparing body regions by gene... 2022-12-12 21时46分47秒
+## &gt;&gt; preparing tag matrix by binning...  2022-12-12 21时46分47秒 
+## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2022-12-12 21时46分47秒
+## &gt;&gt; 1 peaks(0.1536098%), having lengths smaller than 800bp, are filtered... 2022-12-12 21时46分50秒
+## &gt;&gt; Running bootstrapping for tag matrix...        2022-12-12 21时47分28秒</code></pre>
 <div class="sourceCode" id="cb168"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">peak.profile</span><span class="op">$</span><span class="va">profile.plot</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debchip_peak_profile-1.png" width="960" style="display: block; margin: auto;"></p>
@@ -1266,14 +1266,14 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="sourceCode" id="cb169"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># peak annotation</span>
 <span class="va">peak.anno</span> <span class="op">=</span> <span class="fu"><a href="../reference/AnnoPeak.html">AnnoPeak</a></span><span class="op">(</span>peak.df <span class="op">=</span> <span class="va">peak.df</span>,species <span class="op">=</span> <span class="st">"Mouse"</span>,seq.style <span class="op">=</span> <span class="st">"UCSC"</span>,up.dist <span class="op">=</span> <span class="fl">20000</span>,down.dist <span class="op">=</span> <span class="fl">20000</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing features information...      2022-12-12 12时26分44秒 
-## &gt;&gt; identifying nearest features...        2022-12-12 12时26分44秒 
-## &gt;&gt; calculating distance from peak to TSS...   2022-12-12 12时26分45秒 
-## &gt;&gt; assigning genomic annotation...        2022-12-12 12时26分45秒 
-## &gt;&gt; adding gene annotation...          2022-12-12 12时26分56秒</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-12-12 21时47分29秒 
+## &gt;&gt; identifying nearest features...        2022-12-12 21时47分29秒 
+## &gt;&gt; calculating distance from peak to TSS...   2022-12-12 21时47分30秒 
+## &gt;&gt; assigning genomic annotation...        2022-12-12 21时47分30秒 
+## &gt;&gt; adding gene annotation...          2022-12-12 21时47分42秒</code></pre>
 <pre><code>## 'select()' returned 1:many mapping between keys and columns</code></pre>
-<pre><code>## &gt;&gt; assigning chromosome lengths           2022-12-12 12时26分56秒 
-## &gt;&gt; done...                    2022-12-12 12时26分56秒</code></pre>
+<pre><code>## &gt;&gt; assigning chromosome lengths           2022-12-12 21时47分42秒 
+## &gt;&gt; done...                    2022-12-12 21时47分42秒</code></pre>
 <pre><code>## Warning: Removed 6 rows containing non-finite values (stat_count).</code></pre>
 <div class="sourceCode" id="cb174"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">peak.anno.df</span> <span class="op">=</span> <span class="va">peak.anno</span><span class="op">$</span><span class="va">df</span>
@@ -1323,6 +1323,10 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="sourceCode" id="cb176"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">peak.anno</span><span class="op">$</span><span class="va">plots</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debchip_peak_annotation_plot-1.png" width="1344" style="display: block; margin: auto;"></p>
+<p>The above pie plot is not based on <code>ggplot2</code>, here we provide function to create pie plot based on <code>ggplot2</code>:</p>
+<div class="sourceCode" id="cb177"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/PeakAnnoPie.html">PeakAnnoPie</a></span><span class="op">(</span><span class="va">peak.anno</span><span class="op">$</span><span class="va">anno.obj</span><span class="op">)</span></code></pre></div>
+<p><img src="DEbPeak_All_files/figure-html/debchip_peak_annotation_pie-1.png" width="960" style="display: block; margin: auto;"></p>
 <hr>
 </div>
 </div>
@@ -1330,10 +1334,10 @@ document.addEventListener("DOMContentLoaded", function() {
 <h2 class="hasAnchor">
 <a href="#integrate-chip-seq-and-rna-seq" class="anchor"></a>Integrate ChIP-seq and RNA-seq</h2>
 <p>In this step, we will integrate ChIP-seq and RNA-seq to get plausible direct targets of promoter (in this example, Runx). ### Integrate</p>
-<div class="sourceCode" id="cb177"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb178"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">debchip.res</span> <span class="op">=</span> <span class="fu"><a href="../reference/DEbPeak.html">DEbPeak</a></span><span class="op">(</span>de.res <span class="op">=</span> <span class="va">debchip.dds.results.ordered</span>, peak.res <span class="op">=</span> <span class="va">peak.anno.df</span>, peak.anno.key <span class="op">=</span> <span class="st">"Promoter"</span>, merge.key<span class="op">=</span><span class="st">"SYMBOL"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Differential expression analysis with DESeq2!</code></pre>
-<div class="sourceCode" id="cb179"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb180"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">debchip.res</span><span class="op">)</span></code></pre></div>
 <pre><code>##          SYMBOL geneId         annotation     anno ENSEMBL
 ## 1 0610012G03Rik   &lt;NA&gt;               &lt;NA&gt;     &lt;NA&gt;    &lt;NA&gt;
@@ -1360,7 +1364,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="integrate-summary" class="section level3">
 <h3 class="hasAnchor">
 <a href="#integrate-summary" class="anchor"></a>Integrate summary</h3>
-<div class="sourceCode" id="cb181"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb182"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># DE and ChIP venn plot</span>
 <span class="va">debchip.plot</span> <span class="op">=</span> <span class="fu"><a href="../reference/PlotDEbPeak.html">PlotDEbPeak</a></span><span class="op">(</span><span class="va">debchip.res</span>, peak.type <span class="op">=</span> <span class="st">"ChIP"</span>, show_percentage<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">debchip.plot</span></code></pre></div>
@@ -1370,7 +1374,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="functional-enrichment" class="section level3">
 <h3 class="hasAnchor">
 <a href="#functional-enrichment" class="anchor"></a>Functional enrichment</h3>
-<div class="sourceCode" id="cb182"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb183"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># functional enrichment on direct targets</span>
 <span class="va">debchip.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/DEbPeakFE.html">DEbPeakFE</a></span><span class="op">(</span>de.peak <span class="op">=</span> <span class="va">debchip.res</span>, peak.type <span class="op">=</span> <span class="st">"ChIP"</span>, gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <pre><code>## conduct ALL GO enrichment analysis on: UPbChIP</code></pre>
@@ -1393,7 +1397,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="fe-on-up-regulated-targets" class="section level4">
 <h4 class="hasAnchor">
 <a href="#fe-on-up-regulated-targets" class="anchor"></a>FE on up-regulated targets</h4>
-<div class="sourceCode" id="cb195"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb196"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">up.debchip.fe.results</span><span class="op">=</span><span class="va">debchip.fe.results</span><span class="op">[[</span><span class="st">"UPbChIP"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">up.debchip.fe.results</span><span class="op">[[</span><span class="st">"table"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code>##            ONTOLOGY         ID                                    Description
@@ -1417,14 +1421,14 @@ document.addEventListener("DOMContentLoaded", function() {
 ## GO:0022011        Pmp22/Prx     2
 ## GO:0032292        Pmp22/Prx     2
 ## GO:0014044        Pmp22/Prx     2</code></pre>
-<div class="sourceCode" id="cb197"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb198"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">up.debchip.fe.results</span><span class="op">[[</span><span class="st">"plot"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debchip_integrate_fe_up-1.png" width="768" style="display: block; margin: auto;"></p>
 </div>
 <div id="fe-on-down-regulated-targets" class="section level4">
 <h4 class="hasAnchor">
 <a href="#fe-on-down-regulated-targets" class="anchor"></a>FE on down-regulated targets</h4>
-<div class="sourceCode" id="cb198"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb199"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">down.debchip.fe.results</span><span class="op">=</span><span class="va">debchip.fe.results</span><span class="op">[[</span><span class="st">"DOWNbChIP"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">down.debchip.fe.results</span><span class="op">[[</span><span class="st">"table"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code>##            ONTOLOGY         ID                                  Description
@@ -1448,7 +1452,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## GO:0030198           Bcl3/Col8a1/Fbln2/Mmp14/Postn     5
 ## GO:0043062           Bcl3/Col8a1/Fbln2/Mmp14/Postn     5
 ## GO:0051250                   Il4ra/Lyn/Ptpn22/Sdc4     4</code></pre>
-<div class="sourceCode" id="cb200"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb201"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">down.debchip.fe.results</span><span class="op">[[</span><span class="st">"plot"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debchip_integrate_fe_down-1.png" width="768" style="display: block; margin: auto;"></p>
 <table class="table">
@@ -1469,7 +1473,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <h2 class="hasAnchor">
 <a href="#integrate-rna-seq-chip-seq-and-atac-seq" class="anchor"></a>Integrate RNA-seq, ChIP-seq and ATAC-seq</h2>
 <p>We have integrated RNA-seq and ChIP-seq data in the above steps, now we will continue to integrate ATAC-seq data based on the previous results. ### Prepare ATAC-seq data #### Consensus peaks</p>
-<div class="sourceCode" id="cb201"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb202"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># get consensus peak</span>
 <span class="va">atac.peak.file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"debatac_peaks.bed"</span>, package <span class="op">=</span> <span class="st">"DEbPeak"</span><span class="op">)</span>
 <span class="va">atac.peak.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetConsensusPeak.html">GetConsensusPeak</a></span><span class="op">(</span>peak.file <span class="op">=</span> <span class="va">atac.peak.file</span><span class="op">)</span>
@@ -1485,26 +1489,26 @@ document.addEventListener("DOMContentLoaded", function() {
 <h4 class="hasAnchor">
 <a href="#peak-profile-1" class="anchor"></a>Peak profile</h4>
 <p>Check the profle of consensus peaks:</p>
-<div class="sourceCode" id="cb203"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb204"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># peak profile plot</span>
 <span class="va">atac.peak.profile</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PeakProfile.html">PeakProfile</a></span><span class="op">(</span><span class="va">atac.peak.df</span>, species <span class="op">=</span> <span class="st">"Mouse"</span>, by <span class="op">=</span> <span class="st">"gene"</span>, region.type <span class="op">=</span> <span class="st">"body"</span>, nbin <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing promoter regions...  2022-12-12 12时27分45秒 
-## &gt;&gt; preparing tag matrix...        2022-12-12 12时27分45秒 
-## &gt;&gt; preparing start_site regions by ... 2022-12-12 12时27分45秒
-## &gt;&gt; preparing tag matrix...  2022-12-12 12时27分45秒 
-## &gt;&gt; generating figure...       2022-12-12 12时27分52秒</code></pre>
-<pre><code>## &gt;&gt; done...            2022-12-12 12时27分56秒</code></pre>
-<pre><code>## &gt;&gt; binning method is used...2022-12-12 12时27分57秒
-## &gt;&gt; preparing start_site regions by gene... 2022-12-12 12时27分57秒
-## &gt;&gt; preparing tag matrix by binning...  2022-12-12 12时27分57秒 
-## &gt;&gt; Running bootstrapping for tag matrix...        2022-12-12 12时28分40秒 
-## &gt;&gt; binning method is used...2022-12-12 12时28分40秒
-## &gt;&gt; preparing body regions by gene... 2022-12-12 12时28分40秒
-## &gt;&gt; preparing tag matrix by binning...  2022-12-12 12时28分40秒 
-## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2022-12-12 12时28分40秒
-## &gt;&gt; 16 peaks(0.296077%), having lengths smaller than 800bp, are filtered... 2022-12-12 12时28分45秒
-## &gt;&gt; Running bootstrapping for tag matrix...        2022-12-12 12时31分39秒</code></pre>
-<div class="sourceCode" id="cb207"><pre class="downlit sourceCode r">
+<pre><code>## &gt;&gt; preparing promoter regions...  2022-12-12 21时48分32秒 
+## &gt;&gt; preparing tag matrix...        2022-12-12 21时48分32秒 
+## &gt;&gt; preparing start_site regions by ... 2022-12-12 21时48分32秒
+## &gt;&gt; preparing tag matrix...  2022-12-12 21时48分32秒 
+## &gt;&gt; generating figure...       2022-12-12 21时48分39秒</code></pre>
+<pre><code>## &gt;&gt; done...            2022-12-12 21时48分43秒</code></pre>
+<pre><code>## &gt;&gt; binning method is used...2022-12-12 21时48分44秒
+## &gt;&gt; preparing start_site regions by gene... 2022-12-12 21时48分44秒
+## &gt;&gt; preparing tag matrix by binning...  2022-12-12 21时48分44秒 
+## &gt;&gt; Running bootstrapping for tag matrix...        2022-12-12 21时49分28秒 
+## &gt;&gt; binning method is used...2022-12-12 21时49分28秒
+## &gt;&gt; preparing body regions by gene... 2022-12-12 21时49分28秒
+## &gt;&gt; preparing tag matrix by binning...  2022-12-12 21时49分28秒 
+## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2022-12-12 21时49分28秒
+## &gt;&gt; 16 peaks(0.296077%), having lengths smaller than 800bp, are filtered... 2022-12-12 21时49分34秒
+## &gt;&gt; Running bootstrapping for tag matrix...        2022-12-12 21时52分28秒</code></pre>
+<div class="sourceCode" id="cb208"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">atac.peak.profile</span><span class="op">$</span><span class="va">profile.plot</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debchip_atac_peak_profile-1.png" width="960" style="display: block; margin: auto;"></p>
 </div>
@@ -1512,22 +1516,22 @@ document.addEventListener("DOMContentLoaded", function() {
 <h4 class="hasAnchor">
 <a href="#peak-annotation-1" class="anchor"></a>Peak annotation</h4>
 <p>Peak annotation with <a href="https://bioconductor.org/packages/release/bioc/vignettes/ChIPseeker/inst/doc/ChIPseeker.html">ChIPseeker</a>:</p>
-<div class="sourceCode" id="cb208"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb209"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># peak annotation</span>
 <span class="va">atac.peak.anno</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AnnoPeak.html">AnnoPeak</a></span><span class="op">(</span>
   peak.df <span class="op">=</span> <span class="va">atac.peak.df</span>, species <span class="op">=</span> <span class="st">"Mouse"</span>,
   seq.style <span class="op">=</span> <span class="st">"UCSC"</span>, up.dist <span class="op">=</span> <span class="fl">20000</span>, down.dist <span class="op">=</span> <span class="fl">20000</span>
 <span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing features information...      2022-12-12 12时31分41秒 
-## &gt;&gt; identifying nearest features...        2022-12-12 12时31分41秒 
-## &gt;&gt; calculating distance from peak to TSS...   2022-12-12 12时31分41秒 
-## &gt;&gt; assigning genomic annotation...        2022-12-12 12时31分41秒 
-## &gt;&gt; adding gene annotation...          2022-12-12 12时31分44秒</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-12-12 21时52分30秒 
+## &gt;&gt; identifying nearest features...        2022-12-12 21时52分30秒 
+## &gt;&gt; calculating distance from peak to TSS...   2022-12-12 21时52分30秒 
+## &gt;&gt; assigning genomic annotation...        2022-12-12 21时52分30秒 
+## &gt;&gt; adding gene annotation...          2022-12-12 21时52分32秒</code></pre>
 <pre><code>## 'select()' returned 1:many mapping between keys and columns</code></pre>
-<pre><code>## &gt;&gt; assigning chromosome lengths           2022-12-12 12时31分44秒 
-## &gt;&gt; done...                    2022-12-12 12时31分44秒</code></pre>
+<pre><code>## &gt;&gt; assigning chromosome lengths           2022-12-12 21时52分32秒 
+## &gt;&gt; done...                    2022-12-12 21时52分33秒</code></pre>
 <pre><code>## Warning: Removed 23 rows containing non-finite values (stat_count).</code></pre>
-<div class="sourceCode" id="cb213"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb214"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">atac.peak.anno.df</span> <span class="op">=</span> <span class="va">atac.peak.anno</span><span class="op">$</span><span class="va">df</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">atac.peak.anno.df</span><span class="op">)</span></code></pre></div>
 <pre><code>##   seqnames     start       end width strand     name score       annotation
@@ -1558,9 +1562,13 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 4                       jun D proto-oncogene Promoter
 ## 5                    zinc finger protein 868 Promoter
 ## 6                  transmembrane protein 267 Promoter</code></pre>
-<div class="sourceCode" id="cb215"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb216"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">atac.peak.anno</span><span class="op">$</span><span class="va">plots</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debchip_atac_peak_annotation_plot-1.png" width="1344" style="display: block; margin: auto;"></p>
+<p>The above pie plot is not based on <code>ggplot2</code>, here we provide function to create pie plot based on <code>ggplot2</code>:</p>
+<div class="sourceCode" id="cb217"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/PeakAnnoPie.html">PeakAnnoPie</a></span><span class="op">(</span><span class="va">atac.peak.anno</span><span class="op">$</span><span class="va">anno.obj</span><span class="op">)</span></code></pre></div>
+<p><img src="DEbPeak_All_files/figure-html/debchip_atac_peak_annotation_pie-1.png" width="960" style="display: block; margin: auto;"></p>
 <hr>
 </div>
 <div id="integrate-rna-seq-chip-seq-and-atac-seq-1" class="section level3">
@@ -1569,12 +1577,12 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="integrate" class="section level4">
 <h4 class="hasAnchor">
 <a href="#integrate" class="anchor"></a>Integrate</h4>
-<div class="sourceCode" id="cb216"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb218"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">debpeak.res</span> <span class="op">=</span> <span class="fu"><a href="../reference/DEbCA.html">DEbCA</a></span><span class="op">(</span>de.res <span class="op">=</span> <span class="va">debchip.dds.results.ordered</span>, chip.peak.res <span class="op">=</span> <span class="va">peak.anno.df</span>,
                     atac.peak.res <span class="op">=</span> <span class="va">atac.peak.anno.df</span>,
                     peak.anno.key <span class="op">=</span> <span class="st">"Promoter"</span>, merge.key <span class="op">=</span> <span class="st">"SYMBOL"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Differential expression analysis with DESeq2!</code></pre>
-<div class="sourceCode" id="cb218"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb220"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">debpeak.res</span><span class="op">)</span></code></pre></div>
 <pre><code>##          SYMBOL geneId_ChIP    annotation_ChIP anno_ChIP ENSEMBL_ChIP
 ## 1 0610009E02Rik        &lt;NA&gt;               &lt;NA&gt;      &lt;NA&gt;         &lt;NA&gt;
@@ -1608,7 +1616,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="integrate-summary-1" class="section level4">
 <h4 class="hasAnchor">
 <a href="#integrate-summary-1" class="anchor"></a>Integrate summary</h4>
-<div class="sourceCode" id="cb220"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb222"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># DE and ChIP venn plot</span>
 <span class="va">debpeak.plot</span> <span class="op">=</span> <span class="fu"><a href="../reference/PlotDEbPeak.html">PlotDEbPeak</a></span><span class="op">(</span><span class="va">debpeak.res</span>, peak.type <span class="op">=</span> <span class="st">"Peak"</span>, show_percentage<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">debpeak.plot</span></code></pre></div>
@@ -1617,7 +1625,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="functional-enrichment-1" class="section level4">
 <h4 class="hasAnchor">
 <a href="#functional-enrichment-1" class="anchor"></a>Functional enrichment</h4>
-<div class="sourceCode" id="cb221"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb223"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># functional enrichment on direct targets</span>
 <span class="va">debpeak.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/DEbPeakFE.html">DEbPeakFE</a></span><span class="op">(</span>de.peak <span class="op">=</span> <span class="va">debpeak.res</span>, peak.type <span class="op">=</span> <span class="st">"Peak"</span>, gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <pre><code>## conduct ALL GO enrichment analysis on: UPbPeak</code></pre>
@@ -1637,7 +1645,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="fe-on-up-regulated-targets-1" class="section level5">
 <h5 class="hasAnchor">
 <a href="#fe-on-up-regulated-targets-1" class="anchor"></a>FE on up-regulated targets</h5>
-<div class="sourceCode" id="cb232"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb234"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">up.debpeak.fe.results</span><span class="op">=</span><span class="va">debpeak.fe.results</span><span class="op">[[</span><span class="st">"UPbPeak"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">up.debpeak.fe.results</span><span class="op">[[</span><span class="st">"table"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code>##            ONTOLOGY         ID                     Description GeneRatio
@@ -1654,14 +1662,14 @@ document.addEventListener("DOMContentLoaded", function() {
 ## GO:0043256  12/23271 4.632203e-03 0.043690148 0.020120463     Pmp22     1
 ## GO:0019898 320/23271 6.366508e-03 0.043690148 0.020120463  Bsn/Syt6     2
 ## GO:0030133 339/23271 7.118989e-03 0.043690148 0.020120463  Bsn/Syt6     2</code></pre>
-<div class="sourceCode" id="cb234"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb236"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">up.debpeak.fe.results</span><span class="op">[[</span><span class="st">"plot"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debpeak_integrate_fe_up-1.png" width="768" style="display: block; margin: auto;"></p>
 </div>
 <div id="fe-on-down-regulated-targets-1" class="section level5">
 <h5 class="hasAnchor">
 <a href="#fe-on-down-regulated-targets-1" class="anchor"></a>FE on down-regulated targets</h5>
-<div class="sourceCode" id="cb235"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb237"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">down.debpeak.fe.results</span><span class="op">=</span><span class="va">debpeak.fe.results</span><span class="op">[[</span><span class="st">"DOWNbPeak"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">down.debpeak.fe.results</span><span class="op">[[</span><span class="st">"table"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code>##            ONTOLOGY         ID                                    Description
@@ -1685,7 +1693,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## GO:0045860  Akap13/Ccnd1/Ern1/Sdc4     4
 ## GO:0042832              Bcl3/Il4ra     2
 ## GO:0010810       Col8a1/Fbln2/Sdc4     3</code></pre>
-<div class="sourceCode" id="cb237"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb239"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">down.debpeak.fe.results</span><span class="op">[[</span><span class="st">"plot"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debpeak_integrate_fe_down-1.png" width="768" style="display: block; margin: auto;"></p>
 <hr>
@@ -1703,11 +1711,11 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="results-from-de-analysis" class="section level3">
 <h3 class="hasAnchor">
 <a href="#results-from-de-analysis" class="anchor"></a>results from DE analysis</h3>
-<div class="sourceCode" id="cb238"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb240"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># convert for DESeq2 results</span>
 <span class="va">dds.results.ordered</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/IDConversion.html">IDConversion</a></span><span class="op">(</span>deres <span class="op">=</span> <span class="va">dds.results.ordered</span>, gene.type <span class="op">=</span> <span class="st">"ENSEMBL"</span>,sort.key <span class="op">=</span> <span class="st">"log2FoldChange"</span><span class="op">)</span></code></pre></div>
 <pre><code>## 'select()' returned 1:many mapping between keys and columns</code></pre>
-<div class="sourceCode" id="cb240"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb242"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">dds.results.ordered</span><span class="op">)</span></code></pre></div>
 <pre><code>##                           baseMean log2FoldChange     lfcSE       stat
 ## ENSMUSG00000000001.4  4178.2932143     0.03256101 0.1097033  0.2968099
@@ -1728,10 +1736,10 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="normal-matrix" class="section level3">
 <h3 class="hasAnchor">
 <a href="#normal-matrix" class="anchor"></a>normal matrix</h3>
-<div class="sourceCode" id="cb242"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb244"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">count.matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/IDConversion.html">IDConversion</a></span><span class="op">(</span>deres <span class="op">=</span> <span class="va">count.matrix</span>, gene.type <span class="op">=</span> <span class="st">"ENSEMBL"</span>,sort.key<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></code></pre></div>
 <pre><code>## 'select()' returned 1:many mapping between keys and columns</code></pre>
-<div class="sourceCode" id="cb244"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb246"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">count.matrix</span><span class="op">)</span></code></pre></div>
 <pre><code>##                        KO1  KO2  KO3  KO4  KO5  KO6  WT1  WT2  WT3  WT4  WT5
 ## ENSMUSG00000000001.4  4556 4218 3835 3718 5741 3875 4115 5074 2931 4374 5118
@@ -1761,7 +1769,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <p><span class="math display">\[
 \mathrm{CPM}=\frac{\text { Number of reads mapped to gene } \times 10^{6}}{\text { Total number of mapped reads }}
 \]</span></p>
-<div class="sourceCode" id="cb246"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb248"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cpm.matrix</span><span class="op">=</span><span class="fu"><a href="../reference/NormalizedCount.html">NormalizedCount</a></span><span class="op">(</span><span class="va">dds</span>, norm.type<span class="op">=</span><span class="st">"CPM"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">cpm.matrix</span><span class="op">)</span></code></pre></div>
 <pre><code>##                             KO1       KO2        KO3       KO4        KO5
@@ -1791,7 +1799,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <h3 class="hasAnchor">
 <a href="#tmm" class="anchor"></a>TMM</h3>
 <p>edgeR’s <em>T</em>rimmed <em>M</em>ean of <em>M</em> values (TMM) takes into account the <strong>sequencing depth</strong>, <strong>RNA composition</strong>, and <strong>gene length</strong>. For detailed information, please refer to <a href="https://genomebiology.biomedcentral.com/articles/10.1186/gb-2010-11-3-r25">A scaling normalization method for differential expression analysis of RNA-seq data</a>.</p>
-<div class="sourceCode" id="cb248"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb250"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tmm.matrix</span><span class="op">=</span><span class="fu"><a href="../reference/NormalizedCount.html">NormalizedCount</a></span><span class="op">(</span><span class="va">dds</span>, norm.type<span class="op">=</span><span class="st">"TMM"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">tmm.matrix</span><span class="op">)</span></code></pre></div>
 <pre><code>##                             KO1       KO2        KO3       KO4        KO5
@@ -1821,7 +1829,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <h3 class="hasAnchor">
 <a href="#deseq2s-median-of-ratios" class="anchor"></a>DESeq2’s median of ratios</h3>
 <p>DESeq2’s median of ratios takes into account the <strong>sequencing depth</strong> and <strong>RNA composition</strong>. For detailed information, please refer to <a href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0550-8">Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2</a>.</p>
-<div class="sourceCode" id="cb250"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb252"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">deseq2.matrix</span><span class="op">=</span><span class="fu"><a href="../reference/NormalizedCount.html">NormalizedCount</a></span><span class="op">(</span><span class="va">dds</span>, norm.type<span class="op">=</span><span class="st">"DESeq2"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">deseq2.matrix</span><span class="op">)</span></code></pre></div>
 <pre><code>##                             KO1       KO2        KO3       KO4        KO5
@@ -1854,7 +1862,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <p><span class="math display">\[
 \text { RPKM }=\frac{\text { Number of reads mapped to gene } \times 10^{3} \times 10^{6}}{\text { Total number of mapped reads } \times \text { gene length }}
 \]</span></p>
-<div class="sourceCode" id="cb252"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb254"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rpkm.matrix</span><span class="op">=</span><span class="fu"><a href="../reference/NormalizedCount.html">NormalizedCount</a></span><span class="op">(</span><span class="va">dds</span>,gtf.file <span class="op">=</span> <span class="st">'/path/to/gtf'</span>, norm.type<span class="op">=</span><span class="st">"RPKM"</span><span class="op">)</span></code></pre></div>
 <hr>
 </div>
@@ -1869,7 +1877,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <p><span class="math display">\[
 \mathrm{TPM}=\frac{R P K M}{\sum(R P K M)} \times 10^{6}
 \]</span></p>
-<div class="sourceCode" id="cb253"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb255"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tpm.matrix</span><span class="op">=</span><span class="fu"><a href="../reference/NormalizedCount.html">NormalizedCount</a></span><span class="op">(</span><span class="va">dds</span>,gtf.file <span class="op">=</span> <span class="st">'/path/to/gtf'</span>, norm.type<span class="op">=</span><span class="st">"TPM"</span><span class="op">)</span></code></pre></div>
 <hr>
 </div>
@@ -1878,7 +1886,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="session-info" class="section level1">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session info</h1>
-<div class="sourceCode" id="cb254"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb256"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <pre><code>## R version 4.0.3 (2020-10-10)
 ## Platform: x86_64-conda-linux-gnu (64-bit)
@@ -1922,185 +1930,187 @@ document.addEventListener("DOMContentLoaded", function() {
 ## [20] BiocStyle_2.18.1                         
 ## 
 ## loaded via a namespace (and not attached):
-##   [1] ggvenn_0.1.9                           
-##   [2] utf8_1.2.1                             
-##   [3] tidyselect_1.1.0                       
-##   [4] RSQLite_2.2.5                          
-##   [5] grid_4.0.3                             
-##   [6] BiocParallel_1.24.1                    
-##   [7] scatterpie_0.1.7                       
-##   [8] munsell_0.5.0                          
-##   [9] codetools_0.2-18                       
-##  [10] ragg_0.4.0                             
-##  [11] misc3d_0.9-1                           
-##  [12] colorspace_2.0-0                       
-##  [13] GOSemSim_2.16.1                        
-##  [14] highr_0.8                              
-##  [15] rstudioapi_0.13                        
-##  [16] robustbase_0.95-0                      
-##  [17] DOSE_3.16.0                            
-##  [18] labeling_0.4.2                         
-##  [19] GenomeInfoDbData_1.2.4                 
-##  [20] polyclip_1.10-0                        
-##  [21] bit64_4.0.5                            
-##  [22] farver_2.1.0                           
-##  [23] rprojroot_2.0.2                        
-##  [24] downloader_0.4                         
-##  [25] vctrs_0.4.1                            
-##  [26] generics_0.1.0                         
-##  [27] xfun_0.30                              
-##  [28] BiocFileCache_1.14.0                   
-##  [29] R6_2.5.0                               
-##  [30] doParallel_1.0.16                      
-##  [31] clue_0.3-59                            
-##  [32] graphlayouts_0.7.1                     
-##  [33] rsvd_1.0.3                             
-##  [34] locfit_1.5-9.4                         
-##  [35] gridGraphics_0.5-1                     
-##  [36] bitops_1.0-6                           
-##  [37] cachem_1.0.4                           
-##  [38] fgsea_1.16.0                           
-##  [39] DelayedArray_0.16.3                    
-##  [40] assertthat_0.2.1                       
-##  [41] scales_1.1.1                           
-##  [42] ggraph_2.0.5                           
-##  [43] enrichplot_1.10.2                      
-##  [44] gtable_0.3.0                           
-##  [45] beachmat_2.6.4                         
+##   [1] rappdirs_0.3.3                         
+##   [2] rtracklayer_1.50.0                     
+##   [3] ragg_0.4.0                             
+##   [4] tidyr_1.1.3                            
+##   [5] ggplot2_3.3.5                          
+##   [6] bit64_4.0.5                            
+##   [7] ggvenn_0.1.9                           
+##   [8] irlba_2.3.5                            
+##   [9] DelayedArray_0.16.3                    
+##  [10] data.table_1.14.2                      
+##  [11] RCurl_1.98-1.3                         
+##  [12] doParallel_1.0.16                      
+##  [13] generics_0.1.0                         
+##  [14] cowplot_1.1.1                          
+##  [15] RSQLite_2.2.5                          
+##  [16] shadowtext_0.0.9                       
+##  [17] PCAtools_2.2.0                         
+##  [18] bit_4.0.4                              
+##  [19] enrichplot_1.10.2                      
+##  [20] xml2_1.3.2                             
+##  [21] assertthat_0.2.1                       
+##  [22] viridis_0.6.1                          
+##  [23] xfun_0.30                              
+##  [24] hms_1.0.0                              
+##  [25] jquerylib_0.1.3                        
+##  [26] babelgene_21.4                         
+##  [27] evaluate_0.14                          
+##  [28] DEoptimR_1.0-11                        
+##  [29] fansi_0.4.2                            
+##  [30] progress_1.2.2                         
+##  [31] caTools_1.18.2                         
+##  [32] dbplyr_2.1.1                           
+##  [33] igraph_1.3.4                           
+##  [34] DBI_1.1.1                              
+##  [35] geneplotter_1.68.0                     
+##  [36] purrr_0.3.4                            
+##  [37] ellipsis_0.3.2                         
+##  [38] dplyr_1.0.5                            
+##  [39] ggnewscale_0.4.7                       
+##  [40] backports_1.2.1                        
+##  [41] bookdown_0.26                          
+##  [42] annotate_1.68.0                        
+##  [43] biomaRt_2.46.3                         
+##  [44] sparseMatrixStats_1.2.1                
+##  [45] vctrs_0.4.1                            
 ##  [46] Cairo_1.5-12.2                         
-##  [47] sva_3.38.0                             
-##  [48] tidygraph_1.2.0                        
-##  [49] rlang_1.0.3                            
-##  [50] genefilter_1.72.1                      
-##  [51] systemfonts_1.0.1                      
-##  [52] GlobalOptions_0.1.2                    
-##  [53] splines_4.0.3                          
-##  [54] rtracklayer_1.50.0                     
-##  [55] checkmate_2.0.0                        
-##  [56] BiocManager_1.30.16                    
-##  [57] yaml_2.2.1                             
-##  [58] reshape2_1.4.4                         
-##  [59] backports_1.2.1                        
-##  [60] qvalue_2.22.0                          
-##  [61] clusterProfiler_3.18.1                 
-##  [62] tcltk_4.0.3                            
-##  [63] tools_4.0.3                            
-##  [64] bookdown_0.26                          
-##  [65] ggplotify_0.1.0                        
-##  [66] ggplot2_3.3.5                          
-##  [67] ellipsis_0.3.2                         
-##  [68] gplots_3.1.1                           
-##  [69] jquerylib_0.1.3                        
-##  [70] RColorBrewer_1.1-2                     
-##  [71] Rcpp_1.0.9                             
-##  [72] plyr_1.8.6                             
-##  [73] sparseMatrixStats_1.2.1                
-##  [74] progress_1.2.2                         
-##  [75] zlibbioc_1.36.0                        
-##  [76] purrr_0.3.4                            
-##  [77] RCurl_1.98-1.3                         
-##  [78] prettyunits_1.1.1                      
-##  [79] openssl_1.4.3                          
-##  [80] GetoptLong_1.0.5                       
-##  [81] viridis_0.6.1                          
-##  [82] cowplot_1.1.1                          
-##  [83] ggrepel_0.9.1                          
-##  [84] cluster_2.1.1                          
-##  [85] fs_1.5.0                               
-##  [86] magrittr_2.0.1                         
-##  [87] data.table_1.14.2                      
-##  [88] DO.db_2.9                              
-##  [89] circlize_0.4.15                        
-##  [90] mvtnorm_1.1-2                          
-##  [91] patchwork_1.0.0                        
-##  [92] hms_1.0.0                              
-##  [93] evaluate_0.14                          
-##  [94] xtable_1.8-4                           
-##  [95] XML_3.99-0.6                           
-##  [96] gridExtra_2.3                          
-##  [97] shape_1.4.6                            
-##  [98] ggupset_0.3.0                          
-##  [99] compiler_4.0.3                         
-## [100] biomaRt_2.46.3                         
-## [101] tibble_3.1.0                           
-## [102] KernSmooth_2.23-18                     
-## [103] crayon_1.4.1                           
-## [104] shadowtext_0.0.9                       
-## [105] htmltools_0.5.2                        
-## [106] mgcv_1.8-34                            
-## [107] pcaPP_2.0-1                            
-## [108] ggfun_0.0.6                            
-## [109] rrcov_1.7-0                            
-## [110] tidyr_1.1.3                            
-## [111] geneplotter_1.68.0                     
-## [112] DBI_1.1.1                              
-## [113] tweenr_1.0.2                           
-## [114] ChIPseeker_1.33.0.900                  
-## [115] dbplyr_2.1.1                           
-## [116] ComplexHeatmap_2.13.1                  
-## [117] MASS_7.3-53.1                          
-## [118] rappdirs_0.3.3                         
-## [119] boot_1.3-28                            
-## [120] babelgene_21.4                         
-## [121] Matrix_1.3-3                           
-## [122] cli_3.3.0                              
-## [123] parallel_4.0.3                         
-## [124] igraph_1.3.4                           
-## [125] pkgconfig_2.0.3                        
-## [126] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
-## [127] pkgdown_1.6.1                          
-## [128] rvcheck_0.1.8                          
-## [129] GenomicAlignments_1.26.0               
-## [130] xml2_1.3.2                             
-## [131] foreach_1.5.1                          
-## [132] PCAtools_2.2.0                         
-## [133] annotate_1.68.0                        
-## [134] bslib_0.3.1                            
-## [135] dqrng_0.2.1                            
-## [136] DEFormats_1.18.0                       
-## [137] XVector_0.30.0                         
-## [138] yulab.utils_0.0.4                      
-## [139] stringr_1.4.0                          
-## [140] digest_0.6.27                          
-## [141] Biostrings_2.58.0                      
-## [142] rmarkdown_2.14                         
-## [143] fastmatch_1.1-3                        
-## [144] DelayedMatrixStats_1.12.3              
-## [145] curl_4.3                               
-## [146] Rsamtools_2.6.0                        
-## [147] gtools_3.8.2                           
-## [148] NOISeq_2.34.0                          
-## [149] rjson_0.2.20                           
-## [150] nlme_3.1-152                           
-## [151] lifecycle_1.0.0                        
-## [152] jsonlite_1.7.2                         
-## [153] desc_1.3.0                             
-## [154] viridisLite_0.4.0                      
-## [155] askpass_1.1                            
-## [156] fansi_0.4.2                            
-## [157] pillar_1.5.1                           
-## [158] lattice_0.20-45                        
-## [159] DEoptimR_1.0-11                        
-## [160] fastmap_1.1.0                          
-## [161] httr_1.4.2                             
-## [162] plotrix_3.8-2                          
-## [163] survival_3.2-10                        
-## [164] GO.db_3.12.1                           
-## [165] glue_1.6.2                             
-## [166] png_0.1-7                              
-## [167] iterators_1.0.13                       
-## [168] plot3D_1.4                             
-## [169] bit_4.0.4                              
-## [170] ggforce_0.3.3                          
-## [171] stringi_1.5.3                          
-## [172] sass_0.4.1                             
-## [173] blob_1.2.1                             
-## [174] textshaping_0.1.2                      
-## [175] BiocSingular_1.6.0                     
-## [176] caTools_1.18.2                         
-## [177] memoise_2.0.0                          
-## [178] dplyr_1.0.5                            
-## [179] irlba_2.3.5</code></pre>
+##  [47] cachem_1.0.4                           
+##  [48] ggforce_0.3.3                          
+##  [49] robustbase_0.95-0                      
+##  [50] checkmate_2.0.0                        
+##  [51] GenomicAlignments_1.26.0               
+##  [52] prettyunits_1.1.1                      
+##  [53] cluster_2.1.1                          
+##  [54] DOSE_3.16.0                            
+##  [55] crayon_1.4.1                           
+##  [56] genefilter_1.72.1                      
+##  [57] pkgconfig_2.0.3                        
+##  [58] labeling_0.4.2                         
+##  [59] tweenr_1.0.2                           
+##  [60] nlme_3.1-152                           
+##  [61] rlang_1.0.3                            
+##  [62] lifecycle_1.0.0                        
+##  [63] downloader_0.4                         
+##  [64] BiocFileCache_1.14.0                   
+##  [65] rsvd_1.0.3                             
+##  [66] tcltk_4.0.3                            
+##  [67] rprojroot_2.0.2                        
+##  [68] polyclip_1.10-0                        
+##  [69] Matrix_1.3-3                           
+##  [70] boot_1.3-28                            
+##  [71] GlobalOptions_0.1.2                    
+##  [72] png_0.1-7                              
+##  [73] viridisLite_0.4.0                      
+##  [74] rjson_0.2.20                           
+##  [75] bitops_1.0-6                           
+##  [76] NOISeq_2.34.0                          
+##  [77] KernSmooth_2.23-18                     
+##  [78] Biostrings_2.58.0                      
+##  [79] blob_1.2.1                             
+##  [80] DelayedMatrixStats_1.12.3              
+##  [81] shape_1.4.6                            
+##  [82] stringr_1.4.0                          
+##  [83] qvalue_2.22.0                          
+##  [84] gridGraphics_0.5-1                     
+##  [85] beachmat_2.6.4                         
+##  [86] scales_1.1.1                           
+##  [87] memoise_2.0.0                          
+##  [88] magrittr_2.0.1                         
+##  [89] plyr_1.8.6                             
+##  [90] gplots_3.1.1                           
+##  [91] zlibbioc_1.36.0                        
+##  [92] compiler_4.0.3                         
+##  [93] scatterpie_0.1.7                       
+##  [94] dqrng_0.2.1                            
+##  [95] RColorBrewer_1.1-2                     
+##  [96] plotrix_3.8-2                          
+##  [97] clue_0.3-59                            
+##  [98] rrcov_1.7-0                            
+##  [99] Rsamtools_2.6.0                        
+## [100] cli_3.3.0                              
+## [101] XVector_0.30.0                         
+## [102] patchwork_1.0.0                        
+## [103] DEFormats_1.18.0                       
+## [104] MASS_7.3-53.1                          
+## [105] mgcv_1.8-34                            
+## [106] tidyselect_1.1.0                       
+## [107] stringi_1.5.3                          
+## [108] ggupset_0.3.0                          
+## [109] textshaping_0.1.2                      
+## [110] highr_0.8                              
+## [111] yaml_2.2.1                             
+## [112] GOSemSim_2.16.1                        
+## [113] BiocSingular_1.6.0                     
+## [114] askpass_1.1                            
+## [115] locfit_1.5-9.4                         
+## [116] ggrepel_0.9.1                          
+## [117] grid_4.0.3                             
+## [118] sass_0.4.1                             
+## [119] fastmatch_1.1-3                        
+## [120] tools_4.0.3                            
+## [121] parallel_4.0.3                         
+## [122] circlize_0.4.15                        
+## [123] rstudioapi_0.13                        
+## [124] foreach_1.5.1                          
+## [125] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
+## [126] gridExtra_2.3                          
+## [127] farver_2.1.0                           
+## [128] ggraph_2.0.5                           
+## [129] digest_0.6.27                          
+## [130] rvcheck_0.1.8                          
+## [131] BiocManager_1.30.16                    
+## [132] ggpie_0.2.1                            
+## [133] Rcpp_1.0.9                             
+## [134] httr_1.4.2                             
+## [135] ComplexHeatmap_2.13.1                  
+## [136] colorspace_2.0-0                       
+## [137] XML_3.99-0.6                           
+## [138] fs_1.5.0                               
+## [139] splines_4.0.3                          
+## [140] yulab.utils_0.0.4                      
+## [141] pkgdown_1.6.1                          
+## [142] graphlayouts_0.7.1                     
+## [143] ggplotify_0.1.0                        
+## [144] systemfonts_1.0.1                      
+## [145] xtable_1.8-4                           
+## [146] jsonlite_1.7.2                         
+## [147] tidygraph_1.2.0                        
+## [148] ggfun_0.0.6                            
+## [149] R6_2.5.0                               
+## [150] pillar_1.5.1                           
+## [151] htmltools_0.5.2                        
+## [152] glue_1.6.2                             
+## [153] fastmap_1.1.0                          
+## [154] clusterProfiler_3.18.1                 
+## [155] BiocParallel_1.24.1                    
+## [156] codetools_0.2-18                       
+## [157] ChIPseeker_1.33.0.900                  
+## [158] fgsea_1.16.0                           
+## [159] pcaPP_2.0-1                            
+## [160] mvtnorm_1.1-2                          
+## [161] utf8_1.2.1                             
+## [162] lattice_0.20-45                        
+## [163] bslib_0.3.1                            
+## [164] tibble_3.1.0                           
+## [165] sva_3.38.0                             
+## [166] curl_4.3                               
+## [167] gtools_3.8.2                           
+## [168] misc3d_0.9-1                           
+## [169] GO.db_3.12.1                           
+## [170] openssl_1.4.3                          
+## [171] survival_3.2-10                        
+## [172] rmarkdown_2.14                         
+## [173] desc_1.3.0                             
+## [174] munsell_0.5.0                          
+## [175] DO.db_2.9                              
+## [176] GetoptLong_1.0.5                       
+## [177] GenomeInfoDbData_1.2.4                 
+## [178] plot3D_1.4                             
+## [179] iterators_1.0.13                       
+## [180] reshape2_1.4.4                         
+## [181] gtable_0.3.0</code></pre>
 </div>
   </div>
 
