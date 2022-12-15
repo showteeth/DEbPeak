@@ -74,17 +74,18 @@ GetGeneLength <- function(gtf.file, save = FALSE, out.file = NULL) {
   exons.list <- GenomicFeatures::exonsBy(txdb, by = "gene")
   reduce.exons.list <- GenomicRanges::reduce(exons.list)
   gene.length <- sum(GenomicRanges::width(reduce.exons.list))
-  gene.length.df <- as.data.frame(gene.length) %>% tibble::rownames_to_column(var = "Gene") %>%
+  gene.length.df <- as.data.frame(gene.length) %>%
+    tibble::rownames_to_column(var = "Gene") %>%
     purrr::set_names(c("Gene", "Length"))
   # remove gene version information
   gene.length.df$Gene <- gsub(pattern = "\\.[0-9]*$", replacement = "", x = as.character(gene.length.df$Gene))
-  if(save){
-    if(is.null(out.file)){
+  if (save) {
+    if (is.null(out.file)) {
       utils::write.table(x = gene.length.df, file = "DEbPeak_geneLength.txt", sep = "\t", quote = FALSE, row.names = F)
-    }else{
+    } else {
       utils::write.table(x = gene.length.df, file = out.file, sep = "\t", quote = FALSE, row.names = F)
     }
-  }else{
+  } else {
     return(gene.length.df)
   }
 }
@@ -170,12 +171,12 @@ NormalizedCount <- function(deobj, gtf.file = NULL, gene.length.file = NULL,
   } else if (norm.type %in% c("RPKM", "TPM")) {
     if (!is.null(gtf.file)) {
       gene.length <- GetGeneLength(gtf.file)
-    }else if (!is.null(gene.length.file)){
-      gene.length = utils::read.table(file = gene.length.file, header = TRUE, sep = "\t")
-      if(!all(c("Gene", "Length") %in% colnames(gene.length))){
+    } else if (!is.null(gene.length.file)) {
+      gene.length <- utils::read.table(file = gene.length.file, header = TRUE, sep = "\t")
+      if (!all(c("Gene", "Length") %in% colnames(gene.length))) {
         stop("gene length file should contains 'Gene' and 'Length' columns!")
       }
-    }else{
+    } else {
       stop("Calculate RPKM/TPM needs gtf file or gene length file!")
     }
     raw.counts <- deobj$counts %>%

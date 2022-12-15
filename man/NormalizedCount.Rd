@@ -7,6 +7,7 @@
 NormalizedCount(
   deobj,
   gtf.file = NULL,
+  gene.length.file = NULL,
   norm.type = c("DESeq2", "TMM", "CPM", "RPKM", "TPM")
 )
 }
@@ -14,6 +15,9 @@ NormalizedCount(
 \item{deobj}{Object created by DESeq2 or edgeR.}
 
 \item{gtf.file}{Gene annotation file used to get gene length, used if \code{norm.type=="RPKM"} or \code{norm.type=="TPM"}. Default: NULL.}
+
+\item{gene.length.file}{Gene length file, tab-separated, should contains "Gene" and "Length" columns.
+Used if \code{norm.type=="RPKM"} or \code{norm.type=="TPM"}. Default: NULL.}
 
 \item{norm.type}{Normalization method, chosen from DESeq2, TMM, CPM, RPKM, TPM. Default: DESeq2.}
 }

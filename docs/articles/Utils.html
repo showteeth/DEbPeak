@@ -217,6 +217,15 @@
 ## ENSMUSG00000000049.11    0    11818   Apoh</code></pre>
 <hr>
 </div>
+<div id="get-gene-length" class="section level2">
+<h2 class="hasAnchor">
+<a href="#get-gene-length" class="anchor"></a>Get gene length</h2>
+<p>The gene length is useful when perfrom count normalization (<strong>RPKM</strong> and <strong>TPM</strong>). Here, we provide <code>GetGeneLength</code> to calculate gene length:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># this will get DEbPeak_geneLength.txt file in working directory, you can also provide out.file</span>
+<span class="fu"><a href="../reference/GetGeneLength.html">GetGeneLength</a></span><span class="op">(</span>gtf.file <span class="op">=</span> <span class="st">'/path/to/gtf'</span>, save <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<hr>
+</div>
 <div id="count-normalization" class="section level2">
 <h2 class="hasAnchor">
 <a href="#count-normalization" class="anchor"></a>Count normalization</h2>
@@ -228,7 +237,7 @@
 <p><span class="math display">\[
 \mathrm{CPM}=\frac{\text { Number of reads mapped to gene } \times 10^{6}}{\text { Total number of mapped reads }}
 \]</span></p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cpm.matrix</span><span class="op">=</span><span class="fu"><a href="../reference/NormalizedCount.html">NormalizedCount</a></span><span class="op">(</span><span class="va">dds</span>, norm.type<span class="op">=</span><span class="st">"CPM"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">cpm.matrix</span><span class="op">)</span></code></pre></div>
 <pre><code>##                             KO1       KO2        KO3       KO4        KO5
@@ -258,7 +267,7 @@
 <h3 class="hasAnchor">
 <a href="#tmm" class="anchor"></a>TMM</h3>
 <p>edgeR’s <em>T</em>rimmed <em>M</em>ean of <em>M</em> values (TMM) takes into account the <strong>sequencing depth</strong>, <strong>RNA composition</strong>, and <strong>gene length</strong>. For detailed information, please refer to <a href="https://genomebiology.biomedcentral.com/articles/10.1186/gb-2010-11-3-r25">A scaling normalization method for differential expression analysis of RNA-seq data</a>.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tmm.matrix</span><span class="op">=</span><span class="fu"><a href="../reference/NormalizedCount.html">NormalizedCount</a></span><span class="op">(</span><span class="va">dds</span>, norm.type<span class="op">=</span><span class="st">"TMM"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">tmm.matrix</span><span class="op">)</span></code></pre></div>
 <pre><code>##                             KO1       KO2        KO3       KO4        KO5
@@ -288,7 +297,7 @@
 <h3 class="hasAnchor">
 <a href="#deseq2s-median-of-ratios" class="anchor"></a>DESeq2’s median of ratios</h3>
 <p>DESeq2’s median of ratios takes into account the <strong>sequencing depth</strong> and <strong>RNA composition</strong>. For detailed information, please refer to <a href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0550-8">Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2</a>.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">deseq2.matrix</span><span class="op">=</span><span class="fu"><a href="../reference/NormalizedCount.html">NormalizedCount</a></span><span class="op">(</span><span class="va">dds</span>, norm.type<span class="op">=</span><span class="st">"DESeq2"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">deseq2.matrix</span><span class="op">)</span></code></pre></div>
 <pre><code>##                             KO1       KO2        KO3       KO4        KO5
@@ -321,8 +330,9 @@
 <p><span class="math display">\[
 \text { RPKM }=\frac{\text { Number of reads mapped to gene } \times 10^{3} \times 10^{6}}{\text { Total number of mapped reads } \times \text { gene length }}
 \]</span></p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">rpkm.matrix</span><span class="op">=</span><span class="fu"><a href="../reference/NormalizedCount.html">NormalizedCount</a></span><span class="op">(</span><span class="va">dds</span>,gtf.file <span class="op">=</span> <span class="st">'/path/to/gtf'</span>, norm.type<span class="op">=</span><span class="st">"RPKM"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># you can either provide gtf.file or gene.length.file</span>
+<span class="va">rpkm.matrix</span><span class="op">=</span><span class="fu"><a href="../reference/NormalizedCount.html">NormalizedCount</a></span><span class="op">(</span><span class="va">dds</span>,gtf.file <span class="op">=</span> <span class="st">'/path/to/gtf'</span>, norm.type<span class="op">=</span><span class="st">"RPKM"</span><span class="op">)</span></code></pre></div>
 <hr>
 </div>
 <div id="tpm" class="section level3">
@@ -336,15 +346,16 @@
 <p><span class="math display">\[
 \mathrm{TPM}=\frac{R P K M}{\sum(R P K M)} \times 10^{6}
 \]</span></p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tpm.matrix</span><span class="op">=</span><span class="fu"><a href="../reference/NormalizedCount.html">NormalizedCount</a></span><span class="op">(</span><span class="va">dds</span>,gtf.file <span class="op">=</span> <span class="st">'/path/to/gtf'</span>, norm.type<span class="op">=</span><span class="st">"TPM"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># you can either provide gtf.file or gene.length.file</span>
+<span class="va">tpm.matrix</span><span class="op">=</span><span class="fu"><a href="../reference/NormalizedCount.html">NormalizedCount</a></span><span class="op">(</span><span class="va">dds</span>,gtf.file <span class="op">=</span> <span class="st">'/path/to/gtf'</span>, norm.type<span class="op">=</span><span class="st">"TPM"</span><span class="op">)</span></code></pre></div>
 <hr>
 </div>
 </div>
 <div id="session-info" class="section level2">
 <h2 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session info</h2>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <pre><code>## R version 4.0.3 (2020-10-10)
 ## Platform: x86_64-conda-linux-gnu (64-bit)

@@ -56,7 +56,7 @@ head(count.matrix)
 
 ## Get gene length
 The gene length is useful when perfrom count normalization (**RPKM** and **TPM**). Here, we provide `GetGeneLength` to calculate gene length:
-```{r geneLength}
+```{r geneLength, warning=FALSE, eval=F}
 # this will get DEbPeak_geneLength.txt file in working directory, you can also provide out.file
 GetGeneLength(gtf.file = '/path/to/gtf', save = TRUE)
 ```

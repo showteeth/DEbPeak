@@ -209,22 +209,22 @@
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># peak profile plot</span>
 <span class="va">atac.peak.profile</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PeakProfile.html">PeakProfile</a></span><span class="op">(</span><span class="va">atac.peak.df</span>, species <span class="op">=</span> <span class="st">"Mouse"</span>, by <span class="op">=</span> <span class="st">"gene"</span>, region.type <span class="op">=</span> <span class="st">"body"</span>, nbin <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing promoter regions...  2022-12-12 21时56分59秒 
-## &gt;&gt; preparing tag matrix...        2022-12-12 21时57分00秒 
-## &gt;&gt; preparing start_site regions by ... 2022-12-12 21时57分00秒
-## &gt;&gt; preparing tag matrix...  2022-12-12 21时57分00秒 
-## &gt;&gt; generating figure...       2022-12-12 21时57分10秒</code></pre>
-<pre><code>## &gt;&gt; done...            2022-12-12 21时57分14秒</code></pre>
-<pre><code>## &gt;&gt; binning method is used...2022-12-12 21时57分14秒
-## &gt;&gt; preparing start_site regions by gene... 2022-12-12 21时57分14秒
-## &gt;&gt; preparing tag matrix by binning...  2022-12-12 21时57分14秒 
-## &gt;&gt; Running bootstrapping for tag matrix...        2022-12-12 21时57分56秒 
-## &gt;&gt; binning method is used...2022-12-12 21时57分56秒
-## &gt;&gt; preparing body regions by gene... 2022-12-12 21时57分56秒
-## &gt;&gt; preparing tag matrix by binning...  2022-12-12 21时57分56秒 
-## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2022-12-12 21时57分56秒
-## &gt;&gt; 16 peaks(0.296077%), having lengths smaller than 800bp, are filtered... 2022-12-12 21时58分02秒
-## &gt;&gt; Running bootstrapping for tag matrix...        2022-12-12 22时00分52秒</code></pre>
+<pre><code>## &gt;&gt; preparing promoter regions...  2022-12-15 01时16分40秒 
+## &gt;&gt; preparing tag matrix...        2022-12-15 01时16分41秒 
+## &gt;&gt; preparing start_site regions by ... 2022-12-15 01时16分41秒
+## &gt;&gt; preparing tag matrix...  2022-12-15 01时16分41秒 
+## &gt;&gt; generating figure...       2022-12-15 01时16分51秒</code></pre>
+<pre><code>## &gt;&gt; done...            2022-12-15 01时16分54秒</code></pre>
+<pre><code>## &gt;&gt; binning method is used...2022-12-15 01时16分55秒
+## &gt;&gt; preparing start_site regions by gene... 2022-12-15 01时16分55秒
+## &gt;&gt; preparing tag matrix by binning...  2022-12-15 01时16分55秒 
+## &gt;&gt; Running bootstrapping for tag matrix...        2022-12-15 01时17分37秒 
+## &gt;&gt; binning method is used...2022-12-15 01时17分37秒
+## &gt;&gt; preparing body regions by gene... 2022-12-15 01时17分37秒
+## &gt;&gt; preparing tag matrix by binning...  2022-12-15 01时17分37秒 
+## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2022-12-15 01时17分37秒
+## &gt;&gt; 16 peaks(0.296077%), having lengths smaller than 800bp, are filtered... 2022-12-15 01时17分42秒
+## &gt;&gt; Running bootstrapping for tag matrix...        2022-12-15 01时20分35秒</code></pre>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">atac.peak.profile</span><span class="op">$</span><span class="va">profile.plot</span></code></pre></div>
 <p><img src="IntegrateATAC_files/figure-html/debatac_atac_peak_profile-1.png" width="960" style="display: block; margin: auto;"></p>
@@ -241,14 +241,14 @@
   seq.style <span class="op">=</span> <span class="st">"UCSC"</span>, up.dist <span class="op">=</span> <span class="fl">20000</span>, down.dist <span class="op">=</span> <span class="fl">20000</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>## </code></pre>
-<pre><code>## &gt;&gt; preparing features information...      2022-12-12 22时00分54秒 
-## &gt;&gt; identifying nearest features...        2022-12-12 22时00分55秒 
-## &gt;&gt; calculating distance from peak to TSS...   2022-12-12 22时00分55秒 
-## &gt;&gt; assigning genomic annotation...        2022-12-12 22时00分55秒 
-## &gt;&gt; adding gene annotation...          2022-12-12 22时01分07秒</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-12-15 01时20分37秒 
+## &gt;&gt; identifying nearest features...        2022-12-15 01时20分38秒 
+## &gt;&gt; calculating distance from peak to TSS...   2022-12-15 01时20分38秒 
+## &gt;&gt; assigning genomic annotation...        2022-12-15 01时20分38秒 
+## &gt;&gt; adding gene annotation...          2022-12-15 01时20分50秒</code></pre>
 <pre><code>## 'select()' returned 1:many mapping between keys and columns</code></pre>
-<pre><code>## &gt;&gt; assigning chromosome lengths           2022-12-12 22时01分07秒 
-## &gt;&gt; done...                    2022-12-12 22时01分07秒</code></pre>
+<pre><code>## &gt;&gt; assigning chromosome lengths           2022-12-15 01时20分50秒 
+## &gt;&gt; done...                    2022-12-15 01时20分50秒</code></pre>
 <pre><code>## Warning: Removed 23 rows containing non-finite values (stat_count).</code></pre>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">atac.peak.anno.df</span> <span class="op">=</span> <span class="va">atac.peak.anno</span><span class="op">$</span><span class="va">df</span>
