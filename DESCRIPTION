@@ -69,6 +69,6 @@ Suggests:
     BiocStyle,
     airway
 Remotes:
-    YuLab-SMU/enrichplot
+    YuLab-SMU/enrichplot,
     YuLab-SMU/ChIPseeker
 VignetteBuilder: knitr
