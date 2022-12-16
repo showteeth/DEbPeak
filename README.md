@@ -1,30 +1,9 @@
-<style type="text/css" rel="stylesheet">
-.table {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-td, th {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-tr:nth-child(even){background-color: #f2f2f2;}
-
-tr:hover {background-color: #ddd;}
-
-th {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  text-align: left;
-  background-color: #04AA6D;
-  color: white;
-}
-</style>
-
 # DEbPeak - Explore, visualize, interpret RNA-seq data and unravel the regulation of gene expression.
 
 <img src = "man/figures/DEbPeak.png" align = "right" width = "200"/>
+
+![License](https://img.shields.io/badge/license-MIT-green) 
+[![CODE\_SIZE](https://img.shields.io/github/languages/code-size/showteeth/DEbPeak.svg)](https://github.com/showteeth/DEbPeak)
 
 ## Introduction
 `DEbPeak` aims to **explore**, **visualize**, **interpret** RNA-seq data and **unravel the regulation of gene expression** by combining ChIP-seq and ATAC-seq data. It contains **six functional modules**:
