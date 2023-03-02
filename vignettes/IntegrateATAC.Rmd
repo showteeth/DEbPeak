@@ -141,7 +141,7 @@ down.debatac.fe.results[["plot"]]
 ```{r debatac_integrate_motif, eval = FALSE}
 # debatac.res: similar to debatac.res
 # this step is time consuming!
-ATAC.motif = FindMotif(inte.res = debatac.res, peak.anno.res = peak.anno.df, gene.key = "SYMBOL",
+ATAC.motif = FindMotif(inte.res = debatac.res, peak.anno.res = atac.peak.anno.df, gene.key = "SYMBOL",
                        homer.motif.path = '~/anaconda3/bin/findMotifsGenome.pl',
                        genome = '/path/to/genome.fa',
                        out.folder = NULL,other.paras = '-len 8,10,12 -size -100,50 -S 25')

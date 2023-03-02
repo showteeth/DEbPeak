@@ -218,6 +218,12 @@ Detailed usage is available in [here](https://showteeth.github.io/DEbPeak/). `DE
 
 <hr />
 
+## Notice
+
+* The **KEGG API** has changed, to perform KEGG enrichment, you'd better update `clusterProfiler` >= `4.7.1`. 
+
+<hr />
+
 ## Contact
 For any question, feature request or bug report please write an email to songyb0519@gmail.com.
 
