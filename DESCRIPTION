@@ -60,7 +60,9 @@ Imports:
     patchwork,
     data.table,
     scales,
-    ggpie
+    ggpie,
+    DiffBind,
+    parallel
 Suggests: 
     rmarkdown,
     knitr,
