@@ -8,6 +8,9 @@ LoadingPlot(
   pca,
   deobj = NULL,
   type = c("bar", "heat"),
+  data.type = c("RNA", "ChIP", "ATAC"),
+  peak.anno.key = c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream",
+    "Distal Intergenic", "All"),
   pc = 1:5,
   gene.num = 10,
   ncol = 2
@@ -19,6 +22,10 @@ LoadingPlot(
 \item{deobj}{Object created by DESeq2 or edgeR.}
 
 \item{type}{loading plot type, chosen from bar, heat. Default: bar.}
+
+\item{data.type}{Input data type, choose from RNA, ChIP, ATAC. Default: RNA.}
+
+\item{peak.anno.key}{Peak location, chosen from "Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic","All". Default: "Promoter".}
 
 \item{pc}{Specify PC to export genes. Default: 1:5.}
 

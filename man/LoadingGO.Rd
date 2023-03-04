@@ -10,6 +10,9 @@ LoadingGO(
   gene.num = 200,
   out.folder = NULL,
   gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"),
+  data.type = c("RNA", "ChIP", "ATAC"),
+  peak.anno.key = c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream",
+    "Distal Intergenic", "All"),
   go.type = c("ALL", "BP", "MF", "CC"),
   enrich.pvalue = 0.05,
   enrich.qvalue = 0.05,
@@ -34,6 +37,10 @@ LoadingGO(
 \item{out.folder}{Folder to save enrichment results. Default: wording directory.}
 
 \item{gene.type}{Gene name type. Chosen from ENSEMBL, ENTREZID,SYMBOL. Default: ENSEMBL.}
+
+\item{data.type}{Input data type, choose from RNA, ChIP, ATAC. Default: RNA.}
+
+\item{peak.anno.key}{Peak location, chosen from "Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic","All". Default: "Promoter".}
 
 \item{go.type}{GO enrichment type, chosen from ALL, BP, MF, CC. Default: ALL.}
 

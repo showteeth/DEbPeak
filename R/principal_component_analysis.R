@@ -359,6 +359,8 @@ PCABasic <- function(pca, x = "PC1", y = "PC2", explain.threshold = 90, loading.
 #' Export selected PC genes.
 #'
 #' @param pca PCA results of \code{\link{PCA}}.
+#' @param data.type Input data type, choose from RNA, ChIP, ATAC. Default: RNA.
+#' @param peak.anno.key Peak location, chosen from "Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic","All". Default: "Promoter".
 #' @param pc Specify PC to export genes. Default: 1:5.
 #' @param gene.num Gene number to export for every PC. Default: 10.
 #'
@@ -368,6 +370,7 @@ PCABasic <- function(pca, x = "PC1", y = "PC2", explain.threshold = 90, loading.
 #' @importFrom purrr set_names
 #' @importFrom dplyr filter group_by top_n mutate arrange desc select
 #' @importFrom magrittr %>%
+#' @importFrom tidyr separate
 #' @export
 #'
 #' @examples
@@ -382,9 +385,37 @@ PCABasic <- function(pca, x = "PC1", y = "PC2", explain.threshold = 90, loading.
 #' dds <- dds[keep.genes, ]
 #' pca_res <- PCA(deobj = dds, transform.method = "rlog")
 #' ExportPCGenes(pca = pca_res, pc = 1:2, gene.num = 200)
-ExportPCGenes <- function(pca, pc = 1:5, gene.num = 10) {
-  # get pca loading info
-  pca.loading <- as.data.frame(pca$loadings)
+ExportPCGenes <- function(pca, data.type = c("RNA", "ChIP", "ATAC"),
+                          peak.anno.key = c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic", "All"),
+                          pc = 1:5, gene.num = 10) {
+
+  # check parameters
+  data.type <- match.arg(arg = data.type)
+  peak.anno.key <- match.arg(arg = peak.anno.key)
+
+  # prepare pca for different data type
+  anno.key.named <- c("P", "5U", "3U", "E", "I", "D", "DI")
+  names(anno.key.named) <- c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic")
+  if (data.type != "RNA") {
+    pca.loading <- pca$loadings %>%
+      tibble::rownames_to_column(var = "feature") %>%
+      tidyr::separate(feature, sep = "\\|", into = c("peak", "Gene", "Type"))
+    if (peak.anno.key == "All") {
+      pca.loading <- pca.loading
+    } else {
+      pca.loading <- pca.loading[pca.loading$Type == anno.key.named[peak.anno.key], ]
+    }
+    pca.loading <- pca.loading %>%
+      dplyr::mutate(name = paste(peak, Gene, Type, sep = "|")) %>%
+      dplyr::select(-c(peak, Gene, Type))
+    rownames(pca.loading) <- pca.loading$name
+    pca.loading$name <- NULL
+  } else {
+    pca.loading <- as.data.frame(pca$loadings)
+  }
+
+  # # get pca loading info
+  # pca.loading <- as.data.frame(pca$loadings)
   # get used PC
   pc.use <- paste0("PC", pc)
   pca.loading.used <- pca.loading[pc.use] %>%
@@ -412,8 +443,13 @@ ExportPCGenes <- function(pca, pc = 1:5, gene.num = 10) {
 }
 
 # bar plot for loading information
-LoadingBar <- function(pca, pc = 1:5, gene.num = 10, ncol = 2) {
-  loading.info <- ExportPCGenes(pca = pca, pc = pc, gene.num = gene.num)
+LoadingBar <- function(pca, data.type = c("RNA", "ChIP", "ATAC"),
+                       peak.anno.key = c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic", "All"),
+                       pc = 1:5, gene.num = 10, ncol = 2) {
+  loading.info <- ExportPCGenes(
+    pca = pca, data.type = data.type, peak.anno.key = peak.anno.key,
+    pc = pc, gene.num = gene.num
+  )
   # get used PC
   pc.use <- paste0("PC", pc)
   plot.list <- list()
@@ -432,7 +468,9 @@ LoadingBar <- function(pca, pc = 1:5, gene.num = 10, ncol = 2) {
 }
 
 # heatmap for loadding
-LoadingHeat <- function(deobj, pca, pc = 1:5, gene.num = 10, ncol = 2) {
+LoadingHeat <- function(deobj, pca, data.type = c("RNA", "ChIP", "ATAC"),
+                        peak.anno.key = c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic", "All"),
+                        pc = 1:5, gene.num = 10, ncol = 2) {
   # identify analysis method
   if (class(deobj) == "DGEList") {
     message("Differential expression analysis with edgeR!")
@@ -452,7 +490,10 @@ LoadingHeat <- function(deobj, pca, pc = 1:5, gene.num = 10, ncol = 2) {
   normalized.counts <- DESeq2::counts(deobj, normalized = TRUE)
   norm.matrix <- t(as.matrix(log2(normalized.counts + 1)))
 
-  loading.info <- ExportPCGenes(pca = pca, pc = pc, gene.num = gene.num)
+  loading.info <- ExportPCGenes(
+    pca = pca, data.type = data.type, peak.anno.key = peak.anno.key,
+    pc = pc, gene.num = gene.num
+  )
   # get used PC
   pc.use <- paste0("PC", pc)
   plot.list <- list()
@@ -477,6 +518,8 @@ LoadingHeat <- function(deobj, pca, pc = 1:5, gene.num = 10, ncol = 2) {
 #' @param pca PCA results of \code{\link{PCA}}.
 #' @param deobj Object created by DESeq2 or edgeR.
 #' @param type loading plot type, chosen from bar, heat. Default: bar.
+#' @param data.type Input data type, choose from RNA, ChIP, ATAC. Default: RNA.
+#' @param peak.anno.key Peak location, chosen from "Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic","All". Default: "Promoter".
 #' @param pc Specify PC to export genes. Default: 1:5.
 #' @param gene.num Gene number to export for every PC. Default: 10.
 #' @param ncol Column of final plots. Default: 2.
@@ -496,6 +539,7 @@ LoadingHeat <- function(deobj, pca, pc = 1:5, gene.num = 10, ncol = 2) {
 #' @importFrom ggplotify as.ggplot
 #' @importFrom grid grid.grabExpr
 #' @importFrom cowplot plot_grid
+#' @importFrom tidyr separate
 #' @export
 #'
 #' @examples
@@ -511,17 +555,29 @@ LoadingHeat <- function(deobj, pca, pc = 1:5, gene.num = 10, ncol = 2) {
 #' pca_res <- PCA(deobj = dds, transform.method = "rlog")
 #' LoadingPlot(pca = pca_res, type = "bar")
 #' LoadingPlot(pca = pca_res, deobj = dds, type = "heat")
-LoadingPlot <- function(pca, deobj = NULL, type = c("bar", "heat"), pc = 1:5, gene.num = 10, ncol = 2) {
+LoadingPlot <- function(pca, deobj = NULL, type = c("bar", "heat"),
+                        data.type = c("RNA", "ChIP", "ATAC"),
+                        peak.anno.key = c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic", "All"),
+                        pc = 1:5, gene.num = 10, ncol = 2) {
   # check plot type
   type <- match.arg(arg = type)
+  data.type <- match.arg(arg = data.type)
+  peak.anno.key <- match.arg(arg = peak.anno.key)
+
   if (type == "heat") {
     if (is.null(deobj)) {
       stop("Please provide deobj when create loading heatmap!")
     } else {
-      loading.plot <- LoadingHeat(deobj = deobj, pca = pca, pc = pc, gene.num = gene.num, ncol = ncol)
+      loading.plot <- LoadingHeat(
+        deobj = deobj, pca = pca, data.type = data.type, peak.anno.key = peak.anno.key,
+        pc = pc, gene.num = gene.num, ncol = ncol
+      )
     }
   } else if (type == "bar") {
-    loading.plot <- LoadingBar(pca = pca, pc = pc, gene.num = gene.num, ncol = ncol)
+    loading.plot <- LoadingBar(
+      pca = pca, data.type = data.type, peak.anno.key = peak.anno.key,
+      pc = pc, gene.num = gene.num, ncol = ncol
+    )
   }
   return(loading.plot)
 }
@@ -533,6 +589,8 @@ LoadingPlot <- function(pca, deobj = NULL, type = c("bar", "heat"), pc = 1:5, ge
 #' @param gene.num Gene number to export for every PC. Default: 200.
 #' @param out.folder Folder to save enrichment results. Default: wording directory.
 #' @param gene.type Gene name type. Chosen from ENSEMBL, ENTREZID,SYMBOL. Default: ENSEMBL.
+#' @param data.type Input data type, choose from RNA, ChIP, ATAC. Default: RNA.
+#' @param peak.anno.key Peak location, chosen from "Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic","All". Default: "Promoter".
 #' @param go.type GO enrichment type, chosen from ALL, BP, MF, CC. Default: ALL.
 #' @param enrich.pvalue Cutoff value of pvalue. Default: 0.05.
 #' @param enrich.qvalue Cutoff value of qvalue. Default: 0.05.
@@ -556,6 +614,7 @@ LoadingPlot <- function(pca, deobj = NULL, type = c("bar", "heat"), pc = 1:5, ge
 #' @import ggplot2
 #' @importFrom stringr str_wrap
 #' @importFrom BiocManager install
+#' @importFrom tidyr separate
 #' @export
 #'
 #' @examples
@@ -570,17 +629,27 @@ LoadingPlot <- function(pca, deobj = NULL, type = c("bar", "heat"), pc = 1:5, ge
 #' dds <- dds[keep.genes, ]
 #' pca_res <- PCA(deobj = dds, transform.method = "rlog")
 #' LoadingGO(pca_res, gene.type = "ENSEMBL", go.type = "BP", padj.method = "BH", save = TRUE)
-LoadingGO <- function(pca, pc = 1, gene.num = 200, out.folder = NULL, gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"), go.type = c("ALL", "BP", "MF", "CC"),
-                      enrich.pvalue = 0.05, enrich.qvalue = 0.05, org.db = "org.Mm.eg.db",
+LoadingGO <- function(pca, pc = 1, gene.num = 200, out.folder = NULL, gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"), data.type = c("RNA", "ChIP", "ATAC"),
+                      peak.anno.key = c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic", "All"),
+                      go.type = c("ALL", "BP", "MF", "CC"), enrich.pvalue = 0.05, enrich.qvalue = 0.05, org.db = "org.Mm.eg.db",
                       padj.method = c("BH", "holm", "hochberg", "hommel", "bonferroni", "BY", "fdr", "none"),
                       show.term = 15, str.width = 30, plot.resolution = 300, plot.width = 7, plot.height = 9, save = TRUE) {
   # check parameter
   gene.type <- match.arg(arg = gene.type)
+  data.type <- match.arg(arg = data.type)
+  peak.anno.key <- match.arg(arg = peak.anno.key)
   go.type <- match.arg(arg = go.type)
   padj.method <- match.arg(arg = padj.method)
 
   # get positive and negative genes
-  pc.loading.genes <- ExportPCGenes(pca = pca, pc = pc, gene.num = gene.num)
+  pc.loading.genes <- ExportPCGenes(
+    pca = pca, data.type = data.type, peak.anno.key = peak.anno.key,
+    pc = pc, gene.num = gene.num
+  )
+  # prepare genes for ChIP-seq and ATAC-seq
+  if (data.type != "RNA") {
+    pc.loading.genes$Gene <- gsub(pattern = ".*\\|(.*)\\|.*", replacement = "\\1", x = pc.loading.genes$Gene)
+  }
   pc.loading.genes.positive <- pc.loading.genes[pc.loading.genes$Type == "Positive", "Gene"]
   pc.loading.genes.negative <- pc.loading.genes[pc.loading.genes$Type == "Negative", "Gene"]
 

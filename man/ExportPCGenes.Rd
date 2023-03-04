@@ -4,10 +4,21 @@
 \alias{ExportPCGenes}
 \title{Export selected PC genes.}
 \usage{
-ExportPCGenes(pca, pc = 1:5, gene.num = 10)
+ExportPCGenes(
+  pca,
+  data.type = c("RNA", "ChIP", "ATAC"),
+  peak.anno.key = c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream",
+    "Distal Intergenic", "All"),
+  pc = 1:5,
+  gene.num = 10
+)
 }
 \arguments{
 \item{pca}{PCA results of \code{\link{PCA}}.}
+
+\item{data.type}{Input data type, choose from RNA, ChIP, ATAC. Default: RNA.}
+
+\item{peak.anno.key}{Peak location, chosen from "Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic","All". Default: "Promoter".}
 
 \item{pc}{Specify PC to export genes. Default: 1:5.}
 
