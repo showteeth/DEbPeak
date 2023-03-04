@@ -13,6 +13,9 @@ ConductDESeq2(
   min.count = 10,
   ref.group = NULL,
   out.folder = NULL,
+  data.type = c("RNA", "ChIP", "ATAC"),
+  peak.anno.key = c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream",
+    "Distal Intergenic", "All"),
   qc.ndepth = 10,
   transform.method = c("rlog", "vst", "ntd"),
   var.genes = NULL,
@@ -74,6 +77,10 @@ ConductDESeq2(
 \item{ref.group}{Reference group name. When set NULL, select first element of groups. Default: NULL.}
 
 \item{out.folder}{Folder to save enrichment results. Default: wording directory.}
+
+\item{data.type}{Input data type, choose from RNA, ChIP, ATAC. Default: RNA.}
+
+\item{peak.anno.key}{Peak location, chosen from "Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic","All". Default: "Promoter".}
 
 \item{qc.ndepth}{Number of different sequencing depths to be simulated and plotted apart from the real depth. Default: 10. This parameter is only used by type "saturation".}
 

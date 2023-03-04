@@ -1,7 +1,7 @@
 # DEbPeak 0.7.0
 ## New features
 * Added `PeakMatrix` to prepare peak matrix for differential expression analysis.
-* Changed `ExportPCGenes`, `LoadingBar`, `LoadingHeat`, `LoadingPlot`, `LoadingGO` to support ChIP-seq/ATAC-seq differential expression analysis results.
+* Changed `ExportPCGenes`, `LoadingBar`, `LoadingHeat`, `LoadingPlot`, `LoadingGO`, `ConductDESeq2` to support ChIP-seq/ATAC-seq differential expression analysis results.
 
 -------------
 

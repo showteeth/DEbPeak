@@ -1,3 +1,32 @@
+# internal ID conversion function
+IDConversion_internal <- function(de.df, gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"),
+                                  org.db = "org.Mm.eg.db", gene.map = NULL, sort.key = "log2FoldChange") {
+  # library
+  suppressWarnings(suppressMessages(library(org.db, character.only = TRUE)))
+
+  if (!is.null(gene.map)) {
+    final.df <- merge(de.df, gene.map, by = "Gene", all.x = TRUE) %>%
+      as.data.frame() %>%
+      dplyr::distinct(Gene, .keep_all = TRUE)
+  } else {
+    de.df <- de.df %>% dplyr::mutate(Gene2Convert = gsub(pattern = "\\.[0-9]*$", replacement = "", x = as.character(Gene)))
+    convert.types <- setdiff(c("ENSEMBL", "ENTREZID", "SYMBOL"), gene.type)
+    convert.df <- clusterProfiler::bitr(de.df[, "Gene2Convert"],
+      fromType = gene.type,
+      toType = convert.types,
+      OrgDb = get(org.db), drop = FALSE
+    )
+    final.df <- merge(de.df, convert.df, by.x = "Gene2Convert", by.y = gene.type, all.x = TRUE) %>%
+      as.data.frame() %>%
+      dplyr::distinct(Gene2Convert, .keep_all = TRUE) %>%
+      dplyr::select(-Gene2Convert)
+  }
+  if (!is.null(sort.key)) {
+    final.df <- final.df %>% dplyr::arrange(dplyr::desc(sort.key))
+  }
+  return(final.df)
+}
+
 #' Gene ID Conversion.
 #'
 #' @param deres Data frame contains all genes.
@@ -18,39 +47,38 @@
 #' count.file <- system.file("extdata", "snon_count.txt", package = "DEbPeak")
 #' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
 #' IDConversion(count.matrix, gene.type = "ENSEMBL", sort.key = NULL)
-IDConversion <- function(deres, gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"), org.db = "org.Mm.eg.db", gene.map = NULL, sort.key = "log2FoldChange") {
+IDConversion <- function(deres, gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"),
+                         org.db = "org.Mm.eg.db", gene.map = NULL, sort.key = "log2FoldChange") {
   # check parameters
   gene.type <- match.arg(arg = gene.type)
-
-  # library
-  suppressWarnings(suppressMessages(library(org.db, character.only = TRUE)))
-
+  # create dea dataframe
   de.df <- as.data.frame(deres) %>% tibble::rownames_to_column(var = "Gene")
-
-  if (!is.null(gene.map)) {
-    final.df <- merge(de.df, gene.map, by = "Gene", all.x = TRUE) %>%
-      as.data.frame() %>%
-      dplyr::distinct(Gene, .keep_all = TRUE) %>%
-      tibble::column_to_rownames(var = "Gene")
-  } else {
-    de.df <- de.df %>% dplyr::mutate(Gene2Convert = gsub(pattern = "\\.[0-9]*$", replacement = "", x = as.character(Gene)))
-    convert.types <- setdiff(c("ENSEMBL", "ENTREZID", "SYMBOL"), gene.type)
-    convert.df <- clusterProfiler::bitr(de.df[, "Gene2Convert"],
-      fromType = gene.type,
-      toType = convert.types,
-      OrgDb = get(org.db), drop = FALSE
-    )
-    final.df <- merge(de.df, convert.df, by.x = "Gene2Convert", by.y = gene.type, all.x = TRUE) %>%
-      as.data.frame() %>%
-      dplyr::distinct(Gene2Convert, .keep_all = TRUE) %>%
-      dplyr::select(-Gene2Convert) %>%
-      tibble::column_to_rownames(var = "Gene")
-  }
-  if (!is.null(sort.key)) {
-    final.df <- final.df %>% dplyr::arrange(dplyr::desc(sort.key))
-  }
+  # ID conversion
+  final.df <- IDConversion_internal(
+    de.df = de.df, gene.type = gene.type, org.db = org.db,
+    gene.map = gene.map, sort.key = sort.key
+  )
+  final.df <- final.df %>% tibble::column_to_rownames(var = "Gene")
   return(final.df)
 }
+
+
+IDConversionPeak <- function(deres, org.db = "org.Mm.eg.db", gene.map = NULL, sort.key = "log2FoldChange") {
+  # prepare dataframe
+  de.df <- as.data.frame(deres) %>%
+    tibble::rownames_to_column(var = "FullGene") %>%
+    dplyr::mutate(Gene = gsub(pattern = ".*\\|(.*)\\|.*", replacement = "\\1", x = FullGene))
+  # ID conversion
+  final.df <- IDConversion_internal(
+    de.df = de.df, gene.type = "SYMBOL", org.db = org.db,
+    gene.map = gene.map, sort.key = sort.key
+  )
+  final.df <- final.df %>% tibble::column_to_rownames(var = "FullGene")
+  # change Gene column name to SYMBOL
+  colnames(final.df) <- gsub(pattern = "^Gene$", replacement = "SYMBOL", colnames(final.df))
+  return(final.df)
+}
+
 
 #' Get Gene Length from GTF.
 #'

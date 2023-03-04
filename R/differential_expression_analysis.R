@@ -8,6 +8,8 @@
 #' @param min.count A feature is considered to be detected if the corresponding number of read counts is > \code{min.count}. By default, \code{min.count} = 10.
 #' @param ref.group Reference group name. When set NULL, select first element of groups. Default: NULL.
 #' @param out.folder Folder to save enrichment results. Default: wording directory.
+#' @param data.type Input data type, choose from RNA, ChIP, ATAC. Default: RNA.
+#' @param peak.anno.key Peak location, chosen from "Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic","All". Default: "Promoter".
 #' @param qc.ndepth Number of different sequencing depths to be simulated and plotted apart from the real depth. Default: 10. This parameter is only used by type "saturation".
 #' @param transform.method Data transformation methods, chosen from rlog, vst and ntd. Default: rlog.
 #' @param var.genes Select genes with larger variance for PCA analysis. Default: all genes.
@@ -98,7 +100,9 @@
 #' #               count.type = "htseq-count", ref.group = "WT", signif = "pvalue", l2fc.threshold = 0.3, gmt.file = gmt.file)
 ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, group.key = NULL,
                           count.type = c("htseq-count", "featurecounts"), min.count = 10, ref.group = NULL,
-                          out.folder = NULL, qc.ndepth = 10, transform.method = c("rlog", "vst", "ntd"),
+                          out.folder = NULL, data.type = c("RNA", "ChIP", "ATAC"),
+                          peak.anno.key = c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic", "All"),
+                          qc.ndepth = 10, transform.method = c("rlog", "vst", "ntd"),
                           var.genes = NULL, batch = NULL, outlier.detection = T, rpca.method = c("PcaGrid", "PcaHubert"), k = 2,
                           pca.x = "PC1", pca.y = "PC2", pca.z = "PC3", loding.pc = 1:5, loading.gene.num = 10, loading.ncol = 2, enrich.loading.pc = 1:5, enrich.loading.gene = 200,
                           gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"), enrich.type = c("ALL", "GO", "KEGG"), go.type = c("ALL", "BP", "MF", "CC"),
@@ -108,6 +112,8 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
                           fe.gene.key = NULL, gmt.file, gene.sets = NULL, minGSSize = 10, maxGSSize = 500, gsea.pvalue = 0.05) {
   # check parameters
   count.type <- match.arg(arg = count.type)
+  data.type <- match.arg(arg = data.type)
+  peak.anno.key <- match.arg(arg = peak.anno.key)
   transform.method <- match.arg(arg = transform.method)
   rpca.method <- match.arg(arg = rpca.method)
   gene.type <- match.arg(arg = gene.type)
@@ -237,7 +243,14 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
 
   # PC loading gene enrichment analysis
   message("Conduct Functional Enrichment on PC Loading genes!")
-  pc.loading.gene.df <- ExportPCGenes(pca.info, pc = enrich.loading.pc, gene.num = enrich.loading.gene)
+  pc.loading.gene.df <- ExportPCGenes(pca.info,
+    data.type = data.type, peak.anno.key = peak.anno.key,
+    pc = enrich.loading.pc, gene.num = enrich.loading.gene
+  )
+  # prepare genes for ChIP-seq and ATAC-seq
+  if (data.type != "RNA") {
+    pc.loading.gene.df$Gene <- gsub(pattern = ".*\\|(.*)\\|.*", replacement = "\\1", x = pc.loading.gene.df$Gene)
+  }
   for (pc in paste0("PC", enrich.loading.pc)) {
     pc.gene.df <- pc.loading.gene.df[pc.loading.gene.df["PC"] == pc, ]
     # on PC positive genes
@@ -279,9 +292,14 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
   dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing = TRUE), ]
 
   message("Conduct Gene ID Conversion!")
-  dds.results.ordered <- IDConversion(deres = dds.results.ordered, gene.type = gene.type, org.db = org.db, gene.map = gene.map)
+  if (data.type != "RNA") {
+    dds.results.ordered <- IDConversionPeak(deres = dds.results.ordered, org.db = org.db, gene.map = gene.map)
+    dds.results.selected <- as.data.frame(dds.results.ordered) %>% tibble::rownames_to_column(var = "Peak")
+  } else {
+    dds.results.ordered <- IDConversion(deres = dds.results.ordered, gene.type = gene.type, org.db = org.db, gene.map = gene.map)
+    dds.results.selected <- as.data.frame(dds.results.ordered) %>% tibble::rownames_to_column(var = "Gene")
+  }
 
-  dds.results.selected <- as.data.frame(dds.results.ordered) %>% tibble::rownames_to_column(var = "Gene")
   dds.results.sig <- dds.results.selected[dds.results.selected[signif] <= signif.threshold & abs(dds.results.selected["log2FoldChange"]) >= l2fc.threshold, ] %>%
     tidyr::drop_na()
   # create output folder
@@ -351,25 +369,45 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
   fe.results.folder <- file.path(out.folder, "FE")
   dir.create(fe.results.folder, showWarnings = FALSE, recursive = TRUE)
   setwd(fe.results.folder)
-  ConductFE(
-    deres = dds.results.ordered, out.folder = fe.results.folder, signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold,
-    gene.key = fe.gene.key, gene.type = gene.type, enrich.type = enrich.type, go.type = go.type, enrich.pvalue = enrich.pvalue,
-    enrich.qvalue = enrich.qvalue, org.db = org.db, organism = organism, padj.method = padj.method, show.term = show.term, str.width = str.width
-  )
+  if (data.type != "RNA") {
+    # filter dataframe based on region
+    anno.key.named <- c("P", "5U", "3U", "E", "I", "D", "DI")
+    names(anno.key.named) <- c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic")
+    dds.results.ordered$Type <- gsub(pattern = ".*\\|.*\\|(.*)", replacement = "\\1", x = rownames(dds.results.ordered))
+    if (peak.anno.key == "All") {
+      dds.results.ordered <- dds.results.ordered
+    } else {
+      dds.results.ordered <- dds.results.ordered[dds.results.ordered$Type == anno.key.named[peak.anno.key], ]
+    }
+    dds.results.ordered <- dds.results.ordered %>%
+      dplyr::select(-c(Type))
+    # function enrichment analysis
+    ConductFE(
+      deres = dds.results.ordered, out.folder = fe.results.folder, signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold,
+      gene.key = "SYMBOL", gene.type = "SYMBOL", enrich.type = enrich.type, go.type = go.type, enrich.pvalue = enrich.pvalue,
+      enrich.qvalue = enrich.qvalue, org.db = org.db, organism = organism, padj.method = padj.method, show.term = show.term, str.width = str.width
+    )
+  } else {
+    ConductFE(
+      deres = dds.results.ordered, out.folder = fe.results.folder, signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold,
+      gene.key = fe.gene.key, gene.type = gene.type, enrich.type = enrich.type, go.type = go.type, enrich.pvalue = enrich.pvalue,
+      enrich.qvalue = enrich.qvalue, org.db = org.db, organism = organism, padj.method = padj.method, show.term = show.term, str.width = str.width
+    )
+  }
   setwd(out.folder)
-
-  message("Conduct Gene Set Enrichment Analysis!")
-  # create output folder
-  gsea.results.folder <- file.path(out.folder, "GSEA")
-  dir.create(gsea.results.folder, showWarnings = FALSE, recursive = TRUE)
-  setwd(gsea.results.folder)
-  ConductGSEA(
-    deres = dds.results.ordered, gmt.file = gmt.file, gene.sets = gene.sets, out.folder = gsea.results.folder, gene.key = fe.gene.key, gene.type = gene.type,
-    org.db = org.db, minGSSize = minGSSize, maxGSSize = maxGSSize, pvalue = gsea.pvalue, padj.method = padj.method
-  )
+  if (data.type != "RNA") {
+    message("Gene Set Enrichment Analysis is not available for ChIP-seq or ATAC-seq data!")
+  } else {
+    message("Conduct Gene Set Enrichment Analysis!")
+    # create output folder
+    gsea.results.folder <- file.path(out.folder, "GSEA")
+    dir.create(gsea.results.folder, showWarnings = FALSE, recursive = TRUE)
+    setwd(gsea.results.folder)
+    ConductGSEA(
+      deres = dds.results.ordered, gmt.file = gmt.file, gene.sets = gene.sets, out.folder = gsea.results.folder, gene.key = fe.gene.key, gene.type = gene.type,
+      org.db = org.db, minGSSize = minGSSize, maxGSSize = maxGSSize, pvalue = gsea.pvalue, padj.method = padj.method
+    )
+  }
   setwd(out.folder)
-  message("Save all results!")
-  save.image(file = "DEkit_all_in_one.RData")
-
   message("All Analysis Done!")
 }
