@@ -12,7 +12,15 @@ PeakMatrix(
   blacklist = TRUE,
   sub.control = TRUE,
   used.cols = c("SampleID", "Condition"),
-  out.folder = NULL
+  out.folder = NULL,
+  species = c("Human", "Mouse", "Rat", "Fly", "Arabidopsis", "Yeast", "Zebrafish",
+    "Worm", "Bovine", "Pig", "Chicken", "Rhesus", "Canine", "Xenopus", "Anopheles",
+    "Chimp", "E coli strain Sakai", "Myxococcus xanthus DK 1622"),
+  seq.style = c("UCSC", "NCBI", "Ensembl", "None"),
+  gtf.file = NULL,
+  up.dist = 3000,
+  down.dist = 3000,
+  ...
 )
 }
 \arguments{
@@ -39,6 +47,23 @@ Default: TRUE. Parameter of \code{\link{dba.count}}.}
 \item{used.cols}{Used columns used to create sample metadata. If specified, sampleID should be placed first. Default: c("SampleID", "Condition").}
 
 \item{out.folder}{Output folder to save created count matrix and sample metadata. Default: NULL (current working directory).}
+
+\item{species}{Species used, chosen from "Human","Mouse","Rat","Fly","Arabidopsis","Yeast","Zebrafish","Worm","Bovine","Pig","Chicken","Rhesus",
+"Canine","Xenopus","Anopheles","Chimp","E coli strain Sakai","Myxococcus xanthus DK 1622". Default: "Human".}
+
+\item{seq.style}{The style of sequence, chosen from UCSC, NCBI, Ensembl, None. This should be compatible with the genome and gtf file you used
+to generate count matrix and peak files. Default: "UCSC".}
+
+\item{gtf.file}{GTF file used to create TxDb object. Useful when specie you used is not available in \code{species}. Default: NULL.}
+
+\item{up.dist}{The upstream distance from the TSS. Default: 3000bp.}
+
+\item{down.dist}{The downstream distance from the TSS. Default: 3000bp.}
+
+\item{...}{Parameters for \code{\link{annotatePeak}}.}
+}
+\value{
+A dataframe contains count matrix, peak annotation and sample metadata (if provided \code{used.cols}).
 }
 \description{
 Prepare Count Matrix and Sample Metadata for Peak data (ChIP-seq/ATAC-seq).
@@ -48,5 +73,6 @@ Prepare Count Matrix and Sample Metadata for Peak data (ChIP-seq/ATAC-seq).
 # library(DESeq2)
 # metadata file contains peak and bam information
 # meta.file = 'path/to/metadata'
-# PeakMatrix(meta.file = meta.file, blacklist = )
+# PeakMatrix(meta.file = meta.file, species = "Human",  seq.style = "UCSC",
+#            up.dist = 20000, down.dist = 20000)
 }

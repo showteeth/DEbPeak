@@ -1,3 +1,9 @@
+# DEbPeak 0.7.0
+## New features
+* Added `PeakMatrix` to prepare peak matrix for differential expression analysis.
+
+-------------
+
 # DEbPeak 0.6.0
 ## New features
 * Changed `CountQC` realted plots to ggplot2.
