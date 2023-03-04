@@ -368,6 +368,8 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
 #'
 #' @param deres Data frame contains all genes.
 #' @param out.folder Folder to save enrichment results. Default: wording directory.
+#' @param data.type Input data type, choose from RNA, ChIP, ATAC. Default: RNA.
+#' @param peak.anno.key Peak location, chosen from "Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic","All". Default: "Promoter".
 #' @param signif Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.
 #' @param signif.threshold Significance threshold to get differentially expressed genes. Default: 0.05.
 #' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes. Default: 1.
@@ -419,13 +421,17 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
 #' dds.results <- results(dds, contrast = c("condition", "KO", "WT"))
 #' dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing = TRUE), ]
 #' ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threshold = 0.3)
-ConductFE <- function(deres, out.folder = NULL, signif = "padj", signif.threshold = 0.05, l2fc.threshold = 1,
+ConductFE <- function(deres, out.folder = NULL, data.type = c("RNA", "ChIP", "ATAC"),
+                      peak.anno.key = c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic", "All"),
+                      signif = "padj", signif.threshold = 0.05, l2fc.threshold = 1,
                       gene.key = NULL, gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"), org.db = "org.Mm.eg.db",
                       enrich.type = c("ALL", "GO", "KEGG"), go.type = c("ALL", "BP", "MF", "CC"),
                       enrich.pvalue = 0.05, enrich.qvalue = 0.05, organism = "mmu",
                       padj.method = c("BH", "holm", "hochberg", "hommel", "bonferroni", "BY", "fdr", "none"),
                       show.term = 15, str.width = 30, plot.resolution = 300, plot.width = 7, plot.height = 9, save = TRUE) {
   # check parameter
+  data.type <- match.arg(arg = data.type)
+  peak.anno.key <- match.arg(arg = peak.anno.key)
   gene.type <- match.arg(arg = gene.type)
   enrich.type <- match.arg(arg = enrich.type)
   go.type <- match.arg(arg = go.type)
@@ -437,6 +443,23 @@ ConductFE <- function(deres, out.folder = NULL, signif = "padj", signif.threshol
     BiocManager::install(org.db)
   }
   suppressWarnings(suppressMessages(library(org.db, character.only = TRUE)))
+
+  # prepare deres
+  if (data.type != "RNA") {
+    # filter dataframe based on region
+    anno.key.named <- c("P", "5U", "3U", "E", "I", "D", "DI")
+    names(anno.key.named) <- c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic")
+    deres$Type <- gsub(pattern = ".*\\|.*\\|(.*)", replacement = "\\1", x = rownames(deres))
+    if (peak.anno.key == "All") {
+      deres <- deres
+    } else {
+      deres <- deres[deres$Type == anno.key.named[peak.anno.key], ]
+    }
+    deres <- deres %>%
+      dplyr::select(-c(Type))
+    gene.key <- "SYMBOL"
+    gene.type <- "SYMBOL"
+  }
 
   # preapare DE dataframe
   de.df <- PrepareDEPlot(deres = deres, signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold, label.key = gene.key)

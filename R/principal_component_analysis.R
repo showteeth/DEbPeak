@@ -649,6 +649,7 @@ LoadingGO <- function(pca, pc = 1, gene.num = 200, out.folder = NULL, gene.type 
   # prepare genes for ChIP-seq and ATAC-seq
   if (data.type != "RNA") {
     pc.loading.genes$Gene <- gsub(pattern = ".*\\|(.*)\\|.*", replacement = "\\1", x = pc.loading.genes$Gene)
+    gene.type <- "SYMBOL"
   }
   pc.loading.genes.positive <- pc.loading.genes[pc.loading.genes$Type == "Positive", "Gene"]
   pc.loading.genes.negative <- pc.loading.genes[pc.loading.genes$Type == "Negative", "Gene"]

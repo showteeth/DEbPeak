@@ -95,7 +95,7 @@
 #' # library(DEbPeak)
 #' # count.file <- system.file("extdata", "snon_count.txt", package = "DEbPeak")
 #' # meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbPeak")
-#' # gmt.file <- system.file("extdata", "c5.go.cc.v7.5.1.entrez.gmt", package = "DEbPeak")
+#' # gmt.file <- system.file("extdata", "m5.go.bp.v2022.1.Mm.entrez.gmt", package = "DEbPeak")
 #' # ConductDESeq2(count.matrix.file = count.file, meta.file = meta.file, group.key = "condition",
 #' #               count.type = "htseq-count", ref.group = "WT", signif = "pvalue", l2fc.threshold = 0.3, gmt.file = gmt.file)
 ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, group.key = NULL,
@@ -369,31 +369,12 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
   fe.results.folder <- file.path(out.folder, "FE")
   dir.create(fe.results.folder, showWarnings = FALSE, recursive = TRUE)
   setwd(fe.results.folder)
-  if (data.type != "RNA") {
-    # filter dataframe based on region
-    anno.key.named <- c("P", "5U", "3U", "E", "I", "D", "DI")
-    names(anno.key.named) <- c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic")
-    dds.results.ordered$Type <- gsub(pattern = ".*\\|.*\\|(.*)", replacement = "\\1", x = rownames(dds.results.ordered))
-    if (peak.anno.key == "All") {
-      dds.results.ordered <- dds.results.ordered
-    } else {
-      dds.results.ordered <- dds.results.ordered[dds.results.ordered$Type == anno.key.named[peak.anno.key], ]
-    }
-    dds.results.ordered <- dds.results.ordered %>%
-      dplyr::select(-c(Type))
-    # function enrichment analysis
-    ConductFE(
-      deres = dds.results.ordered, out.folder = fe.results.folder, signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold,
-      gene.key = "SYMBOL", gene.type = "SYMBOL", enrich.type = enrich.type, go.type = go.type, enrich.pvalue = enrich.pvalue,
-      enrich.qvalue = enrich.qvalue, org.db = org.db, organism = organism, padj.method = padj.method, show.term = show.term, str.width = str.width
-    )
-  } else {
-    ConductFE(
-      deres = dds.results.ordered, out.folder = fe.results.folder, signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold,
-      gene.key = fe.gene.key, gene.type = gene.type, enrich.type = enrich.type, go.type = go.type, enrich.pvalue = enrich.pvalue,
-      enrich.qvalue = enrich.qvalue, org.db = org.db, organism = organism, padj.method = padj.method, show.term = show.term, str.width = str.width
-    )
-  }
+  ConductFE(
+    deres = dds.results.ordered, out.folder = fe.results.folder, data.type = data.type, peak.anno.key = peak.anno.key,
+    signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold,
+    gene.key = fe.gene.key, gene.type = gene.type, enrich.type = enrich.type, go.type = go.type, enrich.pvalue = enrich.pvalue,
+    enrich.qvalue = enrich.qvalue, org.db = org.db, organism = organism, padj.method = padj.method, show.term = show.term, str.width = str.width
+  )
   setwd(out.folder)
   if (data.type != "RNA") {
     message("Gene Set Enrichment Analysis is not available for ChIP-seq or ATAC-seq data!")

@@ -7,6 +7,9 @@
 ConductFE(
   deres,
   out.folder = NULL,
+  data.type = c("RNA", "ChIP", "ATAC"),
+  peak.anno.key = c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream",
+    "Distal Intergenic", "All"),
   signif = "padj",
   signif.threshold = 0.05,
   l2fc.threshold = 1,
@@ -32,6 +35,10 @@ ConductFE(
 \item{deres}{Data frame contains all genes.}
 
 \item{out.folder}{Folder to save enrichment results. Default: wording directory.}
+
+\item{data.type}{Input data type, choose from RNA, ChIP, ATAC. Default: RNA.}
+
+\item{peak.anno.key}{Peak location, chosen from "Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic","All". Default: "Promoter".}
 
 \item{signif}{Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.}
 
