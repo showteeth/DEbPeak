@@ -5,9 +5,10 @@ IDConversion_internal <- function(de.df, gene.type = c("ENSEMBL", "ENTREZID", "S
   suppressWarnings(suppressMessages(library(org.db, character.only = TRUE)))
 
   if (!is.null(gene.map)) {
+    # remove duplicated
+    gene.map <- gene.map %>% dplyr::distinct(.data[["Gene"]], .keep_all = TRUE)
     final.df <- merge(de.df, gene.map, by = "Gene", all.x = TRUE) %>%
-      as.data.frame() %>%
-      dplyr::distinct(Gene, .keep_all = TRUE)
+      as.data.frame()
   } else {
     de.df <- de.df %>% dplyr::mutate(Gene2Convert = gsub(pattern = "\\.[0-9]*$", replacement = "", x = as.character(Gene)))
     convert.types <- setdiff(c("ENSEMBL", "ENTREZID", "SYMBOL"), gene.type)
@@ -16,9 +17,10 @@ IDConversion_internal <- function(de.df, gene.type = c("ENSEMBL", "ENTREZID", "S
       toType = convert.types,
       OrgDb = get(org.db), drop = FALSE
     )
+    # remove duplicated
+    convert.df <- convert.df %>% dplyr::distinct(.data[[gene.type]], .keep_all = TRUE)
     final.df <- merge(de.df, convert.df, by.x = "Gene2Convert", by.y = gene.type, all.x = TRUE) %>%
       as.data.frame() %>%
-      dplyr::distinct(Gene2Convert, .keep_all = TRUE) %>%
       dplyr::select(-Gene2Convert)
   }
   if (!is.null(sort.key)) {
@@ -40,6 +42,7 @@ IDConversion_internal <- function(de.df, gene.type = c("ENSEMBL", "ENTREZID", "S
 #' @importFrom tibble rownames_to_column column_to_rownames
 #' @importFrom dplyr distinct mutate select arrange desc
 #' @importFrom clusterProfiler bitr
+#' @importFrom rlang .data
 #' @export
 #'
 #' @examples

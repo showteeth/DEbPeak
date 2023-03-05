@@ -309,6 +309,7 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
   # save degs
   out.deg.str <- paste0(signif, signif.threshold, "_FC", l2fc.threshold, ".csv")
   utils::write.csv(as.data.frame(dds.results.sig),
+    row.names = FALSE,
     file = paste("Condition", treat.group, ref.group, out.deg.str, sep = "_")
   )
   utils::write.csv(as.data.frame(dds.results.ordered),
