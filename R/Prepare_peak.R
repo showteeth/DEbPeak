@@ -119,7 +119,7 @@ PeakMatrix <- function(meta.file, min.overlap = 2, submits = 200, use.summarizeO
   # merge paek annotation and count
   count.df <- merge(count.df, peak.anno.df, by = "name", all.x = TRUE)
   # filter no peak annotation info, usually abnormal chromosome, eg: chr1_GL456211_random
-  count.df = count.df[!is.na(count.df$FullName),]
+  count.df <- count.df[!is.na(count.df$FullName), ]
   rownames(count.df) <- count.df$FullName
   count.df$name <- NULL
   count.df$FullName <- NULL

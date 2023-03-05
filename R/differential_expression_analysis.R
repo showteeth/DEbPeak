@@ -79,7 +79,6 @@
 #' @importFrom sva ComBat_seq
 #' @importFrom rrcov PcaGrid PcaHubert
 #' @importFrom plot3D scatter3D text3D
-#' @importFrom tidyr drop_na
 #' @importFrom edgeR cpm
 #' @import ComplexHeatmap
 #' @importFrom circlize colorRamp2
@@ -299,9 +298,10 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
     dds.results.ordered <- IDConversion(deres = dds.results.ordered, gene.type = gene.type, org.db = org.db, gene.map = gene.map)
     dds.results.selected <- as.data.frame(dds.results.ordered) %>% tibble::rownames_to_column(var = "Gene")
   }
-
-  dds.results.sig <- dds.results.selected[dds.results.selected[signif] <= signif.threshold & abs(dds.results.selected["log2FoldChange"]) >= l2fc.threshold, ] %>%
-    tidyr::drop_na()
+  # remove na value in selected columns
+  dds.results.selected <- dds.results.selected[!is.na(dds.results.selected[signif]), ]
+  dds.results.selected <- dds.results.selected[!is.na(dds.results.selected["log2FoldChange"]), ]
+  dds.results.sig <- dds.results.selected[dds.results.selected[signif] <= signif.threshold & abs(dds.results.selected["log2FoldChange"]) >= l2fc.threshold, ]
   # create output folder
   deg.results.folder <- file.path(out.folder, "DEG")
   dir.create(deg.results.folder, showWarnings = FALSE, recursive = TRUE)
