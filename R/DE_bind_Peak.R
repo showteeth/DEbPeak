@@ -157,7 +157,12 @@ DEbPeak <- function(de.res, peak.res, peak.mode = c("consenus", "diff"),
       # gene ID conversion
       de.df <- IDConversion_internal(de.df = de.df, gene.type = merge.key, org.db = org.db, sort.key = "log2FoldChange")
       colnames(de.df) <- gsub(pattern = "^Gene$", replacement = merge.key, x = colnames(de.df))
-      colnames(de.df) <- gsub(pattern = "SYMBOL", replacement = "^Gene$", x = colnames(de.df))
+      colnames(de.df) <- gsub(pattern = "^SYMBOL$", replacement = "Gene", x = colnames(de.df))
+      colnames(de.df) <- gsub(pattern = "^ENTREZID$", replacement = "geneId", x = colnames(de.df))
+    }else{
+      # gene ID conversion
+      de.df <- IDConversion_internal(de.df = de.df, gene.type = "SYMBOL", org.db = org.db, sort.key = "log2FoldChange")
+      colnames(de.df) <- gsub(pattern = "^ENTREZID$", replacement = "geneId", x = colnames(de.df))
     }
     # get deg
     deg.df <- de.df %>% dplyr::filter(regulation != "Not_regulated")
@@ -180,6 +185,7 @@ DEbPeak <- function(de.res, peak.res, peak.mode = c("consenus", "diff"),
       "Down_Up", "Up_Up", "Down_Down", "Up_Down",
       "RNAUp", "RNADown", "PeakUp", "PeakDown"
     ))
+    colnames(de.peak) <- gsub(pattern = "^RNA_geneId$", replacement = "geneId", x = colnames(de.peak))
   }
   return(de.peak)
 }
@@ -251,32 +257,36 @@ PlotDEbPeak <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), peak.mod
     as.data.frame() %>%
     tibble::deframe()
   if (peak.type == "Peak") {
-    #
-    # create number vector
-    ChIP.vec <- c(
-      PrepareVenn("ChIP", type.summary), PrepareVenn("ChIPbATAC", type.summary),
-      PrepareVenn("UPbChIP", type.summary), PrepareVenn("DOWNbChIP", type.summary),
-      PrepareVenn("UPbPeak", type.summary), PrepareVenn("DOWNbPeak", type.summary)
-    )
-    ATAC.vec <- c(
-      PrepareVenn("ATAC", type.summary), PrepareVenn("ChIPbATAC", type.summary),
-      PrepareVenn("UPbATAC", type.summary), PrepareVenn("DOWNbATAC", type.summary),
-      PrepareVenn("UPbPeak", type.summary), PrepareVenn("DOWNbPeak", type.summary)
-    )
-    UP.vec <- c(
-      PrepareVenn("UP", type.summary), PrepareVenn("UPbChIP", type.summary),
-      PrepareVenn("UPbATAC", type.summary), PrepareVenn("UPbPeak", type.summary)
-    )
-    DOWN.vec <- c(
-      PrepareVenn("DOWN", type.summary), PrepareVenn("DOWNbChIP", type.summary),
-      PrepareVenn("DOWNbATAC", type.summary), PrepareVenn("DOWNbPeak", type.summary)
-    )
-    # create plot
-    plot.list <- list()
-    plot.list[["UP"]] <- UP.vec
-    plot.list[["DOWN"]] <- DOWN.vec
-    plot.list[["ChIP"]] <- ChIP.vec
-    plot.list[["ATAC"]] <- ATAC.vec
+    # common peak
+    if(peak.mode == "consenus"){
+      # create number vector
+      ChIP.vec <- c(
+        PrepareVenn("ChIP", type.summary), PrepareVenn("ChIPbATAC", type.summary),
+        PrepareVenn("UPbChIP", type.summary), PrepareVenn("DOWNbChIP", type.summary),
+        PrepareVenn("UPbPeak", type.summary), PrepareVenn("DOWNbPeak", type.summary)
+      )
+      ATAC.vec <- c(
+        PrepareVenn("ATAC", type.summary), PrepareVenn("ChIPbATAC", type.summary),
+        PrepareVenn("UPbATAC", type.summary), PrepareVenn("DOWNbATAC", type.summary),
+        PrepareVenn("UPbPeak", type.summary), PrepareVenn("DOWNbPeak", type.summary)
+      )
+      UP.vec <- c(
+        PrepareVenn("UP", type.summary), PrepareVenn("UPbChIP", type.summary),
+        PrepareVenn("UPbATAC", type.summary), PrepareVenn("UPbPeak", type.summary)
+      )
+      DOWN.vec <- c(
+        PrepareVenn("DOWN", type.summary), PrepareVenn("DOWNbChIP", type.summary),
+        PrepareVenn("DOWNbATAC", type.summary), PrepareVenn("DOWNbPeak", type.summary)
+      )
+      # create plot
+      plot.list <- list()
+      plot.list[["UP"]] <- UP.vec
+      plot.list[["DOWN"]] <- DOWN.vec
+      plot.list[["ChIP"]] <- ChIP.vec
+      plot.list[["ATAC"]] <- ATAC.vec
+    }
+    # diff peak
+    # subtraction peak
     plot <- ggvenn::ggvenn(plot.list, ...)
   } else if (peak.type %in% c("ChIP", "ATAC")) {
     if (peak.mode == "consenus") {
@@ -345,7 +355,7 @@ PlotDEbPeak <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), peak.mod
 #' @param plot.height The height of plot. Default: 9.
 #' @param save Logical value, whether to save all results. Default: TRUE.
 #'
-#' @return If \code{save} is TRUE, return NULL (all results are in \code{out.folder}), else retutn list contains all results.
+#' @return If \code{save} is TRUE, return NULL (all results are in \code{out.folder}), else retutn result dataframe.
 #' @importFrom tibble rownames_to_column
 #' @importFrom reshape2 melt
 #' @importFrom purrr set_names
@@ -393,10 +403,10 @@ PlotDEbPeak <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), peak.mod
 #' )
 #' # functional enrichment on genes
 #' fe.results <- DEbPeakFE(
-#'   de.peak = debchip.res, peak.type = "ChIP", gene.type = "ENTREZID",
+#'   de.peak = debchip.res, peak.fe.key = "UPbPeak", gene.type = "ENTREZID",
 #'   species = "Mouse", save = FALSE
 #' )
-DEbPeakFE <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), out.folder = NULL, gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"),
+DEbPeakFE <- function(de.peak, peak.fe.key, out.folder = NULL, gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"),
                       go.type = c("ALL", "BP", "MF", "CC"), enrich.pvalue = 0.05, enrich.qvalue = 0.05, species = c(
                         "Human", "Mouse", "Rat", "Fly", "Arabidopsis", "Yeast", "Zebrafish", "Worm", "Bovine", "Pig", "Chicken", "Rhesus",
                         "Canine", "Xenopus", "Anopheles", "Chimp", "E coli strain Sakai", "Myxococcus xanthus DK 1622"
@@ -404,19 +414,25 @@ DEbPeakFE <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), out.folder
                       padj.method = c("BH", "holm", "hochberg", "hommel", "bonferroni", "BY", "fdr", "none"),
                       show.term = 15, str.width = 30, plot.resolution = 300, plot.width = 7, plot.height = 9, save = TRUE) {
   # check parameter
-  peak.type <- match.arg(arg = peak.type)
   gene.type <- match.arg(arg = gene.type)
   go.type <- match.arg(arg = go.type)
   species <- match.arg(arg = species)
   padj.method <- match.arg(arg = padj.method)
 
-  # get UPbPeak and DOWNbPeak genes
-  UPbPeak.genes <- de.peak %>%
-    dplyr::filter(Type == "UPbPeak") %>%
+  # get genes
+  if(!peak.fe.key %in% as.character(unique(de.peak$Type))){
+    stop(paste0("Please provide valid functional enrichment key, choose from: ",
+                paste(as.character(unique(de.peak$Type)), collapse = ", ")))
+  }
+  inte.genes = de.peak %>%
+    dplyr::filter(Type == peak.fe.key) %>%
     dplyr::pull(geneId)
-  DOWNbPeak.genes <- de.peak %>%
-    dplyr::filter(Type == "DOWNbPeak") %>%
-    dplyr::pull(geneId)
+  # UPbPeak.genes <- de.peak %>%
+  #   dplyr::filter(Type == "UPbPeak") %>%
+  #   dplyr::pull(geneId)
+  # DOWNbPeak.genes <- de.peak %>%
+  #   dplyr::filter(Type == "DOWNbPeak") %>%
+  #   dplyr::pull(geneId)
 
   # prepare org db
   spe.anno <- GetSpeciesAnno(species)
@@ -433,39 +449,49 @@ DEbPeakFE <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), out.folder
   }
 
   # regulation string
-  up.reg.str <- paste0("UPb", peak.type)
-  down.reg.str <- paste0("DOWNb", peak.type)
+  # up.reg.str <- paste0("UPb", peak.type)
+  # down.reg.str <- paste0("DOWNb", peak.type)
 
   if (save) {
-    # for positive
     SingleFE(
-      genes = UPbPeak.genes, out.folder = out.folder, regulation = up.reg.str, gene.type = gene.type, enrich.type = "GO", go.type = go.type,
+      genes = inte.genes, out.folder = out.folder, regulation = peak.fe.key, gene.type = gene.type, enrich.type = "GO", go.type = go.type,
       enrich.pvalue = enrich.pvalue, enrich.qvalue = enrich.qvalue, org.db = org.db, padj.method = padj.method,
       show.term = show.term, str.width = str.width, save = save
     )
-    # for negative
-    SingleFE(
-      genes = DOWNbPeak.genes, out.folder = out.folder, regulation = down.reg.str, gene.type = gene.type, enrich.type = "GO", go.type = go.type,
-      enrich.pvalue = enrich.pvalue, enrich.qvalue = enrich.qvalue, org.db = org.db, padj.method = padj.method,
-      show.term = show.term, str.width = str.width, save = save
-    )
+    # # for positive
+    # SingleFE(
+    #   genes = UPbPeak.genes, out.folder = out.folder, regulation = up.reg.str, gene.type = gene.type, enrich.type = "GO", go.type = go.type,
+    #   enrich.pvalue = enrich.pvalue, enrich.qvalue = enrich.qvalue, org.db = org.db, padj.method = padj.method,
+    #   show.term = show.term, str.width = str.width, save = save
+    # )
+    # # for negative
+    # SingleFE(
+    #   genes = DOWNbPeak.genes, out.folder = out.folder, regulation = down.reg.str, gene.type = gene.type, enrich.type = "GO", go.type = go.type,
+    #   enrich.pvalue = enrich.pvalue, enrich.qvalue = enrich.qvalue, org.db = org.db, padj.method = padj.method,
+    #   show.term = show.term, str.width = str.width, save = save
+    # )
     return(NULL)
   } else {
-    DEbPeak.go.results <- list()
-    # for positive
-    UPbPeak.go <- SingleFE(
-      genes = UPbPeak.genes, out.folder = out.folder, regulation = up.reg.str, gene.type = gene.type, enrich.type = "GO", go.type = go.type,
+    # DEbPeak.go.results <- list()
+    # # for positive
+    # UPbPeak.go <- SingleFE(
+    #   genes = UPbPeak.genes, out.folder = out.folder, regulation = up.reg.str, gene.type = gene.type, enrich.type = "GO", go.type = go.type,
+    #   enrich.pvalue = enrich.pvalue, enrich.qvalue = enrich.qvalue, org.db = org.db, padj.method = padj.method,
+    #   show.term = show.term, str.width = str.width, save = save
+    # )
+    # # for negative
+    # DOWNbPeak.go <- SingleFE(
+    #   genes = DOWNbPeak.genes, out.folder = out.folder, regulation = down.reg.str, gene.type = gene.type, enrich.type = "GO", go.type = go.type,
+    #   enrich.pvalue = enrich.pvalue, enrich.qvalue = enrich.qvalue, org.db = org.db, padj.method = padj.method,
+    #   show.term = show.term, str.width = str.width, save = save
+    # )
+    # DEbPeak.go.results[[up.reg.str]] <- UPbPeak.go
+    # DEbPeak.go.results[[down.reg.str]] <- DOWNbPeak.go
+    DEbPeak.go.results = SingleFE(
+      genes = inte.genes, out.folder = out.folder, regulation = peak.fe.key, gene.type = gene.type, enrich.type = "GO", go.type = go.type,
       enrich.pvalue = enrich.pvalue, enrich.qvalue = enrich.qvalue, org.db = org.db, padj.method = padj.method,
       show.term = show.term, str.width = str.width, save = save
     )
-    # for negative
-    DOWNbPeak.go <- SingleFE(
-      genes = DOWNbPeak.genes, out.folder = out.folder, regulation = down.reg.str, gene.type = gene.type, enrich.type = "GO", go.type = go.type,
-      enrich.pvalue = enrich.pvalue, enrich.qvalue = enrich.qvalue, org.db = org.db, padj.method = padj.method,
-      show.term = show.term, str.width = str.width, save = save
-    )
-    DEbPeak.go.results[[up.reg.str]] <- UPbPeak.go
-    DEbPeak.go.results[[down.reg.str]] <- DOWNbPeak.go
     return(DEbPeak.go.results)
   }
 }
