@@ -6,7 +6,7 @@
 \usage{
 DEbPeakFE(
   de.peak,
-  peak.type = c("ChIP", "ATAC", "Peak"),
+  peak.fe.key,
   out.folder = NULL,
   gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"),
   go.type = c("ALL", "BP", "MF", "CC"),
@@ -28,7 +28,7 @@ DEbPeakFE(
 \arguments{
 \item{de.peak}{Dataframe contains integrated results.}
 
-\item{peak.type}{The source of peaks, chosen from ATAC, ChIP and Peak (ChIP and ATAC). Default: ChIP.}
+\item{peak.fe.key}{The key type of integrated results ("Type" column of \code{de.peak}) to perform functional enrichment.}
 
 \item{out.folder}{Folder to save enrichment results. Default: wording directory.}
 
@@ -58,7 +58,7 @@ DEbPeakFE(
 \item{save}{Logical value, whether to save all results. Default: TRUE.}
 }
 \value{
-If \code{save} is TRUE, return NULL (all results are in \code{out.folder}), else retutn list contains all results.
+If \code{save} is TRUE, return NULL (all results are in \code{out.folder}), else retutn result dataframe.
 }
 \description{
 GO Enrichment on Integrated Results.
@@ -96,9 +96,14 @@ debchip.res <- DEbPeak(
   de.res = dds.results.ordered, peak.res = peak.anno[["df"]],
   peak.anno.key = "Promoter", merge.key = "SYMBOL"
 )
-# functional enrichment on genes
-fe.results <- DEbPeakFE(
-  de.peak = debchip.res, peak.type = "ChIP", gene.type = "ENTREZID",
+# functional enrichment on UPbPeak genes
+upbpeak.fe.results <- DEbPeakFE(
+  de.peak = debchip.res, peak.fe.key = "UPbPeak", gene.type = "ENTREZID",
+  species = "Mouse", save = FALSE
+)
+# functional enrichment on DOWNbPeak genes
+downbpeak.fe.results <- DEbPeakFE(
+  de.peak = debchip.res, peak.fe.key = "DOWNbPeak", gene.type = "ENTREZID",
   species = "Mouse", save = FALSE
 )
 }

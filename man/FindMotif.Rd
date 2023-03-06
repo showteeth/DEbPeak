@@ -6,7 +6,9 @@
 \usage{
 FindMotif(
   inte.res,
-  peak.anno.res,
+  peak.anno.res = NULL,
+  peak.motif.key,
+  peak.mode = c("consenus", "diff"),
   gene.key = "geneId",
   homer.motif.path = NULL,
   genome = "mm10",
@@ -18,6 +20,8 @@ FindMotif(
 \item{inte.res}{DEGs and peak annotation integration results.}
 
 \item{peak.anno.res}{Peak annotation results.}
+
+\item{peak.motif.key}{The key type of integrated results ("Type" column of \code{de.peak}) to find motif.}
 
 \item{gene.key}{Gene key name, chosen from geneId, ENSEMBL, SYMBOL. Default: geneId.
 Should be consistent with \code{merge.key} of \code{DEbPeak}.}

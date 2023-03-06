@@ -294,6 +294,20 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
   message("Conduct Gene ID Conversion!")
   if (data.type != "RNA") {
     dds.results.ordered <- IDConversionPeak(deres = dds.results.ordered, org.db = org.db, gene.map = gene.map)
+    # filter region
+    dds.results.ordered <- as.data.frame(dds.results.ordered) %>%
+      tibble::rownames_to_column(var = "Peak") %>%
+      dplyr::mutate(PeakRegion = gsub(pattern = ".*\\|.*\\|(.*)", replacement = "\\1", x = Peak))
+    if (peak.anno.key == "All") {
+      dds.results.ordered <- dds.results.ordered
+    } else {
+      anno.key.named <- c("P", "5U", "3U", "E", "I", "D", "DI")
+      names(anno.key.named) <- c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic")
+      dds.results.ordered <- dds.results.ordered[dds.results.ordered$PeakRegion == anno.key.named[peak.anno.key], ]
+    }
+    dds.results.ordered$PeakRegion <- NULL
+    rownames(dds.results.ordered) <- dds.results.ordered$Peak
+    dds.results.ordered$Peak <- NULL
     dds.results.selected <- as.data.frame(dds.results.ordered) %>% tibble::rownames_to_column(var = "Peak")
   } else {
     dds.results.ordered <- IDConversion(deres = dds.results.ordered, gene.type = gene.type, org.db = org.db, gene.map = gene.map)

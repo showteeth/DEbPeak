@@ -117,7 +117,7 @@ rna.diff.file <- system.file("extdata", "RA_RNA_diff.txt", package = "DEbPeak")
 rna.diff <- read.table(file = rna.diff.file, header = TRUE, sep = "\t")
 # integrate differential expression results of RNA-seq and ATAC-seq
 debatac.res <- DEbPeak(
-  de.res = rna.diff, peak.res = dds.peak.results.ordered, peak.mode = "diff", l2fc.threshold = 0, peak.l2fc.threshold = 0,
-  org.db = "org.Mm.eg.db", merge.key = "SYMBOL"
+  de.res = rna.diff, peak.res = dds.peak.results.ordered, peak.mode = "diff", peak.anno.key = "All", l2fc.threshold = 0,
+  peak.l2fc.threshold = 0, org.db = "org.Mm.eg.db", merge.key = "SYMBOL"
 )
 }

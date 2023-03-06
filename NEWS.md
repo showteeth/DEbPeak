@@ -1,6 +1,9 @@
 # DEbPeak 0.8.0
 ## New features
-* Changed `DEbPeak`, `PlotDEbPeak` to integrate differential expression analysis results of RNA-seq and ChIP-seq/ATAC-seq.
+* Changed `DEbPeak`, `PlotDEbPeak`, `DEbPeakFE`, `FindMotif` to integrate differential expression analysis results of RNA-seq and ChIP-seq/ATAC-seq.
+
+## Minor changes
+* Added `peak.anno.key` to filter differential expression analysis results of ChIP-seq/ATAC-seq in `ConductDESeq2`.
 
 -------------
 

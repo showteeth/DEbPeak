@@ -87,8 +87,8 @@
 #' rna.diff <- read.table(file = rna.diff.file, header = TRUE, sep = "\t")
 #' # integrate differential expression results of RNA-seq and ATAC-seq
 #' debatac.res <- DEbPeak(
-#'   de.res = rna.diff, peak.res = dds.peak.results.ordered, peak.mode = "diff", l2fc.threshold = 0, peak.l2fc.threshold = 0,
-#'   org.db = "org.Mm.eg.db", merge.key = "SYMBOL"
+#'   de.res = rna.diff, peak.res = dds.peak.results.ordered, peak.mode = "diff", peak.anno.key = "All", l2fc.threshold = 0,
+#'   peak.l2fc.threshold = 0, org.db = "org.Mm.eg.db", merge.key = "SYMBOL"
 #' )
 DEbPeak <- function(de.res, peak.res, peak.mode = c("consenus", "diff"),
                     peak.anno.key = c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic", "All"),
@@ -145,10 +145,19 @@ DEbPeak <- function(de.res, peak.res, peak.mode = c("consenus", "diff"),
       deres = peak.res, signif = peak.signif, signif.threshold = peak.signif.threshold,
       l2fc.threshold = peak.l2fc.threshold, label.key = "SYMBOL"
     )
+    # filter with peak.anno.key
+    if (peak.anno.key == "All") {
+      peak.de.df <- peak.de.df
+    } else {
+      peak.de.df$PeakRegion <- gsub(pattern = ".*\\|.*\\|(.*)", replacement = "\\1", x = peak.de.df$Gene)
+      anno.key.named <- c("P", "5U", "3U", "E", "I", "D", "DI")
+      names(anno.key.named) <- c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic")
+      peak.de.df <- peak.de.df[peak.de.df$PeakRegion == anno.key.named[peak.anno.key], ]
+      peak.de.df$PeakRegion <- NULL
+    }
     # extract de results
     peak.deg.df <- peak.de.df %>% dplyr::filter(regulation != "Not_regulated")
     colnames(peak.deg.df) <- gsub(pattern = "^", replacement = "Peak_", x = colnames(peak.deg.df))
-
     # make sure Gene column are SYMBOL
     if (merge.key != "SYMBOL") {
       if (merge.key == "geneId") {
@@ -159,7 +168,7 @@ DEbPeak <- function(de.res, peak.res, peak.mode = c("consenus", "diff"),
       colnames(de.df) <- gsub(pattern = "^Gene$", replacement = merge.key, x = colnames(de.df))
       colnames(de.df) <- gsub(pattern = "^SYMBOL$", replacement = "Gene", x = colnames(de.df))
       colnames(de.df) <- gsub(pattern = "^ENTREZID$", replacement = "geneId", x = colnames(de.df))
-    }else{
+    } else {
       # gene ID conversion
       de.df <- IDConversion_internal(de.df = de.df, gene.type = "SYMBOL", org.db = org.db, sort.key = "log2FoldChange")
       colnames(de.df) <- gsub(pattern = "^ENTREZID$", replacement = "geneId", x = colnames(de.df))
@@ -258,7 +267,7 @@ PlotDEbPeak <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), peak.mod
     tibble::deframe()
   if (peak.type == "Peak") {
     # common peak
-    if(peak.mode == "consenus"){
+    if (peak.mode == "consenus") {
       # create number vector
       ChIP.vec <- c(
         PrepareVenn("ChIP", type.summary), PrepareVenn("ChIPbATAC", type.summary),
@@ -339,7 +348,7 @@ PlotDEbPeak <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), peak.mod
 #' GO Enrichment on Integrated Results.
 #'
 #' @param de.peak Dataframe contains integrated results.
-#' @param peak.type The source of peaks, chosen from ATAC, ChIP and Peak (ChIP and ATAC). Default: ChIP.
+#' @param peak.fe.key The key type of integrated results ("Type" column of \code{de.peak}) to perform functional enrichment.
 #' @param out.folder Folder to save enrichment results. Default: wording directory.
 #' @param gene.type Gene name type. Chosen from ENSEMBL, ENTREZID,SYMBOL. Default: ENSEMBL.
 #' @param go.type GO enrichment type, chosen from ALL, BP, MF, CC. Default: ALL.
@@ -401,9 +410,14 @@ PlotDEbPeak <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), peak.mod
 #'   de.res = dds.results.ordered, peak.res = peak.anno[["df"]],
 #'   peak.anno.key = "Promoter", merge.key = "SYMBOL"
 #' )
-#' # functional enrichment on genes
-#' fe.results <- DEbPeakFE(
+#' # functional enrichment on UPbPeak genes
+#' upbpeak.fe.results <- DEbPeakFE(
 #'   de.peak = debchip.res, peak.fe.key = "UPbPeak", gene.type = "ENTREZID",
+#'   species = "Mouse", save = FALSE
+#' )
+#' # functional enrichment on DOWNbPeak genes
+#' downbpeak.fe.results <- DEbPeakFE(
+#'   de.peak = debchip.res, peak.fe.key = "DOWNbPeak", gene.type = "ENTREZID",
 #'   species = "Mouse", save = FALSE
 #' )
 DEbPeakFE <- function(de.peak, peak.fe.key, out.folder = NULL, gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"),
@@ -420,11 +434,13 @@ DEbPeakFE <- function(de.peak, peak.fe.key, out.folder = NULL, gene.type = c("EN
   padj.method <- match.arg(arg = padj.method)
 
   # get genes
-  if(!peak.fe.key %in% as.character(unique(de.peak$Type))){
-    stop(paste0("Please provide valid functional enrichment key, choose from: ",
-                paste(as.character(unique(de.peak$Type)), collapse = ", ")))
+  if (!peak.fe.key %in% as.character(unique(de.peak$Type))) {
+    stop(paste0(
+      "Please provide valid functional enrichment key, choose from: ",
+      paste(as.character(unique(de.peak$Type)), collapse = ", ")
+    ))
   }
-  inte.genes = de.peak %>%
+  inte.genes <- de.peak %>%
     dplyr::filter(Type == peak.fe.key) %>%
     dplyr::pull(geneId)
   # UPbPeak.genes <- de.peak %>%
@@ -487,7 +503,7 @@ DEbPeakFE <- function(de.peak, peak.fe.key, out.folder = NULL, gene.type = c("EN
     # )
     # DEbPeak.go.results[[up.reg.str]] <- UPbPeak.go
     # DEbPeak.go.results[[down.reg.str]] <- DOWNbPeak.go
-    DEbPeak.go.results = SingleFE(
+    DEbPeak.go.results <- SingleFE(
       genes = inte.genes, out.folder = out.folder, regulation = peak.fe.key, gene.type = gene.type, enrich.type = "GO", go.type = go.type,
       enrich.pvalue = enrich.pvalue, enrich.qvalue = enrich.qvalue, org.db = org.db, padj.method = padj.method,
       show.term = show.term, str.width = str.width, save = save
