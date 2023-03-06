@@ -4,12 +4,20 @@
 \alias{PlotDEbPeak}
 \title{Create Integrated Summary Plot.}
 \usage{
-PlotDEbPeak(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), ...)
+PlotDEbPeak(
+  de.peak,
+  peak.type = c("ChIP", "ATAC", "Peak"),
+  peak.mode = c("consenus", "diff"),
+  ...
+)
 }
 \arguments{
 \item{de.peak}{Dataframe contains integrated results.}
 
 \item{peak.type}{The source of peaks, chosen from ATAC, ChIP and Peak (ChIP and ATAC). Default: ChIP.}
+
+\item{peak.mode}{The source of peak results, choose from consenus (peak annotation) and diff (differential expression analysis).
+Default: consenus.}
 
 \item{...}{Parameters for \code{\link{ggvenn}}.}
 }

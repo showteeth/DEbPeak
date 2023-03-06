@@ -2,46 +2,69 @@
 % Please edit documentation in R/DE_bind_Peak.R
 \name{DEbPeak}
 \alias{DEbPeak}
-\title{Integrate Differential Expression Results and Peak Annotation Results.}
+\title{Integrate Differential Expression Results and Peak Annotation/Differential Expression Results.}
 \usage{
 DEbPeak(
   de.res,
   peak.res,
+  peak.mode = c("consenus", "diff"),
   peak.anno.key = c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream",
     "Distal Intergenic", "All"),
   signif = "padj",
   signif.threshold = 0.05,
   l2fc.threshold = 1,
   label.key = NULL,
-  merge.key = c("geneId", "ENSEMBL", "SYMBOL")
+  peak.signif = "padj",
+  peak.signif.threshold = 0.05,
+  peak.l2fc.threshold = 1,
+  merge.key = c("geneId", "ENSEMBL", "SYMBOL"),
+  org.db = "org.Mm.eg.db"
 )
 }
 \arguments{
 \item{de.res}{Data frame contains all genes of differential expression analysis.}
 
-\item{peak.res}{Dataframe contains all peak annotation results.}
+\item{peak.res}{Dataframe contains all peak annotation (\code{peak.mode} is consenus) or
+differential expression analysis results (\code{peak.mode} is diff).}
 
-\item{peak.anno.key}{Peak location, chosen from "Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic","All". Default: "Promoter".}
+\item{peak.mode}{The source of peak results, choose from consenus (peak annotation) and diff (differential expression analysis).
+Default: consenus.}
 
-\item{signif}{Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.}
+\item{peak.anno.key}{Peak location, chosen from "Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic","All".
+Used when \code{peak.mode} is consenus. Default: "Promoter".}
 
-\item{signif.threshold}{Significance threshold to get differentially expressed genes. Default: 0.05.}
+\item{signif}{Significance criterion for RNA-seq results. For DESeq2 results, can be chosen from padj, pvalue.
+For edgeR results, can be chosen from FDR, PValue. Default: padj.}
 
-\item{l2fc.threshold}{Log2 fold change threshold to get differentially expressed genes. Default: 1.}
+\item{signif.threshold}{Significance threshold for RNA-seq to get differentially expressed genes. Default: 0.05.}
+
+\item{l2fc.threshold}{Log2 fold change threshold for RNA-seq to get differentially expressed genes. Default: 1.}
 
 \item{label.key}{Which column to use as label. Default: NULL (use rownames of \code{deres}).}
 
-\item{merge.key}{The columns used for merging, chosen from geneId, ENSEMBL, SYMBOL. Default: geneId.}
+\item{peak.signif}{Significance criterion for peak-associated results. For DESeq2 results, can be chosen from padj, pvalue.
+For edgeR results, can be chosen from FDR, PValue. Default: padj.}
+
+\item{peak.signif.threshold}{Significance threshold for peak-associated results to get differentially expressed genes. Default: 0.05.}
+
+\item{peak.l2fc.threshold}{Log2 fold change threshold for peak-associated results to get differentially expressed genes. Default: 1.}
+
+\item{merge.key}{The columns used for merging, chosen from geneId (ENTREZID), ENSEMBL, SYMBOL. Default: geneId.}
+
+\item{org.db}{Organism database. Used when \code{peak.mode} is diff and \code{merge.key} is not "SYMBOL".
+For peak-associated differential expression results, only support merging on "SYMBOL". Default: org.Mm.eg.db.}
 }
 \value{
-Dataframe contains integrated results. The results will contain five categories: UPbPeak, DOWNbPeak, UP, DOWN, Peak.
+Dataframe contains integrated results. The results will contain five categories: UPbPeak, DOWNbPeak, UP, DOWN, Peak when \code{peak.mode} is consenus
+and Down_Up, Up_Up, Down_Down, Up_Down when \code{peak.mode} is diff. RNA in front.
 }
 \description{
-Integrate Differential Expression Results and Peak Annotation Results.
+Integrate Differential Expression Results and Peak Annotation/Differential Expression Results.
 }
 \examples{
 library(DEbPeak)
 library(DESeq2)
+### consensus mode
 # ChIP-Seq data
 peak.file <- system.file("extdata", "debchip_peaks.bed", package = "DEbPeak")
 peak.df <- GetConsensusPeak(peak.file = peak.file)
@@ -71,5 +94,30 @@ dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing 
 debchip.res <- DEbPeak(
   de.res = dds.results.ordered, peak.res = peak.anno[["df"]],
   peak.anno.key = "Promoter", merge.key = "SYMBOL"
+)
+### diff mode
+# ATAC-Seq data
+peak.matrix.file <- system.file("extdata", "RA_ATAC_count.txt", package = "DEbPeak")
+peak.meta.file <- system.file("extdata", "RA_ATAC_meta.txt", package = "DEbPeak")
+peak.matrix <- read.table(file = peak.matrix.file, header = TRUE, sep = "\t")
+peak.meta <- read.table(file = peak.meta.file, header = TRUE)
+dds.peak <- DESeq2::DESeqDataSetFromMatrix(
+  countData = peak.matrix, colData = peak.meta,
+  design = ~condition
+)
+# set control level
+dds.peak$condition <- relevel(dds.peak$condition, ref = "WT")
+# conduct differential expressed genes analysis
+dds.peak <- DESeq(dds.peak)
+# extract results
+dds.peak.results <- results(dds.peak, contrast = c("condition", "KO", "WT"))
+dds.peak.results.ordered <- dds.peak.results[order(dds.peak.results$log2FoldChange, decreasing = TRUE), ]
+# RNA-seq results
+rna.diff.file <- system.file("extdata", "RA_RNA_diff.txt", package = "DEbPeak")
+rna.diff <- read.table(file = rna.diff.file, header = TRUE, sep = "\t")
+# integrate differential expression results of RNA-seq and ATAC-seq
+debatac.res <- DEbPeak(
+  de.res = rna.diff, peak.res = dds.peak.results.ordered, peak.mode = "diff", l2fc.threshold = 0, peak.l2fc.threshold = 0,
+  org.db = "org.Mm.eg.db", merge.key = "SYMBOL"
 )
 }

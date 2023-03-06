@@ -24,7 +24,7 @@ IDConversion_internal <- function(de.df, gene.type = c("ENSEMBL", "ENTREZID", "S
       dplyr::select(-Gene2Convert)
   }
   if (!is.null(sort.key)) {
-    final.df <- final.df %>% dplyr::arrange(dplyr::desc(sort.key))
+    final.df <- final.df %>% dplyr::arrange(dplyr::desc(.data[[sort.key]]))
   }
   return(final.df)
 }

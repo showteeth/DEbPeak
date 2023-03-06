@@ -1,3 +1,9 @@
+# DEbPeak 0.8.0
+## New features
+* Changed `DEbPeak`, `PlotDEbPeak` to integrate differential expression analysis results of RNA-seq and ChIP-seq/ATAC-seq.
+
+-------------
+
 # DEbPeak 0.7.0
 ## New features
 * Added `PeakMatrix` to prepare peak matrix for differential expression analysis.

@@ -1,0 +1,7 @@
+condition
+Fli1KO_1	KO
+Fli1KO_2	KO
+Fli1KO_3	KO
+Fli1KO_4	KO
+WT_1	WT
+WT_2	WT

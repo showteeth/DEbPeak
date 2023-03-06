@@ -87,6 +87,7 @@
 #' @importFrom stringr str_wrap
 #' @importFrom BiocManager install
 #' @importFrom utils write.csv
+#' @importFrom rlang .data
 #' @export
 #'
 #' @examples
