@@ -266,36 +266,31 @@ PlotDEbPeak <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), peak.mod
     as.data.frame() %>%
     tibble::deframe()
   if (peak.type == "Peak") {
-    # common peak
-    if (peak.mode == "consenus") {
-      # create number vector
-      ChIP.vec <- c(
-        PrepareVenn("ChIP", type.summary), PrepareVenn("ChIPbATAC", type.summary),
-        PrepareVenn("UPbChIP", type.summary), PrepareVenn("DOWNbChIP", type.summary),
-        PrepareVenn("UPbPeak", type.summary), PrepareVenn("DOWNbPeak", type.summary)
-      )
-      ATAC.vec <- c(
-        PrepareVenn("ATAC", type.summary), PrepareVenn("ChIPbATAC", type.summary),
-        PrepareVenn("UPbATAC", type.summary), PrepareVenn("DOWNbATAC", type.summary),
-        PrepareVenn("UPbPeak", type.summary), PrepareVenn("DOWNbPeak", type.summary)
-      )
-      UP.vec <- c(
-        PrepareVenn("UP", type.summary), PrepareVenn("UPbChIP", type.summary),
-        PrepareVenn("UPbATAC", type.summary), PrepareVenn("UPbPeak", type.summary)
-      )
-      DOWN.vec <- c(
-        PrepareVenn("DOWN", type.summary), PrepareVenn("DOWNbChIP", type.summary),
-        PrepareVenn("DOWNbATAC", type.summary), PrepareVenn("DOWNbPeak", type.summary)
-      )
-      # create plot
-      plot.list <- list()
-      plot.list[["UP"]] <- UP.vec
-      plot.list[["DOWN"]] <- DOWN.vec
-      plot.list[["ChIP"]] <- ChIP.vec
-      plot.list[["ATAC"]] <- ATAC.vec
-    }
-    # diff peak
-    # subtraction peak
+    # create number vector
+    ChIP.vec <- c(
+      PrepareVenn("ChIP", type.summary), PrepareVenn("ChIPbATAC", type.summary),
+      PrepareVenn("UPbChIP", type.summary), PrepareVenn("DOWNbChIP", type.summary),
+      PrepareVenn("UPbPeak", type.summary), PrepareVenn("DOWNbPeak", type.summary)
+    )
+    ATAC.vec <- c(
+      PrepareVenn("ATAC", type.summary), PrepareVenn("ChIPbATAC", type.summary),
+      PrepareVenn("UPbATAC", type.summary), PrepareVenn("DOWNbATAC", type.summary),
+      PrepareVenn("UPbPeak", type.summary), PrepareVenn("DOWNbPeak", type.summary)
+    )
+    UP.vec <- c(
+      PrepareVenn("UP", type.summary), PrepareVenn("UPbChIP", type.summary),
+      PrepareVenn("UPbATAC", type.summary), PrepareVenn("UPbPeak", type.summary)
+    )
+    DOWN.vec <- c(
+      PrepareVenn("DOWN", type.summary), PrepareVenn("DOWNbChIP", type.summary),
+      PrepareVenn("DOWNbATAC", type.summary), PrepareVenn("DOWNbPeak", type.summary)
+    )
+    # create plot
+    plot.list <- list()
+    plot.list[["UP"]] <- UP.vec
+    plot.list[["DOWN"]] <- DOWN.vec
+    plot.list[["ChIP"]] <- ChIP.vec
+    plot.list[["ATAC"]] <- ATAC.vec
     plot <- ggvenn::ggvenn(plot.list, ...)
   } else if (peak.type %in% c("ChIP", "ATAC")) {
     if (peak.mode == "consenus") {
@@ -343,6 +338,119 @@ PlotDEbPeak <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), peak.mod
     plot <- ggvenn::ggvenn(plot.list, ...)
   }
   return(plot)
+}
+
+#' Create Quadrant Diagram for Differential Expression Analysis of RNA-seq and Peak-related data.
+#'
+#' @param de.peak Dataframe contains integrated results of differential epression analysis of RNA-seq and Peak-related data.
+#' @param peak.type Peak data type, choose from ChIP, ATAC. Default: ChIP.
+#' @param point.alpha Opacity of a geom. Default: 0.6.
+#' @param point.size.vec Point size for regular(DE or non-DE) and(or) labeled points.
+#' Default: 2 for regular and 4 for labeled points.
+#' @param rna.l2fc.threshold Log2 fold change threshold for RNA-seq to get differentially expressed results. Default: 0.
+#' @param peak.l2fc.threshold Log2 fold change threshold for peak-related data to get differentially expressed results. Default: 0.
+#' @param linetype Threshold linetype. Default: 2.
+#' @param point.color.vec Point color for Down_Up, Up_Up, Down_Down, Up_Down.
+#' Default: grey for Down_Up, red for Up_Up, blue for Down_Down and grey for Up_Down.
+#' @param legend.pos Legend position. Default: top.
+#' @param show.corr Logical value, whether to add pearson correlation coefficient and its significance. Default: TRUE.
+#' @param label.num Gene number to label, according to RNA_log2FoldChange and Peak_log2FoldChange. When \code{label.df} is set NULL,
+#' use this to determine genes to label. Default: NULL.
+#' @param label.df Label data frame, at least contains Gene column. Default: NULL(use \code{label.num}).
+#' When provided, the second column should not be in \code{de.peak}.
+#' @param label.color Color for labels. Default: NULL (black).
+#'
+#' @return A ggplot2 object.
+#' @importFrom magrittr %>%
+#' @importFrom dplyr filter arrange desc
+#' @importFrom utils head
+#' @importFrom ggpubr stat_cor
+#' @importFrom ggrepel geom_text_repel
+#' @import ggplot2
+#' @export
+#'
+#' @examples
+#' # # prepare integrated differential expression results of RNA-seq and ATAC-seq
+#' # # label dataframe
+#' # label.df = data.frame(Gene = c("Ccl3", "Ccl5", "Cd28", "Cx3cr1", "Prdm1", "Tcf7", "Slamf6", "Id3", "Cxcr5"))
+#' # # create plot
+#' # quad.plot = InteDiffQuad(de.peak = debatac.res, peak.type = "ATAC", label.df = label.df, label.color = "green")
+InteDiffQuad <- function(de.peak, peak.type = c("ChIP", "ATAC"), point.alpha = 0.6, point.size.vec = c(2, 4), rna.l2fc.threshold = 0,
+                         peak.l2fc.threshold = 0, linetype = 2, point.color.vec = c("grey", "red", "blue", "grey"),
+                         legend.pos = "top", show.corr = TRUE, label.num = NULL, label.df = NULL, label.color = NULL) {
+  # check parameters
+  peak.type <- match.arg(arg = peak.type)
+
+  # prepare integrate dataframe: filter out single regulation
+  de.peak <- de.peak %>%
+    dplyr::filter(!is.na(Peak_regulation)) %>%
+    dplyr::filter(!is.na(RNA_regulation))
+  # prepare point size
+  if (length(point.size.vec) == 1) {
+    point.size.vec <- rep(point.size.vec, 2)
+  }
+  # prepare basic plot
+  p <- ggplot() +
+    geom_point(
+      data = de.peak,
+      aes(x = RNA_log2FoldChange, y = Peak_log2FoldChange, color = Type),
+      size = point.size.vec[1], alpha = point.alpha
+    ) +
+    scale_color_manual(values = point.color.vec) +
+    geom_vline(xintercept = c(-rna.l2fc.threshold, rna.l2fc.threshold), lty = linetype) +
+    geom_hline(yintercept = c(-peak.l2fc.threshold, peak.l2fc.threshold), lty = linetype) +
+    theme_classic(base_size = 14) +
+    theme(legend.position = legend.pos) +
+    labs(x = "RNA log2Foldchange", y = paste(peak.type, "log2Foldchange", sep = " "), color = "") +
+    scale_y_continuous(expand = expansion(mult = c(0.1, 0.1), add = c(0, 0))) +
+    scale_x_continuous(expand = expansion(mult = c(0.1, 0.1), add = c(0, 0)))
+  # add correlation
+  if (show.corr) {
+    p <- p + stat_cor(
+      data = de.peak,
+      aes(x = RNA_log2FoldChange, y = Peak_log2FoldChange), method = "pearson"
+    )
+  }
+  # add label
+  if (is.null(label.df)) {
+    if (!is.null(label.num)) {
+      label.data.up <- de.peak %>%
+        dplyr::arrange(desc(RNA_log2FoldChange), desc(Peak_log2FoldChange)) %>%
+        head(label.num)
+      label.data.down <- de.peak %>%
+        dplyr::arrange(RNA_log2FoldChange, Peak_log2FoldChange) %>%
+        head(label.num)
+      label.data <- as.data.frame(rbind(label.data.up, label.data.down))
+    } else {
+      return(p)
+    }
+  } else if (nrow(label.df) >= 1) {
+    label.data <- merge(de.peak, label.df, by.x = "Peak_SYMBOL", by.y = "Gene") %>% as.data.frame()
+  }
+  if (is.null(label.color)) {
+    p <- p +
+      geom_point(
+        data = label.data,
+        aes(x = RNA_log2FoldChange, y = Peak_log2FoldChange),
+        size = point.size.vec[2]
+      ) +
+      geom_text_repel(
+        data = label.data,
+        aes(x = RNA_log2FoldChange, y = Peak_log2FoldChange, label = Peak_SYMBOL)
+      )
+  } else {
+    p <- p +
+      geom_point(
+        data = label.data,
+        aes(x = RNA_log2FoldChange, y = Peak_log2FoldChange),
+        color = label.color, size = point.size.vec[2]
+      ) +
+      geom_text_repel(
+        data = label.data,
+        aes(x = RNA_log2FoldChange, y = Peak_log2FoldChange, label = Peak_SYMBOL)
+      )
+  }
+  return(p)
 }
 
 #' GO Enrichment on Integrated Results.

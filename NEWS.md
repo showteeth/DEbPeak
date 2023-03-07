@@ -1,6 +1,7 @@
 # DEbPeak 0.8.0
 ## New features
 * Changed `DEbPeak`, `PlotDEbPeak`, `DEbPeakFE`, `FindMotif` to integrate differential expression analysis results of RNA-seq and ChIP-seq/ATAC-seq.
+* Added `InteDiffQuad` to create quadrant diagram for differential expression analysis of RNA-seq and Peak-related data.
 
 ## Minor changes
 * Added `peak.anno.key` to filter differential expression analysis results of ChIP-seq/ATAC-seq in `ConductDESeq2`.
