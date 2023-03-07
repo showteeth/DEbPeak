@@ -1,0 +1,72 @@
+---
+title: "MotifEnrichment"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+For peak-related data, motif enrichment can be used to find the TFs involved in the gene regulation, especially for ATAC-seq (ATAC-seq can proflie global chromatin accessibility. Thus, the peaks of ATAC-seq may originate from hundreds of TFs.).
+
+Here, we will perform motif enrichment on differentially accessible (DA) peaks.
+
+<hr />
+
+## Example data
+The data used here are from [In vivo CD8+ T cell CRISPR screening reveals control by Fli1 in infection and cancer](https://doi.org/10.1016/j.cell.2021.02.019):
+
+* **RNA-seq data**: the sgCtrl vs sgFli1 RNA sequencing at D8 Cl13 p.i., the raw data are stored in [GSE149838](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE149838)
+* **ATAC-seq data**: sgCtrl vs sgFli1 ATAC sequencing at D9 Cl13 p.i., the raw data are stored in [GSE149836](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE149836)
+
+<hr />
+
+## Load packages
+
+```{r motif_load_example}
+# library
+suppressWarnings(suppressMessages(library(DEbPeak)))
+```
+
+<hr />
+
+## Differential Expression Analysis 
+To simplify the steps of obtaining differential expression analysis results, `DEbPeak` provides `ConductDESeq2` to perfrom all steps of differential expression analysis, including **quality control**, **principal component analysis**, **differential expression analysis** and **functional enrichment analysis**.
+
+```{r atac_da_peak}
+peak.matrix.file <- system.file("extdata", "RA_ATAC_count.txt", package = "DEbPeak")
+peak.meta.file <- system.file("extdata", "RA_ATAC_meta.txt", package = "DEbPeak")
+ConductDESeq2(count.matrix.file = peak.matrix.file, meta.file = peak.meta.file, data.type = "ATAC",
+              gene.type = "SYMBOL", outlier.detection = F, min.count = 0,
+              peak.anno.key = "All", group.key = "condition", ref.group = "WT",
+              out.folder = '/home/songyabing/R/learn/tmp/DEbPeak/ATACDE',
+              signif = "padj", signif.threshold = 0.05, l2fc.threshold = 0, gmt.file = '')
+```
+
+
+The structure of result directory:
+```{bash atac_da_peak_struc}
+tree /home/songyabing/R/learn/tmp/DEbPeak/ATACDE
+```
+
+Read the results:
+```{r atac_da_peak_all}
+dds.peak.results.ordered = read.csv( "/home/songyabing/R/learn/tmp/DEbPeak/ATACDE/DEG/Condition_KO_WT_all.csv", row.names = 1)
+head(dds.peak.results.ordered)
+```
+
+
+<hr />
+
+## Motif enrichment
+There are **three categories** for users to choose to perform functional enrichment: `Up_regulated`, `Down_regulated`, `Not_regulated`. Here, we will use `Up_regulated` as example.
+```{r atac_da_motif_up, eval = FALSE}
+# this step is time consuming!
+da.peak.motif = MotifEnrich(de.res = dds.peak.results.ordered, reg.type = "Up_regulated",
+                            homer.motif.path = '~/anaconda3/bin/findMotifsGenome.pl',
+                            out.folder = "/home/songyabing/R/learn/tmp/DEbPeak/DAmotif",
+                            other.paras = "-len 8,10,12 -size -100,50 -S 25")
+```
+
+

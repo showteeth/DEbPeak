@@ -13,7 +13,7 @@ Here, we will perform differential expression analysis based on `DESeq2` and `ed
 <hr />
 
 ## Example data
-We will used the results output by "Quality Control" vignette.
+We will used the results output by [Quality Control](https://showteeth.github.io/DEbPeak/articles/QualityControl.html) vignette.
 
 ```{r load_example}
 # library

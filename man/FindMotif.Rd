@@ -2,7 +2,7 @@
 % Please edit documentation in R/DE_bind_ATAC.R
 \name{FindMotif}
 \alias{FindMotif}
-\title{Find Motif of Peaks from DEGs and Peak Annotation Integration Results.}
+\title{Find Motif of Peaks from RNA-seq and Peak-related Data Integrated Results.}
 \usage{
 FindMotif(
   inte.res,
@@ -38,5 +38,5 @@ Should be consistent with \code{merge.key} of \code{DEbPeak}.}
 List contains known motif results of UPbATAC and DOWNbATAC.
 }
 \description{
-Find Motif of Peaks from DEGs and Peak Annotation Integration Results.
+Find Motif of Peaks from RNA-seq and Peak-related Data Integrated Results.
 }

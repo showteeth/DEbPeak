@@ -449,6 +449,7 @@ ConductFE <- function(deres, out.folder = NULL, data.type = c("RNA", "ChIP", "AT
     # filter dataframe based on region
     anno.key.named <- c("P", "5U", "3U", "E", "I", "D", "DI")
     names(anno.key.named) <- c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic")
+    deres <- as.data.frame(deres)
     deres$Type <- gsub(pattern = ".*\\|.*\\|(.*)", replacement = "\\1", x = rownames(deres))
     if (peak.anno.key == "All") {
       deres <- deres
@@ -457,6 +458,7 @@ ConductFE <- function(deres, out.folder = NULL, data.type = c("RNA", "ChIP", "AT
     }
     deres <- deres %>%
       dplyr::select(-c(Type))
+    deres$SYMBOL <- gsub(pattern = ".*\\|(.*)\\|.*", replacement = "\\1", x = rownames(deres))
     gene.key <- "SYMBOL"
     gene.type <- "SYMBOL"
   }

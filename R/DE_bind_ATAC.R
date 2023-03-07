@@ -1,4 +1,4 @@
-#' Find Motif of Peaks from DEGs and Peak Annotation Integration Results.
+#' Find Motif of Peaks from RNA-seq and Peak-related Data Integrated Results.
 #'
 #' @param inte.res DEGs and peak annotation integration results.
 #' @param peak.anno.res Peak annotation results.
@@ -89,7 +89,8 @@ FindMotif <- function(inte.res, peak.anno.res = NULL, peak.motif.key, peak.mode 
       stop("Run findMotifsGenome.pl error!")
     }
     # read peak known motif
-    peak.known.motif <- data.table::fread(file = file.path(peak.out.folder, "knownResults.txt"), sep = "\t")
+    peak.known.motif <- data.table::fread(file = file.path(peak.out.folder, "knownResults.txt"), sep = "\t") %>%
+      as.data.frame()
   } else {
     peak.known.motif <- data.frame()
   }

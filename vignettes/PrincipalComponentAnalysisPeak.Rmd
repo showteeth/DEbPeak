@@ -1,0 +1,199 @@
+---
+title: "PrincipalComponentAnalysisPeak"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+Here, we will perfrom principal component analysis (PCA) on **peak-related data** (eg: `ChIP-seq`, `ATAC-seq`, `m6a-seq` et al.)
+
+<hr />
+
+## Example data
+The data used here are from [In vivo CD8+ T cell CRISPR screening reveals control by Fli1 in infection and cancer](https://doi.org/10.1016/j.cell.2021.02.019):
+
+* **RNA-seq data**: the sgCtrl vs sgFli1 RNA sequencing at D8 Cl13 p.i., the raw data are stored in [GSE149838](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE149838)
+* **ATAC-seq data**: sgCtrl vs sgFli1 ATAC sequencing at D9 Cl13 p.i., the raw data are stored in [GSE149836](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE149836)
+
+### Count matrix
+
+The raw data:
+
+```{r raw_atac_data}
+# read the raw data
+atac.counts = utils::read.table(file = "/home/songyabing/R/learn/tmp/DEbPeak/GSE149836_combUnionReadsWithLabels.txt",
+                                sep = "\t", header = T)
+head(atac.counts)
+```
+
+To perform analysis (including `Quality Control`), we need to preprocess the data (row: feature, column: sample):
+
+```{r preprocess_raw_atac_counts}
+# read the processed data, the feature is consist of peak region, gene symbol and annotated binding region.
+atac.counts.file = system.file("extdata", "RA_ATAC_count.txt", package = "DEbPeak")
+atac.counts = utils::read.table(file = atac.counts.file, sep = "\t", header = T)
+head(atac.counts)
+```
+
+<mark>If you have **raw bam files** of input/control and treatment samples and sample metadata, `DEbPeak` provides `PeakMatrix` to prepare the above count matrix.</mark>
+
+### Sample metadata
+
+And, we also need the sample metadata:
+```{r preprocess_raw_atac_meta}
+# read the processed data
+atac.meta.file = system.file("extdata", "RA_ATAC_meta.txt", package = "DEbPeak")
+atac.meta = utils::read.table(file = atac.meta.file, sep = "\t", header = T)
+head(atac.meta)
+```
+
+### Create DESeqDataSet
+With above data, we can create `DESeqDataSet` object:
+```{r atac_create_dds}
+suppressWarnings(suppressMessages(library(DESeq2)))
+# create dds
+dds.atac <- DESeq2::DESeqDataSetFromMatrix(
+  countData = atac.counts, colData = atac.meta,
+  design = ~condition
+)
+```
+
+<hr />
+
+## Load package
+
+Load `DEbPeak`:
+```{r atac_load_example}
+# library
+suppressWarnings(suppressMessages(library(DEbPeak)))
+```
+
+<hr />
+
+## PCA
+We will perform PCA with `prcomp`:
+```{r atac_pca_basic, message=FALSE, warning=FALSE, fig.align = "center"}
+# conduct PCA
+pca.res=PCA(deobj = dds.atac,transform.method = "rlog")
+# get basic plots
+basic.plots=PCABasic(pca.res,colby="condition",legend.pos = "right")
+```
+
+### Scree plot
+A Scree Plot is a simple line plot that shows the total amount of variance that can be explained by each individual PC (Y-axis shows explained variance, X-axis shows the number of PCs). It can be used to **determine the number of PCs to be explored for downstream analysis**. Here, we created a **cumulative scree plot** based on [PCAtools](https://github.com/kevinblighe/PCAtools), the red dashed line represents 90% explained variance.
+```{r atac_pca_basic_screen, message=FALSE, warning=FALSE, fig.height = 5, fig.width = 6, fig.align = "center"}
+basic.plots[["screen"]]
+```
+
+<hr />
+
+### Biplot
+Biplot contains informations from [two aspects](https://blog.bioturing.com/2018/06/18/how-to-read-pca-biplots-and-scree-plots/):
+
+* sample similarity (point)
+* how strongly each gene influences a principal component (vector)
+  - the vector will have projections on PCs, and the project values on each PC show how much weight they have on that PC. Positive values indicate that a vector/gene and a principal component are positively correlated whereas negative values indicate a negative correlation.
+  - the angle between vectors indicates how vectors/genes correlate with one another: a small angle implies positive correlation, a large one suggests negative correlation, and a 90 degree angle indicates no correlation between two vectors/genes.
+  
+The biplot is created based on [PCAtools](https://github.com/kevinblighe/PCAtools):
+```{r atac_pca_basic_biplot, message=FALSE, warning=FALSE, fig.height = 6, fig.width = 5, fig.align = "center"}
+basic.plots[["biplot"]]
+```
+
+<hr />
+
+### PC pairs plot
+The PC pairs plot (based on [PCAtools](https://github.com/kevinblighe/PCAtools)) will show sample similarity across different PC combination:
+```{r atac_pca_basic_pairs, message=FALSE, warning=FALSE, fig.height = 8, fig.width = 8, fig.align = "center"}
+basic.plots[["pairs"]]
+```
+
+<hr />
+  
+## Lodding-related analysis
+PCA loadings are the coefficients of the linear combination of the original variables from which the principal components (PCs) are constructed, which are simply the weights of the original variables. Here, lodding indicates how strongly each gene influences a principal component (Similar to vector in `Biplot`, but here we will evaluate each individual PC). Loadings range from -1 to 1, a high absolute value indicates that the gene strongly influences the component, and the sign of a loading indicates whether a whether a gene and a principal component are positively or negatively correlated. 
+
+The lodding-related analysis in `DEbPeak` contains four aspects: 
+
+* **Loading bar plot**: Visualize the genes with top n positive or negative loaddings of PCs
+* **Loading heatmap**: Log2-normalized counts of the genes with top n positive or negative loaddings of PCs across samples
+* **Export genes**: Export the genes with top n positive or negative loaddings of PCs
+* **GO enrichment**: GO enrichment on the genes with top n positive or negative loaddings of PCs
+
+### Loading bar plot
+Different from those in RNA-seq [Principal Component Analysis (RNA-seq)](https://showteeth.github.io/DEbPeak/articles/PrincipalComponentAnalysis.html), we need to use `data.type` to indicate that the data are from peak-related data, and `peak.anno.key` to specify the peak binding to which region are used for analysis, available `peak.anno.key` values are: `Promoter`, `5' UTR`, `3' UTR`, `Exon`, `Intron`, `Downstream`, `Distal Intergenic`, `All`.
+
+```{r atac_pca_loading_bar, message=FALSE, warning=FALSE,fig.height = 16, fig.width = 10, fig.align = "center"}
+# loading bar plot
+LoadingPlot(pca.res, data.type = "ATAC", peak.anno.key = "All", type = "bar")
+```
+
+<hr />
+
+### Loading heatmap
+```{r atac_pca_loading_heatmap, message=FALSE, warning=FALSE,fig.height = 16, fig.width = 10, fig.align = "center"}
+# loading heatmap
+LoadingPlot(pca.res, deobj = dds.atac, data.type = "ATAC", peak.anno.key = "All", type = "heat")
+```
+
+<hr />
+
+### Export genes
+```{r atac_pca_loading_export, message=FALSE, warning=FALSE}
+# export loading genes on PC1 and PC2 (200 positive genes and 200 negative genes) 
+loading.gene.df=ExportPCGenes(pca = pca.res, data.type = "ATAC", peak.anno.key = "All", pc = 1:2, gene.num = 200)
+head(loading.gene.df)
+```
+
+<hr />
+
+### GO enrichment
+```{r atac_loading_go, message=FALSE, warning=FALSE}
+# save results to working folder
+# LoadingGO(pca.res,gene.type="ENSEMBL",go.type="BP",padj.method="BH",save = T)
+# return list
+loading.go.results=LoadingGO(pca.res,gene.type="SYMBOL", data.type = "ATAC", peak.anno.key = "All",
+                             go.type="BP",padj.method="BH",str.width = 50,save = F)
+```
+
+<hr />
+
+#### Genes with positive loaddings
+```{r atac_loading_go_positive, warning=FALSE, fig.height = 8, fig.width = 7, fig.align = "center"}
+# positive loading genes
+positive_go_results=loading.go.results[["Positive"]][["GO"]]
+head(positive_go_results[["table"]])
+
+positive_go_results[["plot"]]
+```
+
+<hr />
+
+#### Genes with negative loaddings
+```{r atac_loading_go_negative, warning=FALSE, fig.height = 8, fig.width = 7, fig.align = "center"}
+# negative loading genes
+negative_go_results=loading.go.results[["Negative"]][["GO"]]
+head(negative_go_results[["table"]])
+
+negative_go_results[["plot"]]
+```
+
+<hr />
+
+## 3D visualization
+To visualize three PCs simultaneously, `DEbPeak` provides `PCA3D` to create 3D PCA plot:
+```{r atac_pca_3d, warning=FALSE ,fig.height = 5, fig.width = 5, fig.align = "center"}
+PCA3D(pca = pca.res, color.key = "condition", main = "3D PCA")
+```
+
+<hr />
+
+## Session info
+```{r session}
+sessionInfo()
+```
+
+<hr />

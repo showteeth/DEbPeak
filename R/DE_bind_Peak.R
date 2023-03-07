@@ -4,7 +4,7 @@
 #' @param peak.mode The source of peak results, choose from consenus (peak annotation) and diff (differential expression analysis).
 #' Default: consenus.
 #' @param peak.res Dataframe contains all peak annotation (\code{peak.mode} is consenus) or
-#' differential expression analysis results (\code{peak.mode} is diff).
+#' differential analysis results of peak-related data (\code{peak.mode} is diff).
 #' @param peak.anno.key Peak location, chosen from "Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic","All".
 #' Used when \code{peak.mode} is consenus. Default: "Promoter".
 #' @param signif Significance criterion for RNA-seq results. For DESeq2 results, can be chosen from padj, pvalue.
@@ -342,7 +342,7 @@ PlotDEbPeak <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), peak.mod
 
 #' Create Quadrant Diagram for Differential Expression Analysis of RNA-seq and Peak-related data.
 #'
-#' @param de.peak Dataframe contains integrated results of differential epression analysis of RNA-seq and Peak-related data.
+#' @param de.peak Dataframe contains integrated results of differential analysis of RNA-seq and Peak-related data.
 #' @param peak.type Peak data type, choose from ChIP, ATAC. Default: ChIP.
 #' @param point.alpha Opacity of a geom. Default: 0.6.
 #' @param point.size.vec Point size for regular(DE or non-DE) and(or) labeled points.

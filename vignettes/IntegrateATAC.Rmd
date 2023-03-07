@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 <hr />
 
 ## Example data
-The data used here contains RNA-seq and ChIP-seq datasets from [RUNX represses Pmp22 to drive neurofibromagenesis](https://www.science.org/doi/10.1126/sciadv.aau8389): 
+The data used here contains RNA-seq and ATAC-seq datasets from [RUNX represses Pmp22 to drive neurofibromagenesis](https://www.science.org/doi/10.1126/sciadv.aau8389): 
 
 * RNA-seq: two genotypes and three samples per genotype, the raw data are stored in [GSE122774](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE122774)
 * ATAC-seq: two genotypes and one sample per genotype, the raw data are stored in [GSE122776](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE122776)
@@ -111,40 +111,51 @@ debatac.plot
 <hr />
 
 ## Functional enrichment
-```{r debatac_integrate_fe}
+There are **five categories** for users to choose to perform functional enrichment: `UP`, `Peak`, `DOWN`, `DOWNbPeak`, `UPbPeak`. Here, we will use `DOWNbPeak` and `UPbPeak` as examples.
+
+### UPbPeak
+```{r debatac_integrate_fe_up}
 # functional enrichment on direct targets
-debatac.fe.results = DEbPeakFE(de.peak = debatac.res, peak.type = "ATAC", gene.type = "ENTREZID", species="Mouse",save = F)
+debatac.up.fe.results = DEbPeakFE(de.peak = debatac.res, peak.fe.key = "UPbPeak", gene.type = "ENTREZID", species="Mouse",save = F)
 ```
 
-### FE on up-regulated targets 
-```{r debatac_integrate_fe_up, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
-up.debatac.fe.results=debatac.fe.results[["UPbATAC"]][["GO"]]
-head(up.debatac.fe.results[["table"]])
-
-up.debatac.fe.results[["plot"]]
-```
-
-<hr />
-
-### FE on down-regulated targets
-```{r debatac_integrate_fe_down, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
-down.debatac.fe.results=debatac.fe.results[["DOWNbATAC"]][["GO"]]
-head(down.debatac.fe.results[["table"]])
-
-down.debatac.fe.results[["plot"]]
+The results:
+```{r debatac_integrate_fe_up_show, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
+# the result table
+head(debatac.up.fe.results[["GO"]][["table"]])
+# the result plot
+debatac.up.fe.results[["GO"]][["plot"]]
 ```
 
 <hr />
 
-## Find motif
+### DOWNbPeak
+```{r debatac_integrate_fe_down}
+# functional enrichment on direct targets
+debatac.down.fe.results = DEbPeakFE(de.peak = debatac.res, peak.fe.key = "DOWNbPeak", 
+                                    gene.type = "ENTREZID", species="Mouse",save = F)
+```
+
+The results:
+```{r debatac_integrate_fe_down_show, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
+# the result table
+head(debatac.down.fe.results[["GO"]][["table"]])
+# the result plot
+debatac.down.fe.results[["GO"]][["plot"]]
+```
+
+<hr />
+
+## Motif enrichment
 [Different from ChIP-seq which profile specific protein–DNA interactions (depends on the antibody provided), ATAC-seq can proflie global chromatin accessibility](https://link.springer.com/article/10.1186/s43556-020-00009-w). Thus, the peaks of ATAC-seq may originate from hundreds of TFs. To reveal the possible TFs involved, motif enrichment analysis is a good solution.
-```{r debatac_integrate_motif, eval = FALSE}
+
+As pointed above, there are **five categories** for users to choose to motif enrichment, we will use `UPbPeak` as example.
+```{r debatac_integrate_motif_up, eval = FALSE}
 # debatac.res: similar to debatac.res
 # this step is time consuming!
-ATAC.motif = FindMotif(inte.res = debatac.res, peak.anno.res = atac.peak.anno.df, gene.key = "SYMBOL",
-                       homer.motif.path = '~/anaconda3/bin/findMotifsGenome.pl',
-                       genome = '/path/to/genome.fa',
-                       out.folder = NULL,other.paras = '-len 8,10,12 -size -100,50 -S 25')
+ATAC.motif = FindMotif(inte.res = debchip.res, peak.anno.res = peak.anno[["df"]],
+                       peak.motif.key = "UPbPeak", peak.mode = "consenus", homer.motif.path = '~/anaconda3/bin/findMotifsGenome.pl',
+                       out.folder = "/path/to/out/folder", other.paras = "-len 8,10,12 -size -100,50 -S 25")
 ```
 
 <hr />

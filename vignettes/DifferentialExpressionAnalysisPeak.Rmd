@@ -1,0 +1,192 @@
+---
+title: "DifferentialExpressionAnalysisPeak"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+Here, we will perform differential expression analysis based on `DESeq2` and `edgeR` to get differentially accessible (DA) peaks. Similar to those in [Differential Expression Analysis (RNA-seq)](https://showteeth.github.io/DEbPeak/articles/DifferentialExpressionAnalysis.html), `DEbPeak` provides **six differents charts** to visualize these DA peaks (**VolcanoPlot**, **ScatterPlot**, **MAPlot**, **RankPlot**, **GenePlot** and **DEHeatmap**).
+
+<hr />
+
+## Example data
+The data used here are from [In vivo CD8+ T cell CRISPR screening reveals control by Fli1 in infection and cancer](https://doi.org/10.1016/j.cell.2021.02.019):
+
+* **RNA-seq data**: the sgCtrl vs sgFli1 RNA sequencing at D8 Cl13 p.i., the raw data are stored in [GSE149838](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE149838)
+* **ATAC-seq data**: sgCtrl vs sgFli1 ATAC sequencing at D9 Cl13 p.i., the raw data are stored in [GSE149836](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE149836)
+
+### Count matrix
+
+The raw data:
+
+```{r raw_atac_data}
+# read the raw data
+atac.counts = utils::read.table(file = "/home/songyabing/R/learn/tmp/DEbPeak/GSE149836_combUnionReadsWithLabels.txt",
+                                sep = "\t", header = T)
+head(atac.counts)
+```
+
+To perform analysis (including `Quality Control`), we need to preprocess the data (row: feature, column: sample):
+
+```{r preprocess_raw_atac_counts}
+# read the processed data, the feature is consist of peak region, gene symbol and annotated binding region.
+atac.counts.file = system.file("extdata", "RA_ATAC_count.txt", package = "DEbPeak")
+atac.counts = utils::read.table(file = atac.counts.file, sep = "\t", header = T)
+head(atac.counts)
+```
+
+<mark>If you have **raw bam files** of input/control and treatment samples and sample metadata, `DEbPeak` provides `PeakMatrix` to prepare the above count matrix.</mark>
+
+### Sample metadata
+
+And, we also need the sample metadata:
+```{r preprocess_raw_atac_meta}
+# read the processed data
+atac.meta.file = system.file("extdata", "RA_ATAC_meta.txt", package = "DEbPeak")
+atac.meta = utils::read.table(file = atac.meta.file, sep = "\t", header = T)
+head(atac.meta)
+```
+
+### Create DESeqDataSet
+With above data, we can create `DESeqDataSet` object:
+```{r atac_create_dds}
+suppressWarnings(suppressMessages(library(DESeq2)))
+# create dds
+dds.atac <- DESeq2::DESeqDataSetFromMatrix(
+  countData = atac.counts, colData = atac.meta,
+  design = ~condition
+)
+```
+
+<hr />
+
+## Load packages
+
+```{r atac_load_example}
+# library
+suppressWarnings(suppressMessages(library(DESeq2))) # Already loaded
+suppressWarnings(suppressMessages(library(edgeR)))
+suppressWarnings(suppressMessages(library(DEbPeak)))
+```
+
+<hr />
+
+## Differential Expression Analysis
+To increase flexibility, `DEbPeak` is compatible with both `DESeq2` and `edgeR` results. We provides standard commands to get DA peaks with both `DESeq2` and `edgeR`. 
+
+### DESeq2
+```{r atac_depeaks_deseq2, warning=FALSE}
+# set control level
+dds.atac$condition <- relevel(dds.atac$condition, ref = "WT")
+# conduct differential expressed genes analysis
+dds.atac <- DESeq(dds.atac)
+# extract results
+dds.atac.results <- results(dds.atac,contrast=c("condition",'KO','WT'))
+dds.atac.results.ordered <- dds.atac.results[order(dds.atac.results$log2FoldChange,decreasing = TRUE),]
+head(dds.atac.results.ordered)
+```
+
+<hr />
+
+### edgeR
+```{r atac_depeaks_edger, warning=FALSE}
+atac.edgeR=DGEList(counts=atac.counts, group=atac.meta$condition)
+atac.edgeR <- calcNormFactors(atac.edgeR)
+atac.edgeR$samples$group <- relevel(atac.edgeR$samples$group, ref="WT")
+design <- model.matrix(~atac.edgeR$samples$group)
+atac.edgeR <- estimateDisp(atac.edgeR, design)
+fit <- glmQLFit(atac.edgeR, design)
+qlf <- glmQLFTest(fit, coef=2)
+all.res <- topTags(qlf,n=nrow(atac.edgeR$counts))$table
+head(all.res)
+```
+
+<hr />
+
+## Visualization
+### VolcanoPlot
+```{r atac_volcanoplot,warning=FALSE ,fig.height = 6, fig.width = 5, fig.align = "center"}
+# VolcanoPlot for DESeq2
+VolcanoPlot(dds.atac.results.ordered,signif="pvalue",l2fc.threshold=0.3,label.num=2,
+            point.alpha = 0.8, label.color=c("purple","green"),tick.trans = NULL)
+
+# VolcanoPlot for edgeR
+VolcanoPlot(all.res,signif="PValue",l2fc.threshold=0.3,label.num=2,point.alpha = 0.8,
+            label.color=c("purple","green"),tick.trans = NULL)
+```
+
+<hr />
+
+### ScatterPlot
+```{r atac_ScatterPlot,warning=FALSE ,fig.height = 6, fig.width = 6, fig.align = "center"}
+# ScatterPlot for DESeq2
+ScatterPlot(deobj = dds.atac,deres = dds.atac.results.ordered,group.key = "condition",
+            ref.group = "WT",signif="pvalue",l2fc.threshold=0.3,label.num = 2,
+            point.alpha = 0.8,label.color=c("purple","green"))
+# ScatterPlot for edgeR
+ScatterPlot(deobj = atac.edgeR,deres = all.res,group.key = "condition",
+            ref.group = "WT",signif="PValue",l2fc.threshold=0.3,label.num = 2,
+            point.alpha = 0.8,label.color=c("purple","green"))
+```
+
+<hr />
+
+### MAPlot
+```{r atac_MAPlot,warning=FALSE ,fig.height = 6, fig.width = 8, fig.align = "center"}
+# MAPlot for DESeq2
+MAPlot(dds.atac.results.ordered,signif="pvalue",l2fc.threshold=0.3,label.num=2,
+       point.alpha = 0.8, label.color=c("purple","green"))
+# MAPlot for edgeR
+MAPlot(all.res,signif="PValue",l2fc.threshold=0.3,label.num=2,point.alpha = 0.8,
+       label.color=c("purple","green"))
+```
+
+<hr />
+
+### RankPlot
+```{r atac_RankPlot,warning=FALSE ,fig.height = 6, fig.width = 6, fig.align = "center"}
+# RankPlot for DESeq2
+RankPlot(dds.atac.results.ordered,signif="pvalue",l2fc.threshold=0.3,label.num=2,
+         point.alpha = 0.8, label.color=c("purple","green"))
+# RankPlot for edgeR
+RankPlot(all.res,signif="PValue",l2fc.threshold=0.3,label.num=2,point.alpha = 0.8,
+         label.color=c("purple","green"))
+```
+
+<hr />
+
+### GenePlot
+```{r atac_GenePlot,warning=FALSE ,fig.height = 6, fig.width = 6, fig.align = "center"}
+# GenePlot for DESeq2
+GenePlot(deobj = dds.atac,deres = dds.atac.results.ordered,group.key = "condition",
+         ref.group = "WT",fill.color=c("red","blue"), fill.alpha = 0.8,
+         gene.num =2,signif="pvalue",l2fc.threshold=0.3)
+# GenePlot for edgeR
+GenePlot(deobj = atac.edgeR,deres = all.res,group.key = "condition",
+         ref.group = "WT",fill.color=c("red","blue"),fill.alpha = 0.8,
+         gene.num =2,signif="PValue",l2fc.threshold=0.3)
+```
+
+<hr />
+
+### DEHeatmap
+```{r atac_DEHeatmap,warning=FALSE ,fig.height = 10, fig.width = 10, fig.align = "center"}
+# DEHeatmap for DESeq2
+DEHeatmap(deobj = dds.atac,deres = dds.atac.results.ordered,group.key = "condition",
+          ref.group = "WT", signif="pvalue",l2fc.threshold=0.3)
+# DEHeatmap for edgeR
+DEHeatmap(deobj = atac.edgeR,deres = all.res,group.key = "condition",
+          ref.group = "WT", signif="PValue",l2fc.threshold=0.3)
+```
+
+<hr />
+
+## Session info
+```{r session}
+sessionInfo()
+```
+
+<hr />

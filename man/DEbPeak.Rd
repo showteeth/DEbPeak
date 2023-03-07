@@ -25,7 +25,7 @@ DEbPeak(
 \item{de.res}{Data frame contains all genes of differential expression analysis.}
 
 \item{peak.res}{Dataframe contains all peak annotation (\code{peak.mode} is consenus) or
-differential expression analysis results (\code{peak.mode} is diff).}
+differential analysis results of peak-related data (\code{peak.mode} is diff).}
 
 \item{peak.mode}{The source of peak results, choose from consenus (peak annotation) and diff (differential expression analysis).
 Default: consenus.}

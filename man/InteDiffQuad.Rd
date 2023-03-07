@@ -21,7 +21,7 @@ InteDiffQuad(
 )
 }
 \arguments{
-\item{de.peak}{Dataframe contains integrated results of differential epression analysis of RNA-seq and Peak-related data.}
+\item{de.peak}{Dataframe contains integrated results of differential analysis of RNA-seq and Peak-related data.}
 
 \item{peak.type}{Peak data type, choose from ChIP, ATAC. Default: ChIP.}
 

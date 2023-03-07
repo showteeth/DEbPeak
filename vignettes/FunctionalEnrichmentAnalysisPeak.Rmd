@@ -1,0 +1,192 @@
+---
+title: "FunctionalEnrichmentAnalysisPeak"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+After DE analysis, functional enrichment analysis is often performed to interpret the results. 
+
+`DEbPeak` provides two kinds of functional enrichment analysis based on `clusterProfiler` for peak-related data:
+
+* Gene ontology (GO) analysis with DA peak binding genes
+* Kyoto Encyclopedia of Genes and Genomes (KEGG) pathway enrichment analysis with DA peak binding genes
+
+<mark>Gene Set Enrichment Analysis (GSEA) is not available for peak-related data.</mark>
+
+<hr />
+
+## Example data
+The data used here are from [In vivo CD8+ T cell CRISPR screening reveals control by Fli1 in infection and cancer](https://doi.org/10.1016/j.cell.2021.02.019):
+
+* **RNA-seq data**: the sgCtrl vs sgFli1 RNA sequencing at D8 Cl13 p.i., the raw data are stored in [GSE149838](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE149838)
+* **ATAC-seq data**: sgCtrl vs sgFli1 ATAC sequencing at D9 Cl13 p.i., the raw data are stored in [GSE149836](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE149836)
+
+### Count matrix
+
+The raw data:
+
+```{r raw_atac_data}
+# read the raw data
+atac.counts = utils::read.table(file = "/home/songyabing/R/learn/tmp/DEbPeak/GSE149836_combUnionReadsWithLabels.txt",
+                                sep = "\t", header = T)
+head(atac.counts)
+```
+
+To perform analysis (including `Quality Control`), we need to preprocess the data (row: feature, column: sample):
+
+```{r preprocess_raw_atac_counts}
+# read the processed data, the feature is consist of peak region, gene symbol and annotated binding region.
+atac.counts.file = system.file("extdata", "RA_ATAC_count.txt", package = "DEbPeak")
+atac.counts = utils::read.table(file = atac.counts.file, sep = "\t", header = T)
+head(atac.counts)
+```
+
+<mark>If you have **raw bam files** of input/control and treatment samples and sample metadata, `DEbPeak` provides `PeakMatrix` to prepare the above count matrix.</mark>
+
+### Sample metadata
+
+And, we also need the sample metadata:
+```{r preprocess_raw_atac_meta}
+# read the processed data
+atac.meta.file = system.file("extdata", "RA_ATAC_meta.txt", package = "DEbPeak")
+atac.meta = utils::read.table(file = atac.meta.file, sep = "\t", header = T)
+head(atac.meta)
+```
+
+### Create DESeqDataSet
+With above data, we can create `DESeqDataSet` object:
+```{r atac_create_dds}
+suppressWarnings(suppressMessages(library(DESeq2)))
+# create dds
+dds.atac <- DESeq2::DESeqDataSetFromMatrix(
+  countData = atac.counts, colData = atac.meta,
+  design = ~condition
+)
+```
+
+<hr />
+
+## Load packages
+
+```{r atac_load_example}
+# library
+suppressWarnings(suppressMessages(library(DESeq2))) # Already loaded
+suppressWarnings(suppressMessages(library(DEbPeak)))
+```
+
+<hr />
+
+## Differential Expression Analysis
+We will use `DESeq2` as example:
+```{r atac_depeaks_deseq2, warning=FALSE}
+# set control level
+dds.atac$condition <- relevel(dds.atac$condition, ref = "WT")
+# conduct differential expressed genes analysis
+dds.atac <- DESeq(dds.atac)
+# extract results
+dds.atac.results <- results(dds.atac,contrast=c("condition",'KO','WT'))
+dds.atac.results.ordered <- dds.atac.results[order(dds.atac.results$log2FoldChange,decreasing = TRUE),]
+head(dds.atac.results.ordered)
+```
+
+<hr />
+
+## GO enrichment
+Different from those in RNA-seq [Functional Enrichment Analysis (RNA-seq)](https://showteeth.github.io/DEbPeak/articles/FunctionalEnrichmentAnalysis.html), we need to use `data.type` to indicate that the data are from peak-related data, and `peak.anno.key` to specify the peak binding to which region are used for analysis, available `peak.anno.key` values are: `Promoter`, `5' UTR`, `3' UTR`, `Exon`, `Intron`, `Downstream`, `Distal Intergenic`, `All`.
+
+```{r atac_go, message=FALSE, warning=FALSE}
+# save results to working directory
+# ConductFE(deres = dds.atac.results.ordered, data.type = "ATAC", peak.anno.key = "All", 
+#           gene.type = "SYMBOL", signif = "padj", l2fc.threshold = 0, enrich.type = "GO")
+# return list of results
+all.go.results=ConductFE(deres = dds.atac.results.ordered, data.type = "ATAC", peak.anno.key = "All", 
+                         gene.type = "SYMBOL", signif = "padj", l2fc.threshold = 0,enrich.type = "GO",str.width = 50, save = F)
+```
+
+### Up regulated genes
+#### Overview
+```{r atac_go_up_overview, warning=FALSE}
+up.go.res=all.go.results[["UP"]][["GO"]]
+up.go.res.table=up.go.res[["table"]]
+head(up.go.res.table)
+```
+
+<hr />
+
+#### Visualization
+```{r atac_go_up_plot,fig.height = 12, fig.width = 8, fig.align = "center", warning=FALSE}
+up.go.res[["plot"]]
+```
+
+<hr />
+
+### Down regulated genes
+#### Overview
+```{r atac_go_down_overview, warning=FALSE}
+down.go.res=all.go.results[["DOWN"]][["GO"]]
+down.go.res.table = down.go.res[["table"]]
+head(down.go.res.table)
+```
+
+<hr />
+
+#### Visualization
+```{r atac_go_down_plot,fig.height = 12, fig.width = 8, fig.align = "center", warning=FALSE}
+down.go.res[["plot"]]
+```
+
+<hr />
+
+## KEGG enrichment
+```{r atac_kegg, message=FALSE, warning=FALSE}
+# save results to working directory
+# ConductFE(deres = dds.atac.results.ordered, data.type = "ATAC", peak.anno.key = "All", 
+#           gene.type = "SYMBOL", signif = "padj", l2fc.threshold = 0,enrich.type = "KEGG")
+all.kegg.results=ConductFE(deres = dds.atac.results.ordered, data.type = "ATAC", peak.anno.key = "All", 
+                           gene.type = "SYMBOL", signif = "padj", l2fc.threshold = 0,enrich.type = "KEGG", str.width = 50, save = F)
+```
+
+### Up regulated genes
+#### Overview
+```{r atac_kegg_up_overview, warning=FALSE}
+up.kegg.res=all.kegg.results[["UP"]][["KEGG"]]
+up.kegg.res.table=up.kegg.res[["table"]]
+head(up.kegg.res.table)
+```
+
+<hr />
+
+#### Visualization
+```{r atac_kegg_up_plot,fig.height = 6, fig.width = 8, fig.align = "center", warning=FALSE}
+up.kegg.res[["plot"]]
+```
+
+<hr />
+
+### Down regulated genes
+#### Overview
+```{r atac_kegg_down_overview, warning=FALSE}
+down.kegg.res=all.kegg.results[["DOWN"]][["KEGG"]]
+down.kegg.res.table=down.kegg.res[["table"]]
+head(down.kegg.res.table)
+```
+
+<hr />
+
+#### Visualization
+```{r atac_kegg_down_plot,fig.height = 6, fig.width = 8, fig.align = "center", warning=FALSE}
+down.kegg.res[["plot"]]
+```
+
+<hr />
+
+## Session info
+```{r session}
+sessionInfo()
+```
+
+<hr />

@@ -88,7 +88,6 @@ The above pie plot is not based on `ggplot2`, here we provide function to create
 PeakAnnoPie(peak.anno$anno.obj)
 ```
 
-
 <hr />
 
 ## Integrate ChIP-seq and RNA-seq
@@ -111,29 +110,39 @@ debchip.plot
 <hr />
 
 ## Functional enrichment
-```{r debchip_integrate_fe}
+There are **five categories** for users to choose to perform functional enrichment: `UP`, `Peak`, `DOWN`, `DOWNbPeak`, `UPbPeak`. Here, we will use `DOWNbPeak` and `UPbPeak` as examples.
+
+### UPbPeak
+```{r debchip_integrate_fe_up}
 # functional enrichment on direct targets
-debchip.fe.results = DEbPeakFE(de.peak = debchip.res, peak.type = "ChIP", gene.type = "ENTREZID", species="Mouse",save = F)
+debchip.up.fe.results = DEbPeakFE(de.peak = debchip.res, peak.fe.key = "UPbPeak", 
+                                  gene.type = "ENTREZID", species="Mouse",save = F)
 ```
 
-### FE on up-regulated targets 
-```{r debchip_integrate_fe_up, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
-up.debchip.fe.results=debchip.fe.results[["UPbChIP"]][["GO"]]
-head(up.debchip.fe.results[["table"]])
-
-up.debchip.fe.results[["plot"]]
+The results:
+```{r debchip_integrate_fe_up_show, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
+# the result table
+head(debchip.up.fe.results[["GO"]][["table"]])
+# the result plot
+debchip.up.fe.results[["GO"]][["plot"]]
 ```
 
 <hr />
 
-### FE on down-regulated targets
-```{r debchip_integrate_fe_down, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
-down.debchip.fe.results=debchip.fe.results[["DOWNbChIP"]][["GO"]]
-head(down.debchip.fe.results[["table"]])
-
-down.debchip.fe.results[["plot"]]
+### DOWNbPeak
+```{r debchip_integrate_fe_down}
+# functional enrichment on direct targets
+debchip.down.fe.results = DEbPeakFE(de.peak = debchip.res, peak.fe.key = "DOWNbPeak", 
+                                    gene.type = "ENTREZID", species="Mouse",save = F)
 ```
 
+The results:
+```{r debchip_integrate_fe_down_show, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
+# the result table
+head(debchip.down.fe.results[["GO"]][["table"]])
+# the result plot
+debchip.down.fe.results[["GO"]][["plot"]]
+```
 <hr />
 
 ## Save results

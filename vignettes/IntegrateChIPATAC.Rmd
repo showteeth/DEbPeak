@@ -7,8 +7,6 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
-
 ## Introduction
 In previous vignettes, we have introduced intregrating RNA-seq with ATAC-seq and ChIP-seq separately. But we should keep in mind that [ATAC-seq and ChIP-seq are highly consistent and complementary](https://doi.org/10.1093/bib/bbac061). [Most TFs require open chromatin for binding to DNA recognition sites, ATAC-seq peaks generally overlap with TF ChIP-seq peaks but are often broader. Thus, TF ChIP-seq and ATAC-seq can mutually validate the quality and reliability of each other within the same experimental system](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-020-1929-3).
 
@@ -60,27 +58,37 @@ debpeak.plot
 <hr />
 
 ## Functional enrichment
-```{r debpeak_integrate_fe}
+There are **five categories** for users to choose to perform functional enrichment: `ChIP`, `ATAC`, `UP`, `DOWN`, `ChIPbATAC`, `UPbChIP`, `DOWNbChIP`, `UPbPeak`, `DOWNbPeak`, `UPbATAC`, `DOWNbATAC`. Here, we will use `DOWNbPeak` and `UPbPeak` as examples.
+
+### UPbPeak
+```{r debpeak_integrate_fe_up}
 # functional enrichment on direct targets
-debpeak.fe.results = DEbPeakFE(de.peak = debpeak.res, peak.type = "Peak", gene.type = "ENTREZID", species="Mouse",save = F)
+debpeak.up.fe.results = DEbPeakFE(de.peak = debpeak.res, peak.fe.key = "UPbPeak", gene.type = "ENTREZID", species="Mouse",save = F)
 ```
 
-### FE on up-regulated targets 
-```{r debpeak_integrate_fe_up, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
-up.debpeak.fe.results=debpeak.fe.results[["UPbPeak"]][["GO"]]
-head(up.debpeak.fe.results[["table"]])
-
-up.debpeak.fe.results[["plot"]]
+The results:
+```{r debpeak_integrate_fe_up_show, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
+# the result table
+head(debpeak.up.fe.results[["GO"]][["table"]])
+# the result plot
+debpeak.up.fe.results[["GO"]][["plot"]]
 ```
 
 <hr />
 
-### FE on down-regulated targets
-```{r debpeak_integrate_fe_down, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
-down.debpeak.fe.results=debpeak.fe.results[["DOWNbPeak"]][["GO"]]
-head(down.debpeak.fe.results[["table"]])
+### DOWNbPeak
+```{r debpeak_integrate_fe_down}
+# functional enrichment on direct targets
+debpeak.down.fe.results = DEbPeakFE(de.peak = debpeak.res, peak.fe.key = "DOWNbPeak", 
+                                    gene.type = "ENTREZID", species="Mouse",save = F)
+```
 
-down.debpeak.fe.results[["plot"]]
+The results:
+```{r debpeak_integrate_fe_down_show, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
+# the result table
+head(debpeak.down.fe.results[["GO"]][["table"]])
+# the result plot
+debpeak.down.fe.results[["GO"]][["plot"]]
 ```
 
 <hr />

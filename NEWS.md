@@ -1,3 +1,10 @@
+# DEbPeak 0.9.0
+## New features
+* Added `MotifEnrich` to support motif enrichment for differentially accessible/binding peaks.
+* Updated documents.
+
+-------------
+
 # DEbPeak 0.8.0
 ## New features
 * Changed `DEbPeak`, `PlotDEbPeak`, `DEbPeakFE`, `FindMotif` to integrate differential expression analysis results of RNA-seq and ChIP-seq/ATAC-seq.

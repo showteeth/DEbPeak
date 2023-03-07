@@ -18,17 +18,27 @@ navbar:
       menu:
       - text: Quality Control
         href: articles/QualityControl.html
-      - text: Principal Component Analysis
+      - text: Principal Component Analysis (RNA-seq)
         href: articles/PrincipalComponentAnalysis.html
-      - text: Differential Expression Analysis
+      - text: Principal Component Analysis (Peak-related)
+        href: articles/PrincipalComponentAnalysisPeak.html
+      - text: Differential Expression Analysis (RNA-seq)
         href: articles/DifferentialExpressionAnalysis.html
-      - text: Functional Enrichment Analysis
+      - text: Differential Expression Analysis (Peak-related)
+        href: articles/DifferentialExpressionAnalysisPeak.html
+      - text: Functional Enrichment Analysis (RNA-seq)
         href: articles/FunctionalEnrichmentAnalysis.html
-      - text: Integrate RNA-seq and ChIP-seq
+      - text: Functional Enrichment Analysis (Peak-related)
+        href: articles/FunctionalEnrichmentAnalysisPeak.html
+      - text: Motif Enrichment (Peak-related)
+        href: articles/MotifEnrichment.html
+      - text: Integrate RNA-seq with ChIP-seq (intersection)
         href: articles/IntegrateChIP.html
-      - text: Integrate RNA-seq and ATAC-seq
+      - text: Integrate RNA-seq with ATAC-seq (intersection)
         href: articles/IntegrateATAC.html
-      - text: Integrate RNA-seq ChIP-seq and ATAC-seq
+      - text: Integrate RNA-seq with ATAC-seq (differential expression)
+        href: articles/IntegrateATACDE.html
+      - text: Integrate RNA-seq with ChIP-seq and ATAC-seq
         href: articles/IntegrateChIPATAC.html
       - text: Utils
         href: articles/Utils.html
