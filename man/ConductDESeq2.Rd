@@ -2,7 +2,7 @@
 % Please edit documentation in R/differential_expression_analysis.R
 \name{ConductDESeq2}
 \alias{ConductDESeq2}
-\title{Conduct Differential Axpression Analysis with DESeq2.}
+\title{Conduct Differential Analysis with DESeq2.}
 \usage{
 ConductDESeq2(
   counts.folder,
@@ -134,9 +134,9 @@ ConductDESeq2(
 
 \item{signif}{Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.}
 
-\item{signif.threshold}{Significance threshold to get differentially expressed genes. Default: 0.05.}
+\item{signif.threshold}{Significance threshold to get differentially expressed genes or accessible/binding peaks. Default: 0.05.}
 
-\item{l2fc.threshold}{Log2 fold change threshold to get differentially expressed genes. Default: 1.}
+\item{l2fc.threshold}{Log2 fold change threshold to get differentially expressed genes or accessible/binding peaks. Default: 1.}
 
 \item{gene.map}{Use data frame instead of \code{org.db} to conduct gene id conversion, first column should be Gene. Default: NULL.}
 
@@ -168,7 +168,7 @@ the second column should not be SYMBOL, ENSEMBL, ENTREZID.}
 \item{gsea.pvalue}{Cutoff value of pvalue. Default: 0.05.}
 }
 \description{
-Conduct Differential Axpression Analysis with DESeq2.
+Conduct Differential Analysis with DESeq2.
 }
 \examples{
 # library(DESeq2)

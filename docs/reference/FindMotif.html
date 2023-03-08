@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Find Motif of Peaks from DEGs and Peak Annotation Integration Results. — FindMotif • DEbPeak</title>
+<title>Find Motif of Peaks from RNA-seq and Peak-related Data Integrated Results. — FindMotif • DEbPeak</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Find Motif of Peaks from DEGs and Peak Annotation Integration Results. — FindMotif" />
-<meta property="og:description" content="Find Motif of Peaks from DEGs and Peak Annotation Integration Results." />
+<meta property="og:title" content="Find Motif of Peaks from RNA-seq and Peak-related Data Integrated Results. — FindMotif" />
+<meta property="og:description" content="Find Motif of Peaks from RNA-seq and Peak-related Data Integrated Results." />
 
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DEbPeak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0</span>
       </span>
     </div>
 
@@ -98,22 +98,37 @@
       <a href="../articles/QualityControl.html">Quality Control</a>
     </li>
     <li>
-      <a href="../articles/PrincipalComponentAnalysis.html">Principal Component Analysis</a>
+      <a href="../articles/PrincipalComponentAnalysis.html">Principal Component Analysis (RNA-seq)</a>
     </li>
     <li>
-      <a href="../articles/DifferentialExpressionAnalysis.html">Differential Expression Analysis</a>
+      <a href="../articles/PrincipalComponentAnalysisPeak.html">Principal Component Analysis (Peak-related)</a>
     </li>
     <li>
-      <a href="../articles/FunctionalEnrichmentAnalysis.html">Functional Enrichment Analysis</a>
+      <a href="../articles/DifferentialExpressionAnalysis.html">Differential Expression Analysis (RNA-seq)</a>
     </li>
     <li>
-      <a href="../articles/IntegrateChIP.html">Integrate RNA-seq and ChIP-seq</a>
+      <a href="../articles/DifferentialExpressionAnalysisPeak.html">Differential Expression Analysis (Peak-related)</a>
     </li>
     <li>
-      <a href="../articles/IntegrateATAC.html">Integrate RNA-seq and ATAC-seq</a>
+      <a href="../articles/FunctionalEnrichmentAnalysis.html">Functional Enrichment Analysis (RNA-seq)</a>
     </li>
     <li>
-      <a href="../articles/IntegrateChIPATAC.html">Integrate RNA-seq ChIP-seq and ATAC-seq</a>
+      <a href="../articles/FunctionalEnrichmentAnalysisPeak.html">Functional Enrichment Analysis (Peak-related)</a>
+    </li>
+    <li>
+      <a href="../articles/MotifEnrichment.html">Motif Enrichment (Peak-related)</a>
+    </li>
+    <li>
+      <a href="../articles/IntegrateChIP.html">Integrate RNA-seq with ChIP-seq (consensus peak)</a>
+    </li>
+    <li>
+      <a href="../articles/IntegrateATAC.html">Integrate RNA-seq with ATAC-seq (consensus peak)</a>
+    </li>
+    <li>
+      <a href="../articles/IntegrateATACDE.html">Integrate RNA-seq with ATAC-seq (differential analysis)</a>
+    </li>
+    <li>
+      <a href="../articles/IntegrateChIPATAC.html">Integrate RNA-seq with ChIP-seq and ATAC-seq</a>
     </li>
     <li>
       <a href="../articles/Utils.html">Utils</a>
@@ -147,18 +162,20 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Find Motif of Peaks from DEGs and Peak Annotation Integration Results.</h1>
+    <h1>Find Motif of Peaks from RNA-seq and Peak-related Data Integrated Results.</h1>
     
     <div class="hidden name"><code>FindMotif.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Find Motif of Peaks from DEGs and Peak Annotation Integration Results.</p>
+    <p>Find Motif of Peaks from RNA-seq and Peak-related Data Integrated Results.</p>
     </div>
 
     <pre class="usage"><span class='fu'>FindMotif</span><span class='op'>(</span>
   <span class='va'>inte.res</span>,
-  <span class='va'>peak.anno.res</span>,
+  peak.anno.res <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>peak.motif.key</span>,
+  peak.mode <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"consenus"</span>, <span class='st'>"diff"</span><span class='op'>)</span>,
   gene.key <span class='op'>=</span> <span class='st'>"geneId"</span>,
   homer.motif.path <span class='op'>=</span> <span class='cn'>NULL</span>,
   genome <span class='op'>=</span> <span class='st'>"mm10"</span>,
@@ -176,6 +193,10 @@
     <tr>
       <th>peak.anno.res</th>
       <td><p>Peak annotation results.</p></td>
+    </tr>
+    <tr>
+      <th>peak.motif.key</th>
+      <td><p>The key type of integrated results ("Type" column of <code>de.peak</code>) to find motif.</p></td>
     </tr>
     <tr>
       <th>gene.key</th>

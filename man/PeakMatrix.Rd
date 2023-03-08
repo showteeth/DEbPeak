@@ -2,7 +2,7 @@
 % Please edit documentation in R/Prepare_peak.R
 \name{PeakMatrix}
 \alias{PeakMatrix}
-\title{Prepare Count Matrix and Sample Metadata for Peak data (ChIP-seq/ATAC-seq).}
+\title{Prepare Count Matrix and Sample Metadata for Peak-related data.}
 \usage{
 PeakMatrix(
   meta.file,
@@ -66,7 +66,7 @@ to generate count matrix and peak files. Default: "UCSC".}
 A dataframe contains count matrix, peak annotation and sample metadata (if provided \code{used.cols}).
 }
 \description{
-Prepare Count Matrix and Sample Metadata for Peak data (ChIP-seq/ATAC-seq).
+Prepare Count Matrix and Sample Metadata for Peak-related data.
 }
 \examples{
 # library(DEbPeak)

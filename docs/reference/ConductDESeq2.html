@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Conduct Differential Axpression Analysis with DESeq2. — ConductDESeq2 • DEbPeak</title>
+<title>Conduct Differential Analysis with DESeq2. — ConductDESeq2 • DEbPeak</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Conduct Differential Axpression Analysis with DESeq2. — ConductDESeq2" />
-<meta property="og:description" content="Conduct Differential Axpression Analysis with DESeq2." />
+<meta property="og:title" content="Conduct Differential Analysis with DESeq2. — ConductDESeq2" />
+<meta property="og:description" content="Conduct Differential Analysis with DESeq2." />
 
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DEbPeak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0</span>
       </span>
     </div>
 
@@ -98,22 +98,37 @@
       <a href="../articles/QualityControl.html">Quality Control</a>
     </li>
     <li>
-      <a href="../articles/PrincipalComponentAnalysis.html">Principal Component Analysis</a>
+      <a href="../articles/PrincipalComponentAnalysis.html">Principal Component Analysis (RNA-seq)</a>
     </li>
     <li>
-      <a href="../articles/DifferentialExpressionAnalysis.html">Differential Expression Analysis</a>
+      <a href="../articles/PrincipalComponentAnalysisPeak.html">Principal Component Analysis (Peak-related)</a>
     </li>
     <li>
-      <a href="../articles/FunctionalEnrichmentAnalysis.html">Functional Enrichment Analysis</a>
+      <a href="../articles/DifferentialExpressionAnalysis.html">Differential Expression Analysis (RNA-seq)</a>
     </li>
     <li>
-      <a href="../articles/IntegrateChIP.html">Integrate RNA-seq and ChIP-seq</a>
+      <a href="../articles/DifferentialExpressionAnalysisPeak.html">Differential Expression Analysis (Peak-related)</a>
     </li>
     <li>
-      <a href="../articles/IntegrateATAC.html">Integrate RNA-seq and ATAC-seq</a>
+      <a href="../articles/FunctionalEnrichmentAnalysis.html">Functional Enrichment Analysis (RNA-seq)</a>
     </li>
     <li>
-      <a href="../articles/IntegrateChIPATAC.html">Integrate RNA-seq ChIP-seq and ATAC-seq</a>
+      <a href="../articles/FunctionalEnrichmentAnalysisPeak.html">Functional Enrichment Analysis (Peak-related)</a>
+    </li>
+    <li>
+      <a href="../articles/MotifEnrichment.html">Motif Enrichment (Peak-related)</a>
+    </li>
+    <li>
+      <a href="../articles/IntegrateChIP.html">Integrate RNA-seq with ChIP-seq (consensus peak)</a>
+    </li>
+    <li>
+      <a href="../articles/IntegrateATAC.html">Integrate RNA-seq with ATAC-seq (consensus peak)</a>
+    </li>
+    <li>
+      <a href="../articles/IntegrateATACDE.html">Integrate RNA-seq with ATAC-seq (differential analysis)</a>
+    </li>
+    <li>
+      <a href="../articles/IntegrateChIPATAC.html">Integrate RNA-seq with ChIP-seq and ATAC-seq</a>
     </li>
     <li>
       <a href="../articles/Utils.html">Utils</a>
@@ -147,13 +162,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Conduct Differential Axpression Analysis with DESeq2.</h1>
+    <h1>Conduct Differential Analysis with DESeq2.</h1>
     
     <div class="hidden name"><code>ConductDESeq2.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Conduct Differential Axpression Analysis with DESeq2.</p>
+    <p>Conduct Differential Analysis with DESeq2.</p>
     </div>
 
     <pre class="usage"><span class='fu'>ConductDESeq2</span><span class='op'>(</span>
@@ -165,6 +180,9 @@
   min.count <span class='op'>=</span> <span class='fl'>10</span>,
   ref.group <span class='op'>=</span> <span class='cn'>NULL</span>,
   out.folder <span class='op'>=</span> <span class='cn'>NULL</span>,
+  data.type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"RNA"</span>, <span class='st'>"ChIP"</span>, <span class='st'>"ATAC"</span><span class='op'>)</span>,
+  peak.anno.key <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Promoter"</span>, <span class='st'>"5' UTR"</span>, <span class='st'>"3' UTR"</span>, <span class='st'>"Exon"</span>, <span class='st'>"Intron"</span>, <span class='st'>"Downstream"</span>,
+    <span class='st'>"Distal Intergenic"</span>, <span class='st'>"All"</span><span class='op'>)</span>,
   qc.ndepth <span class='op'>=</span> <span class='fl'>10</span>,
   transform.method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"rlog"</span>, <span class='st'>"vst"</span>, <span class='st'>"ntd"</span><span class='op'>)</span>,
   var.genes <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -244,6 +262,14 @@
     <tr>
       <th>out.folder</th>
       <td><p>Folder to save enrichment results. Default: wording directory.</p></td>
+    </tr>
+    <tr>
+      <th>data.type</th>
+      <td><p>Input data type, choose from RNA, ChIP, ATAC. Default: RNA.</p></td>
+    </tr>
+    <tr>
+      <th>peak.anno.key</th>
+      <td><p>Peak location, chosen from "Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic","All". Default: "Promoter".</p></td>
     </tr>
     <tr>
       <th>qc.ndepth</th>
@@ -351,11 +377,11 @@
     </tr>
     <tr>
       <th>signif.threshold</th>
-      <td><p>Significance threshold to get differentially expressed genes. Default: 0.05.</p></td>
+      <td><p>Significance threshold to get differentially expressed genes or accessible/binding peaks. Default: 0.05.</p></td>
     </tr>
     <tr>
       <th>l2fc.threshold</th>
-      <td><p>Log2 fold change threshold to get differentially expressed genes. Default: 1.</p></td>
+      <td><p>Log2 fold change threshold to get differentially expressed genes or accessible/binding peaks. Default: 1.</p></td>
     </tr>
     <tr>
       <th>gene.map</th>
@@ -422,7 +448,7 @@ the second column should not be SYMBOL, ENSEMBL, ENTREZID.</p></td>
 <span class='co'># library(DEbPeak)</span>
 <span class='co'># count.file &lt;- system.file("extdata", "snon_count.txt", package = "DEbPeak")</span>
 <span class='co'># meta.file &lt;- system.file("extdata", "snon_meta.txt", package = "DEbPeak")</span>
-<span class='co'># gmt.file &lt;- system.file("extdata", "c5.go.cc.v7.5.1.entrez.gmt", package = "DEbPeak")</span>
+<span class='co'># gmt.file &lt;- system.file("extdata", "m5.go.bp.v2022.1.Mm.entrez.gmt", package = "DEbPeak")</span>
 <span class='co'># ConductDESeq2(count.matrix.file = count.file, meta.file = meta.file, group.key = "condition",</span>
 <span class='co'>#               count.type = "htseq-count", ref.group = "WT", signif = "pvalue", l2fc.threshold = 0.3, gmt.file = gmt.file)</span>
 </div></pre>

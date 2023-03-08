@@ -2,7 +2,7 @@
 % Please edit documentation in R/DE_visualization.R
 \name{DEHeatmap}
 \alias{DEHeatmap}
-\title{Heatmap for Differentially Expressed Genes.}
+\title{Heatmap for Differential Analysis Results.}
 \usage{
 DEHeatmap(
   deobj,
@@ -27,7 +27,7 @@ DEHeatmap(
 \arguments{
 \item{deobj}{Object created by DESeq2 or edgeR.}
 
-\item{deres}{Data frame contains all genes.}
+\item{deres}{Data frame contains all genes/peaks.}
 
 \item{group.key}{Sample group information. When set NULL, select first column of metadata. Default: NULL.}
 
@@ -42,9 +42,9 @@ the second column should not be in \code{deres}.}
 
 \item{signif}{Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.}
 
-\item{signif.threshold}{Significance threshold to get differentially expressed genes. Default: 0.05.}
+\item{signif.threshold}{Significance threshold to get differentially expressed genes or accessible/binding peaks. Default: 0.05.}
 
-\item{l2fc.threshold}{Log2 fold change threshold to get differentially expressed genes. Default: 1.}
+\item{l2fc.threshold}{Log2 fold change threshold to get differentially expressed genes or accessible/binding peaks. Default: 1.}
 
 \item{exp.range}{Z-score range to plot. Default: c(-2,2).}
 
@@ -64,7 +64,7 @@ the second column should not be in \code{deres}.}
 A \code{\link{Heatmap-class}}.
 }
 \description{
-Heatmap for Differentially Expressed Genes.
+Heatmap for Differential Analysis Results.
 }
 \examples{
 library(DESeq2)

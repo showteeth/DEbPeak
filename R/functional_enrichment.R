@@ -371,8 +371,8 @@ SingleFE <- function(genes, out.folder, regulation, gene.type = c("ENSEMBL", "EN
 #' @param data.type Input data type, choose from RNA, ChIP, ATAC. Default: RNA.
 #' @param peak.anno.key Peak location, chosen from "Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic","All". Default: "Promoter".
 #' @param signif Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.
-#' @param signif.threshold Significance threshold to get differentially expressed genes. Default: 0.05.
-#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes. Default: 1.
+#' @param signif.threshold Significance threshold to get differentially expressed genes or accessible/binding peaks. Default: 0.05.
+#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes or accessible/binding peaks. Default: 1.
 #' @param gene.key Column name in \code{deres} to conduct analysis. Default: NULL (use rownames of \code{deres}).
 #' @param gene.type Gene name type. Chosen from ENSEMBL, ENTREZID,SYMBOL. Default: ENSEMBL.
 #' @param org.db Organism database. Default: org.Mm.eg.db.

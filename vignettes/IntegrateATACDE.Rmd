@@ -22,6 +22,15 @@ The data used here are from [In vivo CD8+ T cell CRISPR screening reveals contro
 
 <hr />
 
+## Load packages
+
+```{r motif_load_example}
+# library
+suppressWarnings(suppressMessages(library(DEbPeak)))
+```
+
+<hr />
+
 ## Differential Expression Analysis 
 To simplify the steps of obtaining differential expression analysis results, `DEbPeak` provides `ConductDESeq2` to perfrom all steps of differential expression analysis, including **quality control**, **principal component analysis**, **differential expression analysis** and **functional enrichment analysis**.
 
@@ -40,6 +49,12 @@ ConductDESeq2(count.matrix.file = peak.matrix.file, meta.file = peak.meta.file, 
 The structure of result directory:
 ```{bash debatac_atac_da_peak_struc}
 tree /home/songyabing/R/learn/tmp/DEbPeak/ATACDE
+```
+
+Load the data:
+```{r debatac_atac_da_peak_data}
+dds.peak.results.ordered = read.csv( "/home/songyabing/R/learn/tmp/DEbPeak/ATACDE/DA/Condition_KO_WT_all.csv", row.names = 1)
+head(dds.peak.results.ordered)
 ```
 
 <hr />

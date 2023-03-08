@@ -45,9 +45,9 @@ For edgeR results, can be chosen from FDR, PValue. Default: padj.}
 \item{peak.signif}{Significance criterion for peak-associated results. For DESeq2 results, can be chosen from padj, pvalue.
 For edgeR results, can be chosen from FDR, PValue. Default: padj.}
 
-\item{peak.signif.threshold}{Significance threshold for peak-associated results to get differentially expressed genes. Default: 0.05.}
+\item{peak.signif.threshold}{Significance threshold for peak-associated results to get differentially accessible/binding peaks. Default: 0.05.}
 
-\item{peak.l2fc.threshold}{Log2 fold change threshold for peak-associated results to get differentially expressed genes. Default: 1.}
+\item{peak.l2fc.threshold}{Log2 fold change threshold for peak-associated results to get differentially accessible/binding peaks. Default: 1.}
 
 \item{merge.key}{The columns used for merging, chosen from geneId (ENTREZID), ENSEMBL, SYMBOL. Default: geneId.}
 

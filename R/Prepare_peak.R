@@ -1,4 +1,4 @@
-#' Prepare Count Matrix and Sample Metadata for Peak data (ChIP-seq/ATAC-seq).
+#' Prepare Count Matrix and Sample Metadata for Peak-related data.
 #'
 #' @param meta.file Sample metadata contains peak related information (eg: sample, peakPath, bamPath, condition).
 #' @param min.overlap Only include peaks in at least this many peaksets in the main binding matrix. Default: 2.

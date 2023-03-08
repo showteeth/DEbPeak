@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DEbPeak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0</span>
       </span>
     </div>
 
@@ -97,22 +97,37 @@
       <a href="../articles/QualityControl.html">Quality Control</a>
     </li>
     <li>
-      <a href="../articles/PrincipalComponentAnalysis.html">Principal Component Analysis</a>
+      <a href="../articles/PrincipalComponentAnalysis.html">Principal Component Analysis (RNA-seq)</a>
     </li>
     <li>
-      <a href="../articles/DifferentialExpressionAnalysis.html">Differential Expression Analysis</a>
+      <a href="../articles/PrincipalComponentAnalysisPeak.html">Principal Component Analysis (Peak-related)</a>
     </li>
     <li>
-      <a href="../articles/FunctionalEnrichmentAnalysis.html">Functional Enrichment Analysis</a>
+      <a href="../articles/DifferentialExpressionAnalysis.html">Differential Expression Analysis (RNA-seq)</a>
     </li>
     <li>
-      <a href="../articles/IntegrateChIP.html">Integrate RNA-seq and ChIP-seq</a>
+      <a href="../articles/DifferentialExpressionAnalysisPeak.html">Differential Expression Analysis (Peak-related)</a>
     </li>
     <li>
-      <a href="../articles/IntegrateATAC.html">Integrate RNA-seq and ATAC-seq</a>
+      <a href="../articles/FunctionalEnrichmentAnalysis.html">Functional Enrichment Analysis (RNA-seq)</a>
     </li>
     <li>
-      <a href="../articles/IntegrateChIPATAC.html">Integrate RNA-seq ChIP-seq and ATAC-seq</a>
+      <a href="../articles/FunctionalEnrichmentAnalysisPeak.html">Functional Enrichment Analysis (Peak-related)</a>
+    </li>
+    <li>
+      <a href="../articles/MotifEnrichment.html">Motif Enrichment (Peak-related)</a>
+    </li>
+    <li>
+      <a href="../articles/IntegrateChIP.html">Integrate RNA-seq with ChIP-seq (consensus peak)</a>
+    </li>
+    <li>
+      <a href="../articles/IntegrateATAC.html">Integrate RNA-seq with ATAC-seq (consensus peak)</a>
+    </li>
+    <li>
+      <a href="../articles/IntegrateATACDE.html">Integrate RNA-seq with ATAC-seq (differential analysis)</a>
+    </li>
+    <li>
+      <a href="../articles/IntegrateChIPATAC.html">Integrate RNA-seq with ChIP-seq and ATAC-seq</a>
     </li>
     <li>
       <a href="../articles/Utils.html">Utils</a>
@@ -180,7 +195,7 @@
         <td>
           <p><code><a href="ConductDESeq2.html">ConductDESeq2()</a></code> </p>
         </td>
-        <td><p>Conduct Differential Axpression Analysis with DESeq2.</p></td>
+        <td><p>Conduct Differential Analysis with DESeq2.</p></td>
       </tr><tr>
         
         <td>
@@ -210,7 +225,7 @@
         <td>
           <p><code><a href="DEHeatmap.html">DEHeatmap()</a></code> </p>
         </td>
-        <td><p>Heatmap for Differentially Expressed Genes.</p></td>
+        <td><p>Heatmap for Differential Analysis Results.</p></td>
       </tr><tr>
         
         <td>
@@ -222,7 +237,7 @@
         <td>
           <p><code><a href="DEbPeak.html">DEbPeak()</a></code> </p>
         </td>
-        <td><p>Integrate Differential Expression Results and Peak Annotation Results.</p></td>
+        <td><p>Integrate Differential Expression Results and Peak Annotation/Differential Expression Results.</p></td>
       </tr><tr>
         
         <td>
@@ -244,21 +259,21 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="ExtractDEG.html">ExtractDEG()</a></code> </p>
+          <p><code><a href="ExtractDA.html">ExtractDA()</a></code> </p>
         </td>
-        <td><p>Extract Differentially Expressed Genes.</p></td>
+        <td><p>Extract Differential Analysis Results.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="FindMotif.html">FindMotif()</a></code> </p>
         </td>
-        <td><p>Find Motif of Peaks from DEGs and Peak Annotation Integration Results.</p></td>
+        <td><p>Find Motif of Peaks from RNA-seq and Peak-related Data Integrated Results.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="GenePlot.html">GenePlot()</a></code> </p>
         </td>
-        <td><p>Gene expresion plot.</p></td>
+        <td><p>Gene Expresion or Peak Accessibility/Binding Plot.</p></td>
       </tr><tr>
         
         <td>
@@ -280,6 +295,12 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="InteDiffQuad.html">InteDiffQuad()</a></code> </p>
+        </td>
+        <td><p>Create Quadrant Diagram for Differential Expression Analysis of RNA-seq and Peak-related Data.</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="LoadingGO.html">LoadingGO()</a></code> </p>
         </td>
         <td><p>GO enrichment on PC loading genes.</p></td>
@@ -294,7 +315,13 @@
         <td>
           <p><code><a href="MAPlot.html">MAPlot()</a></code> </p>
         </td>
-        <td><p>MA-plot.</p></td>
+        <td><p>MA-plot for Differential Analysis Results.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="MotifEnrich.html">MotifEnrich()</a></code> </p>
+        </td>
+        <td><p>Motif Enrichment for Differentially Accessible/Binding Peaks.</p></td>
       </tr><tr>
         
         <td>
@@ -334,6 +361,12 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="PeakMatrix.html">PeakMatrix()</a></code> </p>
+        </td>
+        <td><p>Prepare Count Matrix and Sample Metadata for Peak-related data.</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="PeakProfile.html">PeakProfile()</a></code> </p>
         </td>
         <td><p>Create ChIP Peak Binding Profile.</p></td>
@@ -354,7 +387,7 @@
         <td>
           <p><code><a href="RankPlot.html">RankPlot()</a></code> </p>
         </td>
-        <td><p>Rank plot for Differentially Expressed Genes.</p></td>
+        <td><p>Rank plot for Differential Analysis Results.</p></td>
       </tr><tr>
         
         <td>
@@ -366,7 +399,7 @@
         <td>
           <p><code><a href="ScatterPlot.html">ScatterPlot()</a></code> </p>
         </td>
-        <td><p>ScatterPlot for Differentially Expressed Genes.</p></td>
+        <td><p>ScatterPlot for Differential Analysis Results.</p></td>
       </tr><tr>
         
         <td>
@@ -378,7 +411,7 @@
         <td>
           <p><code><a href="VolcanoPlot.html">VolcanoPlot()</a></code> </p>
         </td>
-        <td><p>VolcanoPlot for Differentially Expressed Genes.</p></td>
+        <td><p>VolcanoPlot for Differential Analysis Results.</p></td>
       </tr>
     </tbody>
     </table>

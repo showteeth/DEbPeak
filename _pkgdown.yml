@@ -32,11 +32,11 @@ navbar:
         href: articles/FunctionalEnrichmentAnalysisPeak.html
       - text: Motif Enrichment (Peak-related)
         href: articles/MotifEnrichment.html
-      - text: Integrate RNA-seq with ChIP-seq (intersection)
+      - text: Integrate RNA-seq with ChIP-seq (consensus peak)
         href: articles/IntegrateChIP.html
-      - text: Integrate RNA-seq with ATAC-seq (intersection)
+      - text: Integrate RNA-seq with ATAC-seq (consensus peak)
         href: articles/IntegrateATAC.html
-      - text: Integrate RNA-seq with ATAC-seq (differential expression)
+      - text: Integrate RNA-seq with ATAC-seq (differential analysis)
         href: articles/IntegrateATACDE.html
       - text: Integrate RNA-seq with ChIP-seq and ATAC-seq
         href: articles/IntegrateChIPATAC.html

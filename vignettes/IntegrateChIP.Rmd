@@ -143,6 +143,7 @@ head(debchip.down.fe.results[["GO"]][["table"]])
 # the result plot
 debchip.down.fe.results[["GO"]][["plot"]]
 ```
+
 <hr />
 
 ## Save results

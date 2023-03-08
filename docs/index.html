@@ -5,16 +5,17 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DEbPeak - Explore, visualize, interpret RNA-seq data and unravel the regulation of gene expression • DEbPeak</title>
+<title>DEbPeak - Analyze and integrate multi-omics to unravel the regulation of gene expression • DEbPeak</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="DEbPeak - Explore, visualize, interpret RNA-seq data and unravel the regulation of gene expression">
-<meta property="og:description" content="DEbPeak aims to explore, visualize, interpret RNA-seq data and unravel the regulation of gene expression by combining ChIP-seq and ATAC-seq data. 
-    It contains six functional panels: Quality Control (QC), Principal Component Analysis (PCA), Differential Expression Analysis (DEA), 
-    Functional Enrichment Analysis (FEA), Integrate with ChIP-seq/ATAC-seq, Utils.">
+<script src="pkgdown.js"></script><meta property="og:title" content="DEbPeak - Analyze and integrate multi-omics to unravel the regulation of gene expression">
+<meta property="og:description" content="DEbPeak aims to explore, visualize, interpret multi-omics data and unravel the regulation of gene expression by 
+    combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains six functional panels: 
+    Quality Control (QC), Principal Component Analysis (PCA), Differential Analysis (DA), Functional Enrichment Analysis (FEA), 
+    Integrate RNA-seq with peak-related data (support the simultaneous integration of two kinds of peak-related data), Utils.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -33,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">DEbPeak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0</span>
       </span>
     </div>
 
@@ -59,22 +60,37 @@
       <a href="articles/QualityControl.html">Quality Control</a>
     </li>
     <li>
-      <a href="articles/PrincipalComponentAnalysis.html">Principal Component Analysis</a>
+      <a href="articles/PrincipalComponentAnalysis.html">Principal Component Analysis (RNA-seq)</a>
     </li>
     <li>
-      <a href="articles/DifferentialExpressionAnalysis.html">Differential Expression Analysis</a>
+      <a href="articles/PrincipalComponentAnalysisPeak.html">Principal Component Analysis (Peak-related)</a>
     </li>
     <li>
-      <a href="articles/FunctionalEnrichmentAnalysis.html">Functional Enrichment Analysis</a>
+      <a href="articles/DifferentialExpressionAnalysis.html">Differential Expression Analysis (RNA-seq)</a>
     </li>
     <li>
-      <a href="articles/IntegrateChIP.html">Integrate RNA-seq and ChIP-seq</a>
+      <a href="articles/DifferentialExpressionAnalysisPeak.html">Differential Expression Analysis (Peak-related)</a>
     </li>
     <li>
-      <a href="articles/IntegrateATAC.html">Integrate RNA-seq and ATAC-seq</a>
+      <a href="articles/FunctionalEnrichmentAnalysis.html">Functional Enrichment Analysis (RNA-seq)</a>
     </li>
     <li>
-      <a href="articles/IntegrateChIPATAC.html">Integrate RNA-seq ChIP-seq and ATAC-seq</a>
+      <a href="articles/FunctionalEnrichmentAnalysisPeak.html">Functional Enrichment Analysis (Peak-related)</a>
+    </li>
+    <li>
+      <a href="articles/MotifEnrichment.html">Motif Enrichment (Peak-related)</a>
+    </li>
+    <li>
+      <a href="articles/IntegrateChIP.html">Integrate RNA-seq with ChIP-seq (consensus peak)</a>
+    </li>
+    <li>
+      <a href="articles/IntegrateATAC.html">Integrate RNA-seq with ATAC-seq (consensus peak)</a>
+    </li>
+    <li>
+      <a href="articles/IntegrateATACDE.html">Integrate RNA-seq with ATAC-seq (differential analysis)</a>
+    </li>
+    <li>
+      <a href="articles/IntegrateChIPATAC.html">Integrate RNA-seq with ChIP-seq and ATAC-seq</a>
     </li>
     <li>
       <a href="articles/Utils.html">Utils</a>
@@ -111,10 +127,11 @@
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#debpeak---explore-visualize-interpret-rna-seq-data-and-unravel-the-regulation-of-gene-expression" class="anchor"></a>DEbPeak - Explore, visualize, interpret RNA-seq data and unravel the regulation of gene expression.</h1></div>
 <p><img src="reference/figures/DEbPeak.png" align="right" width="200"></p>
+<p><img src="https://img.shields.io/badge/license-MIT-green" alt="License"><a href="https://github.com/showteeth/DEbPeak"><img src="https://img.shields.io/github/languages/code-size/showteeth/DEbPeak.svg" alt="CODE_SIZE"></a></p>
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p><code>DEbPeak</code> aims to <strong>explore</strong>, <strong>visualize</strong>, <strong>interpret</strong> RNA-seq data and <strong>unravel the regulation of gene expression</strong> by combining ChIP-seq and ATAC-seq data. It contains <strong>six functional modules</strong>:</p>
+<p><code>DEbPeak</code> aims to <strong>explore</strong>, <strong>visualize</strong>, <strong>interpret</strong> multi-omics data and <strong>unravel the regulation of gene expression</strong> by combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains <strong>six functional modules</strong>:</p>
 <ul>
 <li>
 <strong>Quality Control (QC)</strong>: QC on count matrix and samples.
@@ -132,30 +149,31 @@
 </ul>
 </li>
 <li>
-<strong>Differential Expression Gene Visualization</strong>: this module includes six powerful visualization methods (Volcano Plot, Scatter Plot, MA Plot, Rank Plot, Gene Plot, Heatmap).</li>
+<strong>Differential Analysis and Visualization</strong>: this module includes six powerful visualization methods (Volcano Plot, Scatter Plot, MA Plot, Rank Plot, Gene/Peak Plot, Heatmap).</li>
 <li>
 <strong>Functional Enrichment Analysis (FEA)</strong>: GO enrichment analysis, KEGG enrichment analysis, Gene Set Enrichment Analysis (GSEA).
 <ul>
-<li>GO (Biological Process, Molecular Function, Cellular Component) and KEGG on differential expression genes</li>
-<li>GSEA on all genes</li>
+<li>GO (Biological Process, Molecular Function, Cellular Component) and KEGG on differential expression genes or accessible/binding peaks.</li>
+<li>GSEA on all genes (Notice: GSEA is not available for peak-related data)</li>
 </ul>
 </li>
 <li>
-<strong>Integrate with ChIP-seq/ATAC-seq</strong>:
+<strong>Integrate RNA-seq with peak-related data</strong>:
 <ul>
-<li>Get consensus peaks: For multiple peak files, get consensus peaks; for single peak file, use it directly</li>
-<li>Peak profile plots: Heatmap of peak binding to TSS regions, Average Profile of ChIP peaks binding to TSS region, Profile of ChIP peaks binding to different regions.</li>
-<li>Peak annotaion</li>
-<li>Integrate RNA-seq and ChIP-seq/ATAC-seq: Integrate RNA-seq and ChIP-seq/ATAC-seq to find direct targets, including up-regulated and down-regulated.</li>
-<li>Integrate summary: Summary the integrated results, get the overlap number of up-regulated genes and ChIP-seq/ATAC-seq results (UP), down-regulated genes and ChIP-seq/ATAC-seq results.</li>
-<li>GO enrichment on integrated results: GO enrichment on up-regulated targets and down-regulated targets.</li>
-<li>Find motif on integrated results: This is a step unique to ATAC-seq. Due to the nature of ATAC-seq, we usually need to find motif on integrated results to obtain potential regulatory factors.</li>
+<li>Get consensus peaks: For multiple peak files, get consensus peaks; for single peak file, use it directly (used in consensus integration mode).</li>
+<li>Peak profile plots: Heatmap of peak binding to TSS regions, Average Profile of ChIP peaks binding to TSS region, Profile of ChIP peaks binding to different regions (used in consensus integration mode).</li>
+<li>Peak annotaion (used in consensus integration mode).</li>
+<li>Integrate RNA-seq with peak-related data (consensus mode): Integrate RNA-seq with peak-related data to find direct targets, including up-regulated and down-regulated.</li>
+<li>Integrate RNA-seq with peak-related data (differential mode): Integrate RNA-seq and peak-related data based on differential analysis.</li>
+<li>Integration summary: include venn diagram and quadrant diagram (differential mode).</li>
+<li>GO enrichment on integrated results.</li>
+<li>Find motif on integrated results: Due to the nature of ATAC-seq, we usually need to find motif on integrated results to obtain potential regulatory factors.</li>
 </ul>
 </li>
 <li>
 <strong>Utils</strong>: useful functions when dealing with RNA-seq data, including gene name conversion and count normalization(DESeq2’s median of ratios, TMM, CPM, TPM, RPKM).</li>
 </ul>
-<p>To enhance the ease of use of the tool, we have also developed an <strong>web server</strong> for <code>DEbPeak</code> that allows users to submit files to the web page and set parameters to get the desired results. Unlike the standalone R package, <em>the web server has built-in <code>DESeq2</code> for differential expression analysis</em>, while the R package can accept user input results from <code>DESeq2</code> or <code>edgeR</code>, which will be <strong>more flexible</strong>.</p>
+<p>To enhance the ease of use of the tool, we have also developed an <strong>web server</strong> for <code>DEbPeak</code> that allows users to submit files to the web page and set parameters to get the desired results. Unlike the standalone R package, <em>the web server has built-in <code>DESeq2</code> for differential analysis</em>, while the R package can accept user input results from <code>DESeq2</code> or <code>edgeR</code>, which will be <strong>more flexible</strong>.</p>
 <p>By the way, all plots generated are <strong>publication-ready</strong> , and most of them are based on <code>ggplot2</code>, so that users can easily modify them according to their needs. We also provide <strong>various color palettes</strong>, including <strong>discrete</strong> and <strong>continuous</strong>, <strong>color blind friendly</strong> and <strong>multiple categorical variables</strong>.</p>
 <hr>
 </div>
@@ -182,16 +200,39 @@
 <div id="vignette" class="section level3">
 <h3 class="hasAnchor">
 <a href="#vignette" class="anchor"></a>Vignette</h3>
-<p>Detailed usage is available in <a href="https://showteeth.github.io/DEbPeak/">here</a>. <code>DEbPeak</code> provides eight vignettes:</p>
+<p>Detailed usage is available in <a href="https://showteeth.github.io/DEbPeak/">here</a>. We divide these vignettes into four categories:</p>
+<ul>
+<li>For analyzing RNA-seq:
 <ul>
 <li><a href="https://showteeth.github.io/DEbPeak/articles/QualityControl.html">Quality Control</a></li>
-<li><a href="https://showteeth.github.io/DEbPeak/articles/PrincipalComponentAnalysis.html">Principal Component Analysis</a></li>
-<li><a href="https://showteeth.github.io/DEbPeak/articles/DifferentialExpressionAnalysis.html">Differential Expression Analysis</a></li>
-<li><a href="https://showteeth.github.io/DEbPeak/articles/FunctionalEnrichmentAnalysis.html">Functional Enrichment Analysis</a></li>
-<li><a href="https://showteeth.github.io/DEbPeak/articles/IntegrateChIP.html">Integrate RNA-seq and ChIP-seq</a></li>
-<li><a href="https://showteeth.github.io/DEbPeak/articles/IntegrateATAC.html">Integrate RNA-seq and ATAC-seq</a></li>
-<li><a href="https://showteeth.github.io/DEbPeak/articles/IntegrateChIPATAC.html">Integrate RNA-seq ChIP-seq and ATAC-seq</a></li>
+<li><a href="https://showteeth.github.io/DEbPeak/articles/PrincipalComponentAnalysis.html">Principal Component Analysis (RNA-seq)</a></li>
+<li><a href="https://showteeth.github.io/DEbPeak/articles/DifferentialExpressionAnalysis.html">Differential Expression Analysis (RNA-seq)</a></li>
+<li><a href="https://showteeth.github.io/DEbPeak/articles/FunctionalEnrichmentAnalysis.html">Functional Enrichment Analysis (RNA-seq)</a></li>
 <li><a href="https://showteeth.github.io/DEbPeak/articles/Utils.html">Utils</a></li>
+</ul>
+</li>
+<li>For analyzing peak-related data:
+<ul>
+<li><a href="https://showteeth.github.io/DEbPeak/articles/QualityControl.html">Quality Control</a></li>
+<li><a href="https://showteeth.github.io/DEbPeak/articles/PrincipalComponentAnalysisPeak.html">Principal Component Analysis (Peak-related)</a></li>
+<li><a href="https://showteeth.github.io/DEbPeak/articles/DifferentialExpressionAnalysisPeak.html">Differential Expression Analysis (Peak-related)</a></li>
+<li><a href="https://showteeth.github.io/DEbPeak/articles/FunctionalEnrichmentAnalysisPeak.html">Functional Enrichment Analysis (Peak-related)</a></li>
+<li><a href="https://showteeth.github.io/DEbPeak/articles/MotifEnrichment.html">Motif enrichment (Peak-related)</a></li>
+</ul>
+</li>
+<li>Integrating RNA-seq (differential expression analysis) with peak-related data (consensus peak):
+<ul>
+<li><a href="https://showteeth.github.io/DEbPeak/articles/IntegrateChIP.html">Integrate RNA-seq with ChIP-seq (consensus peak)</a></li>
+<li><a href="https://showteeth.github.io/DEbPeak/articles/IntegrateATAC.html">Integrate RNA-seq with ATAC-seq (consensus peak)</a></li>
+<li><a href="https://showteeth.github.io/DEbPeak/articles/IntegrateChIPATAC.html">Integrate RNA-seq ChIP-seq and ATAC-seq</a></li>
+</ul>
+</li>
+<li>Integrating RNA-seq (differential expression analysis) with peak-related data (differential accessible/binding analysis):
+<ul>
+<li><a href="https://showteeth.github.io/DEbPeak/articles/IntegrateATACDE.html">Integrate RNA-seq with ATAC-seq (differential analysis)</a></li>
+<li>Integrate RNA-seq with ChIP-seq (differential analysis) is almost the same as <a href="https://showteeth.github.io/DEbPeak/articles/IntegrateATACDE.html">Integrate RNA-seq with ATAC-seq (differential analysis)</a>.</li>
+</ul>
+</li>
 </ul>
 </div>
 <div id="function-list" class="section level3">
@@ -206,7 +247,10 @@ Type
 Function
 </th>
 <th>
-Usage
+Description
+</th>
+<th>
+Key packages
 </th>
 </tr></thead>
 <tbody>
@@ -215,34 +259,46 @@ Usage
 Quality Control
 </td>
 <td>
-<code>CountQC</code>
+CountQC
 </td>
 <td>
-Quality control on count matrix
-</td>
-</tr>
-<tr>
-<td>
-<code>SampleRelation</code>
+Quality control on count matrix (gene detection sensitivity and sequencing depth saturation)
 </td>
 <td>
-Quality control on samples
+NOISeq
 </td>
 </tr>
 <tr>
 <td>
-<code>OutlierDetection</code>
+SampleRelation
+</td>
+<td>
+Quality control on samples (sample clustering based on euclidean distance and pearson correlation coefficient)
+</td>
+<td>
+stats
+</td>
+</tr>
+<tr>
+<td>
+OutlierDetection
 </td>
 <td>
 Detect outlier with robust PCA
 </td>
+<td>
+rrcov
+</td>
 </tr>
 <tr>
 <td>
-<code>QCPCA</code>
+QCPCA
 </td>
 <td>
-PCA related functions used in quality control (batch correction and outlier detection)
+PCA related functions used in quality control (batch detection and correction, outlier detection)
+</td>
+<td>
+stats, sva, rrcov
 </td>
 </tr>
 <tr>
@@ -250,50 +306,68 @@ PCA related functions used in quality control (batch correction and outlier dete
 Principal Component Analysis
 </td>
 <td>
-<code>PCA</code>
+PCA
 </td>
 <td>
 Conduct principal component analysis
 </td>
+<td>
+stats
+</td>
 </tr>
 <tr>
 <td>
-<code>PCABasic</code>
+PCABasic
 </td>
 <td>
 Generated PCA baisc plots, including screen plot, biplot and pairs plot
 </td>
+<td>
+PCAtools
+</td>
 </tr>
 <tr>
 <td>
-<code>ExportPCGenes</code>
+ExportPCGenes
 </td>
 <td>
 Export genes of selected PCs
 </td>
-</tr>
-<tr>
 <td>
-<code>LoadingPlot</code>
-</td>
-<td>
-PCA loading plot, including bar and heatmap
+tidyverse
 </td>
 </tr>
 <tr>
 <td>
-<code>LoadingGO</code>
+LoadingPlot
+</td>
+<td>
+PCA loading plot, including bar plot and heatmap
+</td>
+<td>
+ggplot2, ComplexHeatmap
+</td>
+</tr>
+<tr>
+<td>
+LoadingGO
 </td>
 <td>
 GO enrichment on PC’s loading genes
 </td>
+<td>
+clusterProfiler
+</td>
 </tr>
 <tr>
 <td>
-<code>PCA3D</code>
+PCA3D
 </td>
 <td>
 Create 3D PCA plot
+</td>
+<td>
+plot3D
 </td>
 </tr>
 <tr>
@@ -301,66 +375,90 @@ Create 3D PCA plot
 Differential Axpression Analysis
 </td>
 <td>
-<code>ExtractDEG</code>
+ExtractDA
 </td>
 <td>
-Extract Differentially Expressed Genes
-</td>
-</tr>
-<tr>
-<td>
-<code>VolcanoPlot</code>
+Extract differential analysis results
 </td>
 <td>
-VolcanoPlot for Differentially Expressed Genes
+tidyverse
 </td>
 </tr>
 <tr>
 <td>
-<code>ScatterPlot</code>
+VolcanoPlot
 </td>
 <td>
-ScatterPlot for Differentially Expressed Genes
-</td>
-</tr>
-<tr>
-<td>
-<code>MAPlot</code>
+VolcanoPlot for differential analysis results
 </td>
 <td>
-MA-plot
+ggplot2
 </td>
 </tr>
 <tr>
 <td>
-<code>RankPlot</code>
+ScatterPlot
 </td>
 <td>
-Rank plot for Differentially Expressed Genes
-</td>
-</tr>
-<tr>
-<td>
-<code>GenePlot</code>
+ScatterPlot for differential analysis results
 </td>
 <td>
-Gene expresion plot
+ggplot2
 </td>
 </tr>
 <tr>
 <td>
-<code>DEHeatmap</code>
+MAPlot
 </td>
 <td>
-Heatmap for Differentially Expressed Genes
+MA-plot for differential analysis results
+</td>
+<td>
+ggplot2
 </td>
 </tr>
 <tr>
 <td>
-<code>ConductDESeq2</code>
+RankPlot
 </td>
 <td>
-Conduct Differential Axpression Analysis with DESeq2
+Rank plot for differential analysis results
+</td>
+<td>
+ggplot2
+</td>
+</tr>
+<tr>
+<td>
+GenePlot
+</td>
+<td>
+Gene expresion or peak accessibility/binding plot
+</td>
+<td>
+ggplot2
+</td>
+</tr>
+<tr>
+<td>
+DEHeatmap
+</td>
+<td>
+Heatmap for differential analysis results
+</td>
+<td>
+ComplexHeatmap
+</td>
+</tr>
+<tr>
+<td>
+ConductDESeq2
+</td>
+<td>
+Conduct differential analysis with DESeq2
+</td>
+<td>
+NOISeq, stats, sva, rrcov, PCAtools, DESeq2, ggplot2, ComplexHeatmap, clusterProfiler, plot3D, tidyverse
 </td>
 </tr>
 <tr>
@@ -368,101 +466,173 @@ Conduct Differential Axpression Analysis with DESeq2
 Functional Enrichment Analysis
 </td>
 <td>
-<code>ConductFE</code>
+ConductFE
 </td>
 <td>
-Conduct Functional Enrichment Analysis (GO and KEGG)
-</td>
-</tr>
-<tr>
-<td>
-<code>ConductGSEA</code>
+Conduct functional enrichment analysis (GO and KEGG)
 </td>
 <td>
-Conduct Gene Set Enrichment Analysis (GSEA)
+clusterProfiler
 </td>
 </tr>
 <tr>
 <td>
-<code>VisGSEA</code>
+ConductGSEA
+</td>
+<td>
+Conduct gene set enrichment analysis (GSEA)
+</td>
+<td>
+clusterProfiler
+</td>
+</tr>
+<tr>
+<td>
+VisGSEA
 </td>
 <td>
 Visualize GSEA results
 </td>
-</tr>
-<tr>
-<td rowspan="9">
-Integrate with ChIP-seq/ATAC-seq
-</td>
 <td>
-<code>GetConsensusPeak</code>
-</td>
-<td>
-Get Consensus Peak with MSPC
+enrichplot
 </td>
 </tr>
 <tr>
-<td>
-<code>PeakProfile</code>
+<td rowspan="6">
+Peak-related Analysis<br><br><br><br>
 </td>
 <td>
-Create Peak Peak Binding Profile
-</td>
-</tr>
-<tr>
-<td>
-<code>AnnoPeak</code>
+PeakMatrix
 </td>
 <td>
-Conduct Peak Annotation
+Prepare count matrix and sample metadata for peak-related data
+</td>
+<td>
+DiffBind, ChIPseeker
 </td>
 </tr>
 <tr>
 <td>
-<code>PeakAnnoPie</code>
+GetConsensusPeak
 </td>
 <td>
-Create Peak Annotation Pie Plot with ggplot2
-</td>
-</tr>
-<tr>
-<td>
-<code>DEbPeak</code>
+Get consensus peak from replicates
 </td>
 <td>
-Integrate Differential Expression Results and Peak Annotation Results (ATAC-seq or ChIP-seq)
+MSPC
 </td>
 </tr>
 <tr>
 <td>
-<code>PlotDEbPeak</code>
+PeakProfile
 </td>
 <td>
-Create Integrated Summary Plot
-</td>
-</tr>
-<tr>
-<td>
-<code>DEbPeakFE</code>
+Visualize peak accessibility/binding profile
 </td>
 <td>
-GO Enrichment on Integrated Results
+ChIPseeker
 </td>
 </tr>
 <tr>
 <td>
-<code>FindMotif</code>
+AnnoPeak
 </td>
 <td>
-Find motif on integrated results (RNA-seq and ATAC-seq)
+Assign peaks with the genomic binding region and nearby genes
+</td>
+<td>
+ChIPseeker
 </td>
 </tr>
 <tr>
 <td>
-<code>DEbCA</code>
+PeakAnnoPie
 </td>
 <td>
-Integrate Differential Expression Results and Peak Annotation Results (Both ATAC-seq and ChIP-seq)
+Visualize peak annotation results with pie plot
+</td>
+<td>
+ggpie
+</td>
+</tr>
+<tr>
+<td>
+MotifEnrich
+</td>
+<td>
+Motif enrichment for differentially accessible/binding peaks
+</td>
+<td>
+HOMER
+</td>
+</tr>
+<tr>
+<td rowspan="6">
+Integrate RNA-seq with Peak-related Data
+</td>
+<td>
+DEbPeak
+</td>
+<td>
+Integrate differential expression results and peak annotation/differential expression results.
+</td>
+<td>
+tidyverse
+</td>
+</tr>
+<tr>
+<td>
+PlotDEbPeak
+</td>
+<td>
+Create integrated summary plot
+</td>
+<td>
+ggvenn
+</td>
+</tr>
+<tr>
+<td>
+InteDiffQuad
+</td>
+<td>
+Create quadrant diagram for differential expression analysis of RNA-seq and peak-related data
+</td>
+<td>
+ggplot2
+</td>
+</tr>
+<tr>
+<td>
+DEbPeakFE
+</td>
+<td>
+GO enrichment on integrated results
+</td>
+<td>
+clusterProfiler
+</td>
+</tr>
+<tr>
+<td>
+FindMotif
+</td>
+<td>
+Find motif on integrated results
+</td>
+<td>
+HOMER
+</td>
+</tr>
+<tr>
+<td>
+DEbCA
+</td>
+<td>
+Integrate differential expression results and peak annotation results (two kinds of peak-related data)
+</td>
+<td>
+tidyverse
 </td>
 </tr>
 <tr>
@@ -470,32 +640,49 @@ Integrate Differential Expression Results and Peak Annotation Results (Both ATAC
 Utils
 </td>
 <td>
-<code>IDConversion</code>
+IDConversion
 </td>
 <td>
-Gene ID Conversion
-</td>
-</tr>
-<tr>
-<td>
-<code>GetGeneLength</code>
+Gene ID conversion between ENSEMBL ENTREZID SYMBOL
 </td>
 <td>
-Get Gene Length from GTF.
+clusterProfiler
 </td>
 </tr>
 <tr>
 <td>
-<code>NormalizedCount</code>
+GetGeneLength
 </td>
 <td>
-Perform Counts Normalization (DESeq2, TMM, CPM, RPKM, TPM).
+Get gene length from GTF
+</td>
+<td>
+GenomicFeatures, GenomicRanges
+</td>
+</tr>
+<tr>
+<td>
+NormalizedCount
+</td>
+<td>
+Perform counts normalization (DESeq2’s median of ratios, TMM, CPM, RPKM, TPM)
+</td>
+<td>
+DESeq2, edgeR, tidyverse
 </td>
 </tr>
 </tbody>
 </table>
 <hr>
 </div>
+</div>
+<div id="notice" class="section level2">
+<h2 class="hasAnchor">
+<a href="#notice" class="anchor"></a>Notice</h2>
+<ul>
+<li>The <strong>KEGG API</strong> has changed, to perform KEGG enrichment, you’d better update <code>clusterProfiler</code> &gt;= <code>4.7.1</code>.</li>
+</ul>
+<hr>
 </div>
 <div id="contact" class="section level2">
 <h2 class="hasAnchor">

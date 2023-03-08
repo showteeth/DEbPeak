@@ -4,14 +4,19 @@ pkgdown_sha: ~
 articles:
   DEbPeak_All: DEbPeak_All.html
   DifferentialExpressionAnalysis: DifferentialExpressionAnalysis.html
+  DifferentialExpressionAnalysisPeak: DifferentialExpressionAnalysisPeak.html
   FunctionalEnrichmentAnalysis: FunctionalEnrichmentAnalysis.html
+  FunctionalEnrichmentAnalysisPeak: FunctionalEnrichmentAnalysisPeak.html
   IntegrateATAC: IntegrateATAC.html
+  IntegrateATACDE: IntegrateATACDE.html
   IntegrateChIP: IntegrateChIP.html
   IntegrateChIPATAC: IntegrateChIPATAC.html
+  MotifEnrichment: MotifEnrichment.html
   PrincipalComponentAnalysis: PrincipalComponentAnalysis.html
+  PrincipalComponentAnalysisPeak: PrincipalComponentAnalysisPeak.html
   QualityControl: QualityControl.html
   Utils: Utils.html
-last_built: 2022-12-14T16:37Z
+last_built: 2023-03-08T08:12Z
 urls:
   reference: https://showteeth.github.io/DEbPeak//reference
   article: https://showteeth.github.io/DEbPeak//articles

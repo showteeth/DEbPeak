@@ -2,7 +2,7 @@
 % Please edit documentation in R/DE_bind_Peak.R
 \name{InteDiffQuad}
 \alias{InteDiffQuad}
-\title{Create Quadrant Diagram for Differential Expression Analysis of RNA-seq and Peak-related data.}
+\title{Create Quadrant Diagram for Differential Expression Analysis of RNA-seq and Peak-related Data.}
 \usage{
 InteDiffQuad(
   de.peak,
@@ -32,7 +32,7 @@ Default: 2 for regular and 4 for labeled points.}
 
 \item{rna.l2fc.threshold}{Log2 fold change threshold for RNA-seq to get differentially expressed results. Default: 0.}
 
-\item{peak.l2fc.threshold}{Log2 fold change threshold for peak-related data to get differentially expressed results. Default: 0.}
+\item{peak.l2fc.threshold}{Log2 fold change threshold for peak-related data to get differentially accessible/binding peaks. Default: 0.}
 
 \item{linetype}{Threshold linetype. Default: 2.}
 
@@ -55,7 +55,7 @@ When provided, the second column should not be in \code{de.peak}.}
 A ggplot2 object.
 }
 \description{
-Create Quadrant Diagram for Differential Expression Analysis of RNA-seq and Peak-related data.
+Create Quadrant Diagram for Differential Expression Analysis of RNA-seq and Peak-related Data.
 }
 \examples{
 # # prepare integrated differential expression results of RNA-seq and ATAC-seq

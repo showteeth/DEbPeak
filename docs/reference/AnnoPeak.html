@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DEbPeak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0</span>
       </span>
     </div>
 
@@ -98,22 +98,37 @@
       <a href="../articles/QualityControl.html">Quality Control</a>
     </li>
     <li>
-      <a href="../articles/PrincipalComponentAnalysis.html">Principal Component Analysis</a>
+      <a href="../articles/PrincipalComponentAnalysis.html">Principal Component Analysis (RNA-seq)</a>
     </li>
     <li>
-      <a href="../articles/DifferentialExpressionAnalysis.html">Differential Expression Analysis</a>
+      <a href="../articles/PrincipalComponentAnalysisPeak.html">Principal Component Analysis (Peak-related)</a>
     </li>
     <li>
-      <a href="../articles/FunctionalEnrichmentAnalysis.html">Functional Enrichment Analysis</a>
+      <a href="../articles/DifferentialExpressionAnalysis.html">Differential Expression Analysis (RNA-seq)</a>
     </li>
     <li>
-      <a href="../articles/IntegrateChIP.html">Integrate RNA-seq and ChIP-seq</a>
+      <a href="../articles/DifferentialExpressionAnalysisPeak.html">Differential Expression Analysis (Peak-related)</a>
     </li>
     <li>
-      <a href="../articles/IntegrateATAC.html">Integrate RNA-seq and ATAC-seq</a>
+      <a href="../articles/FunctionalEnrichmentAnalysis.html">Functional Enrichment Analysis (RNA-seq)</a>
     </li>
     <li>
-      <a href="../articles/IntegrateChIPATAC.html">Integrate RNA-seq ChIP-seq and ATAC-seq</a>
+      <a href="../articles/FunctionalEnrichmentAnalysisPeak.html">Functional Enrichment Analysis (Peak-related)</a>
+    </li>
+    <li>
+      <a href="../articles/MotifEnrichment.html">Motif Enrichment (Peak-related)</a>
+    </li>
+    <li>
+      <a href="../articles/IntegrateChIP.html">Integrate RNA-seq with ChIP-seq (consensus peak)</a>
+    </li>
+    <li>
+      <a href="../articles/IntegrateATAC.html">Integrate RNA-seq with ATAC-seq (consensus peak)</a>
+    </li>
+    <li>
+      <a href="../articles/IntegrateATACDE.html">Integrate RNA-seq with ATAC-seq (differential analysis)</a>
+    </li>
+    <li>
+      <a href="../articles/IntegrateChIPATAC.html">Integrate RNA-seq with ChIP-seq and ATAC-seq</a>
     </li>
     <li>
       <a href="../articles/Utils.html">Utils</a>
@@ -229,29 +244,29 @@ to generate count matrix and peak files. Default: "UCSC".</p></td>
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>    Vignettes contain introductory material; view with</span>
 #&gt; <span class='message'>    'browseVignettes()'. To cite Bioconductor, see</span>
-#&gt; <span class='message'>    'citation("Biobase")', and for packages 'citation("pkgname")'.</span></div><div class='output co'>#&gt; &gt;&gt; preparing promoter regions...	 2022-12-15 00时37分34秒 
-#&gt; &gt;&gt; preparing tag matrix...		 2022-12-15 00时37分36秒 
-#&gt; &gt;&gt; preparing start_site regions by ... 2022-12-15 00时37分36秒
-#&gt; &gt;&gt; preparing tag matrix...  2022-12-15 00时37分36秒 
-#&gt; &gt;&gt; generating figure...		 2022-12-15 00时37分45秒 </div><div class='output co'>#&gt; &gt;&gt; done...			 2022-12-15 00时37分46秒 </div><div class='output co'>#&gt; &gt;&gt; binning method is used...2022-12-15 00时37分46秒
-#&gt; &gt;&gt; preparing start_site regions by gene... 2022-12-15 00时37分46秒
-#&gt; &gt;&gt; preparing tag matrix by binning...  2022-12-15 00时37分46秒 
-#&gt; &gt;&gt; Running bootstrapping for tag matrix...		 2022-12-15 00时37分50秒 
-#&gt; &gt;&gt; binning method is used...2022-12-15 00时37分50秒
-#&gt; &gt;&gt; preparing body regions by gene... 2022-12-15 00时37分50秒
-#&gt; &gt;&gt; preparing tag matrix by binning...  2022-12-15 00时37分50秒 
-#&gt; &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2022-12-15 00时37分50秒
-#&gt; &gt;&gt; 1 peaks(0.1536098%), having lengths smaller than 800bp, are filtered... 2022-12-15 00时37分53秒
-#&gt; &gt;&gt; Running bootstrapping for tag matrix...		 2022-12-15 00时38分29秒 </div><div class='input'><span class='va'>peak.anno</span> <span class='op'>&lt;-</span> <span class='fu'>AnnoPeak</span><span class='op'>(</span>
+#&gt; <span class='message'>    'citation("Biobase")', and for packages 'citation("pkgname")'.</span></div><div class='output co'>#&gt; &gt;&gt; preparing promoter regions...	 2023-03-08 16时12分35秒 
+#&gt; &gt;&gt; preparing tag matrix...		 2023-03-08 16时12分36秒 
+#&gt; &gt;&gt; preparing start_site regions by ... 2023-03-08 16时12分36秒
+#&gt; &gt;&gt; preparing tag matrix...  2023-03-08 16时12分36秒 
+#&gt; &gt;&gt; generating figure...		 2023-03-08 16时12分48秒 </div><div class='output co'>#&gt; &gt;&gt; done...			 2023-03-08 16时12分48秒 </div><div class='output co'>#&gt; &gt;&gt; binning method is used...2023-03-08 16时12分48秒
+#&gt; &gt;&gt; preparing start_site regions by gene... 2023-03-08 16时12分48秒
+#&gt; &gt;&gt; preparing tag matrix by binning...  2023-03-08 16时12分48秒 
+#&gt; &gt;&gt; Running bootstrapping for tag matrix...		 2023-03-08 16时12分52秒 
+#&gt; &gt;&gt; binning method is used...2023-03-08 16时12分52秒
+#&gt; &gt;&gt; preparing body regions by gene... 2023-03-08 16时12分52秒
+#&gt; &gt;&gt; preparing tag matrix by binning...  2023-03-08 16时12分52秒 
+#&gt; &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2023-03-08 16时12分53秒
+#&gt; &gt;&gt; 1 peaks(0.1536098%), having lengths smaller than 800bp, are filtered... 2023-03-08 16时12分55秒
+#&gt; &gt;&gt; Running bootstrapping for tag matrix...		 2023-03-08 16时13分32秒 </div><div class='input'><span class='va'>peak.anno</span> <span class='op'>&lt;-</span> <span class='fu'>AnnoPeak</span><span class='op'>(</span>
   peak.df <span class='op'>=</span> <span class='va'>peak.df</span>, species <span class='op'>=</span> <span class='st'>"Mouse"</span>,
   seq.style <span class='op'>=</span> <span class='st'>"UCSC"</span>, up.dist <span class='op'>=</span> <span class='fl'>20000</span>, down.dist <span class='op'>=</span> <span class='fl'>20000</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; </div><div class='output co'>#&gt; &gt;&gt; preparing features information...		 2022-12-15 00时38分30秒 
-#&gt; &gt;&gt; identifying nearest features...		 2022-12-15 00时38分30秒 
-#&gt; &gt;&gt; calculating distance from peak to TSS...	 2022-12-15 00时38分31秒 
-#&gt; &gt;&gt; assigning genomic annotation...		 2022-12-15 00时38分31秒 
-#&gt; &gt;&gt; adding gene annotation...			 2022-12-15 00时38分42秒 </div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:many mapping between keys and columns</span></div><div class='output co'>#&gt; &gt;&gt; assigning chromosome lengths			 2022-12-15 00时38分42秒 
-#&gt; &gt;&gt; done...					 2022-12-15 00时38分42秒 </div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 6 rows containing non-finite values (stat_count).</span></div></pre>
+</div><div class='output co'>#&gt; </div><div class='output co'>#&gt; &gt;&gt; preparing features information...		 2023-03-08 16时13分33秒 
+#&gt; &gt;&gt; identifying nearest features...		 2023-03-08 16时13分33秒 
+#&gt; &gt;&gt; calculating distance from peak to TSS...	 2023-03-08 16时13分33秒 
+#&gt; &gt;&gt; assigning genomic annotation...		 2023-03-08 16时13分33秒 
+#&gt; &gt;&gt; adding gene annotation...			 2023-03-08 16时13分45秒 </div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:many mapping between keys and columns</span></div><div class='output co'>#&gt; &gt;&gt; assigning chromosome lengths			 2023-03-08 16时13分45秒 
+#&gt; &gt;&gt; done...					 2023-03-08 16时13分45秒 </div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 6 rows containing non-finite values (stat_count).</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -2,7 +2,7 @@
 % Please edit documentation in R/DE_visualization.R
 \name{MAPlot}
 \alias{MAPlot}
-\title{MA-plot.}
+\title{MA-plot for Differential Analysis Results.}
 \usage{
 MAPlot(
   deres,
@@ -21,25 +21,25 @@ MAPlot(
 )
 }
 \arguments{
-\item{deres}{Data frame contains all genes.}
+\item{deres}{Data frame contains all genes/peaks.}
 
 \item{signif}{Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.}
 
-\item{signif.threshold}{Significance threshold to get differentially expressed genes. Default: 0.05.}
+\item{signif.threshold}{Significance threshold to get differentially expressed genes or accessible/binding peaks. Default: 0.05.}
 
-\item{l2fc.threshold}{Log2 fold change threshold to get differentially expressed genes. Default: 1.}
+\item{l2fc.threshold}{Log2 fold change threshold to get differentially expressed genes or accessible/binding peaks. Default: 1.}
 
 \item{point.alpha}{Opacity of a geom. Default: 0.6.}
 
-\item{point.size.vec}{Point size for regular(DEG or non-DEG) and(or) labeled points. Default: 2 for regular and 4 for labeled points.}
+\item{point.size.vec}{Point size for regular (all points) and(or) labeled points. Default: 2 for regular and 4 for labeled points.}
 
 \item{linetype}{Threshold linetype. Default: 2.}
 
-\item{point.color.vec}{Point color for Down, Not, Up regulated genes. Default: red for Up, grey for Not and blue for Down.}
+\item{point.color.vec}{Point color for Down, Not, Up regulated genes or peaks. Default: red for Up, grey for Not and blue for Down.}
 
 \item{legend.pos}{Legend position. Default: top.}
 
-\item{label.num}{Gene number to label, choose according to log2FoldChange. When \code{label.df} is set NULL, use this to determine genes to label. Default: NULL.}
+\item{label.num}{Gene/Peak number to label, choose according to log2FoldChange. When \code{label.df} is set NULL, use this to determine genes to label. Default: NULL.}
 
 \item{label.df}{Label data frame, at least contains Gene column. Default: NULL(use \code{label.num}). When provided,
 the second column should not be in \code{deres}.}
@@ -52,7 +52,7 @@ the second column should not be in \code{deres}.}
 A ggplot2 object.
 }
 \description{
-MA-plot.
+MA-plot for Differential Analysis Results.
 }
 \examples{
 library(DESeq2)

@@ -40,7 +40,7 @@
     <loc>https://showteeth.github.io/DEbPeak//reference/ExportPCGenes.html</loc>
   </url>
   <url>
-    <loc>https://showteeth.github.io/DEbPeak//reference/ExtractDEG.html</loc>
+    <loc>https://showteeth.github.io/DEbPeak//reference/ExtractDA.html</loc>
   </url>
   <url>
     <loc>https://showteeth.github.io/DEbPeak//reference/FindMotif.html</loc>
@@ -58,6 +58,9 @@
     <loc>https://showteeth.github.io/DEbPeak//reference/IDConversion.html</loc>
   </url>
   <url>
+    <loc>https://showteeth.github.io/DEbPeak//reference/InteDiffQuad.html</loc>
+  </url>
+  <url>
     <loc>https://showteeth.github.io/DEbPeak//reference/LoadingGO.html</loc>
   </url>
   <url>
@@ -65,6 +68,9 @@
   </url>
   <url>
     <loc>https://showteeth.github.io/DEbPeak//reference/MAPlot.html</loc>
+  </url>
+  <url>
+    <loc>https://showteeth.github.io/DEbPeak//reference/MotifEnrich.html</loc>
   </url>
   <url>
     <loc>https://showteeth.github.io/DEbPeak//reference/NormalizedCount.html</loc>
@@ -83,6 +89,9 @@
   </url>
   <url>
     <loc>https://showteeth.github.io/DEbPeak//reference/PeakAnnoPie.html</loc>
+  </url>
+  <url>
+    <loc>https://showteeth.github.io/DEbPeak//reference/PeakMatrix.html</loc>
   </url>
   <url>
     <loc>https://showteeth.github.io/DEbPeak//reference/PeakProfile.html</loc>
@@ -115,10 +124,19 @@
     <loc>https://showteeth.github.io/DEbPeak//articles/DifferentialExpressionAnalysis.html</loc>
   </url>
   <url>
+    <loc>https://showteeth.github.io/DEbPeak//articles/DifferentialExpressionAnalysisPeak.html</loc>
+  </url>
+  <url>
     <loc>https://showteeth.github.io/DEbPeak//articles/FunctionalEnrichmentAnalysis.html</loc>
   </url>
   <url>
+    <loc>https://showteeth.github.io/DEbPeak//articles/FunctionalEnrichmentAnalysisPeak.html</loc>
+  </url>
+  <url>
     <loc>https://showteeth.github.io/DEbPeak//articles/IntegrateATAC.html</loc>
+  </url>
+  <url>
+    <loc>https://showteeth.github.io/DEbPeak//articles/IntegrateATACDE.html</loc>
   </url>
   <url>
     <loc>https://showteeth.github.io/DEbPeak//articles/IntegrateChIP.html</loc>
@@ -127,7 +145,13 @@
     <loc>https://showteeth.github.io/DEbPeak//articles/IntegrateChIPATAC.html</loc>
   </url>
   <url>
+    <loc>https://showteeth.github.io/DEbPeak//articles/MotifEnrichment.html</loc>
+  </url>
+  <url>
     <loc>https://showteeth.github.io/DEbPeak//articles/PrincipalComponentAnalysis.html</loc>
+  </url>
+  <url>
+    <loc>https://showteeth.github.io/DEbPeak//articles/PrincipalComponentAnalysisPeak.html</loc>
   </url>
   <url>
     <loc>https://showteeth.github.io/DEbPeak//articles/QualityControl.html</loc>

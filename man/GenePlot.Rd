@@ -2,7 +2,7 @@
 % Please edit documentation in R/DE_visualization.R
 \name{GenePlot}
 \alias{GenePlot}
-\title{Gene expresion plot.}
+\title{Gene Expresion or Peak Accessibility/Binding Plot.}
 \usage{
 GenePlot(
   deobj,
@@ -26,7 +26,7 @@ GenePlot(
 \arguments{
 \item{deobj}{Object created by DESeq2 or edgeR.}
 
-\item{deres}{Data frame contains all genes.}
+\item{deres}{Data frame contains all genes/peaks.}
 
 \item{group.key}{Sample group information. When set NULL, select first column of metadata. Default: NULL.}
 
@@ -42,7 +42,7 @@ GenePlot(
 
 \item{label.key}{Column name in \code{gene.df} or \code{deres} to use as gene plot title. Default: NULL. When set NULL, use Gene column.}
 
-\item{gene.num}{Gene number to plot, choose according to log2FoldChange. When \code{gene.df} is set NULL, use this to determine genes to plot. Default: NULL.}
+\item{gene.num}{Gene/Peak number to plot, choose according to log2FoldChange. When \code{gene.df} is set NULL, use this to determine genes/peak to plot. Default: NULL.}
 
 \item{plot.col}{Column number of final plot. Default: 2.}
 
@@ -50,9 +50,9 @@ GenePlot(
 
 \item{signif}{Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.}
 
-\item{signif.threshold}{Significance threshold to get differentially expressed genes. Default: 0.05.}
+\item{signif.threshold}{Significance threshold to get differentially expressed genes or accessible/binding peaks. Default: 0.05.}
 
-\item{l2fc.threshold}{Log2 fold change threshold to get differentially expressed genes. Default: 1.}
+\item{l2fc.threshold}{Log2 fold change threshold to get differentially expressed genes or accessible/binding peaks. Default: 1.}
 
 \item{legend.pos}{Legend position. Default: top.}
 }
@@ -60,7 +60,7 @@ GenePlot(
 A ggplot2 object.
 }
 \description{
-Gene expresion plot.
+Gene Expresion or Peak Accessibility/Binding Plot.
 }
 \examples{
 library(DESeq2)

@@ -14,8 +14,8 @@
 #' @param label.key Which column to use as label. Default: NULL (use rownames of \code{deres}).
 #' @param peak.signif Significance criterion for peak-associated results. For DESeq2 results, can be chosen from padj, pvalue.
 #' For edgeR results, can be chosen from FDR, PValue. Default: padj.
-#' @param peak.signif.threshold Significance threshold for peak-associated results to get differentially expressed genes. Default: 0.05.
-#' @param peak.l2fc.threshold Log2 fold change threshold for peak-associated results to get differentially expressed genes. Default: 1.
+#' @param peak.signif.threshold Significance threshold for peak-associated results to get differentially accessible/binding peaks. Default: 0.05.
+#' @param peak.l2fc.threshold Log2 fold change threshold for peak-associated results to get differentially accessible/binding peaks. Default: 1.
 #' @param merge.key The columns used for merging, chosen from geneId (ENTREZID), ENSEMBL, SYMBOL. Default: geneId.
 #' @param org.db Organism database. Used when \code{peak.mode} is diff and \code{merge.key} is not "SYMBOL".
 #' For peak-associated differential expression results, only support merging on "SYMBOL". Default: org.Mm.eg.db.
@@ -340,7 +340,7 @@ PlotDEbPeak <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), peak.mod
   return(plot)
 }
 
-#' Create Quadrant Diagram for Differential Expression Analysis of RNA-seq and Peak-related data.
+#' Create Quadrant Diagram for Differential Expression Analysis of RNA-seq and Peak-related Data.
 #'
 #' @param de.peak Dataframe contains integrated results of differential analysis of RNA-seq and Peak-related data.
 #' @param peak.type Peak data type, choose from ChIP, ATAC. Default: ChIP.
@@ -348,7 +348,7 @@ PlotDEbPeak <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), peak.mod
 #' @param point.size.vec Point size for regular(DE or non-DE) and(or) labeled points.
 #' Default: 2 for regular and 4 for labeled points.
 #' @param rna.l2fc.threshold Log2 fold change threshold for RNA-seq to get differentially expressed results. Default: 0.
-#' @param peak.l2fc.threshold Log2 fold change threshold for peak-related data to get differentially expressed results. Default: 0.
+#' @param peak.l2fc.threshold Log2 fold change threshold for peak-related data to get differentially accessible/binding peaks. Default: 0.
 #' @param linetype Threshold linetype. Default: 2.
 #' @param point.color.vec Point color for Down_Up, Up_Up, Down_Down, Up_Down.
 #' Default: grey for Down_Up, red for Up_Up, blue for Down_Down and grey for Up_Down.

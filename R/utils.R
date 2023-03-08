@@ -32,7 +32,7 @@ IDConversion_internal <- function(de.df, gene.type = c("ENSEMBL", "ENTREZID", "S
 #' Gene ID Conversion.
 #'
 #' @param deres Data frame contains all genes.
-#' @param gene.type Gene name type. Chosen from ENSEMBL, ENTREZID,SYMBOL. Default: ENSEMBL.
+#' @param gene.type Gene name type. Chosen from ENSEMBL, ENTREZID, SYMBOL. Default: ENSEMBL.
 #' @param org.db Organism database. Default: org.Mm.eg.db.
 #' @param gene.map Use data frame instead of \code{org.db} to conduct gene id conversion, first column should be Gene. Default: NULL.
 #' @param sort.key Column to sort the results. Default: log2FoldChange.

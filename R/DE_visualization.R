@@ -1,16 +1,18 @@
-#' Extract Differentially Expressed Genes.
+#' Extract Differential Analysis Results.
 #'
-#' @param deres Data frame contains all genes.
+#' @param deres Data frame contains all genes/peaks.
+#' @param data.type Input data type, choose from RNA, ChIP, ATAC. Default: RNA.
+#' @param peak.anno.key Peak location, chosen from "Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic","All". Default: "Promoter".
 #' @param signif Significance criterion. For DESeq2 results, can be chosen from padj, pvalue.
 #' For edgeR results, can be chosen from FDR, PValue. Default: padj.
-#' @param signif.threshold Significance threshold to get differentially expressed genes. Default: 0.05.
-#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes. Default: 1.
+#' @param signif.threshold Significance threshold to get differentially expressed genes or accessible/binding peaks. Default: 0.05.
+#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes or accessible/binding peaks. Default: 1.
 #'
 #' @return A data frame.
 #' @importFrom magrittr %>%
 #' @importFrom tibble rownames_to_column
-#' @importFrom dplyr mutate case_when mutate_at vars
-#' @importFrom tidyr drop_na
+#' @importFrom dplyr mutate case_when mutate_at vars filter
+#' @importFrom tidyr drop_na separate
 #' @importFrom rlang :=
 #' @export
 #'
@@ -28,13 +30,39 @@
 #' dds <- DESeq(dds)
 #' dds.results <- results(dds, contrast = c("condition", "KO", "WT"))
 #' dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing = TRUE), ]
-#' dds.degs <- ExtractDEG(
+#' dds.degs <- ExtractDA(
 #'   deres = dds.results.ordered, signif = "padj", signif.threshold = 0.05,
 #'   l2fc.threshold = 1
 #' )
-ExtractDEG <- function(deres, signif = "padj", signif.threshold = 0.05, l2fc.threshold = 1) {
+ExtractDA <- function(deres, data.type = c("RNA", "ChIP", "ATAC"),
+                      peak.anno.key = c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic", "All"),
+                      signif = "padj", signif.threshold = 0.05, l2fc.threshold = 1) {
+  # check parameters
+  data.type <- match.arg(arg = data.type)
+
   # make sure the input is dataframe
   deres <- as.data.frame(deres)
+  # prepare for different data type
+  if (data.type != "RNA") {
+    # seperate the data
+    deres <- deres %>%
+      tibble::rownames_to_column(var = "Gene") %>%
+      dplyr::filter(!is.na(Gene)) %>%
+      dplyr::mutate(name = Gene) %>%
+      tidyr::separate(col = Gene, into = c("Peak", "PeakGene", "Annotation"), sep = "\\|") %>%
+      tidyr::separate(col = Peak, into = c("Chr", "region"), sep = ":") %>%
+      tidyr::separate(col = region, into = c("Start", "End"), sep = "-")
+    # change annotation name
+    anno.key.named <- c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic")
+    names(anno.key.named) <- c("P", "5U", "3U", "E", "I", "D", "DI")
+    deres$Annotation <- anno.key.named[deres$Annotation]
+    # filter annotation
+    deres <- deres[deres$Annotation == peak.anno.key, ]
+    # change row names
+    rownames(deres) <- deres$name
+    deres$name <- NULL
+  }
+  # extract the results
   if ("FDR" %in% colnames(deres)) {
     message("Differential expression analysis with edgeR!")
     if (!signif %in% colnames(deres)) {
@@ -78,9 +106,12 @@ ExtractDEG <- function(deres, signif = "padj", signif.threshold = 0.05, l2fc.thr
       tidyr::drop_na(regulation)
     de.df[[signif]] <- -log10(de.df[[signif]])
   }
+  # modify colnames
+  if (data.type != "RNA") {
+    colnames(de.df) <- gsub(pattern = "^Gene$", replacement = "Peak", x = colnames(de.df))
+  }
   return(de.df)
 }
-
 
 # classify up, down and not differentially expressed
 PrepareDEPlot <- function(deres, signif = "padj", signif.threshold = 0.05, l2fc.threshold = 1, label.key = NULL) {
@@ -136,21 +167,21 @@ PrepareDEPlot <- function(deres, signif = "padj", signif.threshold = 0.05, l2fc.
   return(de.df)
 }
 
-#' VolcanoPlot for Differentially Expressed Genes.
+#' VolcanoPlot for Differential Analysis Results.
 #'
-#' @param deres Data frame contains all genes.
+#' @param deres Data frame contains all genes/peaks.
 #' @param signif Significance criterion. For DESeq2 results, can be chosen from padj, pvalue.
 #' For edgeR results, can be chosen from FDR, PValue. Default: padj.
-#' @param signif.threshold Significance threshold to get differentially expressed genes. Default: 0.05.
-#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes. Default: 1.
+#' @param signif.threshold Significance threshold to get differentially expressed genes or accessible/binding peaks. Default: 0.05.
+#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes or accessible/binding peaks. Default: 1.
 #' @param point.alpha Opacity of a geom. Default: 0.6.
-#' @param point.size.vec Point size for regular(DEG or non-DEG) and(or) labeled points.
+#' @param point.size.vec Point size for regular (all points) and(or) labeled points.
 #' Default: 2 for regular and 4 for labeled points.
 #' @param linetype Threshold linetype. Default: 2.
-#' @param point.color.vec Point color for Down, Not, Up regulated genes.
+#' @param point.color.vec Point color for Down, Not, Up regulated results.
 #' Default: red for Up, grey for Not and blue for Down.
 #' @param legend.pos Legend position. Default: top.
-#' @param label.num Gene number to label, choose according to log2FoldChange.
+#' @param label.num Gene/Peak number to label, choose according to log2FoldChange.
 #' When \code{label.df} is set NULL, use this to determine genes to label. Default: NULL.
 #' @param label.df Label data frame, at least contains Gene column. Default: NULL(use \code{label.num}).
 #' When provided, the second column should not be in \code{deres}.
@@ -299,22 +330,22 @@ VolcanoPlot <- function(deres, signif = "padj", signif.threshold = 0.05, l2fc.th
   return(p)
 }
 
-#' ScatterPlot for Differentially Expressed Genes.
+#' ScatterPlot for Differential Analysis Results.
 #'
 #' @param deobj Object created by DESeq2 or edgeR.
-#' @param deres Data frame contains all genes.
+#' @param deres Data frame contains all genes/peaks.
 #' @param group.key Sample group information. When set NULL, select first column of metadata. Default: NULL.
 #' @param ref.group Reference group name. When set NULL, select first element of groups. Default: NULL.
 #' @param base A positive or complex number: the base with respect to which logarithms are computed. Default: 10.
 #' @param signif Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.
-#' @param signif.threshold Significance threshold to get differentially expressed genes. Default: 0.05.
-#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes. Default: 1.
+#' @param signif.threshold Significance threshold to get differentially expressed genes or accessible/binding peaks. Default: 0.05.
+#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes or accessible/binding peaks. Default: 1.
 #' @param point.alpha Opacity of a geom. Default: 0.6.
-#' @param point.size.vec Point size for regular(DEG or non-DEG) and(or) labeled points. Default: 2 for regular and 4 for labeled points.
+#' @param point.size.vec Point size for regular (all points) and(or) labeled points. Default: 2 for regular and 4 for labeled points.
 #' @param linetype Diagonal linetype. Default: 2.
-#' @param point.color.vec Point color for Down, Not, Up regulated genes. Default: red for Up, grey for Not and blue for Down.
+#' @param point.color.vec Point color for Down, Not, Up regulated genes peaks. Default: red for Up, grey for Not and blue for Down.
 #' @param legend.pos Legend position. Default: top.
-#' @param label.num Gene number to label, choose according to log2FoldChange. When \code{label.df} is set NULL, use this to determine genes to label. Default: NULL.
+#' @param label.num Gene/Peak number to label, choose according to log2FoldChange. When \code{label.df} is set NULL, use this to determine genes to label. Default: NULL.
 #' @param label.df Label data frame, at least contains Gene column. Default: NULL(use \code{label.num}). When provided,
 #' the second column should not be in \code{deres}.
 #' @param label.key Which column to use as label. Default: NULL (use rownames of \code{deres} or Gene column of \code{gene.df}).
@@ -496,18 +527,18 @@ ScatterPlot <- function(deobj, deres, group.key = NULL, ref.group = NULL, base =
   return(p)
 }
 
-#' MA-plot.
+#' MA-plot for Differential Analysis Results.
 #'
-#' @param deres Data frame contains all genes.
+#' @param deres Data frame contains all genes/peaks.
 #' @param signif Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.
-#' @param signif.threshold Significance threshold to get differentially expressed genes. Default: 0.05.
-#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes. Default: 1.
+#' @param signif.threshold Significance threshold to get differentially expressed genes or accessible/binding peaks. Default: 0.05.
+#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes or accessible/binding peaks. Default: 1.
 #' @param point.alpha Opacity of a geom. Default: 0.6.
-#' @param point.size.vec Point size for regular(DEG or non-DEG) and(or) labeled points. Default: 2 for regular and 4 for labeled points.
+#' @param point.size.vec Point size for regular (all points) and(or) labeled points. Default: 2 for regular and 4 for labeled points.
 #' @param linetype Threshold linetype. Default: 2.
-#' @param point.color.vec Point color for Down, Not, Up regulated genes. Default: red for Up, grey for Not and blue for Down.
+#' @param point.color.vec Point color for Down, Not, Up regulated genes or peaks. Default: red for Up, grey for Not and blue for Down.
 #' @param legend.pos Legend position. Default: top.
-#' @param label.num Gene number to label, choose according to log2FoldChange. When \code{label.df} is set NULL, use this to determine genes to label. Default: NULL.
+#' @param label.num Gene/Peak number to label, choose according to log2FoldChange. When \code{label.df} is set NULL, use this to determine genes to label. Default: NULL.
 #' @param label.df Label data frame, at least contains Gene column. Default: NULL(use \code{label.num}). When provided,
 #' the second column should not be in \code{deres}.
 #' @param label.key Which column to use as label. Default: NULL (use rownames of \code{deres} or Gene column of \code{gene.df}).
@@ -639,18 +670,18 @@ MAPlot <- function(deres, signif = "padj", signif.threshold = 0.05, l2fc.thresho
   return(p)
 }
 
-#' Rank plot for Differentially Expressed Genes.
+#' Rank plot for Differential Analysis Results.
 #'
-#' @param deres Data frame contains all genes.
+#' @param deres Data frame contains all genes/peaks.
 #' @param signif Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.
-#' @param signif.threshold Significance threshold to get differentially expressed genes. Default: 0.05.
-#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes. Default: 1.
+#' @param signif.threshold Significance threshold to get differentially expressed genes or accessible/binding peaks. Default: 0.05.
+#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes or accessible/binding peaks. Default: 1.
 #' @param point.alpha Opacity of a geom. Default: 0.6.
-#' @param point.size.vec Point size for regular(DEG or non-DEG) and(or) labeled points. Default: 2 for regular and 4 for labeled points.
+#' @param point.size.vec Point size for regular (all points) and(or) labeled points. Default: 2 for regular and 4 for labeled points.
 #' @param linetype Threshold linetype. Default: 2.
-#' @param point.color.vec Point color for Down, Up regulated genes. Default: red for Up and blue for Down.
+#' @param point.color.vec Point color for Down, Up regulated genes or peaks. Default: red for Up and blue for Down.
 #' @param legend.pos Legend position. Default: top.
-#' @param label.num Gene number to label, choose according to log2FoldChange. When \code{label.df} is set NULL, use this to determine genes to label. Default: NULL.
+#' @param label.num Gene/Peak number to label, choose according to log2FoldChange. When \code{label.df} is set NULL, use this to determine genes to label. Default: NULL.
 #' @param label.df Label data frame, at least contains Gene column. Default: NULL(use \code{label.num}). When provided,
 #' the second column should not be in \code{deres}.
 #' @param label.key Which column to use as label. Default: NULL (use rownames of \code{deres} or Gene column of \code{gene.df}).
@@ -779,23 +810,23 @@ RankPlot <- function(deres, signif = "padj", signif.threshold = 0.05, l2fc.thres
   return(p)
 }
 
-#' Gene expresion plot.
+#' Gene Expresion or Peak Accessibility/Binding Plot.
 #'
 #' @param deobj Object created by DESeq2 or edgeR.
-#' @param deres Data frame contains all genes.
+#' @param deres Data frame contains all genes/peaks.
 #' @param group.key Sample group information. When set NULL, select first column of metadata. Default: NULL.
 #' @param ref.group Reference group name. When set NULL, select first element of groups. Default: NULL.
 #' @param base A positive or complex number: the base with respect to which logarithms are computed. Default: 10.
 #' @param fill.color Color for box,
 #' @param fill.alpha Opacity of a geom. Default: 0.6.
-#' @param gene.num Gene number to plot, choose according to log2FoldChange. When \code{gene.df} is set NULL, use this to determine genes to plot. Default: NULL.
+#' @param gene.num Gene/Peak number to plot, choose according to log2FoldChange. When \code{gene.df} is set NULL, use this to determine genes/peak to plot. Default: NULL.
 #' @param gene.df Gene data frame, at least contains Gene column. Default: NULL. When set NULL, use \code{gene.num}.
 #' @param label.key Column name in \code{gene.df} or \code{deres} to use as gene plot title. Default: NULL. When set NULL, use Gene column.
 #' @param plot.col Column number of final plot. Default: 2.
 #' @param scales Scales same as \code{\link{facet_wrap}}.
 #' @param signif Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.
-#' @param signif.threshold Significance threshold to get differentially expressed genes. Default: 0.05.
-#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes. Default: 1.
+#' @param signif.threshold Significance threshold to get differentially expressed genes or accessible/binding peaks. Default: 0.05.
+#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes or accessible/binding peaks. Default: 1.
 #' @param legend.pos Legend position. Default: top.
 #'
 #' @return A ggplot2 object.
@@ -918,10 +949,10 @@ GenePlot <- function(deobj, deres, group.key = NULL, ref.group = NULL, base = 10
 }
 
 
-#' Heatmap for Differentially Expressed Genes.
+#' Heatmap for Differential Analysis Results.
 #'
 #' @param deobj Object created by DESeq2 or edgeR.
-#' @param deres Data frame contains all genes.
+#' @param deres Data frame contains all genes/peaks.
 #' @param group.key Sample group information. When set NULL, select first column of metadata. Default: NULL.
 #' @param ref.group Reference group name. When set NULL, select first element of groups. Default: NULL.
 #' @param group.color Color for different sample group. Default: blue for \code{ref.group}, and red for the other group.
@@ -929,8 +960,8 @@ GenePlot <- function(deobj, deres, group.key = NULL, ref.group = NULL, base = 10
 #' the second column should not be in \code{deres}.
 #' @param label.key Which column to use as label. Default: NULL. When set NULL, use rownames of \code{deres} or Gene column of \code{gene.df}.
 #' @param signif Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.
-#' @param signif.threshold Significance threshold to get differentially expressed genes. Default: 0.05.
-#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes. Default: 1.
+#' @param signif.threshold Significance threshold to get differentially expressed genes or accessible/binding peaks. Default: 0.05.
+#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes or accessible/binding peaks. Default: 1.
 #' @param exp.range Z-score range to plot. Default: c(-2,2).
 #' @param exp.color Color map used for heatmap. Default: c("green","black","red").
 #' @param heatmap.height The height of whole heatmap. Default: 20cm.

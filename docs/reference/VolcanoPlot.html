@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>VolcanoPlot for Differentially Expressed Genes. — VolcanoPlot • DEbPeak</title>
+<title>VolcanoPlot for Differential Analysis Results. — VolcanoPlot • DEbPeak</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="VolcanoPlot for Differentially Expressed Genes. — VolcanoPlot" />
-<meta property="og:description" content="VolcanoPlot for Differentially Expressed Genes." />
+<meta property="og:title" content="VolcanoPlot for Differential Analysis Results. — VolcanoPlot" />
+<meta property="og:description" content="VolcanoPlot for Differential Analysis Results." />
 
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DEbPeak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0</span>
       </span>
     </div>
 
@@ -98,22 +98,37 @@
       <a href="../articles/QualityControl.html">Quality Control</a>
     </li>
     <li>
-      <a href="../articles/PrincipalComponentAnalysis.html">Principal Component Analysis</a>
+      <a href="../articles/PrincipalComponentAnalysis.html">Principal Component Analysis (RNA-seq)</a>
     </li>
     <li>
-      <a href="../articles/DifferentialExpressionAnalysis.html">Differential Expression Analysis</a>
+      <a href="../articles/PrincipalComponentAnalysisPeak.html">Principal Component Analysis (Peak-related)</a>
     </li>
     <li>
-      <a href="../articles/FunctionalEnrichmentAnalysis.html">Functional Enrichment Analysis</a>
+      <a href="../articles/DifferentialExpressionAnalysis.html">Differential Expression Analysis (RNA-seq)</a>
     </li>
     <li>
-      <a href="../articles/IntegrateChIP.html">Integrate RNA-seq and ChIP-seq</a>
+      <a href="../articles/DifferentialExpressionAnalysisPeak.html">Differential Expression Analysis (Peak-related)</a>
     </li>
     <li>
-      <a href="../articles/IntegrateATAC.html">Integrate RNA-seq and ATAC-seq</a>
+      <a href="../articles/FunctionalEnrichmentAnalysis.html">Functional Enrichment Analysis (RNA-seq)</a>
     </li>
     <li>
-      <a href="../articles/IntegrateChIPATAC.html">Integrate RNA-seq ChIP-seq and ATAC-seq</a>
+      <a href="../articles/FunctionalEnrichmentAnalysisPeak.html">Functional Enrichment Analysis (Peak-related)</a>
+    </li>
+    <li>
+      <a href="../articles/MotifEnrichment.html">Motif Enrichment (Peak-related)</a>
+    </li>
+    <li>
+      <a href="../articles/IntegrateChIP.html">Integrate RNA-seq with ChIP-seq (consensus peak)</a>
+    </li>
+    <li>
+      <a href="../articles/IntegrateATAC.html">Integrate RNA-seq with ATAC-seq (consensus peak)</a>
+    </li>
+    <li>
+      <a href="../articles/IntegrateATACDE.html">Integrate RNA-seq with ATAC-seq (differential analysis)</a>
+    </li>
+    <li>
+      <a href="../articles/IntegrateChIPATAC.html">Integrate RNA-seq with ChIP-seq and ATAC-seq</a>
     </li>
     <li>
       <a href="../articles/Utils.html">Utils</a>
@@ -147,13 +162,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>VolcanoPlot for Differentially Expressed Genes.</h1>
+    <h1>VolcanoPlot for Differential Analysis Results.</h1>
     
     <div class="hidden name"><code>VolcanoPlot.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>VolcanoPlot for Differentially Expressed Genes.</p>
+    <p>VolcanoPlot for Differential Analysis Results.</p>
     </div>
 
     <pre class="usage"><span class='fu'>VolcanoPlot</span><span class='op'>(</span>
@@ -179,7 +194,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>deres</th>
-      <td><p>Data frame contains all genes.</p></td>
+      <td><p>Data frame contains all genes/peaks.</p></td>
     </tr>
     <tr>
       <th>signif</th>
@@ -188,11 +203,11 @@ For edgeR results, can be chosen from FDR, PValue. Default: padj.</p></td>
     </tr>
     <tr>
       <th>signif.threshold</th>
-      <td><p>Significance threshold to get differentially expressed genes. Default: 0.05.</p></td>
+      <td><p>Significance threshold to get differentially expressed genes or accessible/binding peaks. Default: 0.05.</p></td>
     </tr>
     <tr>
       <th>l2fc.threshold</th>
-      <td><p>Log2 fold change threshold to get differentially expressed genes. Default: 1.</p></td>
+      <td><p>Log2 fold change threshold to get differentially expressed genes or accessible/binding peaks. Default: 1.</p></td>
     </tr>
     <tr>
       <th>point.alpha</th>
@@ -200,7 +215,7 @@ For edgeR results, can be chosen from FDR, PValue. Default: padj.</p></td>
     </tr>
     <tr>
       <th>point.size.vec</th>
-      <td><p>Point size for regular(DEG or non-DEG) and(or) labeled points.
+      <td><p>Point size for regular (all points) and(or) labeled points.
 Default: 2 for regular and 4 for labeled points.</p></td>
     </tr>
     <tr>
@@ -209,7 +224,7 @@ Default: 2 for regular and 4 for labeled points.</p></td>
     </tr>
     <tr>
       <th>point.color.vec</th>
-      <td><p>Point color for Down, Not, Up regulated genes.
+      <td><p>Point color for Down, Not, Up regulated results.
 Default: red for Up, grey for Not and blue for Down.</p></td>
     </tr>
     <tr>
@@ -218,7 +233,7 @@ Default: red for Up, grey for Not and blue for Down.</p></td>
     </tr>
     <tr>
       <th>label.num</th>
-      <td><p>Gene number to label, choose according to log2FoldChange.
+      <td><p>Gene/Peak number to label, choose according to log2FoldChange.
 When <code>label.df</code> is set NULL, use this to determine genes to label. Default: NULL.</p></td>
     </tr>
     <tr>

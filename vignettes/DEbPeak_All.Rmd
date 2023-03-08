@@ -9,7 +9,7 @@ author:
 date: "`r BiocStyle::doc_date()`"
 package: "`r BiocStyle::pkg_ver('DEbPeak')`"
 abstract: >
-  The goal of `DEbPeak` is to explore, visualize, interpret RNA-seq data and decipher gene's regulation by combining ChIP-seq and ATAC-seq data. It contains six functional modules: Quality Control (QC) on count matrix and samples, Principal Component Analysis (PCA) ,Differential Expression Gene Visualization (Volcano Plot, Scatter Plot, MA Plot, Rank Plot, Gene Plot, Heatmap), Functional Enrichment Analysis (GO enrichment analysis, KEGG enrichment analysis, Gene Set Enrichment Analysis), Integrate with ChIP-seq/ATAC-seq (Get consensus peaks, Peak profile plots, Peak annotaion, Integrate RNA-seq and ChIP-seq/ATAC-seq, Integrate summary, GO enrichment on integrated results, Find motif on integrated results), Utils (useful functions when dealing with RNA-seq data, including gene name conversion and count normalization). 
+  The goal of `DEbPeak` is to explore, visualize, interpret multi-omics data and unravel the regulation of gene expression by combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains six functional modules: Quality Control (QC) on count matrix and samples, Principal Component Analysis (PCA) ,Differential Analysis and Visualization (Volcano Plot, Scatter Plot, MA Plot, Rank Plot, Gene Plot, Heatmap), Functional Enrichment Analysis (GO enrichment analysis, KEGG enrichment analysis, Gene Set Enrichment Analysis), Integrate RNA-seq with peak-related data (Get consensus peaks, Peak profile plots, Peak annotaion, Integrate RNA-seq with peak-related data, Integrate summary, GO enrichment on integrated results, Find motif on integrated results), Utils (useful functions when dealing with RNA-seq data, including gene name conversion and count normalization). 
 output: 
   BiocStyle::html_document:
     toc_depth: 4
@@ -53,7 +53,7 @@ library("DEbPeak")
 # Introduction
 <img src = "../man/figures/DEbPeak.png" align = "right" width = "200"/>
 
-`DEbPeak` aims to **explore**, **visualize**, **interpret** RNA-seq data and **unravel the regulation of gene expression** by combining ChIP-seq and ATAC-seq data. It contains **six functional modules**:
+`DEbPeak` aims to **explore**, **visualize**, **interpret** multi-omics data and **unravel the regulation of gene expression** by combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains **six functional modules**:
 
 * **Quality Control (QC)**: QC on count matrix and samples. 
   - QC on count matrix: Proportion of genes detected in different samples under different CPM thresholds and the saturation of the number of genes detected.
@@ -62,21 +62,22 @@ library("DEbPeak")
   - Basic info: scree plot (help to select the useful PCs), biplot (sample similarity with corresponding genes with larger loadings) and PC pairs plot (sample similarity under different PC combinations).
   - Loading related: visualize genes with larger positive and negative loadings on selected PCs, conduct GO enrichment analysis on genes with larger positive and negative loadings on selected PCs.
   - 3D visualization: visualize samples on three selected PCs.
-* **Differential Expression Gene Visualization**: this module includes six powerful visualization methods (Volcano Plot, Scatter Plot, MA Plot, Rank Plot, Gene Plot, Heatmap).
+* **Differential Analysis and Visualization**: this module includes six powerful visualization methods (Volcano Plot, Scatter Plot, MA Plot, Rank Plot, Gene/Peak Plot, Heatmap).
 * **Functional Enrichment Analysis (FEA)**: GO enrichment analysis, KEGG enrichment analysis, Gene Set Enrichment Analysis (GSEA).
-  - GO (Biological Process, Molecular Function, Cellular Component) and KEGG on differential expression genes
-  - GSEA on all genes
-* **Integrate with ChIP-seq/ATAC-seq**: 
-  - Get consensus peaks: For multiple peak files, get consensus peaks; for single peak file, use it directly
-  - Peak profile plots: Heatmap of peak binding to TSS regions, Average Profile of ChIP peaks binding to TSS region, Profile of ChIP peaks binding to different regions.
-  - Peak annotaion
-  - Integrate RNA-seq and ChIP-seq/ATAC-seq: Integrate RNA-seq and ChIP-seq/ATAC-seq to find direct targets, including up-regulated and down-regulated.
-  - Integrate summary: Summary the integrated results, get the overlap number of up-regulated genes and ChIP-seq/ATAC-seq results (UP), down-regulated genes and ChIP-seq/ATAC-seq results.
-  - GO enrichment on integrated results: GO enrichment on up-regulated targets and down-regulated targets.
-  - Find motif on integrated results: This is a step unique to ATAC-seq. Due to the nature of ATAC-seq, we usually need to find motif on integrated results to obtain potential regulatory factors.
+  - GO (Biological Process, Molecular Function, Cellular Component) and KEGG on differential expression genes or accessible/binding peaks.
+  - GSEA on all genes (Notice: GSEA is not available for peak-related data)
+* **Integrate RNA-seq with peak-related data**: 
+  - Get consensus peaks: For multiple peak files, get consensus peaks; for single peak file, use it directly (used in consensus integration mode).
+  - Peak profile plots: Heatmap of peak binding to TSS regions, Average Profile of ChIP peaks binding to TSS region, Profile of ChIP peaks binding to different regions (used in consensus integration mode).
+  - Peak annotaion (used in consensus integration mode).
+  - Integrate RNA-seq with peak-related data (consensus mode): Integrate RNA-seq with peak-related data to find direct targets, including up-regulated and down-regulated.
+  - Integrate RNA-seq with peak-related data (differential mode): Integrate RNA-seq and peak-related data based on differential analysis.
+  - Integration summary: include venn diagram and quadrant diagram (differential mode).
+  - GO enrichment on integrated results.
+  - Find motif on integrated results: Due to the nature of ATAC-seq, we usually need to find motif on integrated results to obtain potential regulatory factors.
 * **Utils**: useful functions when dealing with RNA-seq data, including gene name conversion and count normalization(DESeq2’s median of ratios, TMM, CPM, TPM, RPKM).
 
-To enhance the ease of use of the tool, we have also developed an **web server** for `DEbPeak` that allows users to submit files to the web page and set parameters to get the desired results. Unlike the standalone R package, *the web server has built-in `DESeq2` for differential expression analysis*, while the R package can accept user input results from `DESeq2` or `edgeR`, which will be **more flexible**.
+To enhance the ease of use of the tool, we have also developed an **web server** for `DEbPeak` that allows users to submit files to the web page and set parameters to get the desired results. Unlike the standalone R package, *the web server has built-in `DESeq2` for differential analysis*, while the R package can accept user input results from `DESeq2` or `edgeR`, which will be **more flexible**.
 
 By the way, all plots generated are **publication-ready** , and most of them are based on `ggplot2`, so that users can easily modify them according to their needs. We also provide **various color palettes**, including **discrete** and **continuous**, **color blind friendly** and **multiple categorical variables**.
 
@@ -470,14 +471,14 @@ m_t2g <- msigdbr(species = "Mus musculus", category = "C5") %>%
   dplyr::select(gs_name, entrez_gene)
 count.file <- system.file("extdata", "snon_count.txt", package = "DEbPeak")
 meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbPeak")
-ConductDESeq2(count.matrix.file = count.file, meta.file = meta.file, out.folder="/home/songyabing/R/learn/tmp/dekit/AllInOne",
+ConductDESeq2(count.matrix.file = count.file, meta.file = meta.file, out.folder="/home/songyabing/R/learn/tmp/DEbPeak/AllInOne",
               signif = "pvalue", l2fc.threshold = 0.3,
               group.key = "condition", ref.group = "WT",gmt.file = NULL, gene.sets = m_t2g)
 ```
 
 The structrue of results folder:
 ```{bash}
-tree /home/songyabing/R/learn/tmp/dekit/AllInOne
+tree /home/songyabing/R/learn/tmp/DEbPeak/AllInOne
 ```
 
 ---------------------
@@ -575,38 +576,53 @@ debchip.plot
 ---------------------
 
 ### Functional enrichment
-```{r debchip_integrate_fe}
+There are **five categories** for users to choose to perform functional enrichment: `UP`, `Peak`, `DOWN`, `DOWNbPeak`, `UPbPeak`. Here, we will use `DOWNbPeak` and `UPbPeak` as examples.
+
+#### UPbPeak
+```{r debchip_integrate_fe_up}
 # functional enrichment on direct targets
-debchip.fe.results = DEbPeakFE(de.peak = debchip.res, peak.type = "ChIP", gene.type = "ENTREZID", species="Mouse",save = F)
+debchip.up.fe.results = DEbPeakFE(de.peak = debchip.res, peak.fe.key = "UPbPeak", 
+                                  gene.type = "ENTREZID", species="Mouse",save = F)
 ```
 
-#### FE on up-regulated targets 
-```{r debchip_integrate_fe_up, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
-up.debchip.fe.results=debchip.fe.results[["UPbChIP"]][["GO"]]
-head(up.debchip.fe.results[["table"]])
-
-up.debchip.fe.results[["plot"]]
+The results:
+```{r debchip_integrate_fe_up_show, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
+# the result table
+head(debchip.up.fe.results[["GO"]][["table"]])
+# the result plot
+debchip.up.fe.results[["GO"]][["plot"]]
 ```
 
-#### FE on down-regulated targets
-```{r debchip_integrate_fe_down, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
-down.debchip.fe.results=debchip.fe.results[["DOWNbChIP"]][["GO"]]
-head(down.debchip.fe.results[["table"]])
+<hr />
 
-down.debchip.fe.results[["plot"]]
+#### DOWNbPeak
+```{r debchip_integrate_fe_down}
+# functional enrichment on direct targets
+debchip.down.fe.results = DEbPeakFE(de.peak = debchip.res, peak.fe.key = "DOWNbPeak", 
+                                    gene.type = "ENTREZID", species="Mouse",save = F)
+```
+
+The results:
+```{r debchip_integrate_fe_down_show, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
+# the result table
+head(debchip.down.fe.results[["GO"]][["table"]])
+# the result plot
+debchip.down.fe.results[["GO"]][["plot"]]
 ```
 
 ---------------------
 ## Integrate ATAC-seq and RNA-seq
-All above steps are suitable for integrating ATAC-seq and RNA-seq data, but the following step (**Find motif**) is usually unique to integrate ATAC-seq and RNA-seq data.
-### Find motif
-```{r debchip_integrate_motif, eval = FALSE}
-# debatac.res: similar to debchip.res
-ATAC.motif = FindMotif(inte.res = debatac.res, peak.anno.res = peak.anno.df, gene.key = "SYMBOL",
-                       homer.motif.path = '/path/to/findMotifsGenome.pl',
-                       genome = '/path/to/genome.fa',
-                       out.folder = NULL,other.paras = '-len 8,10,12 -size -100,50 -S 25')
+All above steps are suitable for integrating ATAC-seq and RNA-seq data, but the following step (**Motif enrichment**) is usually unique to integrate ATAC-seq and RNA-seq data.
+
+There are **five categories** for users to choose to perform motif enrichment: `UP`, `Peak`, `DOWN`, `DOWNbPeak`, `UPbPeak`. Here, we will use `UPbPeak` as example:
+```{r debatac_integrate_motif_up, eval = FALSE}
+# debatac.res: similar to debatac.res
+# this step is time consuming!
+ATAC.motif = FindMotif(inte.res = debchip.res, peak.anno.res = peak.anno[["df"]],
+                       peak.motif.key = "UPbPeak", peak.mode = "consenus", homer.motif.path = '~/anaconda3/bin/findMotifsGenome.pl',
+                       out.folder = "/path/to/out/folder", other.paras = "-len 8,10,12 -size -100,50 -S 25")
 ```
+
 
 ---------------------
 
@@ -669,25 +685,37 @@ debpeak.plot
 ```
 
 #### Functional enrichment
-```{r debpeak_integrate_fe}
+There are **five categories** for users to choose to perform functional enrichment: `ChIP`, `ATAC`, `UP`, `DOWN`, `ChIPbATAC`, `UPbChIP`, `DOWNbChIP`, `UPbPeak`, `DOWNbPeak`, `UPbATAC`, `DOWNbATAC`. Here, we will use `DOWNbPeak` and `UPbPeak` as examples.
+
+##### UPbPeak
+```{r debpeak_integrate_fe_up}
 # functional enrichment on direct targets
-debpeak.fe.results = DEbPeakFE(de.peak = debpeak.res, peak.type = "Peak", gene.type = "ENTREZID", species="Mouse",save = F)
+debpeak.up.fe.results = DEbPeakFE(de.peak = debpeak.res, peak.fe.key = "UPbPeak", gene.type = "ENTREZID", species="Mouse",save = F)
 ```
 
-##### FE on up-regulated targets 
-```{r debpeak_integrate_fe_up, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
-up.debpeak.fe.results=debpeak.fe.results[["UPbPeak"]][["GO"]]
-head(up.debpeak.fe.results[["table"]])
-
-up.debpeak.fe.results[["plot"]]
+The results:
+```{r debpeak_integrate_fe_up_show, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
+# the result table
+head(debpeak.up.fe.results[["GO"]][["table"]])
+# the result plot
+debpeak.up.fe.results[["GO"]][["plot"]]
 ```
 
-##### FE on down-regulated targets
-```{r debpeak_integrate_fe_down, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
-down.debpeak.fe.results=debpeak.fe.results[["DOWNbPeak"]][["GO"]]
-head(down.debpeak.fe.results[["table"]])
+<hr />
 
-down.debpeak.fe.results[["plot"]]
+##### DOWNbPeak
+```{r debpeak_integrate_fe_down}
+# functional enrichment on direct targets
+debpeak.down.fe.results = DEbPeakFE(de.peak = debpeak.res, peak.fe.key = "DOWNbPeak", 
+                                    gene.type = "ENTREZID", species="Mouse",save = F)
+```
+
+The results:
+```{r debpeak_integrate_fe_down_show, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
+# the result table
+head(debpeak.down.fe.results[["GO"]][["table"]])
+# the result plot
+debpeak.down.fe.results[["GO"]][["plot"]]
 ```
 
 ---------------------

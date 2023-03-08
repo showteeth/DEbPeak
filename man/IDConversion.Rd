@@ -15,7 +15,7 @@ IDConversion(
 \arguments{
 \item{deres}{Data frame contains all genes.}
 
-\item{gene.type}{Gene name type. Chosen from ENSEMBL, ENTREZID,SYMBOL. Default: ENSEMBL.}
+\item{gene.type}{Gene name type. Chosen from ENSEMBL, ENTREZID, SYMBOL. Default: ENSEMBL.}
 
 \item{org.db}{Organism database. Default: org.Mm.eg.db.}
 

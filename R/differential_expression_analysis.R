@@ -1,4 +1,4 @@
-#' Conduct Differential Axpression Analysis with DESeq2.
+#' Conduct Differential Analysis with DESeq2.
 #'
 #' @param counts.folder Folder contains all sample's count file. Count file should be SampleName.txt.
 #' @param count.matrix.file File contains count matrix, if provided, use this instead of \code{counts.folder}. Default: NULL.
@@ -36,8 +36,8 @@
 #' @param show.term Number of enrichment term to show. Default: 15.
 #' @param str.width Length of enrichment term in plot. Default: 30.
 #' @param signif Significance criterion. For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.
-#' @param signif.threshold Significance threshold to get differentially expressed genes. Default: 0.05.
-#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes. Default: 1.
+#' @param signif.threshold Significance threshold to get differentially expressed genes or accessible/binding peaks. Default: 0.05.
+#' @param l2fc.threshold Log2 fold change threshold to get differentially expressed genes or accessible/binding peaks. Default: 1.
 #' @param gene.map Use data frame instead of \code{org.db} to conduct gene id conversion, first column should be Gene. Default: NULL.
 #' @param gtf.file Gene annotation file used to get gene length, used if \code{norm.type=="RPKM"} or \code{norm.type=="TPM"}. Default: NULL.
 #' @param norm.type Normalization method, chosen from DESeq2, TMM, CPM, RPKM, TPM. Default: DESeq2.
@@ -318,7 +318,7 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
   dds.results.selected <- dds.results.selected[!is.na(dds.results.selected["log2FoldChange"]), ]
   dds.results.sig <- dds.results.selected[dds.results.selected[signif] <= signif.threshold & abs(dds.results.selected["log2FoldChange"]) >= l2fc.threshold, ]
   # create output folder
-  deg.results.folder <- file.path(out.folder, "DEG")
+  deg.results.folder <- file.path(out.folder, "DA")
   dir.create(deg.results.folder, showWarnings = FALSE, recursive = TRUE)
   setwd(deg.results.folder)
   # save degs
@@ -339,40 +339,40 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
     file = "normalized_counts.csv"
   )
 
-  message("Visualize Differential Expression Analysis!")
-  grDevices::pdf("DEG_VolcanoPlot.pdf", width = 8, height = 10)
+  message("Visualize Differential Analysis Results!")
+  grDevices::pdf("DA_VolcanoPlot.pdf", width = 8, height = 10)
   VolcanoPlot(dds.results.ordered,
     signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold,
     label.num = deg.label.num, label.df = deg.label.df, label.key = deg.label.key, label.color = deg.label.color
   )
   grDevices::dev.off()
-  grDevices::pdf("DEG_ScatterPlot.pdf", width = 8, height = 9)
+  grDevices::pdf("DA_ScatterPlot.pdf", width = 8, height = 9)
   ScatterPlot(
     deobj = dds, deres = dds.results.ordered, group.key = group.key, ref.group = ref.group,
     signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold,
     label.num = deg.label.num, label.df = deg.label.df, label.key = deg.label.key, label.color = deg.label.color
   )
   grDevices::dev.off()
-  grDevices::pdf("DEG_MAPlot.pdf", width = 10, height = 8)
+  grDevices::pdf("DA_MAPlot.pdf", width = 10, height = 8)
   MAPlot(dds.results.ordered,
     signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold,
     label.num = deg.label.num, label.df = deg.label.df, label.key = deg.label.key, label.color = deg.label.color
   )
   grDevices::dev.off()
-  grDevices::pdf("DEG_RankPlot.pdf", width = 8, height = 9)
+  grDevices::pdf("DA_RankPlot.pdf", width = 8, height = 9)
   RankPlot(dds.results.ordered,
     signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold,
     label.num = deg.label.num, label.df = deg.label.df, label.key = deg.label.key, label.color = deg.label.color
   )
   grDevices::dev.off()
-  grDevices::pdf("DEG_GenePlot.pdf", width = 8, height = 9)
+  grDevices::pdf("DA_GenePlot.pdf", width = 8, height = 9)
   GenePlot(
     deobj = dds, deres = dds.results.ordered, group.key = group.key, ref.group = ref.group,
     signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold,
     gene.num = deg.label.num, gene.df = deg.label.df, label.key = deg.label.key
   )
   grDevices::dev.off()
-  grDevices::pdf("DEG_Heatmap.pdf", width = 10, height = 8)
+  grDevices::pdf("DA_Heatmap.pdf", width = 10, height = 8)
   DEHeatmap(
     deobj = dds, deres = dds.results.ordered, group.key = group.key, ref.group = ref.group,
     signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold, gene.df = deg.label.df, label.key = deg.label.key
