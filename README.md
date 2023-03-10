@@ -1,4 +1,4 @@
-# DEbPeak - Explore, visualize, interpret RNA-seq data and unravel the regulation of gene expression.
+# DEbPeak - Analyze and integrate multi-omics to unravel the regulation of gene expression.
 
 <img src = "man/figures/DEbPeak.png" align = "right" width = "200"/>
 
@@ -58,26 +58,26 @@ In general, it is **recommended** to install from [Github repository](https://gi
 
 Detailed usage is available in [here](https://showteeth.github.io/DEbPeak/). We divide these vignettes into four categories:
 
-* For analyzing RNA-seq:
+* For analyzing **RNA-seq**:
   * [Quality Control](https://showteeth.github.io/DEbPeak/articles/QualityControl.html)
   * [Principal Component Analysis (RNA-seq)](https://showteeth.github.io/DEbPeak/articles/PrincipalComponentAnalysis.html)
   * [Differential Expression Analysis (RNA-seq)](https://showteeth.github.io/DEbPeak/articles/DifferentialExpressionAnalysis.html)
   * [Functional Enrichment Analysis (RNA-seq)](https://showteeth.github.io/DEbPeak/articles/FunctionalEnrichmentAnalysis.html)
   * [Utils](https://showteeth.github.io/DEbPeak/articles/Utils.html)
 
-* For analyzing peak-related data:
+* For analyzing **peak-related data**:
   * [Quality Control](https://showteeth.github.io/DEbPeak/articles/QualityControl.html)
   * [Principal Component Analysis (Peak-related)](https://showteeth.github.io/DEbPeak/articles/PrincipalComponentAnalysisPeak.html)
   * [Differential Expression Analysis (Peak-related)](https://showteeth.github.io/DEbPeak/articles/DifferentialExpressionAnalysisPeak.html)
   * [Functional Enrichment Analysis (Peak-related)](https://showteeth.github.io/DEbPeak/articles/FunctionalEnrichmentAnalysisPeak.html)
   * [Motif enrichment (Peak-related)](https://showteeth.github.io/DEbPeak/articles/MotifEnrichment.html)
 
-* Integrating RNA-seq (differential expression analysis) with peak-related data (consensus peak):
+* **Integrating RNA-seq (differential expression analysis) with peak-related data (consensus peak)**:
   * [Integrate RNA-seq with ChIP-seq (consensus peak)](https://showteeth.github.io/DEbPeak/articles/IntegrateChIP.html)
   * [Integrate RNA-seq with ATAC-seq (consensus peak)](https://showteeth.github.io/DEbPeak/articles/IntegrateATAC.html)
   * [Integrate RNA-seq ChIP-seq and ATAC-seq](https://showteeth.github.io/DEbPeak/articles/IntegrateChIPATAC.html)
 
-* Integrating RNA-seq (differential expression analysis) with peak-related data (differential accessible/binding analysis):
+* **Integrating RNA-seq (differential expression analysis) with peak-related data (differential accessible/binding analysis)**:
   * [Integrate RNA-seq with ATAC-seq (differential analysis)](https://showteeth.github.io/DEbPeak/articles/IntegrateATACDE.html)
   * Integrate RNA-seq with ChIP-seq (differential analysis) is almost the same as [Integrate RNA-seq with ATAC-seq (differential analysis)](https://showteeth.github.io/DEbPeak/articles/IntegrateATACDE.html).
 

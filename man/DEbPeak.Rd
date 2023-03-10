@@ -27,7 +27,7 @@ DEbPeak(
 \item{peak.res}{Dataframe contains all peak annotation (\code{peak.mode} is consenus) or
 differential analysis results of peak-related data (\code{peak.mode} is diff).}
 
-\item{peak.mode}{The source of peak results, choose from consenus (peak annotation) and diff (differential expression analysis).
+\item{peak.mode}{The source of peak results, choose from consenus (peak annotation) and diff (differential analysis).
 Default: consenus.}
 
 \item{peak.anno.key}{Peak location, chosen from "Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic","All".
@@ -64,6 +64,7 @@ Integrate Differential Expression Results and Peak Annotation/Differential Expre
 \examples{
 library(DEbPeak)
 library(DESeq2)
+library(openxlsx)
 ### consensus mode
 # ChIP-Seq data
 peak.file <- system.file("extdata", "debchip_peaks.bed", package = "DEbPeak")
@@ -113,7 +114,9 @@ dds.peak <- DESeq(dds.peak)
 dds.peak.results <- results(dds.peak, contrast = c("condition", "KO", "WT"))
 dds.peak.results.ordered <- dds.peak.results[order(dds.peak.results$log2FoldChange, decreasing = TRUE), ]
 # RNA-seq results
+# rna.diff.file <- system.file("extdata", "RA_RNA_diff.xlsx", package = "DEbPeak")
 rna.diff.file <- system.file("extdata", "RA_RNA_diff.txt", package = "DEbPeak")
+# rna.diff <- openxlsx::read.xlsx(xlsxFile = rna.diff.file, rowNames = T, check.names = FALSE)
 rna.diff <- read.table(file = rna.diff.file, header = TRUE, sep = "\t")
 # integrate differential expression results of RNA-seq and ATAC-seq
 debatac.res <- DEbPeak(

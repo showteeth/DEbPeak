@@ -1,7 +1,7 @@
 #' Integrate Differential Expression Results and Peak Annotation/Differential Expression Results.
 #'
 #' @param de.res Data frame contains all genes of differential expression analysis.
-#' @param peak.mode The source of peak results, choose from consenus (peak annotation) and diff (differential expression analysis).
+#' @param peak.mode The source of peak results, choose from consenus (peak annotation) and diff (differential analysis).
 #' Default: consenus.
 #' @param peak.res Dataframe contains all peak annotation (\code{peak.mode} is consenus) or
 #' differential analysis results of peak-related data (\code{peak.mode} is diff).
@@ -34,6 +34,7 @@
 #' @examples
 #' library(DEbPeak)
 #' library(DESeq2)
+#' library(openxlsx)
 #' ### consensus mode
 #' # ChIP-Seq data
 #' peak.file <- system.file("extdata", "debchip_peaks.bed", package = "DEbPeak")
@@ -83,7 +84,9 @@
 #' dds.peak.results <- results(dds.peak, contrast = c("condition", "KO", "WT"))
 #' dds.peak.results.ordered <- dds.peak.results[order(dds.peak.results$log2FoldChange, decreasing = TRUE), ]
 #' # RNA-seq results
+#' # rna.diff.file <- system.file("extdata", "RA_RNA_diff.xlsx", package = "DEbPeak")
 #' rna.diff.file <- system.file("extdata", "RA_RNA_diff.txt", package = "DEbPeak")
+#' # rna.diff <- openxlsx::read.xlsx(xlsxFile = rna.diff.file, rowNames = T, check.names = FALSE)
 #' rna.diff <- read.table(file = rna.diff.file, header = TRUE, sep = "\t")
 #' # integrate differential expression results of RNA-seq and ATAC-seq
 #' debatac.res <- DEbPeak(
@@ -101,15 +104,14 @@ DEbPeak <- function(de.res, peak.res, peak.mode = c("consenus", "diff"),
   peak.anno.key <- match.arg(arg = peak.anno.key)
   merge.key <- match.arg(arg = merge.key)
 
-  # process RNA de results
-  de.df <- PrepareDEPlot(
-    deres = de.res, signif = signif, signif.threshold = signif.threshold,
-    l2fc.threshold = l2fc.threshold, label.key = label.key
-  )
-  # remove gene version information
-  de.df$Gene <- gsub(pattern = "\\.[0-9]*$", replacement = "", x = de.df$Gene)
-
   if (peak.mode == "consenus") {
+    # process RNA de results
+    de.df <- PrepareDEPlot(
+      deres = de.res, signif = signif, signif.threshold = signif.threshold,
+      l2fc.threshold = l2fc.threshold, label.key = label.key
+    )
+    # remove gene version information
+    de.df$Gene <- gsub(pattern = "\\.[0-9]*$", replacement = "", x = de.df$Gene)
     # get deg
     deg.df <- de.df %>% dplyr::filter(regulation != "Not_regulated")
     # parepare peak results
@@ -139,6 +141,37 @@ DEbPeak <- function(de.res, peak.res, peak.mode = c("consenus", "diff"),
         !is.na(annotation) & regulation == "Down_regulated" ~ "DOWNbPeak"
       ))
   } else if (peak.mode == "diff") {
+    if (length(intersect(colnames(de.res), c("ENSEMBL", "ENTREZID", "SYMBOL"))) == 0) {
+      warning("In diff mode, the rownames of de table should be SYMBOL or SYMBOL in columns!
+              You can use IDConversion to perfrom gene ID conversion!")
+      # process RNA de results
+      de.df <- PrepareDEPlot(
+        deres = de.res, signif = signif, signif.threshold = signif.threshold,
+        l2fc.threshold = l2fc.threshold, label.key = NULL
+      )
+    } else if ("SYMBOL" %in% colnames(de.res)) {
+      # process RNA de results
+      de.df <- PrepareDEPlot(
+        deres = de.res, signif = signif, signif.threshold = signif.threshold,
+        l2fc.threshold = l2fc.threshold, label.key = "SYMBOL"
+      )
+      # arrange by SYMBOL
+      de.df <- de.df %>%
+        dplyr::arrange(desc(abs(log2FoldChange))) %>%
+        dplyr::filter(!is.na(SYMBOL)) %>%
+        dplyr::distinct(SYMBOL, .keep_all = TRUE)
+      colnames(de.df) <- gsub(pattern = "^Gene", replacement = "GeneID", x = colnames(de.df))
+      colnames(de.df) <- gsub(pattern = "^SYMBOL", replacement = "Gene", x = colnames(de.df))
+    } else {
+      # process RNA de results
+      de.df <- PrepareDEPlot(
+        deres = de.res, signif = signif, signif.threshold = signif.threshold,
+        l2fc.threshold = l2fc.threshold, label.key = NULL
+      )
+    }
+    # remove gene version information
+    de.df$Gene <- gsub(pattern = "\\.[0-9]*$", replacement = "", x = de.df$Gene)
+    # ID conversion for peak data
     peak.res <- IDConversionPeak(deres = peak.res, org.db = org.db, sort.key = "log2FoldChange")
     # prepare diff peak results
     peak.de.df <- PrepareDEPlot(

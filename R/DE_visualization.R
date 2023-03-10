@@ -52,12 +52,16 @@ ExtractDA <- function(deres, data.type = c("RNA", "ChIP", "ATAC"),
       tidyr::separate(col = Gene, into = c("Peak", "PeakGene", "Annotation"), sep = "\\|") %>%
       tidyr::separate(col = Peak, into = c("Chr", "region"), sep = ":") %>%
       tidyr::separate(col = region, into = c("Start", "End"), sep = "-")
-    # change annotation name
-    anno.key.named <- c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic")
-    names(anno.key.named) <- c("P", "5U", "3U", "E", "I", "D", "DI")
-    deres$Annotation <- anno.key.named[deres$Annotation]
-    # filter annotation
-    deres <- deres[deres$Annotation == peak.anno.key, ]
+    if (peak.anno.key == "All") {
+      deres <- deres
+    } else {
+      # change annotation name
+      anno.key.named <- c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic")
+      names(anno.key.named) <- c("P", "5U", "3U", "E", "I", "D", "DI")
+      deres$Annotation <- anno.key.named[deres$Annotation]
+      # filter annotation
+      deres <- deres[deres$Annotation == peak.anno.key, ]
+    }
     # change row names
     rownames(deres) <- deres$name
     deres$name <- NULL

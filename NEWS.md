@@ -3,6 +3,10 @@
 * Added `MotifEnrich` to support motif enrichment for differentially accessible/binding peaks.
 * Updated documents.
 
+## Minor changes
+* Fixed bugs in `ExtractDA`.
+* Fixed bugs in `DEbPeak`.
+
 -------------
 
 # DEbPeak 0.8.0
