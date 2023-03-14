@@ -2,7 +2,7 @@
 % Please edit documentation in R/DE_bind_Peak.R
 \name{DEbPeak}
 \alias{DEbPeak}
-\title{Integrate Differential Expression Results and Peak Annotation/Differential Expression Results.}
+\title{Integrate Differential Expression Results with Peak Annotation/Differential Expression Results.}
 \usage{
 DEbPeak(
   de.res,
@@ -22,7 +22,7 @@ DEbPeak(
 )
 }
 \arguments{
-\item{de.res}{Data frame contains all genes of differential expression analysis.}
+\item{de.res}{Dataframe contains all genes of differential expression analysis.}
 
 \item{peak.res}{Dataframe contains all peak annotation (\code{peak.mode} is consenus) or
 differential analysis results of peak-related data (\code{peak.mode} is diff).}
@@ -59,7 +59,7 @@ Dataframe contains integrated results. The results will contain five categories:
 and Down_Up, Up_Up, Down_Down, Up_Down when \code{peak.mode} is diff. RNA in front.
 }
 \description{
-Integrate Differential Expression Results and Peak Annotation/Differential Expression Results.
+Integrate Differential Expression Results with Peak Annotation/Differential Expression Results.
 }
 \examples{
 library(DEbPeak)

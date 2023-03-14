@@ -8,7 +8,6 @@ DEbPeakFE(
   de.peak,
   peak.fe.key,
   out.folder = NULL,
-  gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"),
   go.type = c("ALL", "BP", "MF", "CC"),
   enrich.pvalue = 0.05,
   enrich.qvalue = 0.05,
@@ -31,8 +30,6 @@ DEbPeakFE(
 \item{peak.fe.key}{The key type of integrated results ("Type" column of \code{de.peak}) to perform functional enrichment.}
 
 \item{out.folder}{Folder to save enrichment results. Default: wording directory.}
-
-\item{gene.type}{Gene name type. Chosen from ENSEMBL, ENTREZID,SYMBOL. Default: ENSEMBL.}
 
 \item{go.type}{GO enrichment type, chosen from ALL, BP, MF, CC. Default: ALL.}
 
@@ -98,12 +95,12 @@ debchip.res <- DEbPeak(
 )
 # functional enrichment on UPbPeak genes
 upbpeak.fe.results <- DEbPeakFE(
-  de.peak = debchip.res, peak.fe.key = "UPbPeak", gene.type = "ENTREZID",
+  de.peak = debchip.res, peak.fe.key = "UPbPeak",
   species = "Mouse", save = FALSE
 )
 # functional enrichment on DOWNbPeak genes
 downbpeak.fe.results <- DEbPeakFE(
-  de.peak = debchip.res, peak.fe.key = "DOWNbPeak", gene.type = "ENTREZID",
+  de.peak = debchip.res, peak.fe.key = "DOWNbPeak",
   species = "Mouse", save = FALSE
 )
 }

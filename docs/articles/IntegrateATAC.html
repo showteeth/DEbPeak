@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DEbPeak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -224,22 +224,22 @@
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># peak profile plot</span>
 <span class="va">atac.peak.profile</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PeakProfile.html">PeakProfile</a></span><span class="op">(</span><span class="va">atac.peak.df</span>, species <span class="op">=</span> <span class="st">"Mouse"</span>, by <span class="op">=</span> <span class="st">"gene"</span>, region.type <span class="op">=</span> <span class="st">"body"</span>, nbin <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing promoter regions...  2023-03-08 16时57分27秒 
-## &gt;&gt; preparing tag matrix...        2023-03-08 16时57分28秒 
-## &gt;&gt; preparing start_site regions by ... 2023-03-08 16时57分28秒
-## &gt;&gt; preparing tag matrix...  2023-03-08 16时57分28秒 
-## &gt;&gt; generating figure...       2023-03-08 16时57分39秒</code></pre>
-<pre><code>## &gt;&gt; done...            2023-03-08 16时57分43秒</code></pre>
-<pre><code>## &gt;&gt; binning method is used...2023-03-08 16时57分44秒
-## &gt;&gt; preparing start_site regions by gene... 2023-03-08 16时57分44秒
-## &gt;&gt; preparing tag matrix by binning...  2023-03-08 16时57分44秒 
-## &gt;&gt; Running bootstrapping for tag matrix...        2023-03-08 16时58分26秒 
-## &gt;&gt; binning method is used...2023-03-08 16时58分27秒
-## &gt;&gt; preparing body regions by gene... 2023-03-08 16时58分27秒
-## &gt;&gt; preparing tag matrix by binning...  2023-03-08 16时58分27秒 
-## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2023-03-08 16时58分27秒
-## &gt;&gt; 16 peaks(0.296077%), having lengths smaller than 800bp, are filtered... 2023-03-08 16时58分33秒
-## &gt;&gt; Running bootstrapping for tag matrix...        2023-03-08 17时01分24秒</code></pre>
+<pre><code>## &gt;&gt; preparing promoter regions...  2023-03-14 00时45分40秒 
+## &gt;&gt; preparing tag matrix...        2023-03-14 00时45分41秒 
+## &gt;&gt; preparing start_site regions by ... 2023-03-14 00时45分41秒
+## &gt;&gt; preparing tag matrix...  2023-03-14 00时45分41秒 
+## &gt;&gt; generating figure...       2023-03-14 00时46分02秒</code></pre>
+<pre><code>## &gt;&gt; done...            2023-03-14 00时46分10秒</code></pre>
+<pre><code>## &gt;&gt; binning method is used...2023-03-14 00时46分11秒
+## &gt;&gt; preparing start_site regions by gene... 2023-03-14 00时46分11秒
+## &gt;&gt; preparing tag matrix by binning...  2023-03-14 00时46分11秒 
+## &gt;&gt; Running bootstrapping for tag matrix...        2023-03-14 00时47分16秒 
+## &gt;&gt; binning method is used...2023-03-14 00时47分17秒
+## &gt;&gt; preparing body regions by gene... 2023-03-14 00时47分17秒
+## &gt;&gt; preparing tag matrix by binning...  2023-03-14 00时47分17秒 
+## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2023-03-14 00时47分17秒
+## &gt;&gt; 16 peaks(0.296077%), having lengths smaller than 800bp, are filtered... 2023-03-14 00时47分26秒
+## &gt;&gt; Running bootstrapping for tag matrix...        2023-03-14 00时51分37秒</code></pre>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">atac.peak.profile</span><span class="op">$</span><span class="va">profile.plot</span></code></pre></div>
 <p><img src="IntegrateATAC_files/figure-html/debatac_atac_peak_profile-1.png" width="960" style="display: block; margin: auto;"></p>
@@ -256,14 +256,14 @@
   seq.style <span class="op">=</span> <span class="st">"UCSC"</span>, up.dist <span class="op">=</span> <span class="fl">20000</span>, down.dist <span class="op">=</span> <span class="fl">20000</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>## </code></pre>
-<pre><code>## &gt;&gt; preparing features information...      2023-03-08 17时01分27秒 
-## &gt;&gt; identifying nearest features...        2023-03-08 17时01分28秒 
-## &gt;&gt; calculating distance from peak to TSS...   2023-03-08 17时01分28秒 
-## &gt;&gt; assigning genomic annotation...        2023-03-08 17时01分28秒 
-## &gt;&gt; adding gene annotation...          2023-03-08 17时01分40秒</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2023-03-14 00时51分42秒 
+## &gt;&gt; identifying nearest features...        2023-03-14 00时51分43秒 
+## &gt;&gt; calculating distance from peak to TSS...   2023-03-14 00时51分43秒 
+## &gt;&gt; assigning genomic annotation...        2023-03-14 00时51分43秒 
+## &gt;&gt; adding gene annotation...          2023-03-14 00时52分02秒</code></pre>
 <pre><code>## 'select()' returned 1:many mapping between keys and columns</code></pre>
-<pre><code>## &gt;&gt; assigning chromosome lengths           2023-03-08 17时01分40秒 
-## &gt;&gt; done...                    2023-03-08 17时01分40秒</code></pre>
+<pre><code>## &gt;&gt; assigning chromosome lengths           2023-03-14 00时52分02秒 
+## &gt;&gt; done...                    2023-03-14 00时52分02秒</code></pre>
 <pre><code>## Warning: Removed 23 rows containing non-finite values (stat_count).</code></pre>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">atac.peak.anno.df</span> <span class="op">=</span> <span class="va">atac.peak.anno</span><span class="op">$</span><span class="va">df</span>
@@ -342,7 +342,9 @@
 <a href="#integrate-summary" class="anchor"></a>Integrate summary</h3>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># DE and ATAC venn plot</span>
-<span class="va">debatac.plot</span> <span class="op">=</span> <span class="fu"><a href="../reference/PlotDEbPeak.html">PlotDEbPeak</a></span><span class="op">(</span><span class="va">debatac.res</span>, peak.type <span class="op">=</span> <span class="st">"ChIP"</span>, show_percentage<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+<span class="co"># debatac.plot = PlotDEbPeak(debatac.res, peak.type = "ATAC", gene.col = "SYMBOL", show_percentage=FALSE)</span>
+<span class="va">debatac.plot</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteVenn.html">InteVenn</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debatac.res</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>, 
+                        peak.mode <span class="op">=</span> <span class="st">"consenus"</span>, gene.col <span class="op">=</span> <span class="st">"SYMBOL"</span>, show_percentage<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">debatac.plot</span></code></pre></div>
 <p><img src="IntegrateATAC_files/figure-html/debatac_integrate_plot-1.png" width="384" style="display: block; margin: auto;"></p>
 <hr>
@@ -357,7 +359,9 @@
 <a href="#upbpeak" class="anchor"></a>UPbPeak</h3>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># functional enrichment on direct targets</span>
-<span class="va">debatac.up.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/DEbPeakFE.html">DEbPeakFE</a></span><span class="op">(</span>de.peak <span class="op">=</span> <span class="va">debatac.res</span>, peak.fe.key <span class="op">=</span> <span class="st">"UPbPeak"</span>, gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
+<span class="co"># debatac.up.fe.results = DEbPeakFE(de.peak = debatac.res, peak.fe.key = "UPbPeak", gene.type = "ENTREZID", species="Mouse",save = F)</span>
+<span class="va">debatac.up.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteFE.html">InteFE</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debatac.res</span>, fe.key <span class="op">=</span> <span class="st">"UPbPeak"</span>, gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>,
+                               inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <pre><code>## conduct ALL GO enrichment analysis on: UPbPeak</code></pre>
 <pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
 <pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
@@ -418,8 +422,10 @@
 <a href="#downbpeak" class="anchor"></a>DOWNbPeak</h3>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># functional enrichment on direct targets</span>
-<span class="va">debatac.down.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/DEbPeakFE.html">DEbPeakFE</a></span><span class="op">(</span>de.peak <span class="op">=</span> <span class="va">debatac.res</span>, peak.fe.key <span class="op">=</span> <span class="st">"DOWNbPeak"</span>, 
-                                    gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
+<span class="co"># debatac.down.fe.results = DEbPeakFE(de.peak = debatac.res, peak.fe.key = "DOWNbPeak", </span>
+<span class="co">#                                     gene.type = "ENTREZID", species="Mouse",save = F)</span>
+<span class="va">debatac.down.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteFE.html">InteFE</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debatac.res</span>, fe.key <span class="op">=</span> <span class="st">"DOWNbPeak"</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>, 
+                                 gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <pre><code>## conduct ALL GO enrichment analysis on: DOWNbPeak</code></pre>
 <pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
 <pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
@@ -526,7 +532,7 @@
 ##  [2] TxDb.Mmusculus.UCSC.mm10.knownGene_3.10.0
 ##  [3] GenomicFeatures_1.42.2                   
 ##  [4] AnnotationDbi_1.52.0                     
-##  [5] DEbPeak_0.9.0                            
+##  [5] DEbPeak_1.0.0                            
 ##  [6] DESeq2_1.30.1                            
 ##  [7] SummarizedExperiment_1.20.0              
 ##  [8] Biobase_2.50.0                           

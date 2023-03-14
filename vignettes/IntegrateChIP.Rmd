@@ -103,7 +103,10 @@ head(debchip.res)
 ### Integrate summary
 ```{r debchip_integrate_plot, fig.height = 4, fig.width = 4, fig.align = "center", warning=FALSE}
 # DE and ChIP venn plot
-debchip.plot = PlotDEbPeak(debchip.res, peak.type = "ChIP", show_percentage=FALSE)
+# debchip.plot = PlotDEbPeak(debchip.res, peak.type = "ChIP", show_percentage=FALSE)
+# debchip.plot
+debchip.plot = InteVenn(inte.res = debchip.res, inte.type = "DEbPeak", peak.type = "ChIP", 
+                        peak.mode = "consenus", gene.col = "SYMBOL",show_percentage = FALSE)
 debchip.plot
 ```
 
@@ -115,8 +118,10 @@ There are **five categories** for users to choose to perform functional enrichme
 ### UPbPeak
 ```{r debchip_integrate_fe_up}
 # functional enrichment on direct targets
-debchip.up.fe.results = DEbPeakFE(de.peak = debchip.res, peak.fe.key = "UPbPeak", 
-                                  gene.type = "ENTREZID", species="Mouse",save = F)
+# debchip.up.fe.results = DEbPeakFE(de.peak = debchip.res, peak.fe.key = "UPbPeak", 
+#                                   gene.type = "ENTREZID", species="Mouse",save = F)
+debchip.up.fe.results = InteFE(inte.res = debchip.res, fe.key = "UPbPeak", inte.type = "DEbPeak",
+                               gene.type = "ENTREZID", species="Mouse",save = F)
 ```
 
 The results:
@@ -132,8 +137,10 @@ debchip.up.fe.results[["GO"]][["plot"]]
 ### DOWNbPeak
 ```{r debchip_integrate_fe_down}
 # functional enrichment on direct targets
-debchip.down.fe.results = DEbPeakFE(de.peak = debchip.res, peak.fe.key = "DOWNbPeak", 
-                                    gene.type = "ENTREZID", species="Mouse",save = F)
+# debchip.down.fe.results = DEbPeakFE(de.peak = debchip.res, peak.fe.key = "DOWNbPeak", 
+#                                     gene.type = "ENTREZID", species="Mouse",save = F)
+debchip.down.fe.results = InteFE(inte.res = debchip.res, fe.key = "DOWNbPeak", inte.type = "DEbPeak",
+                                 gene.type = "ENTREZID", species="Mouse",save = F)
 ```
 
 The results:

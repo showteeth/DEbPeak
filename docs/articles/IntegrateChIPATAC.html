@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DEbPeak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -214,7 +214,10 @@
 <a href="#integrate-summary" class="anchor"></a>Integrate summary</h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># DE and ChIP venn plot</span>
-<span class="va">debpeak.plot</span> <span class="op">=</span> <span class="fu"><a href="../reference/PlotDEbPeak.html">PlotDEbPeak</a></span><span class="op">(</span><span class="va">debpeak.res</span>, peak.type <span class="op">=</span> <span class="st">"Peak"</span>, show_percentage<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+<span class="co"># debpeak.plot = PlotDEbPeak(debpeak.res, peak.type = "Peak", show_percentage=FALSE)</span>
+<span class="co"># debpeak.plot</span>
+<span class="va">debpeak.plot</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteVenn.html">InteVenn</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debpeak.res</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>, peak.type <span class="op">=</span> <span class="st">"Peak"</span>, 
+                        gene.col <span class="op">=</span> <span class="st">"SYMBOL"</span>,show_percentage <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">debpeak.plot</span></code></pre></div>
 <p><img src="IntegrateChIPATAC_files/figure-html/debpeak_integrate_plot-1.png" width="384" style="display: block; margin: auto;"></p>
 <hr>
@@ -229,7 +232,9 @@
 <a href="#upbpeak" class="anchor"></a>UPbPeak</h3>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># functional enrichment on direct targets</span>
-<span class="va">debpeak.up.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/DEbPeakFE.html">DEbPeakFE</a></span><span class="op">(</span>de.peak <span class="op">=</span> <span class="va">debpeak.res</span>, peak.fe.key <span class="op">=</span> <span class="st">"UPbPeak"</span>, gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
+<span class="co"># debpeak.up.fe.results = DEbPeakFE(de.peak = debpeak.res, peak.fe.key = "UPbPeak", gene.type = "ENTREZID", species="Mouse",save = F)</span>
+<span class="va">debpeak.up.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteFE.html">InteFE</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debpeak.res</span>, fe.key <span class="op">=</span> <span class="st">"UPbPeak"</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>,
+                               gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <pre><code>## </code></pre>
 <pre><code>## conduct ALL GO enrichment analysis on: UPbPeak</code></pre>
 <pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
@@ -267,8 +272,10 @@
 <a href="#downbpeak" class="anchor"></a>DOWNbPeak</h3>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># functional enrichment on direct targets</span>
-<span class="va">debpeak.down.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/DEbPeakFE.html">DEbPeakFE</a></span><span class="op">(</span>de.peak <span class="op">=</span> <span class="va">debpeak.res</span>, peak.fe.key <span class="op">=</span> <span class="st">"DOWNbPeak"</span>, 
-                                    gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
+<span class="co"># debpeak.down.fe.results = DEbPeakFE(de.peak = debpeak.res, peak.fe.key = "DOWNbPeak", </span>
+<span class="co">#                                     gene.type = "ENTREZID", species="Mouse",save = F)</span>
+<span class="va">debpeak.down.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteFE.html">InteFE</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debpeak.res</span>, fe.key <span class="op">=</span> <span class="st">"DOWNbPeak"</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>,
+                                 gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <pre><code>## conduct ALL GO enrichment analysis on: DOWNbPeak</code></pre>
 <pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
 <pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
@@ -334,7 +341,7 @@
 ## 
 ## other attached packages:
 ##  [1] org.Mm.eg.db_3.12.0         AnnotationDbi_1.52.0       
-##  [3] DEbPeak_0.9.0               DESeq2_1.30.1              
+##  [3] DEbPeak_1.0.0               DESeq2_1.30.1              
 ##  [5] SummarizedExperiment_1.20.0 Biobase_2.50.0             
 ##  [7] MatrixGenerics_1.2.1        matrixStats_0.58.0         
 ##  [9] GenomicRanges_1.42.0        GenomeInfoDb_1.26.7        

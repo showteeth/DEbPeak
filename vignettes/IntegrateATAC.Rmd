@@ -104,7 +104,9 @@ head(debatac.res)
 ### Integrate summary
 ```{r debatac_integrate_plot, fig.height = 4, fig.width = 4, fig.align = "center", warning=FALSE}
 # DE and ATAC venn plot
-debatac.plot = PlotDEbPeak(debatac.res, peak.type = "ChIP", show_percentage=FALSE)
+# debatac.plot = PlotDEbPeak(debatac.res, peak.type = "ATAC", gene.col = "SYMBOL", show_percentage=FALSE)
+debatac.plot = InteVenn(inte.res = debatac.res, inte.type = "DEbPeak", 
+                        peak.mode = "consenus", gene.col = "SYMBOL", show_percentage=FALSE)
 debatac.plot
 ```
 
@@ -116,7 +118,9 @@ There are **five categories** for users to choose to perform functional enrichme
 ### UPbPeak
 ```{r debatac_integrate_fe_up}
 # functional enrichment on direct targets
-debatac.up.fe.results = DEbPeakFE(de.peak = debatac.res, peak.fe.key = "UPbPeak", gene.type = "ENTREZID", species="Mouse",save = F)
+# debatac.up.fe.results = DEbPeakFE(de.peak = debatac.res, peak.fe.key = "UPbPeak", gene.type = "ENTREZID", species="Mouse",save = F)
+debatac.up.fe.results = InteFE(inte.res = debatac.res, fe.key = "UPbPeak", gene.type = "ENTREZID",
+                               inte.type = "DEbPeak", species="Mouse",save = F)
 ```
 
 The results:
@@ -132,8 +136,10 @@ debatac.up.fe.results[["GO"]][["plot"]]
 ### DOWNbPeak
 ```{r debatac_integrate_fe_down}
 # functional enrichment on direct targets
-debatac.down.fe.results = DEbPeakFE(de.peak = debatac.res, peak.fe.key = "DOWNbPeak", 
-                                    gene.type = "ENTREZID", species="Mouse",save = F)
+# debatac.down.fe.results = DEbPeakFE(de.peak = debatac.res, peak.fe.key = "DOWNbPeak", 
+#                                     gene.type = "ENTREZID", species="Mouse",save = F)
+debatac.down.fe.results = InteFE(inte.res = debatac.res, fe.key = "DOWNbPeak", inte.type = "DEbPeak", 
+                                 gene.type = "ENTREZID", species="Mouse",save = F)
 ```
 
 The results:

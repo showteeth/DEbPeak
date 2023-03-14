@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create Quadrant Diagram for Differential Expression Analysis of RNA-seq and Peak-related Data. — InteDiffQuad • DEbPeak</title>
+<title>Create Quadrant Diagram for Two Differential Analysis Integration Results. — InteDiffQuad • DEbPeak</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Create Quadrant Diagram for Differential Expression Analysis of RNA-seq and Peak-related Data. — InteDiffQuad" />
-<meta property="og:description" content="Create Quadrant Diagram for Differential Expression Analysis of RNA-seq and Peak-related Data." />
+<meta property="og:title" content="Create Quadrant Diagram for Two Differential Analysis Integration Results. — InteDiffQuad" />
+<meta property="og:description" content="Create Quadrant Diagram for Two Differential Analysis Integration Results." />
 
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DEbPeak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -162,22 +162,22 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create Quadrant Diagram for Differential Expression Analysis of RNA-seq and Peak-related Data.</h1>
+    <h1>Create Quadrant Diagram for Two Differential Analysis Integration Results.</h1>
     
     <div class="hidden name"><code>InteDiffQuad.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Create Quadrant Diagram for Differential Expression Analysis of RNA-seq and Peak-related Data.</p>
+    <p>Create Quadrant Diagram for Two Differential Analysis Integration Results.</p>
     </div>
 
     <pre class="usage"><span class='fu'>InteDiffQuad</span><span class='op'>(</span>
-  <span class='va'>de.peak</span>,
-  peak.type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ChIP"</span>, <span class='st'>"ATAC"</span><span class='op'>)</span>,
+  <span class='va'>inte.res</span>,
+  inte.type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"DEbPeak"</span>, <span class='st'>"PeakbPeak"</span>, <span class='st'>"DEbDE"</span><span class='op'>)</span>,
   point.alpha <span class='op'>=</span> <span class='fl'>0.6</span>,
   point.size.vec <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>4</span><span class='op'>)</span>,
-  rna.l2fc.threshold <span class='op'>=</span> <span class='fl'>0</span>,
-  peak.l2fc.threshold <span class='op'>=</span> <span class='fl'>0</span>,
+  f1.l2fc.threshold <span class='op'>=</span> <span class='fl'>0</span>,
+  f2.l2fc.threshold <span class='op'>=</span> <span class='fl'>0</span>,
   linetype <span class='op'>=</span> <span class='fl'>2</span>,
   point.color.vec <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"grey"</span>, <span class='st'>"red"</span>, <span class='st'>"blue"</span>, <span class='st'>"grey"</span><span class='op'>)</span>,
   legend.pos <span class='op'>=</span> <span class='st'>"top"</span>,
@@ -191,12 +191,12 @@
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>de.peak</th>
-      <td><p>Dataframe contains integrated results of differential analysis of RNA-seq and Peak-related data.</p></td>
+      <th>inte.res</th>
+      <td><p>Integration results, can be output of <code>DEbPeak</code>, <code>PeakbPeak</code>, <code>DEbDE</code>.</p></td>
     </tr>
     <tr>
-      <th>peak.type</th>
-      <td><p>Peak data type, choose from ChIP, ATAC. Default: ChIP.</p></td>
+      <th>inte.type</th>
+      <td><p>The integration type, choose from "DEbDE", "PeakbPeak", "DEbPeak". Default: "DEbPeak".</p></td>
     </tr>
     <tr>
       <th>point.alpha</th>
@@ -204,16 +204,16 @@
     </tr>
     <tr>
       <th>point.size.vec</th>
-      <td><p>Point size for regular(DE or non-DE) and(or) labeled points.
+      <td><p>Point size for regular and(or) labeled points (specified by <code>label.df</code> or <code>label.num</code>).
 Default: 2 for regular and 4 for labeled points.</p></td>
     </tr>
     <tr>
-      <th>rna.l2fc.threshold</th>
-      <td><p>Log2 fold change threshold for RNA-seq to get differentially expressed results. Default: 0.</p></td>
+      <th>f1.l2fc.threshold</th>
+      <td><p>Log2 fold change threshold for file1 to get differential analysis results. Default: 0.</p></td>
     </tr>
     <tr>
-      <th>peak.l2fc.threshold</th>
-      <td><p>Log2 fold change threshold for peak-related data to get differentially accessible/binding peaks. Default: 0.</p></td>
+      <th>f2.l2fc.threshold</th>
+      <td><p>Log2 fold change threshold for file2 to get differential analysis results. Default: 0.</p></td>
     </tr>
     <tr>
       <th>linetype</th>
@@ -253,11 +253,18 @@ When provided, the second column should not be in <code>de.peak</code>.</p></td>
     <p>A ggplot2 object.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># # prepare integrated differential expression results of RNA-seq and ATAC-seq</span>
-<span class='co'># # label dataframe</span>
-<span class='co'># label.df = data.frame(Gene = c("Ccl3", "Ccl5", "Cd28", "Cx3cr1", "Prdm1", "Tcf7", "Slamf6", "Id3", "Cxcr5"))</span>
-<span class='co'># # create plot</span>
-<span class='co'># quad.plot = InteDiffQuad(de.peak = debatac.res, peak.type = "ATAC", label.df = label.df, label.color = "green")</span>
+    <pre class="examples"><div class='input'><span class='co'># RNA-seq and RNA-seq</span>
+<span class='co'># de.de.label.df = data.frame(Gene = c("ENSDARG00000007396", "ENSDARG00000010729", "ENSDARG00000002194", "ENSDARG00000002587"))</span>
+<span class='co'># de.de.quad = InteDiffQuad(inte.res = de.de, inte.type = "DEbDE", f1.l2fc.threshold = 0.6, f2.l2fc.threshold = 0.6,</span>
+<span class='co'>#                           show.corr = FALSE, label.df = de.de.label.df)</span>
+<span class='co'># Peak and Peak</span>
+<span class='co'># peak.peak.label.df = data.frame(Gene = c("Aak1", "Adam19", "Oaf", "Nsg2"))</span>
+<span class='co'># peak.peak.quad = InteDiffQuad(inte.res = atac.atac, inte.type = "PeakbPeak", f1.l2fc.threshold = 0,</span>
+<span class='co'>#                               f2.l2fc.threshold = 0.5, show.corr = TRUE, label.df = peak.peak.label.df)</span>
+<span class='co'># RNA-seq and Peak</span>
+<span class='co'># de.peak.label.df = data.frame(Gene = c("Ccl3", "Ccl5", "Cd28", "Cx3cr1", "Prdm1", "Tcf7", "Slamf6", "Id3", "Cxcr5"))</span>
+<span class='co'># de.peak.quad = InteDiffQuad(inte.res = debatac.res, inte.type = "DEbPeak", f1.l2fc.threshold = 0,</span>
+<span class='co'>#                             f2.l2fc.threshold = 0, show.corr = TRUE, label.df = de.peak.label.df)</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -8,6 +8,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Introduction
+
 [Eukaryotic chromatin is tightly packaged into nucleosomes, and the positioning of nucleosomes can regulate gene expression by changing the in vivo availability of binding sites to transcription factors (TFs)](https://epigeneticsandchromatin.biomedcentral.com/articles/10.1186/1756-8935-7-33). Assay of Transposase Accessible Chromatin sequencing (ATAC-seq) is a technique used to assess genome-wide chromatin accessibility. Thus, combining ATAC-seq with RNA-seq can be used to understanding the role of chromatin structure in regulating gene expression.
 
 Different from those in [Integrate RNA-seq with ATAC-seq (intersection)](https://showteeth.github.io/DEbPeak/articles/IntegrateATAC.html), we will integrate RNA-seq and ATAC-seq based on differential expression analysis results. In detail, **integrating differentially expressed genes with differentially accessible peaks**.
@@ -15,6 +16,7 @@ Different from those in [Integrate RNA-seq with ATAC-seq (intersection)](https:/
 <hr />
 
 ## Example data
+
 The data used here are from [In vivo CD8+ T cell CRISPR screening reveals control by Fli1 in infection and cancer](https://doi.org/10.1016/j.cell.2021.02.019):
 
 * **RNA-seq data**: the sgCtrl vs sgFli1 RNA sequencing at D8 Cl13 p.i., the raw data are stored in [GSE149838](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE149838)
@@ -32,9 +34,11 @@ suppressWarnings(suppressMessages(library(DEbPeak)))
 <hr />
 
 ## Differential Expression Analysis 
+
 To simplify the steps of obtaining differential expression analysis results, `DEbPeak` provides `ConductDESeq2` to perfrom all steps of differential expression analysis, including **quality control**, **principal component analysis**, **differential expression analysis** and **functional enrichment analysis**.
 
 ### ATAC-seq
+
 ```{r debatac_atac_da_peak}
 peak.matrix.file <- system.file("extdata", "RA_ATAC_count.txt", package = "DEbPeak")
 peak.meta.file <- system.file("extdata", "RA_ATAC_meta.txt", package = "DEbPeak")
@@ -60,6 +64,7 @@ head(dds.peak.results.ordered)
 <hr />
 
 ### RNA-seq 
+
 `DEbPeak` has prepared the differential expression analysis results of RNA-seq:
 ```{r debatac_rna_deg}
 rna.diff.file <- system.file("extdata", "RA_RNA_diff.txt", package = "DEbPeak")
@@ -69,7 +74,9 @@ rna.diff <- read.table(file = rna.diff.file, header = TRUE, sep = "\t")
 <hr />
 
 ## Integrate ATAC-seq and RNA-seq
+
 In this step, we will integrate ATAC-seq and RNA-seq to explore the role of chromatin structure of promoter region in regulating target gene expression.
+
 ### Integrate
 ```{r debatac_integrate}
 debatac.res <- DEbPeak(de.res = rna.diff, peak.res = dds.peak.results.ordered, peak.mode = "diff", peak.anno.key = "All",
@@ -80,28 +87,40 @@ head(debatac.res)
 <hr />
 
 ### Integrate summary
+
 #### Venn plot
+
 ```{r debatac_integrate_plot, fig.height = 4, fig.width = 4, fig.align = "center", warning=FALSE}
 # DE and ATAC venn plot
-debatac.plot = PlotDEbPeak(de.peak = debatac.res, peak.type = "ATAC", peak.mode = "diff", show_percentage = FALSE)
+# debatac.plot = PlotDEbPeak(de.peak = debatac.res, peak.type = "ATAC", peak.mode = "diff", show_percentage = FALSE)
+# debatac.plot
+debatac.plot = InteVenn(inte.res = debatac.res, inte.type = "DEbPeak", peak.mode = "diff",
+                        peak.type = "ATAC", show_percentage = FALSE)
 debatac.plot
 ```
 
 #### Quadrant diagram
-```{r debatac_integrate_quad_plot, fig.height = 6, fig.width = 6, fig.align = "center", warning=FALSE}
+
+```{r debatac_integrate_quad_plot, fig.height = 8, fig.width = 6, fig.align = "center", warning=FALSE}
 label.df = data.frame(Gene = c("Ccl3", "Ccl5", "Cd28", "Cx3cr1", "Prdm1", "Tcf7", "Slamf6", "Id3", "Cxcr5"))
-quad.plot = InteDiffQuad(de.peak = debatac.res, peak.type = "ATAC", label.df = label.df, label.color = "green")
+quad.plot = InteDiffQuad(inte.res = debatac.res, inte.type = "DEbPeak", 
+                         label.df = label.df, label.color = "green")
 quad.plot
 ```
 
 <hr />
 
 ## Functional enrichment
+
 There are **eight categories** for users to choose to perform functional enrichment: `Down_Up`, `Up_Up`, `Down_Down`, `Up_Down`, `RNAUp`, `RNADown`, `PeakUp`, `PeakDown`. Here, we will use `Up_Up` and `Down_Down` as examples.
+
 ### Both up-regulated
+
 ```{r debatac_integrate_fe_up}
-debatac.up.fe.results = DEbPeakFE(de.peak = debatac.res, peak.fe.key = "Up_Up", 
-                                  gene.type = "ENTREZID", species="Mouse",save = F)
+# debatac.up.fe.results = DEbPeakFE(de.peak = debatac.res, peak.fe.key = "Up_Up", 
+#                                   gene.type = "ENTREZID", species="Mouse",save = F)
+debatac.up.fe.results = InteFE(inte.res = debatac.res, fe.key = "Up_Up", inte.type = "DEbPeak",
+                               gene.type = "ENTREZID", species="Mouse",save = F)
 ```
 
 The results:
@@ -114,9 +133,12 @@ debatac.up.fe.results[["GO"]][["plot"]]
 <hr />
 
 ### Both down-regulated
+
 ```{r debatac_integrate_fe_down}
-debatac.down.fe.results = DEbPeakFE(de.peak = debatac.res, peak.fe.key = "Down_Down", 
-                                    gene.type = "ENTREZID", species="Mouse",save = F)
+# debatac.down.fe.results = DEbPeakFE(de.peak = debatac.res, peak.fe.key = "Down_Down", 
+#                                     gene.type = "ENTREZID", species="Mouse",save = F)
+debatac.down.fe.results = InteFE(inte.res = debatac.res, fe.key = "Down_Down", inte.type = "DEbPeak",
+                                 gene.type = "ENTREZID", species="Mouse",save = F)
 ```
 
 The results:
@@ -129,6 +151,7 @@ debatac.down.fe.results[["GO"]][["plot"]]
 <hr />
 
 ## Motif enrichment
+
 [Different from ChIP-seq which profile specific protein–DNA interactions (depends on the antibody provided), ATAC-seq can proflie global chromatin accessibility](https://link.springer.com/article/10.1186/s43556-020-00009-w). Thus, the peaks of ATAC-seq may originate from hundreds of TFs. To reveal the possible TFs involved, motif enrichment analysis is a good solution.
 
 As pointed above, there are **eight categories** for users to choose to motif enrichment, we will use `Up_Up` as example.
@@ -143,6 +166,7 @@ FindMotif(inte.res = debatac.res, peak.anno.res = NULL,
 <hr />
 
 ## Session info
+
 ```{r session}
 sessionInfo()
 ```

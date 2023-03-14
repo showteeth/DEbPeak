@@ -1,3 +1,18 @@
+# DEbPeak 1.0.0
+## New features
+* Added `DEbDE` and `DEbDEFE` to support integrating two differential expression results.
+* Added `PeakbPeak` and `PeakbPeakFE` to support integrating peak annotation/differential expression results.
+* Rewrote `InteDiffQuad` to support integration results of peak-related data and peak-related data (PeakbPeak), RNA-seq and RNA-seq (DEbDE), RNA-seq and peak-related data (DEbPeak).
+* Added `InteFE` to replace `DEbDEFE`, `PeakbPeakFE` and `DEbPeakFE`.
+* Added `InteVenn` to support integration results of peak-related data and peak-related data (PeakbPeak), RNA-seq and RNA-seq (DEbDE), RNA-seq and peak-related data (DEbPeak).
+
+## Minor changes
+* Fixed the way `PrepareDEPlot` filtering.
+* Removed parameter `gene.type` in `DEbPeakFE`.
+* Added parameter `gene.col` in `PlotDEbPeak` to show genes instead of peaks.
+
+-------------
+
 # DEbPeak 0.9.0
 ## New features
 * Added `MotifEnrich` to support motif enrichment for differentially accessible/binding peaks.

@@ -1,6 +1,6 @@
 Package: DEbPeak
 Title: DEbPeak - Analyze and integrate multi-omics to unravel the regulation of gene expression
-Version: 0.9.0
+Version: 1.0.0
 Authors@R: 
     person(given = "Yabing",
            family = "Song",
@@ -10,7 +10,8 @@ Maintainer: Yabing Song <songyb0519@gmail.com>
 Description: DEbPeak aims to explore, visualize, interpret multi-omics data and unravel the regulation of gene expression by 
     combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains six functional panels: 
     Quality Control (QC), Principal Component Analysis (PCA), Differential Analysis (DA), Functional Enrichment Analysis (FEA), 
-    Integrate RNA-seq with peak-related data (support the simultaneous integration of two kinds of peak-related data), Utils.
+    Integrate RNA-seq with peak-related data (support the simultaneous integration of two kinds of peak-related data), 
+    Integrate RNA-seq with RNA-seq, Integrate peak-related data with peak-related data, Utils.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

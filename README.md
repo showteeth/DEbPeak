@@ -28,6 +28,12 @@
   - Integration summary: include venn diagram and quadrant diagram (differential mode).
   - GO enrichment on integrated results.
   - Find motif on integrated results: Due to the nature of ATAC-seq, we usually need to find motif on integrated results to obtain potential regulatory factors.
+* **Integrate RNA-seq with RNA-seq**:
+  - Integration summary: include venn diagram and quadrant diagram.
+  - GO enrichment on integrated results.
+* **Integrate peak-related data with peak-related data**:
+  - Integration summary: include venn diagram and quadrant diagram (differential mode).
+  - GO enrichment on integrated results.
 * **Utils**: useful functions when dealing with RNA-seq data, including gene name conversion and count normalization(DESeq2’s median of ratios, TMM, CPM, TPM, RPKM).
 
 To enhance the ease of use of the tool, we have also developed an **web server** for `DEbPeak` that allows users to submit files to the web page and set parameters to get the desired results. Unlike the standalone R package, *the web server has built-in `DESeq2` for differential analysis*, while the R package can accept user input results from `DESeq2` or `edgeR`, which will be **more flexible**.
@@ -236,33 +242,55 @@ Detailed usage is available in [here](https://showteeth.github.io/DEbPeak/). We 
   <tr>
     <td rowspan="6">Integrate RNA-seq with Peak-related Data</td>
     <td>DEbPeak</td>
-    <td>Integrate differential expression results and peak annotation/differential expression results.</td>
+    <td>Integrate differential expression results and peak annotation/differential analysis results.</td>
     <td>tidyverse</td>
   </tr>
   <tr>
-    <td>PlotDEbPeak</td>
-    <td>Create integrated summary plot</td>
+    <td>InteVenn</td>
+    <td>Create venn diagram for integration results (support <code>DEbPeak</code>, <code>DEbDE</code>, <code>PeakbPeak</code>)</td>
     <td>ggvenn</td>
   </tr>
   <tr>
     <td>InteDiffQuad</td>
-    <td>Create quadrant diagram for differential expression analysis of RNA-seq and peak-related data</td>
+    <td>Create quadrant diagram for integration results (support <code>DEbPeak</code>, <code>DEbDE</code>, <code>PeakbPeak</code>)</td>
     <td>ggplot2</td>
   </tr>
   <tr>
-    <td>DEbPeakFE</td>
-    <td>GO enrichment on integrated results</td>
+    <td>InteFE</td>
+    <td>GO enrichment on integration results (support <code>DEbPeak</code>, <code>DEbDE</code>, <code>PeakbPeak</code>)</td>
     <td>clusterProfiler</td>
   </tr>
   <tr>
     <td>FindMotif</td>
-    <td>Find motif on integrated results</td>
+    <td>Find motif on integration results</td>
     <td>HOMER</td>
   </tr>
   <tr>
     <td>DEbCA</td>
     <td>Integrate differential expression results and peak annotation results (two kinds of peak-related data)</td>
     <td>tidyverse</td>
+  </tr>
+  <tr>
+    <td rowspan="2">Integrate RNA-seq with RNA-seq</td>
+    <td>DEbDE</td>
+    <td>Integrate Two Differential Expression Results</td>
+    <td>tidyverse</td>
+  </tr>
+  <tr>
+    <td>DEbDEFE</td>
+    <td>GO Enrichment on Two Differential Expression Integration Results.</td>
+    <td>clusterProfiler</td>
+  </tr>
+  <tr>
+    <td rowspan="2">Integrate Peak-related Data with Peak-related Data</td>
+    <td>PeakbPeak</td>
+    <td>Integrate Two Peak Annotation/Differential Analysis Results.</td>
+    <td>tidyverse</td>
+  </tr>
+  <tr>
+    <td>PeakbPeakFE</td>
+    <td>GO Enrichment on Two Peak Annotation/Differential Analysis Integration Results.</td>
+    <td>clusterProfiler</td>
   </tr>
   <tr>
     <td rowspan="3">Utils</td>

@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DEbPeak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -667,7 +667,10 @@
 <div id="integrate-atac-seq-and-rna-seq" class="section level2">
 <h2 class="hasAnchor">
 <a href="#integrate-atac-seq-and-rna-seq" class="anchor"></a>Integrate ATAC-seq and RNA-seq</h2>
-<p>In this step, we will integrate ATAC-seq and RNA-seq to explore the role of chromatin structure of promoter region in regulating target gene expression. ### Integrate</p>
+<p>In this step, we will integrate ATAC-seq and RNA-seq to explore the role of chromatin structure of promoter region in regulating target gene expression.</p>
+<div id="integrate" class="section level3">
+<h3 class="hasAnchor">
+<a href="#integrate" class="anchor"></a>Integrate</h3>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">debatac.res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DEbPeak.html">DEbPeak</a></span><span class="op">(</span>de.res <span class="op">=</span> <span class="va">rna.diff</span>, peak.res <span class="op">=</span> <span class="va">dds.peak.results.ordered</span>, peak.mode <span class="op">=</span> <span class="st">"diff"</span>, peak.anno.key <span class="op">=</span> <span class="st">"All"</span>,
                        l2fc.threshold <span class="op">=</span> <span class="fl">0</span>, peak.l2fc.threshold <span class="op">=</span> <span class="fl">0</span>, org.db <span class="op">=</span> <span class="st">"org.Mm.eg.db"</span>, merge.key <span class="op">=</span> <span class="st">"SYMBOL"</span><span class="op">)</span></code></pre></div>
@@ -707,6 +710,7 @@
 ## 5         NA           &lt;NA&gt;               &lt;NA&gt;   &lt;NA&gt; PeakDown
 ## 6         NA           &lt;NA&gt;               &lt;NA&gt;   &lt;NA&gt; PeakDown</code></pre>
 <hr>
+</div>
 <div id="integrate-summary" class="section level3">
 <h3 class="hasAnchor">
 <a href="#integrate-summary" class="anchor"></a>Integrate summary</h3>
@@ -715,7 +719,10 @@
 <a href="#venn-plot" class="anchor"></a>Venn plot</h4>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># DE and ATAC venn plot</span>
-<span class="va">debatac.plot</span> <span class="op">=</span> <span class="fu"><a href="../reference/PlotDEbPeak.html">PlotDEbPeak</a></span><span class="op">(</span>de.peak <span class="op">=</span> <span class="va">debatac.res</span>, peak.type <span class="op">=</span> <span class="st">"ATAC"</span>, peak.mode <span class="op">=</span> <span class="st">"diff"</span>, show_percentage <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="co"># debatac.plot = PlotDEbPeak(de.peak = debatac.res, peak.type = "ATAC", peak.mode = "diff", show_percentage = FALSE)</span>
+<span class="co"># debatac.plot</span>
+<span class="va">debatac.plot</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteVenn.html">InteVenn</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debatac.res</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>, peak.mode <span class="op">=</span> <span class="st">"diff"</span>,
+                        peak.type <span class="op">=</span> <span class="st">"ATAC"</span>, show_percentage <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">debatac.plot</span></code></pre></div>
 <p><img src="IntegrateATACDE_files/figure-html/debatac_integrate_plot-1.png" width="384" style="display: block; margin: auto;"></p>
 </div>
@@ -724,7 +731,8 @@
 <a href="#quadrant-diagram" class="anchor"></a>Quadrant diagram</h4>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">label.df</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>Gene <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Ccl3"</span>, <span class="st">"Ccl5"</span>, <span class="st">"Cd28"</span>, <span class="st">"Cx3cr1"</span>, <span class="st">"Prdm1"</span>, <span class="st">"Tcf7"</span>, <span class="st">"Slamf6"</span>, <span class="st">"Id3"</span>, <span class="st">"Cxcr5"</span><span class="op">)</span><span class="op">)</span>
-<span class="va">quad.plot</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteDiffQuad.html">InteDiffQuad</a></span><span class="op">(</span>de.peak <span class="op">=</span> <span class="va">debatac.res</span>, peak.type <span class="op">=</span> <span class="st">"ATAC"</span>, label.df <span class="op">=</span> <span class="va">label.df</span>, label.color <span class="op">=</span> <span class="st">"green"</span><span class="op">)</span>
+<span class="va">quad.plot</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteDiffQuad.html">InteDiffQuad</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debatac.res</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>, 
+                         label.df <span class="op">=</span> <span class="va">label.df</span>, label.color <span class="op">=</span> <span class="st">"green"</span><span class="op">)</span>
 <span class="va">quad.plot</span></code></pre></div>
 <p><img src="IntegrateATACDE_files/figure-html/debatac_integrate_quad_plot-1.png" width="576" style="display: block; margin: auto;"></p>
 <hr>
@@ -734,10 +742,15 @@
 <div id="functional-enrichment" class="section level2">
 <h2 class="hasAnchor">
 <a href="#functional-enrichment" class="anchor"></a>Functional enrichment</h2>
-<p>There are <strong>eight categories</strong> for users to choose to perform functional enrichment: <code>Down_Up</code>, <code>Up_Up</code>, <code>Down_Down</code>, <code>Up_Down</code>, <code>RNAUp</code>, <code>RNADown</code>, <code>PeakUp</code>, <code>PeakDown</code>. Here, we will use <code>Up_Up</code> and <code>Down_Down</code> as examples. ### Both up-regulated</p>
+<p>There are <strong>eight categories</strong> for users to choose to perform functional enrichment: <code>Down_Up</code>, <code>Up_Up</code>, <code>Down_Down</code>, <code>Up_Down</code>, <code>RNAUp</code>, <code>RNADown</code>, <code>PeakUp</code>, <code>PeakDown</code>. Here, we will use <code>Up_Up</code> and <code>Down_Down</code> as examples.</p>
+<div id="both-up-regulated" class="section level3">
+<h3 class="hasAnchor">
+<a href="#both-up-regulated" class="anchor"></a>Both up-regulated</h3>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">debatac.up.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/DEbPeakFE.html">DEbPeakFE</a></span><span class="op">(</span>de.peak <span class="op">=</span> <span class="va">debatac.res</span>, peak.fe.key <span class="op">=</span> <span class="st">"Up_Up"</span>, 
-                                  gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="co"># debatac.up.fe.results = DEbPeakFE(de.peak = debatac.res, peak.fe.key = "Up_Up", </span>
+<span class="co">#                                   gene.type = "ENTREZID", species="Mouse",save = F)</span>
+<span class="va">debatac.up.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteFE.html">InteFE</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debatac.res</span>, fe.key <span class="op">=</span> <span class="st">"Up_Up"</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>,
+                               gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <pre><code>## conduct ALL GO enrichment analysis on: Up_Up</code></pre>
 <pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
 <pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
@@ -783,12 +796,15 @@
 <code class="sourceCode R"><span class="va">debatac.up.fe.results</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"plot"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <p><img src="IntegrateATACDE_files/figure-html/debatac_integrate_fe_up_show-1.png" width="768" style="display: block; margin: auto;"></p>
 <hr>
+</div>
 <div id="both-down-regulated" class="section level3">
 <h3 class="hasAnchor">
 <a href="#both-down-regulated" class="anchor"></a>Both down-regulated</h3>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">debatac.down.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/DEbPeakFE.html">DEbPeakFE</a></span><span class="op">(</span>de.peak <span class="op">=</span> <span class="va">debatac.res</span>, peak.fe.key <span class="op">=</span> <span class="st">"Down_Down"</span>, 
-                                    gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="co"># debatac.down.fe.results = DEbPeakFE(de.peak = debatac.res, peak.fe.key = "Down_Down", </span>
+<span class="co">#                                     gene.type = "ENTREZID", species="Mouse",save = F)</span>
+<span class="va">debatac.down.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteFE.html">InteFE</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debatac.res</span>, fe.key <span class="op">=</span> <span class="st">"Down_Down"</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>,
+                                 gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <pre><code>## conduct ALL GO enrichment analysis on: Down_Down</code></pre>
 <pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
 <pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
@@ -873,7 +889,7 @@
 ## other attached packages:
 ## [1] org.Mm.eg.db_3.12.0  AnnotationDbi_1.52.0 IRanges_2.24.1      
 ## [4] S4Vectors_0.28.1     Biobase_2.50.0       BiocGenerics_0.42.0 
-## [7] DEbPeak_0.9.0       
+## [7] DEbPeak_1.0.0       
 ## 
 ## loaded via a namespace (and not attached):
 ##   [1] rsvd_1.0.3                             

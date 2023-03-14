@@ -8,6 +8,7 @@ PlotDEbPeak(
   de.peak,
   peak.type = c("ChIP", "ATAC", "Peak"),
   peak.mode = c("consenus", "diff"),
+  gene.col = c("geneId", "ENSEMBL", "SYMBOL"),
   ...
 )
 }
@@ -18,6 +19,8 @@ PlotDEbPeak(
 
 \item{peak.mode}{The source of peak results, choose from consenus (peak annotation) and diff (differential expression analysis).
 Default: consenus.}
+
+\item{gene.col}{Column of \code{inte.res} contains genes. Same as \code{merge.key} in \code{\link{DEbPeak}}.}
 
 \item{...}{Parameters for \code{\link{ggvenn}}.}
 }
@@ -61,5 +64,8 @@ debchip.res <- DEbPeak(
   peak.anno.key = "Promoter", merge.key = "SYMBOL"
 )
 # DE and ChIP venn plot
-debchip.plot <- PlotDEbPeak(de.peak = debchip.res, peak.type = "ChIP", show_percentage = FALSE)
+debchip.plot <- PlotDEbPeak(
+  de.peak = debchip.res, peak.type = "ChIP", gene.col = "SYMBOL",
+  show_percentage = FALSE
+)
 }

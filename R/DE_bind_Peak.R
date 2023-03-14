@@ -1,6 +1,6 @@
-#' Integrate Differential Expression Results and Peak Annotation/Differential Expression Results.
+#' Integrate Differential Expression Results with Peak Annotation/Differential Expression Results.
 #'
-#' @param de.res Data frame contains all genes of differential expression analysis.
+#' @param de.res Dataframe contains all genes of differential expression analysis.
 #' @param peak.mode The source of peak results, choose from consenus (peak annotation) and diff (differential analysis).
 #' Default: consenus.
 #' @param peak.res Dataframe contains all peak annotation (\code{peak.mode} is consenus) or
@@ -247,6 +247,7 @@ PrepareVenn <- function(key, named.vec) {
 #' @param peak.type The source of peaks, chosen from ATAC, ChIP and Peak (ChIP and ATAC). Default: ChIP.
 #' @param peak.mode The source of peak results, choose from consenus (peak annotation) and diff (differential expression analysis).
 #' Default: consenus.
+#' @param gene.col Column of \code{inte.res} contains genes. Same as \code{merge.key} in \code{\link{DEbPeak}}.
 #' @param ... Parameters for \code{\link{ggvenn}}.
 #'
 #' @return A ggplot2 object.
@@ -289,12 +290,29 @@ PrepareVenn <- function(key, named.vec) {
 #'   peak.anno.key = "Promoter", merge.key = "SYMBOL"
 #' )
 #' # DE and ChIP venn plot
-#' debchip.plot <- PlotDEbPeak(de.peak = debchip.res, peak.type = "ChIP", show_percentage = FALSE)
-PlotDEbPeak <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), peak.mode = c("consenus", "diff"), ...) {
+#' debchip.plot <- PlotDEbPeak(
+#'   de.peak = debchip.res, peak.type = "ChIP", gene.col = "SYMBOL",
+#'   show_percentage = FALSE
+#' )
+PlotDEbPeak <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), peak.mode = c("consenus", "diff"),
+                        gene.col = c("geneId", "ENSEMBL", "SYMBOL"), ...) {
   # check parameters
   peak.type <- match.arg(arg = peak.type)
 
   # get summary results
+  # distinct Type and gene, show gene number instead of peak number
+  if (peak.type %in% c("ChIP", "ATAC")) {
+    if (peak.mode == "consenus") {
+      de.peak <- de.peak %>%
+        dplyr::distinct(.data[[gene.col]], .data[["Type"]], .keep_all = TRUE)
+    } else if (peak.mode == "diff") {
+      de.peak <- de.peak %>%
+        dplyr::distinct(Peak_SYMBOL, Type, .keep_all = TRUE)
+    }
+  } else if (peak.type == "Peak") {
+    de.peak <- de.peak %>%
+      dplyr::distinct(.data[[gene.col]], .data[["Type"]], .keep_all = TRUE)
+  }
   type.summary <- table(de.peak$Type) %>%
     as.data.frame() %>%
     tibble::deframe()
@@ -373,15 +391,281 @@ PlotDEbPeak <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), peak.mod
   return(plot)
 }
 
-#' Create Quadrant Diagram for Differential Expression Analysis of RNA-seq and Peak-related Data.
+#' Create Venn Diagram for Two Differential Analysis Integration Results.
 #'
-#' @param de.peak Dataframe contains integrated results of differential analysis of RNA-seq and Peak-related data.
-#' @param peak.type Peak data type, choose from ChIP, ATAC. Default: ChIP.
+#' @param inte.res Integration results, can be output of \code{DEbPeak}, \code{PeakbPeak}, \code{DEbDE}.
+#' @param inte.type The integration type, choose from "DEbDE", "PeakbPeak", "DEbPeak". Default: "DEbPeak".
+#' @param peak.type Used when \code{inte.type} is "DEbPeak". The source of peaks, chosen from ATAC, ChIP and Peak (ChIP and ATAC). Default: ChIP.
+#' @param peak.mode Used when \code{inte.type} is "DEbPeak" or "PeakbPeak". The source of peak results, choose from consenus (peak annotation) and diff (differential expression analysis).
+#' Default: consenus.
+#' @param gene.col Used when \code{inte.type} is "DEbPeak" and \code{peak.type} is Peak or \code{peak.mode} is "consenus" in \code{peak.type} ATAC or ChIP.
+#' Column of \code{inte.res} contains genes. Same as \code{merge.key} in \code{\link{DEbPeak}}.
+#' @param ... Parameters for \code{\link{ggvenn}}.
+#'
+#' @return A ggplot2 object.
+#' @importFrom magrittr %>%
+#' @importFrom tibble deframe
+#' @importFrom dplyr distinct
+#' @importFrom rlang .data
+#' @import ggvenn
+#' @export
+#'
+#' @examples
+#' library(DEbPeak)
+#' #### RNA-seq and RNA-seq
+#' rna.diff.file <- system.file("extdata", "RA_RNA_diff.txt", package = "DEbPeak")
+#' de1.res <- read.table(file = rna.diff.file, header = TRUE, sep = "\t")
+#' de2.res <- read.table(file = rna.diff.file, header = TRUE, sep = "\t")
+#' # use same file as example
+#' de.de <- DEbDE(de1.res = de1.res, de2.res = de2.res, de1.l2fc.threshold = 0.5, de2.l2fc.threshold = 1)
+#' de.de.venn <- InteVenn(inte.res = de.de, inte.type = "DEbDE", show_percentage = FALSE)
+#' #### peak-related and peak-related
+#' # ChIP-seq data
+#' chip.file <- system.file("extdata", "debchip_peaks.bed", package = "DEbPeak")
+#' chip.df <- GetConsensusPeak(peak.file = chip.file)
+#' chip.anno <- AnnoPeak(
+#'   peak.df = chip.df, species = "Mouse",
+#'   seq.style = "UCSC", up.dist = 20000, down.dist = 20000
+#' )
+#' # ATAC-seq data
+#' atac.file <- system.file("extdata", "debatac_peaks.bed", package = "DEbPeak")
+#' atac.df <- GetConsensusPeak(peak.file = atac.file)
+#' atac.anno <- AnnoPeak(
+#'   peak.df = atac.df, species = "Mouse",
+#'   seq.style = "UCSC", up.dist = 20000, down.dist = 20000
+#' )
+#' # integrate
+#' chip.atac <- PeakbPeak(peak1.res = chip.anno$df, peak2.res = atac.anno$df, peak.mode = "consenus", peak.anno.key = "Promoter")
+#' # functional enrichment
+#' chip.atac.venn <- InteVenn(inte.res = chip.atac, inte.type = "PeakbPeak", peak.mode = "consenus", show_percentage = FALSE)
+#' #### RNA-seq and peak-related
+#' library(DESeq2)
+#' # ChIP-Seq data
+#' peak.file <- system.file("extdata", "debchip_peaks.bed", package = "DEbPeak")
+#' peak.df <- GetConsensusPeak(peak.file = peak.file)
+#' peak.profile <- PeakProfile(peak.df, species = "Mouse", by = "gene", region.type = "body", nbin = 800)
+#' peak.anno <- AnnoPeak(
+#'   peak.df = peak.df, species = "Mouse",
+#'   seq.style = "UCSC", up.dist = 20000, down.dist = 20000
+#' )
+#' # RNA-Seq data
+#' count.file <- system.file("extdata", "debchip_count.txt", package = "DEbPeak")
+#' meta.file <- system.file("extdata", "debchip_meta.txt", package = "DEbPeak")
+#' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+#' meta.info <- read.table(file = meta.file, header = TRUE)
+#' # create DESeqDataSet object
+#' dds <- DESeq2::DESeqDataSetFromMatrix(
+#'   countData = count.matrix, colData = meta.info,
+#'   design = ~condition
+#' )
+#' # set control level
+#' dds$condition <- relevel(dds$condition, ref = "NF")
+#' # conduct differential expressed genes analysis
+#' dds <- DESeq(dds)
+#' # extract results
+#' dds.results <- results(dds, contrast = c("condition", "RX", "NF"))
+#' dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing = TRUE), ]
+#' # Integrated with RNA-Seq
+#' debchip.res <- DEbPeak(
+#'   de.res = dds.results.ordered, peak.res = peak.anno[["df"]],
+#'   peak.anno.key = "Promoter", merge.key = "SYMBOL"
+#' )
+#' debatac.res.venn <- InteVenn(
+#'   inte.res = debatac.res, inte.type = "DEbPeak", peak.mode = "diff",
+#'   peak.type = "ATAC", show_percentage = FALSE
+#' )
+InteVenn <- function(inte.res, inte.type = c("DEbPeak", "PeakbPeak", "DEbDE"), peak.type = c("ChIP", "ATAC", "Peak"),
+                     peak.mode = c("consenus", "diff"), gene.col = c("geneId", "ENSEMBL", "SYMBOL"), ...) {
+  # check parameters
+  inte.type <- match.arg(arg = inte.type)
+  peak.type <- match.arg(arg = peak.type)
+  gene.col <- match.arg(arg = gene.col)
+  peak.mode <- match.arg(arg = peak.mode)
+
+  # get summary results
+  if (inte.type == "DEbPeak") {
+    # distinct Type and gene, show gene number instead of peak number
+    if (peak.type %in% c("ChIP", "ATAC")) {
+      if (peak.mode == "consenus") {
+        inte.res <- inte.res %>%
+          dplyr::distinct(.data[[gene.col]], .data[["Type"]], .keep_all = TRUE)
+      } else if (peak.mode == "diff") {
+        inte.res <- inte.res %>%
+          dplyr::distinct(Peak_SYMBOL, Type, .keep_all = TRUE)
+      }
+    } else if (peak.type == "Peak") {
+      inte.res <- inte.res %>%
+        dplyr::distinct(.data[[gene.col]], .data[["Type"]], .keep_all = TRUE)
+    }
+  } else if (inte.type == "PeakbPeak") {
+    inte.res <- inte.res %>%
+      dplyr::distinct(P1_Gene, Type, .keep_all = TRUE)
+  } else if (inte.type == "DEbDE") {
+    inte.res <- inte.res %>%
+      dplyr::distinct(DE1_Gene, Type, .keep_all = TRUE)
+  }
+  type.summary <- table(inte.res$Type) %>%
+    as.data.frame() %>%
+    tibble::deframe()
+
+  # create venn plot
+  if (inte.type == "DEbPeak") {
+    if (peak.type == "Peak") {
+      # create number vector
+      ChIP.vec <- c(
+        PrepareVenn("ChIP", type.summary), PrepareVenn("ChIPbATAC", type.summary),
+        PrepareVenn("UPbChIP", type.summary), PrepareVenn("DOWNbChIP", type.summary),
+        PrepareVenn("UPbPeak", type.summary), PrepareVenn("DOWNbPeak", type.summary)
+      )
+      ATAC.vec <- c(
+        PrepareVenn("ATAC", type.summary), PrepareVenn("ChIPbATAC", type.summary),
+        PrepareVenn("UPbATAC", type.summary), PrepareVenn("DOWNbATAC", type.summary),
+        PrepareVenn("UPbPeak", type.summary), PrepareVenn("DOWNbPeak", type.summary)
+      )
+      UP.vec <- c(
+        PrepareVenn("UP", type.summary), PrepareVenn("UPbChIP", type.summary),
+        PrepareVenn("UPbATAC", type.summary), PrepareVenn("UPbPeak", type.summary)
+      )
+      DOWN.vec <- c(
+        PrepareVenn("DOWN", type.summary), PrepareVenn("DOWNbChIP", type.summary),
+        PrepareVenn("DOWNbATAC", type.summary), PrepareVenn("DOWNbPeak", type.summary)
+      )
+      # create plot
+      plot.list <- list()
+      plot.list[["UP"]] <- UP.vec
+      plot.list[["DOWN"]] <- DOWN.vec
+      plot.list[["ChIP"]] <- ChIP.vec
+      plot.list[["ATAC"]] <- ATAC.vec
+      plot <- ggvenn::ggvenn(plot.list, ...)
+    } else if (peak.type %in% c("ChIP", "ATAC")) {
+      if (peak.mode == "consenus") {
+        # create number vector
+        Peak.vec <- c(
+          PrepareVenn("Peak", type.summary), PrepareVenn("UPbPeak", type.summary),
+          PrepareVenn("DOWNbPeak", type.summary)
+        )
+        UP.vec <- c(PrepareVenn("UP", type.summary), PrepareVenn("UPbPeak", type.summary))
+        DOWN.vec <- c(PrepareVenn("DOWN", type.summary), PrepareVenn("DOWNbPeak", type.summary))
+        # create plot list
+        plot.list <- list()
+        plot.list[[peak.type]] <- Peak.vec
+        plot.list[["UP"]] <- UP.vec
+        plot.list[["DOWN"]] <- DOWN.vec
+      } else if (peak.mode == "diff") {
+        # create number vector
+        # peak up related
+        Peak.up.vec <- c(
+          PrepareVenn("Down_Up", type.summary), PrepareVenn("Up_Up", type.summary),
+          PrepareVenn("PeakUp", type.summary)
+        )
+        # peak down related
+        Peak.down.vec <- c(
+          PrepareVenn("Down_Down", type.summary), PrepareVenn("Up_Down", type.summary),
+          PrepareVenn("PeakDown", type.summary)
+        )
+        # RNA up related
+        RNA.up.vec <- c(
+          PrepareVenn("Up_Up", type.summary), PrepareVenn("Up_Down", type.summary),
+          PrepareVenn("RNAUp", type.summary)
+        )
+        # RNA down related
+        RNA.down.vec <- c(
+          PrepareVenn("Down_Up", type.summary), PrepareVenn("Down_Down", type.summary),
+          PrepareVenn("RNADown", type.summary)
+        )
+        # create plot list
+        plot.list <- list()
+        plot.list[[paste(peak.type, "UP", sep = " ")]] <- Peak.up.vec
+        plot.list[[paste(peak.type, "DOWN", sep = " ")]] <- Peak.down.vec
+        plot.list[["RNA UP"]] <- RNA.up.vec
+        plot.list[["RNA DOWN"]] <- RNA.down.vec
+      }
+      plot <- ggvenn::ggvenn(plot.list, ...)
+    }
+  } else if (inte.type == "PeakbPeak") {
+    if (peak.mode == "consenus") {
+      peak1.vec <- c(
+        PrepareVenn("Peak1", type.summary), PrepareVenn("Common", type.summary)
+      )
+      peak2.vec <- c(
+        PrepareVenn("Peak2", type.summary), PrepareVenn("Common", type.summary)
+      )
+      # create plot list
+      plot.list <- list()
+      plot.list[["Peak1"]] <- peak1.vec
+      plot.list[["Peak2"]] <- peak2.vec
+    } else if (peak.mode == "diff") {
+      # create number vector
+      # Peak1 up related
+      Peak1.up.vec <- c(
+        PrepareVenn("Up_Up", type.summary), PrepareVenn("Up_Down", type.summary),
+        PrepareVenn("Peak1_Up", type.summary)
+      )
+      # Peak1 down related
+      Peak1.down.vec <- c(
+        PrepareVenn("Down_Up", type.summary), PrepareVenn("Down_Down", type.summary),
+        PrepareVenn("Peak1_Down", type.summary)
+      )
+      # Peak2 up related
+      Peak2.up.vec <- c(
+        PrepareVenn("Down_Up", type.summary), PrepareVenn("Up_Up", type.summary),
+        PrepareVenn("Peak2_Up", type.summary)
+      )
+      # Peak2 down related
+      Peak2.down.vec <- c(
+        PrepareVenn("Down_Down", type.summary), PrepareVenn("Up_Down", type.summary),
+        PrepareVenn("Peak2_Down", type.summary)
+      )
+      # create plot list
+      plot.list <- list()
+      plot.list[["Peak1 UP"]] <- Peak1.up.vec
+      plot.list[["Peak1 DOWN"]] <- Peak1.down.vec
+      plot.list[["Peak2 UP"]] <- Peak2.up.vec
+      plot.list[["Peak2 DOWN"]] <- Peak2.down.vec
+    }
+    plot <- ggvenn::ggvenn(plot.list, ...)
+  } else if (inte.type == "DEbDE") {
+    # create number vector
+    # DE1 up related
+    DE1.up.vec <- c(
+      PrepareVenn("Up_Up", type.summary), PrepareVenn("Up_Down", type.summary),
+      PrepareVenn("DE1_Up", type.summary)
+    )
+    # DE1 down related
+    DE1.down.vec <- c(
+      PrepareVenn("Down_Up", type.summary), PrepareVenn("Down_Down", type.summary),
+      PrepareVenn("DE1_Down", type.summary)
+    )
+    # DE2 up related
+    DE2.up.vec <- c(
+      PrepareVenn("Down_Up", type.summary), PrepareVenn("Up_Up", type.summary),
+      PrepareVenn("DE2_Up", type.summary)
+    )
+    # DE2 down related
+    DE2.down.vec <- c(
+      PrepareVenn("Down_Down", type.summary), PrepareVenn("Up_Down", type.summary),
+      PrepareVenn("DE2_Down", type.summary)
+    )
+    # create plot list
+    plot.list <- list()
+    plot.list[["DE1 UP"]] <- DE1.up.vec
+    plot.list[["DE1 DOWN"]] <- DE1.down.vec
+    plot.list[["DE2 UP"]] <- DE2.up.vec
+    plot.list[["DE2 DOWN"]] <- DE2.down.vec
+    plot <- ggvenn::ggvenn(plot.list, ...)
+  }
+  return(plot)
+}
+
+#' Create Quadrant Diagram for Two Differential Analysis Integration Results.
+#'
+#' @param inte.res Integration results, can be output of \code{DEbPeak}, \code{PeakbPeak}, \code{DEbDE}.
+#' @param inte.type The integration type, choose from "DEbDE", "PeakbPeak", "DEbPeak". Default: "DEbPeak".
 #' @param point.alpha Opacity of a geom. Default: 0.6.
-#' @param point.size.vec Point size for regular(DE or non-DE) and(or) labeled points.
+#' @param point.size.vec Point size for regular and(or) labeled points (specified by \code{label.df} or \code{label.num}).
 #' Default: 2 for regular and 4 for labeled points.
-#' @param rna.l2fc.threshold Log2 fold change threshold for RNA-seq to get differentially expressed results. Default: 0.
-#' @param peak.l2fc.threshold Log2 fold change threshold for peak-related data to get differentially accessible/binding peaks. Default: 0.
+#' @param f1.l2fc.threshold Log2 fold change threshold for file1 to get differential analysis results. Default: 0.
+#' @param f2.l2fc.threshold Log2 fold change threshold for file2 to get differential analysis results. Default: 0.
 #' @param linetype Threshold linetype. Default: 2.
 #' @param point.color.vec Point color for Down_Up, Up_Up, Down_Down, Up_Down.
 #' Default: grey for Down_Up, red for Up_Up, blue for Down_Down and grey for Up_Down.
@@ -399,25 +683,55 @@ PlotDEbPeak <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), peak.mod
 #' @importFrom utils head
 #' @importFrom ggpubr stat_cor
 #' @importFrom ggrepel geom_text_repel
+#' @importFrom rlang .data
 #' @import ggplot2
 #' @export
 #'
 #' @examples
-#' # # prepare integrated differential expression results of RNA-seq and ATAC-seq
-#' # # label dataframe
-#' # label.df = data.frame(Gene = c("Ccl3", "Ccl5", "Cd28", "Cx3cr1", "Prdm1", "Tcf7", "Slamf6", "Id3", "Cxcr5"))
-#' # # create plot
-#' # quad.plot = InteDiffQuad(de.peak = debatac.res, peak.type = "ATAC", label.df = label.df, label.color = "green")
-InteDiffQuad <- function(de.peak, peak.type = c("ChIP", "ATAC"), point.alpha = 0.6, point.size.vec = c(2, 4), rna.l2fc.threshold = 0,
-                         peak.l2fc.threshold = 0, linetype = 2, point.color.vec = c("grey", "red", "blue", "grey"),
-                         legend.pos = "top", show.corr = TRUE, label.num = NULL, label.df = NULL, label.color = NULL) {
+#' # RNA-seq and RNA-seq
+#' # de.de.label.df = data.frame(Gene = c("ENSDARG00000007396", "ENSDARG00000010729", "ENSDARG00000002194", "ENSDARG00000002587"))
+#' # de.de.quad = InteDiffQuad(inte.res = de.de, inte.type = "DEbDE", f1.l2fc.threshold = 0.6, f2.l2fc.threshold = 0.6,
+#' #                           show.corr = FALSE, label.df = de.de.label.df)
+#' # Peak and Peak
+#' # peak.peak.label.df = data.frame(Gene = c("Aak1", "Adam19", "Oaf", "Nsg2"))
+#' # peak.peak.quad = InteDiffQuad(inte.res = atac.atac, inte.type = "PeakbPeak", f1.l2fc.threshold = 0,
+#' #                               f2.l2fc.threshold = 0.5, show.corr = TRUE, label.df = peak.peak.label.df)
+#' # RNA-seq and Peak
+#' # de.peak.label.df = data.frame(Gene = c("Ccl3", "Ccl5", "Cd28", "Cx3cr1", "Prdm1", "Tcf7", "Slamf6", "Id3", "Cxcr5"))
+#' # de.peak.quad = InteDiffQuad(inte.res = debatac.res, inte.type = "DEbPeak", f1.l2fc.threshold = 0,
+#' #                             f2.l2fc.threshold = 0, show.corr = TRUE, label.df = de.peak.label.df)
+InteDiffQuad <- function(inte.res, inte.type = c("DEbPeak", "PeakbPeak", "DEbDE"), point.alpha = 0.6, point.size.vec = c(2, 4),
+                         f1.l2fc.threshold = 0, f2.l2fc.threshold = 0, linetype = 2,
+                         point.color.vec = c("grey", "red", "blue", "grey"), legend.pos = "top", show.corr = TRUE,
+                         label.num = NULL, label.df = NULL, label.color = NULL) {
   # check parameters
-  peak.type <- match.arg(arg = peak.type)
+  inte.type <- match.arg(arg = inte.type)
 
   # prepare integrate dataframe: filter out single regulation
-  de.peak <- de.peak %>%
-    dplyr::filter(!is.na(Peak_regulation)) %>%
-    dplyr::filter(!is.na(RNA_regulation))
+  if (inte.type == "DEbDE") {
+    inte.res <- inte.res %>%
+      dplyr::filter(!is.na(DE1_regulation)) %>%
+      dplyr::filter(!is.na(DE2_regulation))
+    ax.x <- "DE1_log2FoldChange"
+    ax.y <- "DE2_log2FoldChange"
+    merge.key <- "DE1_Gene"
+  } else if (inte.type == "PeakbPeak") {
+    inte.res <- inte.res %>%
+      dplyr::filter(!is.na(P1_regulation)) %>%
+      dplyr::filter(!is.na(P2_regulation))
+    ax.x <- "P1_log2FoldChange"
+    ax.y <- "P2_log2FoldChange"
+    merge.key <- "P1_Gene"
+  } else if (inte.type == "DEbPeak") {
+    inte.res <- inte.res %>%
+      dplyr::filter(!is.na(Peak_regulation)) %>%
+      dplyr::filter(!is.na(RNA_regulation))
+    ax.x <- "RNA_log2FoldChange"
+    ax.y <- "Peak_log2FoldChange"
+    merge.key <- "Peak_SYMBOL"
+  }
+  inte.res$Type <- droplevels(inte.res$Type)
+
   # prepare point size
   if (length(point.size.vec) == 1) {
     point.size.vec <- rep(point.size.vec, 2)
@@ -425,62 +739,61 @@ InteDiffQuad <- function(de.peak, peak.type = c("ChIP", "ATAC"), point.alpha = 0
   # prepare basic plot
   p <- ggplot() +
     geom_point(
-      data = de.peak,
-      aes(x = RNA_log2FoldChange, y = Peak_log2FoldChange, color = Type),
+      data = inte.res,
+      aes_string(x = ax.x, y = ax.y, color = "Type"),
       size = point.size.vec[1], alpha = point.alpha
     ) +
     scale_color_manual(values = point.color.vec) +
-    geom_vline(xintercept = c(-rna.l2fc.threshold, rna.l2fc.threshold), lty = linetype) +
-    geom_hline(yintercept = c(-peak.l2fc.threshold, peak.l2fc.threshold), lty = linetype) +
+    geom_vline(xintercept = c(-f1.l2fc.threshold, f1.l2fc.threshold), lty = linetype) +
+    geom_hline(yintercept = c(-f2.l2fc.threshold, f2.l2fc.threshold), lty = linetype) +
     theme_classic(base_size = 14) +
     theme(legend.position = legend.pos) +
-    labs(x = "RNA log2Foldchange", y = paste(peak.type, "log2Foldchange", sep = " "), color = "") +
     scale_y_continuous(expand = expansion(mult = c(0.1, 0.1), add = c(0, 0))) +
     scale_x_continuous(expand = expansion(mult = c(0.1, 0.1), add = c(0, 0)))
   # add correlation
   if (show.corr) {
     p <- p + stat_cor(
-      data = de.peak,
-      aes(x = RNA_log2FoldChange, y = Peak_log2FoldChange), method = "pearson"
+      data = inte.res,
+      aes_string(x = ax.x, y = ax.y), method = "pearson"
     )
   }
   # add label
   if (is.null(label.df)) {
     if (!is.null(label.num)) {
-      label.data.up <- de.peak %>%
-        dplyr::arrange(desc(RNA_log2FoldChange), desc(Peak_log2FoldChange)) %>%
+      label.data.up <- inte.res %>%
+        dplyr::arrange(desc(.data[[ax.x]]), desc(.data[[ax.y]])) %>%
         head(label.num)
-      label.data.down <- de.peak %>%
-        dplyr::arrange(RNA_log2FoldChange, Peak_log2FoldChange) %>%
+      label.data.down <- inte.res %>%
+        dplyr::arrange(.data[[ax.x]], .data[[ax.y]]) %>%
         head(label.num)
       label.data <- as.data.frame(rbind(label.data.up, label.data.down))
     } else {
       return(p)
     }
   } else if (nrow(label.df) >= 1) {
-    label.data <- merge(de.peak, label.df, by.x = "Peak_SYMBOL", by.y = "Gene") %>% as.data.frame()
+    label.data <- merge(inte.res, label.df, by.x = merge.key, by.y = "Gene") %>% as.data.frame()
   }
   if (is.null(label.color)) {
     p <- p +
       geom_point(
         data = label.data,
-        aes(x = RNA_log2FoldChange, y = Peak_log2FoldChange),
+        aes_string(x = ax.x, y = ax.y),
         size = point.size.vec[2]
       ) +
       geom_text_repel(
         data = label.data,
-        aes(x = RNA_log2FoldChange, y = Peak_log2FoldChange, label = Peak_SYMBOL)
+        aes_string(x = ax.x, y = ax.y, label = merge.key)
       )
   } else {
     p <- p +
       geom_point(
         data = label.data,
-        aes(x = RNA_log2FoldChange, y = Peak_log2FoldChange),
+        aes_string(x = ax.x, y = ax.y),
         color = label.color, size = point.size.vec[2]
       ) +
       geom_text_repel(
         data = label.data,
-        aes(x = RNA_log2FoldChange, y = Peak_log2FoldChange, label = Peak_SYMBOL)
+        aes_string(x = ax.x, y = ax.y, label = merge.key)
       )
   }
   return(p)
@@ -488,10 +801,185 @@ InteDiffQuad <- function(de.peak, peak.type = c("ChIP", "ATAC"), point.alpha = 0
 
 #' GO Enrichment on Integrated Results.
 #'
+#' @param inte.res Integration results, can be output of \code{DEbPeak}, \code{PeakbPeak}, \code{DEbDE}.
+#' @param fe.key The key type of integrated results ("Type" column of \code{inte.res}) to perform functional enrichment.
+#' @param inte.type The integration type, choose from "DEbDE", "PeakbPeak", "DEbPeak". Default: "DEbPeak".
+#' @param out.folder Folder to save enrichment results. Default: wording directory.
+#' @param gene.type Gene name type. Chosen from ENSEMBL, ENTREZID,SYMBOL. Default: ENSEMBL.
+#' @param go.type GO enrichment type, chosen from ALL, BP, MF, CC. Default: ALL.
+#' @param enrich.pvalue Cutoff value of pvalue. Default: 0.05.
+#' @param enrich.qvalue Cutoff value of qvalue. Default: 0.05.
+#' @param species Species used, chosen from "Human","Mouse","Rat","Fly","Arabidopsis","Yeast","Zebrafish","Worm","Bovine","Pig","Chicken","Rhesus",
+#' "Canine","Xenopus","Anopheles","Chimp","E coli strain Sakai","Myxococcus xanthus DK 1622". Default: "Human".
+#' @param padj.method One of "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none". Default: BH.
+#' @param show.term Number of enrichment term to show. Default: 15.
+#' @param str.width Length of enrichment term in plot. Default: 30.
+#' @param plot.resolution Resolution of plot. Default: 300.
+#' @param plot.width The width of plot. Default: 7.
+#' @param plot.height The height of plot. Default: 9.
+#' @param save Logical value, whether to save all results. Default: TRUE.
+#'
+#' @return If \code{save} is TRUE, return NULL (all results are in \code{out.folder}), else retutn result dataframe.
+#' @importFrom magrittr %>%
+#' @importFrom tibble rownames_to_column
+#' @importFrom dplyr mutate select case_when mutate_at vars filter
+#' @importFrom tidyr drop_na
+#' @importFrom purrr set_names
+#' @importFrom tidyr separate
+#' @importFrom data.table fread
+#' @export
+#'
+#' @examples
+#' library(DEbPeak)
+#' #### RNA-seq and RNA-seq
+#' rna.diff.file <- system.file("extdata", "RA_RNA_diff.txt", package = "DEbPeak")
+#' de1.res <- read.table(file = rna.diff.file, header = TRUE, sep = "\t")
+#' de2.res <- read.table(file = rna.diff.file, header = TRUE, sep = "\t")
+#' # use same file as example
+#' de.de <- DEbDE(de1.res = de1.res, de2.res = de2.res, de1.l2fc.threshold = 0.5, de2.l2fc.threshold = 1)
+#' de.de.fe <- InteFE(
+#'   inte.res = de.de, fe.key = "Down_Down", inte.type = "DEbDE", gene.type = "SYMBOL", go.type = "BP",
+#'   species = "Mouse", save = F
+#' )
+#' #### peak-related and peak-related
+#' # ChIP-seq data
+#' chip.file <- system.file("extdata", "debchip_peaks.bed", package = "DEbPeak")
+#' chip.df <- GetConsensusPeak(peak.file = chip.file)
+#' chip.anno <- AnnoPeak(
+#'   peak.df = chip.df, species = "Mouse",
+#'   seq.style = "UCSC", up.dist = 20000, down.dist = 20000
+#' )
+#' # ATAC-seq data
+#' atac.file <- system.file("extdata", "debatac_peaks.bed", package = "DEbPeak")
+#' atac.df <- GetConsensusPeak(peak.file = atac.file)
+#' atac.anno <- AnnoPeak(
+#'   peak.df = atac.df, species = "Mouse",
+#'   seq.style = "UCSC", up.dist = 20000, down.dist = 20000
+#' )
+#' # integrate
+#' chip.atac <- PeakbPeak(peak1.res = chip.anno$df, peak2.res = atac.anno$df, peak.mode = "consenus", peak.anno.key = "Promoter")
+#' # functional enrichment
+#' chip.atac.fe <- InteFE(
+#'   inte.res = chip.atac, fe.key = "Common", inte.type = "PeakbPeak", gene.type = "SYMBOL",
+#'   go.type = "BP", species = "Mouse", save = FALSE
+#' )
+#' #### RNA-seq and peak-related
+#' library(DESeq2)
+#' # ChIP-Seq data
+#' peak.file <- system.file("extdata", "debchip_peaks.bed", package = "DEbPeak")
+#' peak.df <- GetConsensusPeak(peak.file = peak.file)
+#' peak.profile <- PeakProfile(peak.df, species = "Mouse", by = "gene", region.type = "body", nbin = 800)
+#' peak.anno <- AnnoPeak(
+#'   peak.df = peak.df, species = "Mouse",
+#'   seq.style = "UCSC", up.dist = 20000, down.dist = 20000
+#' )
+#' # RNA-Seq data
+#' count.file <- system.file("extdata", "debchip_count.txt", package = "DEbPeak")
+#' meta.file <- system.file("extdata", "debchip_meta.txt", package = "DEbPeak")
+#' count.matrix <- read.table(file = count.file, header = TRUE, sep = "\t")
+#' meta.info <- read.table(file = meta.file, header = TRUE)
+#' # create DESeqDataSet object
+#' dds <- DESeq2::DESeqDataSetFromMatrix(
+#'   countData = count.matrix, colData = meta.info,
+#'   design = ~condition
+#' )
+#' # set control level
+#' dds$condition <- relevel(dds$condition, ref = "NF")
+#' # conduct differential expressed genes analysis
+#' dds <- DESeq(dds)
+#' # extract results
+#' dds.results <- results(dds, contrast = c("condition", "RX", "NF"))
+#' dds.results.ordered <- dds.results[order(dds.results$log2FoldChange, decreasing = TRUE), ]
+#' # Integrated with RNA-Seq
+#' debchip.res <- DEbPeak(
+#'   de.res = dds.results.ordered, peak.res = peak.anno[["df"]],
+#'   peak.anno.key = "Promoter", merge.key = "SYMBOL"
+#' )
+#' # functional enrichment on UPbPeak genes
+#' upbpeak.fe.results <- InteFE(
+#'   inte.res = debchip.res, fe.key = "UPbPeak", inte.type = "DEbPeak", gene.type = "ENTREZID",
+#'   species = "Mouse", save = FALSE
+#' )
+InteFE <- function(inte.res, fe.key, inte.type = c("DEbPeak", "PeakbPeak", "DEbDE"), out.folder = NULL, gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"),
+                   go.type = c("ALL", "BP", "MF", "CC"), enrich.pvalue = 0.05, enrich.qvalue = 0.05, species = c(
+                     "Human", "Mouse", "Rat", "Fly", "Arabidopsis", "Yeast", "Zebrafish", "Worm", "Bovine", "Pig", "Chicken", "Rhesus",
+                     "Canine", "Xenopus", "Anopheles", "Chimp", "E coli strain Sakai", "Myxococcus xanthus DK 1622"
+                   ),
+                   padj.method = c("BH", "holm", "hochberg", "hommel", "bonferroni", "BY", "fdr", "none"),
+                   show.term = 15, str.width = 30, plot.resolution = 300, plot.width = 7, plot.height = 9, save = TRUE) {
+  # check parameter
+  inte.type <- match.arg(arg = inte.type)
+  gene.type <- match.arg(arg = gene.type)
+  go.type <- match.arg(arg = go.type)
+  species <- match.arg(arg = species)
+  padj.method <- match.arg(arg = padj.method)
+
+  # valid parameter value
+  if (!fe.key %in% as.character(unique(inte.res$Type))) {
+    stop(paste0(
+      "Please provide valid functional enrichment key, choose from: ",
+      paste(as.character(unique(inte.res$Type)), collapse = ", ")
+    ))
+  }
+
+  # prepare genes
+  if (inte.type == "DEbDE") {
+    inte.genes <- inte.res %>%
+      dplyr::filter(Type == fe.key) %>%
+      dplyr::pull(DE1_Gene)
+  } else if (inte.type == "PeakbPeak") {
+    inte.genes <- inte.res %>%
+      dplyr::filter(Type == fe.key) %>%
+      dplyr::pull(P1_Gene)
+  } else if (inte.type == "DEbPeak") {
+    inte.genes <- inte.res %>%
+      dplyr::filter(Type == fe.key) %>%
+      dplyr::pull(geneId)
+    # check gene type
+    if (gene.type != "ENTREZID") {
+      warning("To perform GO enrichment, the gene type should be ENTREZID!")
+    }
+    gene.type <- "ENTREZID"
+  }
+
+  # prepare org db
+  spe.anno <- GetSpeciesAnno(species)
+  org.db <- spe.anno[["OrgDb"]]
+  if (!require(org.db, quietly = TRUE, character.only = TRUE)) {
+    message("Install org_db : ", org.db)
+    BiocManager::install(org.db)
+  }
+  suppressWarnings(suppressMessages(library(org.db, character.only = TRUE)))
+
+  # set output folder
+  if (is.null(out.folder)) {
+    out.folder <- getwd()
+  }
+
+  # GO enrichment
+  if (save) {
+    SingleFE(
+      genes = inte.genes, out.folder = out.folder, regulation = fe.key, gene.type = gene.type, enrich.type = "GO", go.type = go.type,
+      enrich.pvalue = enrich.pvalue, enrich.qvalue = enrich.qvalue, org.db = org.db, padj.method = padj.method,
+      show.term = show.term, str.width = str.width, save = save
+    )
+    return(NULL)
+  } else {
+    inte.go.results <- SingleFE(
+      genes = inte.genes, out.folder = out.folder, regulation = fe.key, gene.type = gene.type, enrich.type = "GO", go.type = go.type,
+      enrich.pvalue = enrich.pvalue, enrich.qvalue = enrich.qvalue, org.db = org.db, padj.method = padj.method,
+      show.term = show.term, str.width = str.width, save = save
+    )
+    return(inte.go.results)
+  }
+}
+
+
+#' GO Enrichment on Integrated Results.
+#'
 #' @param de.peak Dataframe contains integrated results.
 #' @param peak.fe.key The key type of integrated results ("Type" column of \code{de.peak}) to perform functional enrichment.
 #' @param out.folder Folder to save enrichment results. Default: wording directory.
-#' @param gene.type Gene name type. Chosen from ENSEMBL, ENTREZID,SYMBOL. Default: ENSEMBL.
 #' @param go.type GO enrichment type, chosen from ALL, BP, MF, CC. Default: ALL.
 #' @param enrich.pvalue Cutoff value of pvalue. Default: 0.05.
 #' @param enrich.qvalue Cutoff value of qvalue. Default: 0.05.
@@ -553,15 +1041,15 @@ InteDiffQuad <- function(de.peak, peak.type = c("ChIP", "ATAC"), point.alpha = 0
 #' )
 #' # functional enrichment on UPbPeak genes
 #' upbpeak.fe.results <- DEbPeakFE(
-#'   de.peak = debchip.res, peak.fe.key = "UPbPeak", gene.type = "ENTREZID",
+#'   de.peak = debchip.res, peak.fe.key = "UPbPeak",
 #'   species = "Mouse", save = FALSE
 #' )
 #' # functional enrichment on DOWNbPeak genes
 #' downbpeak.fe.results <- DEbPeakFE(
-#'   de.peak = debchip.res, peak.fe.key = "DOWNbPeak", gene.type = "ENTREZID",
+#'   de.peak = debchip.res, peak.fe.key = "DOWNbPeak",
 #'   species = "Mouse", save = FALSE
 #' )
-DEbPeakFE <- function(de.peak, peak.fe.key, out.folder = NULL, gene.type = c("ENSEMBL", "ENTREZID", "SYMBOL"),
+DEbPeakFE <- function(de.peak, peak.fe.key, out.folder = NULL,
                       go.type = c("ALL", "BP", "MF", "CC"), enrich.pvalue = 0.05, enrich.qvalue = 0.05, species = c(
                         "Human", "Mouse", "Rat", "Fly", "Arabidopsis", "Yeast", "Zebrafish", "Worm", "Bovine", "Pig", "Chicken", "Rhesus",
                         "Canine", "Xenopus", "Anopheles", "Chimp", "E coli strain Sakai", "Myxococcus xanthus DK 1622"
@@ -569,7 +1057,6 @@ DEbPeakFE <- function(de.peak, peak.fe.key, out.folder = NULL, gene.type = c("EN
                       padj.method = c("BH", "holm", "hochberg", "hommel", "bonferroni", "BY", "fdr", "none"),
                       show.term = 15, str.width = 30, plot.resolution = 300, plot.width = 7, plot.height = 9, save = TRUE) {
   # check parameter
-  gene.type <- match.arg(arg = gene.type)
   go.type <- match.arg(arg = go.type)
   species <- match.arg(arg = species)
   padj.method <- match.arg(arg = padj.method)
@@ -611,7 +1098,7 @@ DEbPeakFE <- function(de.peak, peak.fe.key, out.folder = NULL, gene.type = c("EN
 
   if (save) {
     SingleFE(
-      genes = inte.genes, out.folder = out.folder, regulation = peak.fe.key, gene.type = gene.type, enrich.type = "GO", go.type = go.type,
+      genes = inte.genes, out.folder = out.folder, regulation = peak.fe.key, gene.type = "ENTREZID", enrich.type = "GO", go.type = go.type,
       enrich.pvalue = enrich.pvalue, enrich.qvalue = enrich.qvalue, org.db = org.db, padj.method = padj.method,
       show.term = show.term, str.width = str.width, save = save
     )
@@ -645,7 +1132,7 @@ DEbPeakFE <- function(de.peak, peak.fe.key, out.folder = NULL, gene.type = c("EN
     # DEbPeak.go.results[[up.reg.str]] <- UPbPeak.go
     # DEbPeak.go.results[[down.reg.str]] <- DOWNbPeak.go
     DEbPeak.go.results <- SingleFE(
-      genes = inte.genes, out.folder = out.folder, regulation = peak.fe.key, gene.type = gene.type, enrich.type = "GO", go.type = go.type,
+      genes = inte.genes, out.folder = out.folder, regulation = peak.fe.key, gene.type = "ENTREZID", enrich.type = "GO", go.type = go.type,
       enrich.pvalue = enrich.pvalue, enrich.qvalue = enrich.qvalue, org.db = org.db, padj.method = padj.method,
       show.term = show.term, str.width = str.width, save = save
     )

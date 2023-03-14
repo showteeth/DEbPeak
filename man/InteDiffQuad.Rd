@@ -2,15 +2,15 @@
 % Please edit documentation in R/DE_bind_Peak.R
 \name{InteDiffQuad}
 \alias{InteDiffQuad}
-\title{Create Quadrant Diagram for Differential Expression Analysis of RNA-seq and Peak-related Data.}
+\title{Create Quadrant Diagram for Two Differential Analysis Integration Results.}
 \usage{
 InteDiffQuad(
-  de.peak,
-  peak.type = c("ChIP", "ATAC"),
+  inte.res,
+  inte.type = c("DEbPeak", "PeakbPeak", "DEbDE"),
   point.alpha = 0.6,
   point.size.vec = c(2, 4),
-  rna.l2fc.threshold = 0,
-  peak.l2fc.threshold = 0,
+  f1.l2fc.threshold = 0,
+  f2.l2fc.threshold = 0,
   linetype = 2,
   point.color.vec = c("grey", "red", "blue", "grey"),
   legend.pos = "top",
@@ -21,18 +21,18 @@ InteDiffQuad(
 )
 }
 \arguments{
-\item{de.peak}{Dataframe contains integrated results of differential analysis of RNA-seq and Peak-related data.}
+\item{inte.res}{Integration results, can be output of \code{DEbPeak}, \code{PeakbPeak}, \code{DEbDE}.}
 
-\item{peak.type}{Peak data type, choose from ChIP, ATAC. Default: ChIP.}
+\item{inte.type}{The integration type, choose from "DEbDE", "PeakbPeak", "DEbPeak". Default: "DEbPeak".}
 
 \item{point.alpha}{Opacity of a geom. Default: 0.6.}
 
-\item{point.size.vec}{Point size for regular(DE or non-DE) and(or) labeled points.
+\item{point.size.vec}{Point size for regular and(or) labeled points (specified by \code{label.df} or \code{label.num}).
 Default: 2 for regular and 4 for labeled points.}
 
-\item{rna.l2fc.threshold}{Log2 fold change threshold for RNA-seq to get differentially expressed results. Default: 0.}
+\item{f1.l2fc.threshold}{Log2 fold change threshold for file1 to get differential analysis results. Default: 0.}
 
-\item{peak.l2fc.threshold}{Log2 fold change threshold for peak-related data to get differentially accessible/binding peaks. Default: 0.}
+\item{f2.l2fc.threshold}{Log2 fold change threshold for file2 to get differential analysis results. Default: 0.}
 
 \item{linetype}{Threshold linetype. Default: 2.}
 
@@ -55,12 +55,19 @@ When provided, the second column should not be in \code{de.peak}.}
 A ggplot2 object.
 }
 \description{
-Create Quadrant Diagram for Differential Expression Analysis of RNA-seq and Peak-related Data.
+Create Quadrant Diagram for Two Differential Analysis Integration Results.
 }
 \examples{
-# # prepare integrated differential expression results of RNA-seq and ATAC-seq
-# # label dataframe
-# label.df = data.frame(Gene = c("Ccl3", "Ccl5", "Cd28", "Cx3cr1", "Prdm1", "Tcf7", "Slamf6", "Id3", "Cxcr5"))
-# # create plot
-# quad.plot = InteDiffQuad(de.peak = debatac.res, peak.type = "ATAC", label.df = label.df, label.color = "green")
+# RNA-seq and RNA-seq
+# de.de.label.df = data.frame(Gene = c("ENSDARG00000007396", "ENSDARG00000010729", "ENSDARG00000002194", "ENSDARG00000002587"))
+# de.de.quad = InteDiffQuad(inte.res = de.de, inte.type = "DEbDE", f1.l2fc.threshold = 0.6, f2.l2fc.threshold = 0.6,
+#                           show.corr = FALSE, label.df = de.de.label.df)
+# Peak and Peak
+# peak.peak.label.df = data.frame(Gene = c("Aak1", "Adam19", "Oaf", "Nsg2"))
+# peak.peak.quad = InteDiffQuad(inte.res = atac.atac, inte.type = "PeakbPeak", f1.l2fc.threshold = 0,
+#                               f2.l2fc.threshold = 0.5, show.corr = TRUE, label.df = peak.peak.label.df)
+# RNA-seq and Peak
+# de.peak.label.df = data.frame(Gene = c("Ccl3", "Ccl5", "Cd28", "Cx3cr1", "Prdm1", "Tcf7", "Slamf6", "Id3", "Cxcr5"))
+# de.peak.quad = InteDiffQuad(inte.res = debatac.res, inte.type = "DEbPeak", f1.l2fc.threshold = 0,
+#                             f2.l2fc.threshold = 0, show.corr = TRUE, label.df = de.peak.label.df)
 }

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Integrate Differential Expression Results and Peak Annotation/Differential Expression Results. — DEbPeak • DEbPeak</title>
+<title>Integrate Differential Expression Results with Peak Annotation/Differential Expression Results. — DEbPeak • DEbPeak</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Integrate Differential Expression Results and Peak Annotation/Differential Expression Results. — DEbPeak" />
-<meta property="og:description" content="Integrate Differential Expression Results and Peak Annotation/Differential Expression Results." />
+<meta property="og:title" content="Integrate Differential Expression Results with Peak Annotation/Differential Expression Results. — DEbPeak" />
+<meta property="og:description" content="Integrate Differential Expression Results with Peak Annotation/Differential Expression Results." />
 
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DEbPeak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -162,13 +162,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Integrate Differential Expression Results and Peak Annotation/Differential Expression Results.</h1>
+    <h1>Integrate Differential Expression Results with Peak Annotation/Differential Expression Results.</h1>
     
     <div class="hidden name"><code>DEbPeak.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Integrate Differential Expression Results and Peak Annotation/Differential Expression Results.</p>
+    <p>Integrate Differential Expression Results with Peak Annotation/Differential Expression Results.</p>
     </div>
 
     <pre class="usage"><span class='fu'>DEbPeak</span><span class='op'>(</span>
@@ -193,7 +193,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>de.res</th>
-      <td><p>Data frame contains all genes of differential expression analysis.</p></td>
+      <td><p>Dataframe contains all genes of differential expression analysis.</p></td>
     </tr>
     <tr>
       <th>peak.res</th>
@@ -202,7 +202,7 @@ differential analysis results of peak-related data (<code>peak.mode</code> is di
     </tr>
     <tr>
       <th>peak.mode</th>
-      <td><p>The source of peak results, choose from consenus (peak annotation) and diff (differential expression analysis).
+      <td><p>The source of peak results, choose from consenus (peak annotation) and diff (differential analysis).
 Default: consenus.</p></td>
     </tr>
     <tr>
@@ -259,34 +259,35 @@ and Down_Up, Up_Up, Down_Down, Up_Down when <code>peak.mode</code> is diff. RNA 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>DEbPeak</span><span class='op'>)</span>
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/mikelove/DESeq2'>DESeq2</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://ycphs.github.io/openxlsx/index.html'>openxlsx</a></span><span class='op'>)</span>
 <span class='co'>### consensus mode</span>
 <span class='co'># ChIP-Seq data</span>
 <span class='va'>peak.file</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"debchip_peaks.bed"</span>, package <span class='op'>=</span> <span class='st'>"DEbPeak"</span><span class='op'>)</span>
 <span class='va'>peak.df</span> <span class='op'>&lt;-</span> <span class='fu'><a href='GetConsensusPeak.html'>GetConsensusPeak</a></span><span class='op'>(</span>peak.file <span class='op'>=</span> <span class='va'>peak.file</span><span class='op'>)</span>
 <span class='va'>peak.profile</span> <span class='op'>&lt;-</span> <span class='fu'><a href='PeakProfile.html'>PeakProfile</a></span><span class='op'>(</span><span class='va'>peak.df</span>, species <span class='op'>=</span> <span class='st'>"Mouse"</span>, by <span class='op'>=</span> <span class='st'>"gene"</span>, region.type <span class='op'>=</span> <span class='st'>"body"</span>, nbin <span class='op'>=</span> <span class='fl'>800</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; &gt;&gt; preparing promoter regions...	 2023-03-08 16时21分31秒 
-#&gt; &gt;&gt; preparing tag matrix...		 2023-03-08 16时21分31秒 
-#&gt; &gt;&gt; preparing start_site regions by ... 2023-03-08 16时21分31秒
-#&gt; &gt;&gt; preparing tag matrix...  2023-03-08 16时21分31秒 
-#&gt; &gt;&gt; generating figure...		 2023-03-08 16时21分36秒 </div><div class='output co'>#&gt; &gt;&gt; done...			 2023-03-08 16时21分37秒 </div><div class='output co'>#&gt; &gt;&gt; binning method is used...2023-03-08 16时21分37秒
-#&gt; &gt;&gt; preparing start_site regions by gene... 2023-03-08 16时21分37秒
-#&gt; &gt;&gt; preparing tag matrix by binning...  2023-03-08 16时21分37秒 
-#&gt; &gt;&gt; Running bootstrapping for tag matrix...		 2023-03-08 16时21分44秒 
-#&gt; &gt;&gt; binning method is used...2023-03-08 16时21分44秒
-#&gt; &gt;&gt; preparing body regions by gene... 2023-03-08 16时21分44秒
-#&gt; &gt;&gt; preparing tag matrix by binning...  2023-03-08 16时21分44秒 
-#&gt; &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2023-03-08 16时21分44秒
-#&gt; &gt;&gt; 1 peaks(0.1536098%), having lengths smaller than 800bp, are filtered... 2023-03-08 16时21分47秒
-#&gt; &gt;&gt; Running bootstrapping for tag matrix...		 2023-03-08 16时22分26秒 </div><div class='input'><span class='va'>peak.anno</span> <span class='op'>&lt;-</span> <span class='fu'><a href='AnnoPeak.html'>AnnoPeak</a></span><span class='op'>(</span>
+</div><div class='output co'>#&gt; &gt;&gt; preparing promoter regions...	 2023-03-13 23时51分13秒 
+#&gt; &gt;&gt; preparing tag matrix...		 2023-03-13 23时51分13秒 
+#&gt; &gt;&gt; preparing start_site regions by ... 2023-03-13 23时51分13秒
+#&gt; &gt;&gt; preparing tag matrix...  2023-03-13 23时51分13秒 
+#&gt; &gt;&gt; generating figure...		 2023-03-13 23时51分17秒 </div><div class='output co'>#&gt; &gt;&gt; done...			 2023-03-13 23时51分18秒 </div><div class='output co'>#&gt; &gt;&gt; binning method is used...2023-03-13 23时51分18秒
+#&gt; &gt;&gt; preparing start_site regions by gene... 2023-03-13 23时51分18秒
+#&gt; &gt;&gt; preparing tag matrix by binning...  2023-03-13 23时51分18秒 
+#&gt; &gt;&gt; Running bootstrapping for tag matrix...		 2023-03-13 23时51分24秒 
+#&gt; &gt;&gt; binning method is used...2023-03-13 23时51分24秒
+#&gt; &gt;&gt; preparing body regions by gene... 2023-03-13 23时51分24秒
+#&gt; &gt;&gt; preparing tag matrix by binning...  2023-03-13 23时51分24秒 
+#&gt; &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2023-03-13 23时51分24秒
+#&gt; &gt;&gt; 1 peaks(0.1536098%), having lengths smaller than 800bp, are filtered... 2023-03-13 23时51分27秒
+#&gt; &gt;&gt; Running bootstrapping for tag matrix...		 2023-03-13 23时52分09秒 </div><div class='input'><span class='va'>peak.anno</span> <span class='op'>&lt;-</span> <span class='fu'><a href='AnnoPeak.html'>AnnoPeak</a></span><span class='op'>(</span>
   peak.df <span class='op'>=</span> <span class='va'>peak.df</span>, species <span class='op'>=</span> <span class='st'>"Mouse"</span>,
   seq.style <span class='op'>=</span> <span class='st'>"UCSC"</span>, up.dist <span class='op'>=</span> <span class='fl'>20000</span>, down.dist <span class='op'>=</span> <span class='fl'>20000</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; &gt;&gt; preparing features information...		 2023-03-08 16时22分27秒 
-#&gt; &gt;&gt; identifying nearest features...		 2023-03-08 16时22分27秒 
-#&gt; &gt;&gt; calculating distance from peak to TSS...	 2023-03-08 16时22分27秒 
-#&gt; &gt;&gt; assigning genomic annotation...		 2023-03-08 16时22分27秒 
-#&gt; &gt;&gt; adding gene annotation...			 2023-03-08 16时22分29秒 </div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:many mapping between keys and columns</span></div><div class='output co'>#&gt; &gt;&gt; assigning chromosome lengths			 2023-03-08 16时22分29秒 
-#&gt; &gt;&gt; done...					 2023-03-08 16时22分29秒 </div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 6 rows containing non-finite values (stat_count).</span></div><div class='input'><span class='co'># RNA-Seq data</span>
+</div><div class='output co'>#&gt; &gt;&gt; preparing features information...		 2023-03-13 23时52分09秒 
+#&gt; &gt;&gt; identifying nearest features...		 2023-03-13 23时52分09秒 
+#&gt; &gt;&gt; calculating distance from peak to TSS...	 2023-03-13 23时52分10秒 
+#&gt; &gt;&gt; assigning genomic annotation...		 2023-03-13 23时52分10秒 
+#&gt; &gt;&gt; adding gene annotation...			 2023-03-13 23时52分12秒 </div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:many mapping between keys and columns</span></div><div class='output co'>#&gt; &gt;&gt; assigning chromosome lengths			 2023-03-13 23时52分12秒 
+#&gt; &gt;&gt; done...					 2023-03-13 23时52分12秒 </div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 6 rows containing non-finite values (stat_count).</span></div><div class='input'><span class='co'># RNA-Seq data</span>
 <span class='va'>count.file</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"debchip_count.txt"</span>, package <span class='op'>=</span> <span class='st'>"DEbPeak"</span><span class='op'>)</span>
 <span class='va'>meta.file</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"debchip_meta.txt"</span>, package <span class='op'>=</span> <span class='st'>"DEbPeak"</span><span class='op'>)</span>
 <span class='va'>count.matrix</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/utils/read.table.html'>read.table</a></span><span class='op'>(</span>file <span class='op'>=</span> <span class='va'>count.file</span>, header <span class='op'>=</span> <span class='cn'>TRUE</span>, sep <span class='op'>=</span> <span class='st'>"\t"</span><span class='op'>)</span>
@@ -328,7 +329,9 @@ and Down_Up, Up_Up, Down_Down, Up_Down when <code>peak.mode</code> is diff. RNA 
 <span class='va'>dds.peak.results</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/DESeq2/man/results.html'>results</a></span><span class='op'>(</span><span class='va'>dds.peak</span>, contrast <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"condition"</span>, <span class='st'>"KO"</span>, <span class='st'>"WT"</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>dds.peak.results.ordered</span> <span class='op'>&lt;-</span> <span class='va'>dds.peak.results</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/order.html'>order</a></span><span class='op'>(</span><span class='va'>dds.peak.results</span><span class='op'>$</span><span class='va'>log2FoldChange</span>, decreasing <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>, <span class='op'>]</span>
 <span class='co'># RNA-seq results</span>
+<span class='co'># rna.diff.file &lt;- system.file("extdata", "RA_RNA_diff.xlsx", package = "DEbPeak")</span>
 <span class='va'>rna.diff.file</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"RA_RNA_diff.txt"</span>, package <span class='op'>=</span> <span class='st'>"DEbPeak"</span><span class='op'>)</span>
+<span class='co'># rna.diff &lt;- openxlsx::read.xlsx(xlsxFile = rna.diff.file, rowNames = T, check.names = FALSE)</span>
 <span class='va'>rna.diff</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/utils/read.table.html'>read.table</a></span><span class='op'>(</span>file <span class='op'>=</span> <span class='va'>rna.diff.file</span>, header <span class='op'>=</span> <span class='cn'>TRUE</span>, sep <span class='op'>=</span> <span class='st'>"\t"</span><span class='op'>)</span>
 <span class='co'># integrate differential expression results of RNA-seq and ATAC-seq</span>
 <span class='va'>debatac.res</span> <span class='op'>&lt;-</span> <span class='fu'>DEbPeak</span><span class='op'>(</span>

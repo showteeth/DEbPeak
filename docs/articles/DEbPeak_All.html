@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DEbPeak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -132,7 +132,7 @@
       School of Life Sciences, Tsinghua University<br><a class="author_email" href="mailto:#"></a><a href="mailto:songyb18@mails.tsinghua.edu.cn" class="email">songyb18@mails.tsinghua.edu.cn</a>
       </address>
                   
-            <h4 class="date">8 三月 2023</h4>
+            <h4 class="date">14 三月 2023</h4>
       
       
       <div class="hidden name"><code>DEbPeak_All.Rmd</code></div>
@@ -898,11 +898,11 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="va">up.kegg.res.table</span><span class="op">=</span><span class="va">up.kegg.res</span><span class="op">[[</span><span class="st">"table"</span><span class="op">]</span><span class="op">]</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">up.kegg.res.table</span><span class="op">)</span></code></pre></div>
 <pre><code>##                ID                                         Description GeneRatio
-## mmu04911 mmu04911      Insulin secretion - Mus musculus (house mouse)     7/101
-## mmu04024 mmu04024 cAMP signaling pathway - Mus musculus (house mouse)    10/101
-##           BgRatio       pvalue    p.adjust      qvalue
-## mmu04911  86/9053 4.559728e-05 0.009985803 0.008831472
-## mmu04024 224/9053 1.889347e-04 0.020688345 0.018296830
+## mmu04911 mmu04911      Insulin secretion - Mus musculus (house mouse)     7/102
+## mmu04024 mmu04024 cAMP signaling pathway - Mus musculus (house mouse)    10/102
+##           BgRatio       pvalue   p.adjust      qvalue
+## mmu04911  86/9070 4.801573e-05 0.01051545 0.009350432
+## mmu04024 224/9070 2.019563e-04 0.02211422 0.019664167
 ##                                                                    geneID Count
 ## mmu04911                  Kcnmb2/Kcnn3/Creb5/Rapgef4/Creb3l2/Snap25/Adcy1     7
 ## mmu04024 Cftr/Atp2a3/Creb5/Rapgef4/Tiam1/Creb3l2/Sox9/Atp2b2/Crebbp/Adcy1    10</code></pre>
@@ -1252,22 +1252,22 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="sourceCode" id="cb165"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># peak profile plot</span>
 <span class="va">peak.profile</span> <span class="op">=</span> <span class="fu"><a href="../reference/PeakProfile.html">PeakProfile</a></span><span class="op">(</span><span class="va">peak.df</span> ,species<span class="op">=</span><span class="st">"Mouse"</span>, by <span class="op">=</span> <span class="st">"gene"</span>, region.type <span class="op">=</span> <span class="st">"body"</span>, nbin <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing promoter regions...  2023-03-08 16时41分15秒 
-## &gt;&gt; preparing tag matrix...        2023-03-08 16时41分16秒 
-## &gt;&gt; preparing start_site regions by ... 2023-03-08 16时41分16秒
-## &gt;&gt; preparing tag matrix...  2023-03-08 16时41分16秒 
-## &gt;&gt; generating figure...       2023-03-08 16时41分24秒</code></pre>
-<pre><code>## &gt;&gt; done...            2023-03-08 16时41分24秒</code></pre>
-<pre><code>## &gt;&gt; binning method is used...2023-03-08 16时41分24秒
-## &gt;&gt; preparing start_site regions by gene... 2023-03-08 16时41分24秒
-## &gt;&gt; preparing tag matrix by binning...  2023-03-08 16时41分24秒 
-## &gt;&gt; Running bootstrapping for tag matrix...        2023-03-08 16时41分30秒 
-## &gt;&gt; binning method is used...2023-03-08 16时41分31秒
-## &gt;&gt; preparing body regions by gene... 2023-03-08 16时41分31秒
-## &gt;&gt; preparing tag matrix by binning...  2023-03-08 16时41分31秒 
-## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2023-03-08 16时41分31秒
-## &gt;&gt; 1 peaks(0.1536098%), having lengths smaller than 800bp, are filtered... 2023-03-08 16时41分34秒
-## &gt;&gt; Running bootstrapping for tag matrix...        2023-03-08 16时42分13秒</code></pre>
+<pre><code>## &gt;&gt; preparing promoter regions...  2023-03-14 00时20分43秒 
+## &gt;&gt; preparing tag matrix...        2023-03-14 00时20分44秒 
+## &gt;&gt; preparing start_site regions by ... 2023-03-14 00时20分44秒
+## &gt;&gt; preparing tag matrix...  2023-03-14 00时20分44秒 
+## &gt;&gt; generating figure...       2023-03-14 00时21分01秒</code></pre>
+<pre><code>## &gt;&gt; done...            2023-03-14 00时21分02秒</code></pre>
+<pre><code>## &gt;&gt; binning method is used...2023-03-14 00时21分02秒
+## &gt;&gt; preparing start_site regions by gene... 2023-03-14 00时21分02秒
+## &gt;&gt; preparing tag matrix by binning...  2023-03-14 00时21分02秒 
+## &gt;&gt; Running bootstrapping for tag matrix...        2023-03-14 00时21分10秒 
+## &gt;&gt; binning method is used...2023-03-14 00时21分10秒
+## &gt;&gt; preparing body regions by gene... 2023-03-14 00时21分10秒
+## &gt;&gt; preparing tag matrix by binning...  2023-03-14 00时21分10秒 
+## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2023-03-14 00时21分10秒
+## &gt;&gt; 1 peaks(0.1536098%), having lengths smaller than 800bp, are filtered... 2023-03-14 00时21分15秒
+## &gt;&gt; Running bootstrapping for tag matrix...        2023-03-14 00时22分10秒</code></pre>
 <div class="sourceCode" id="cb169"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">peak.profile</span><span class="op">$</span><span class="va">profile.plot</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debchip_peak_profile-1.png" width="960" style="display: block; margin: auto;"></p>
@@ -1280,14 +1280,14 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="sourceCode" id="cb170"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># peak annotation</span>
 <span class="va">peak.anno</span> <span class="op">=</span> <span class="fu"><a href="../reference/AnnoPeak.html">AnnoPeak</a></span><span class="op">(</span>peak.df <span class="op">=</span> <span class="va">peak.df</span>,species <span class="op">=</span> <span class="st">"Mouse"</span>,seq.style <span class="op">=</span> <span class="st">"UCSC"</span>,up.dist <span class="op">=</span> <span class="fl">20000</span>,down.dist <span class="op">=</span> <span class="fl">20000</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing features information...      2023-03-08 16时42分14秒 
-## &gt;&gt; identifying nearest features...        2023-03-08 16时42分15秒 
-## &gt;&gt; calculating distance from peak to TSS...   2023-03-08 16时42分15秒 
-## &gt;&gt; assigning genomic annotation...        2023-03-08 16时42分15秒 
-## &gt;&gt; adding gene annotation...          2023-03-08 16时42分26秒</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2023-03-14 00时22分12秒 
+## &gt;&gt; identifying nearest features...        2023-03-14 00时22分13秒 
+## &gt;&gt; calculating distance from peak to TSS...   2023-03-14 00时22分14秒 
+## &gt;&gt; assigning genomic annotation...        2023-03-14 00时22分14秒 
+## &gt;&gt; adding gene annotation...          2023-03-14 00时22分35秒</code></pre>
 <pre><code>## 'select()' returned 1:many mapping between keys and columns</code></pre>
-<pre><code>## &gt;&gt; assigning chromosome lengths           2023-03-08 16时42分26秒 
-## &gt;&gt; done...                    2023-03-08 16时42分26秒</code></pre>
+<pre><code>## &gt;&gt; assigning chromosome lengths           2023-03-14 00时22分35秒 
+## &gt;&gt; done...                    2023-03-14 00时22分35秒</code></pre>
 <pre><code>## Warning: Removed 6 rows containing non-finite values (stat_count).</code></pre>
 <div class="sourceCode" id="cb175"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">peak.anno.df</span> <span class="op">=</span> <span class="va">peak.anno</span><span class="op">$</span><span class="va">df</span>
@@ -1380,7 +1380,10 @@ document.addEventListener("DOMContentLoaded", function() {
 <a href="#integrate-summary" class="anchor"></a>Integrate summary</h3>
 <div class="sourceCode" id="cb183"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># DE and ChIP venn plot</span>
-<span class="va">debchip.plot</span> <span class="op">=</span> <span class="fu"><a href="../reference/PlotDEbPeak.html">PlotDEbPeak</a></span><span class="op">(</span><span class="va">debchip.res</span>, peak.type <span class="op">=</span> <span class="st">"ChIP"</span>, show_percentage<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+<span class="co"># debchip.plot = PlotDEbPeak(debchip.res, peak.type = "ChIP", show_percentage=FALSE)</span>
+<span class="co"># debchip.plot</span>
+<span class="va">debchip.plot</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteVenn.html">InteVenn</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debchip.res</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>, peak.type <span class="op">=</span> <span class="st">"ChIP"</span>, 
+                        peak.mode <span class="op">=</span> <span class="st">"consenus"</span>, gene.col <span class="op">=</span> <span class="st">"SYMBOL"</span>,show_percentage <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">debchip.plot</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debchip_integrate_plot-1.png" width="384" style="display: block; margin: auto;"></p>
 <hr>
@@ -1394,8 +1397,10 @@ document.addEventListener("DOMContentLoaded", function() {
 <a href="#upbpeak" class="anchor"></a>UPbPeak</h4>
 <div class="sourceCode" id="cb184"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># functional enrichment on direct targets</span>
-<span class="va">debchip.up.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/DEbPeakFE.html">DEbPeakFE</a></span><span class="op">(</span>de.peak <span class="op">=</span> <span class="va">debchip.res</span>, peak.fe.key <span class="op">=</span> <span class="st">"UPbPeak"</span>, 
-                                  gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
+<span class="co"># debchip.up.fe.results = DEbPeakFE(de.peak = debchip.res, peak.fe.key = "UPbPeak", </span>
+<span class="co">#                                   gene.type = "ENTREZID", species="Mouse",save = F)</span>
+<span class="va">debchip.up.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteFE.html">InteFE</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debchip.res</span>, fe.key <span class="op">=</span> <span class="st">"UPbPeak"</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>,
+                               gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <pre><code>## conduct ALL GO enrichment analysis on: UPbPeak</code></pre>
 <pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
 <pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
@@ -1442,8 +1447,10 @@ document.addEventListener("DOMContentLoaded", function() {
 <a href="#downbpeak" class="anchor"></a>DOWNbPeak</h4>
 <div class="sourceCode" id="cb195"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># functional enrichment on direct targets</span>
-<span class="va">debchip.down.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/DEbPeakFE.html">DEbPeakFE</a></span><span class="op">(</span>de.peak <span class="op">=</span> <span class="va">debchip.res</span>, peak.fe.key <span class="op">=</span> <span class="st">"DOWNbPeak"</span>, 
-                                    gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
+<span class="co"># debchip.down.fe.results = DEbPeakFE(de.peak = debchip.res, peak.fe.key = "DOWNbPeak", </span>
+<span class="co">#                                     gene.type = "ENTREZID", species="Mouse",save = F)</span>
+<span class="va">debchip.down.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteFE.html">InteFE</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debchip.res</span>, fe.key <span class="op">=</span> <span class="st">"DOWNbPeak"</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>,
+                                 gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <pre><code>## conduct ALL GO enrichment analysis on: DOWNbPeak</code></pre>
 <pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
 <pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
@@ -1520,22 +1527,22 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="sourceCode" id="cb206"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># peak profile plot</span>
 <span class="va">atac.peak.profile</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PeakProfile.html">PeakProfile</a></span><span class="op">(</span><span class="va">atac.peak.df</span>, species <span class="op">=</span> <span class="st">"Mouse"</span>, by <span class="op">=</span> <span class="st">"gene"</span>, region.type <span class="op">=</span> <span class="st">"body"</span>, nbin <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing promoter regions...  2023-03-08 16时43分15秒 
-## &gt;&gt; preparing tag matrix...        2023-03-08 16时43分15秒 
-## &gt;&gt; preparing start_site regions by ... 2023-03-08 16时43分15秒
-## &gt;&gt; preparing tag matrix...  2023-03-08 16时43分15秒 
-## &gt;&gt; generating figure...       2023-03-08 16时43分23秒</code></pre>
-<pre><code>## &gt;&gt; done...            2023-03-08 16时43分28秒</code></pre>
-<pre><code>## &gt;&gt; binning method is used...2023-03-08 16时43分29秒
-## &gt;&gt; preparing start_site regions by gene... 2023-03-08 16时43分29秒
-## &gt;&gt; preparing tag matrix by binning...  2023-03-08 16时43分29秒 
-## &gt;&gt; Running bootstrapping for tag matrix...        2023-03-08 16时44分14秒 
-## &gt;&gt; binning method is used...2023-03-08 16时44分14秒
-## &gt;&gt; preparing body regions by gene... 2023-03-08 16时44分14秒
-## &gt;&gt; preparing tag matrix by binning...  2023-03-08 16时44分14秒 
-## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2023-03-08 16时44分14秒
-## &gt;&gt; 16 peaks(0.296077%), having lengths smaller than 800bp, are filtered... 2023-03-08 16时44分20秒
-## &gt;&gt; Running bootstrapping for tag matrix...        2023-03-08 16时47分13秒</code></pre>
+<pre><code>## &gt;&gt; preparing promoter regions...  2023-03-14 00时23分47秒 
+## &gt;&gt; preparing tag matrix...        2023-03-14 00时23分47秒 
+## &gt;&gt; preparing start_site regions by ... 2023-03-14 00时23分47秒
+## &gt;&gt; preparing tag matrix...  2023-03-14 00时23分47秒 
+## &gt;&gt; generating figure...       2023-03-14 00时23分59秒</code></pre>
+<pre><code>## &gt;&gt; done...            2023-03-14 00时24分06秒</code></pre>
+<pre><code>## &gt;&gt; binning method is used...2023-03-14 00时24分10秒
+## &gt;&gt; preparing start_site regions by gene... 2023-03-14 00时24分10秒
+## &gt;&gt; preparing tag matrix by binning...  2023-03-14 00时24分10秒 
+## &gt;&gt; Running bootstrapping for tag matrix...        2023-03-14 00时25分16秒 
+## &gt;&gt; binning method is used...2023-03-14 00时25分16秒
+## &gt;&gt; preparing body regions by gene... 2023-03-14 00时25分16秒
+## &gt;&gt; preparing tag matrix by binning...  2023-03-14 00时25分16秒 
+## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2023-03-14 00时25分17秒
+## &gt;&gt; 16 peaks(0.296077%), having lengths smaller than 800bp, are filtered... 2023-03-14 00时25分26秒
+## &gt;&gt; Running bootstrapping for tag matrix...        2023-03-14 00时29分39秒</code></pre>
 <div class="sourceCode" id="cb210"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">atac.peak.profile</span><span class="op">$</span><span class="va">profile.plot</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debchip_atac_peak_profile-1.png" width="960" style="display: block; margin: auto;"></p>
@@ -1550,14 +1557,14 @@ document.addEventListener("DOMContentLoaded", function() {
   peak.df <span class="op">=</span> <span class="va">atac.peak.df</span>, species <span class="op">=</span> <span class="st">"Mouse"</span>,
   seq.style <span class="op">=</span> <span class="st">"UCSC"</span>, up.dist <span class="op">=</span> <span class="fl">20000</span>, down.dist <span class="op">=</span> <span class="fl">20000</span>
 <span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing features information...      2023-03-08 16时47分16秒 
-## &gt;&gt; identifying nearest features...        2023-03-08 16时47分16秒 
-## &gt;&gt; calculating distance from peak to TSS...   2023-03-08 16时47分16秒 
-## &gt;&gt; assigning genomic annotation...        2023-03-08 16时47分16秒 
-## &gt;&gt; adding gene annotation...          2023-03-08 16时47分19秒</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2023-03-14 00时29分44秒 
+## &gt;&gt; identifying nearest features...        2023-03-14 00时29分44秒 
+## &gt;&gt; calculating distance from peak to TSS...   2023-03-14 00时29分45秒 
+## &gt;&gt; assigning genomic annotation...        2023-03-14 00时29分45秒 
+## &gt;&gt; adding gene annotation...          2023-03-14 00时29分51秒</code></pre>
 <pre><code>## 'select()' returned 1:many mapping between keys and columns</code></pre>
-<pre><code>## &gt;&gt; assigning chromosome lengths           2023-03-08 16时47分19秒 
-## &gt;&gt; done...                    2023-03-08 16时47分19秒</code></pre>
+<pre><code>## &gt;&gt; assigning chromosome lengths           2023-03-14 00时29分51秒 
+## &gt;&gt; done...                    2023-03-14 00时29分51秒</code></pre>
 <pre><code>## Warning: Removed 23 rows containing non-finite values (stat_count).</code></pre>
 <div class="sourceCode" id="cb216"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">atac.peak.anno.df</span> <span class="op">=</span> <span class="va">atac.peak.anno</span><span class="op">$</span><span class="va">df</span>
@@ -1646,7 +1653,10 @@ document.addEventListener("DOMContentLoaded", function() {
 <a href="#integrate-summary-1" class="anchor"></a>Integrate summary</h4>
 <div class="sourceCode" id="cb224"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># DE and ChIP venn plot</span>
-<span class="va">debpeak.plot</span> <span class="op">=</span> <span class="fu"><a href="../reference/PlotDEbPeak.html">PlotDEbPeak</a></span><span class="op">(</span><span class="va">debpeak.res</span>, peak.type <span class="op">=</span> <span class="st">"Peak"</span>, show_percentage<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+<span class="co"># debpeak.plot = PlotDEbPeak(debpeak.res, peak.type = "Peak", show_percentage=FALSE)</span>
+<span class="co"># debpeak.plot</span>
+<span class="va">debpeak.plot</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteVenn.html">InteVenn</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debpeak.res</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>, peak.type <span class="op">=</span> <span class="st">"Peak"</span>, 
+                        gene.col <span class="op">=</span> <span class="st">"SYMBOL"</span>,show_percentage <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">debpeak.plot</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debpeak_integrate_plot-1.png" width="384" style="display: block; margin: auto;"></p>
 </div>
@@ -1659,7 +1669,9 @@ document.addEventListener("DOMContentLoaded", function() {
 <a href="#upbpeak-1" class="anchor"></a>UPbPeak</h5>
 <div class="sourceCode" id="cb225"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># functional enrichment on direct targets</span>
-<span class="va">debpeak.up.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/DEbPeakFE.html">DEbPeakFE</a></span><span class="op">(</span>de.peak <span class="op">=</span> <span class="va">debpeak.res</span>, peak.fe.key <span class="op">=</span> <span class="st">"UPbPeak"</span>, gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
+<span class="co"># debpeak.up.fe.results = DEbPeakFE(de.peak = debpeak.res, peak.fe.key = "UPbPeak", gene.type = "ENTREZID", species="Mouse",save = F)</span>
+<span class="va">debpeak.up.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteFE.html">InteFE</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debpeak.res</span>, fe.key <span class="op">=</span> <span class="st">"UPbPeak"</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>,
+                               gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <pre><code>## conduct ALL GO enrichment analysis on: UPbPeak</code></pre>
 <pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
 <pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
@@ -1696,8 +1708,10 @@ document.addEventListener("DOMContentLoaded", function() {
 <a href="#downbpeak-1" class="anchor"></a>DOWNbPeak</h5>
 <div class="sourceCode" id="cb234"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># functional enrichment on direct targets</span>
-<span class="va">debpeak.down.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/DEbPeakFE.html">DEbPeakFE</a></span><span class="op">(</span>de.peak <span class="op">=</span> <span class="va">debpeak.res</span>, peak.fe.key <span class="op">=</span> <span class="st">"DOWNbPeak"</span>, 
-                                    gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
+<span class="co"># debpeak.down.fe.results = DEbPeakFE(de.peak = debpeak.res, peak.fe.key = "DOWNbPeak", </span>
+<span class="co">#                                     gene.type = "ENTREZID", species="Mouse",save = F)</span>
+<span class="va">debpeak.down.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteFE.html">InteFE</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debpeak.res</span>, fe.key <span class="op">=</span> <span class="st">"DOWNbPeak"</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>,
+                                 gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <pre><code>## conduct ALL GO enrichment analysis on: DOWNbPeak</code></pre>
 <pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
 <pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
@@ -1963,7 +1977,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## [15] IRanges_2.24.1                           
 ## [16] S4Vectors_0.28.1                         
 ## [17] BiocGenerics_0.42.0                      
-## [18] DEbPeak_0.9.0                            
+## [18] DEbPeak_1.0.0                            
 ## [19] knitr_1.37                               
 ## [20] BiocStyle_2.18.1                         
 ## 

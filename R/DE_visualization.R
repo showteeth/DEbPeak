@@ -157,7 +157,11 @@ PrepareDEPlot <- function(deres, signif = "padj", signif.threshold = 0.05, l2fc.
   # deal with pvalue or padj is zero, min(pvalue)*0.1 or min(padj)*0.1, https://github.com/kevinblighe/EnhancedVolcano/issues/43
   signif.min <- min(de.df$signif[de.df$signif > 0])
   de.df <- de.df %>% dplyr::mutate(signif = ifelse(signif == 0, signif.min * 0.1, signif))
-
+  # filter na
+  de.df <- de.df %>%
+    tidyr::drop_na(signif) %>%
+    tidyr::drop_na(log2FoldChange)
+  # anno the results
   de.df <- de.df %>%
     dplyr::mutate(regulation = dplyr::case_when(
       log2FoldChange > l2fc.threshold & signif < signif.threshold ~ "Up_regulated",
