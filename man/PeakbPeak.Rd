@@ -7,7 +7,7 @@
 PeakbPeak(
   peak1.res,
   peak2.res,
-  peak.mode = c("consensus", "diff"),
+  peak.mode = c("consenus", "diff"),
   peak.anno.key = c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream",
     "Distal Intergenic", "All"),
   peak1.signif = "padj",

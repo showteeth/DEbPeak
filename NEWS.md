@@ -10,6 +10,7 @@
 * Fixed the way `PrepareDEPlot` filtering.
 * Removed parameter `gene.type` in `DEbPeakFE`.
 * Added parameter `gene.col` in `PlotDEbPeak` to show genes instead of peaks.
+* Fixed bug in `PrepareVenn`.
 
 -------------
 

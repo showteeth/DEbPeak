@@ -32,7 +32,7 @@ DEbDEFE(
 
 \item{out.folder}{Folder to save enrichment results. Default: wording directory.}
 
-\item{gene.type}{Gene name type. Chosen from ENSEMBL, ENTREZID,SYMBOL. Default: ENSEMBL.}
+\item{gene.type}{Gene name type of \code{DE1_Gene} column. Chosen from ENSEMBL, ENTREZID,SYMBOL. Default: ENSEMBL.}
 
 \item{go.type}{GO enrichment type, chosen from ALL, BP, MF, CC. Default: ALL.}
 

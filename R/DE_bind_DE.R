@@ -74,7 +74,7 @@ DEbDE <- function(de1.res, de2.res,
 #' @param de.de Dataframe contains integrated results of two differential expression analysis of RNA-seq.
 #' @param de.fe.key The key type of integrated results ("Type" column of \code{de.de}) to perform functional enrichment.
 #' @param out.folder Folder to save enrichment results. Default: wording directory.
-#' @param gene.type Gene name type. Chosen from ENSEMBL, ENTREZID,SYMBOL. Default: ENSEMBL.
+#' @param gene.type Gene name type of \code{DE1_Gene} column. Chosen from ENSEMBL, ENTREZID,SYMBOL. Default: ENSEMBL.
 #' @param go.type GO enrichment type, chosen from ALL, BP, MF, CC. Default: ALL.
 #' @param enrich.pvalue Cutoff value of pvalue. Default: 0.05.
 #' @param enrich.qvalue Cutoff value of qvalue. Default: 0.05.

@@ -44,7 +44,7 @@
 #' )
 #' # integrate
 #' chip.atac <- PeakbPeak(peak1.res = chip.anno$df, peak2.res = atac.anno$df, peak.mode = "consenus", peak.anno.key = "Promoter")
-PeakbPeak <- function(peak1.res, peak2.res, peak.mode = c("consensus", "diff"),
+PeakbPeak <- function(peak1.res, peak2.res, peak.mode = c("consenus", "diff"),
                       peak.anno.key = c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic", "All"),
                       peak1.signif = "padj", peak1.signif.threshold = 0.05, peak1.l2fc.threshold = 1,
                       peak2.signif = "padj", peak2.signif.threshold = 0.05, peak2.l2fc.threshold = 1) {
@@ -52,7 +52,7 @@ PeakbPeak <- function(peak1.res, peak2.res, peak.mode = c("consensus", "diff"),
   peak.mode <- match.arg(arg = peak.mode)
   peak.anno.key <- match.arg(arg = peak.anno.key)
 
-  if (peak.mode == "consensus") {
+  if (peak.mode == "consenus") {
     # prepare peak1
     peak1.res.used <- peak1.res %>%
       dplyr::filter(anno == peak.anno.key) %>%
@@ -162,7 +162,7 @@ PeakbPeak <- function(peak1.res, peak2.res, peak.mode = c("consensus", "diff"),
 #' @param peak.peak Dataframe contains integrated results of two peak annotation/differential analysis.
 #' @param peak.fe.key The key type of integrated results ("Type" column of \code{peak.peak}) to perform functional enrichment.
 #' @param out.folder Folder to save enrichment results. Default: wording directory.
-#' @param gene.type Gene name type. Chosen from ENSEMBL, ENTREZID,SYMBOL. Default: ENSEMBL.
+#' @param gene.type Gene name type of \code{P1_Gene} column. Chosen from ENSEMBL, ENTREZID,SYMBOL. Default: ENSEMBL.
 #' @param go.type GO enrichment type, chosen from ALL, BP, MF, CC. Default: ALL.
 #' @param enrich.pvalue Cutoff value of pvalue. Default: 0.05.
 #' @param enrich.qvalue Cutoff value of qvalue. Default: 0.05.

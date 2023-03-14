@@ -35,7 +35,9 @@ InteFE(
 
 \item{out.folder}{Folder to save enrichment results. Default: wording directory.}
 
-\item{gene.type}{Gene name type. Chosen from ENSEMBL, ENTREZID,SYMBOL. Default: ENSEMBL.}
+\item{gene.type}{Gene name type (if \code{inte.res} is from \code{DEbPeak}, this should be ENTREZID; if \code{inte.res} is from \code{PeakbPeak},
+this should be Gene name type of P1_Gene; if \code{inte.res} is from \code{DEbDE}, this should be Gene name type of DE1_Gene).
+Chosen from ENSEMBL, ENTREZID,SYMBOL. Default: ENSEMBL.}
 
 \item{go.type}{GO enrichment type, chosen from ALL, BP, MF, CC. Default: ALL.}
 

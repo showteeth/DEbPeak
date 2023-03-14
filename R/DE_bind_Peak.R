@@ -235,7 +235,11 @@ DEbPeak <- function(de.res, peak.res, peak.mode = c("consenus", "diff"),
 # prepare venn plot dataframe
 PrepareVenn <- function(key, named.vec) {
   if (key %in% names(named.vec)) {
-    return(paste0(key, 1:named.vec[key]))
+    if (named.vec[key] >= 1) {
+      return(paste0(key, 1:named.vec[key]))
+    } else {
+      return(NULL)
+    }
   } else {
     return(NULL)
   }
@@ -805,7 +809,9 @@ InteDiffQuad <- function(inte.res, inte.type = c("DEbPeak", "PeakbPeak", "DEbDE"
 #' @param fe.key The key type of integrated results ("Type" column of \code{inte.res}) to perform functional enrichment.
 #' @param inte.type The integration type, choose from "DEbDE", "PeakbPeak", "DEbPeak". Default: "DEbPeak".
 #' @param out.folder Folder to save enrichment results. Default: wording directory.
-#' @param gene.type Gene name type. Chosen from ENSEMBL, ENTREZID,SYMBOL. Default: ENSEMBL.
+#' @param gene.type Gene name type (if \code{inte.res} is from \code{DEbPeak}, this should be ENTREZID; if \code{inte.res} is from \code{PeakbPeak},
+#' this should be Gene name type of P1_Gene; if \code{inte.res} is from \code{DEbDE}, this should be Gene name type of DE1_Gene).
+#' Chosen from ENSEMBL, ENTREZID,SYMBOL. Default: ENSEMBL.
 #' @param go.type GO enrichment type, chosen from ALL, BP, MF, CC. Default: ALL.
 #' @param enrich.pvalue Cutoff value of pvalue. Default: 0.05.
 #' @param enrich.qvalue Cutoff value of qvalue. Default: 0.05.
