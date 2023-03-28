@@ -15,7 +15,7 @@
   - Basic info: scree plot (help to select the useful PCs), biplot (sample similarity with corresponding genes with larger loadings) and PC pairs plot (sample similarity under different PC combinations).
   - Loading related: visualize genes with larger positive and negative loadings on selected PCs, conduct GO enrichment analysis on genes with larger positive and negative loadings on selected PCs.
   - 3D visualization: visualize samples on three selected PCs.
-* **Differential Analysis and Visualization**: this module includes six powerful visualization methods (Volcano Plot, Scatter Plot, MA Plot, Rank Plot, Gene/Peak Plot, Heatmap).
+* **Differential Analysis and Visualization**: this module includes seven powerful visualization methods (Volcano Plot, Scatter Plot, MA Plot, Rank Plot, Gene/Peak Plot, Heatmap, Pie Plot for peak-related data).
 * **Functional Enrichment Analysis (FEA)**: GO enrichment analysis, KEGG enrichment analysis, Gene Set Enrichment Analysis (GSEA).
   - GO (Biological Process, Molecular Function, Cellular Component) and KEGG on differential expression genes or accessible/binding peaks.
   - GSEA on all genes (Notice: GSEA is not available for peak-related data)
@@ -152,7 +152,7 @@ Detailed usage is available in [here](https://showteeth.github.io/DEbPeak/). We 
     <td>plot3D</td>
   </tr>
   <tr>
-    <td rowspan="8">Differential Axpression Analysis</td>
+    <td rowspan="9">Differential Axpression Analysis</td>
     <td>ExtractDA</td>
     <td>Extract differential analysis results</td>
     <td>tidyverse</td>
@@ -186,6 +186,11 @@ Detailed usage is available in [here](https://showteeth.github.io/DEbPeak/). We 
     <td>DEHeatmap</td>
     <td>Heatmap for differential analysis results</td>
     <td>ComplexHeatmap</td>
+  </tr>
+  <tr>
+    <td>DiffPeakPie</td>
+    <td>Stat genomic regions of differential peaks with pie plot</td>
+    <td>ggpie</td>
   </tr>
   <tr>
     <td>ConductDESeq2</td>

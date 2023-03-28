@@ -9,7 +9,7 @@ author:
 date: "`r BiocStyle::doc_date()`"
 package: "`r BiocStyle::pkg_ver('DEbPeak')`"
 abstract: >
-  The goal of `DEbPeak` is to explore, visualize, interpret multi-omics data and unravel the regulation of gene expression by combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains six functional modules: Quality Control (QC) on count matrix and samples, Principal Component Analysis (PCA) ,Differential Analysis and Visualization (Volcano Plot, Scatter Plot, MA Plot, Rank Plot, Gene Plot, Heatmap), Functional Enrichment Analysis (GO enrichment analysis, KEGG enrichment analysis, Gene Set Enrichment Analysis), Integrate RNA-seq with peak-related data (Get consensus peaks, Peak profile plots, Peak annotaion, Integrate RNA-seq with peak-related data, Integrate summary, GO enrichment on integrated results, Find motif on integrated results), Utils (useful functions when dealing with RNA-seq data, including gene name conversion and count normalization). 
+  The goal of `DEbPeak` is to explore, visualize, interpret multi-omics data and unravel the regulation of gene expression by combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains six functional modules: Quality Control (QC) on count matrix and samples, Principal Component Analysis (PCA) ,Differential Analysis and Visualization (Volcano Plot, Scatter Plot, MA Plot, Rank Plot, Gene Plot, Heatmap, Pie Plot for peak-related data), Functional Enrichment Analysis (GO enrichment analysis, KEGG enrichment analysis, Gene Set Enrichment Analysis), Integrate RNA-seq with peak-related data (Get consensus peaks, Peak profile plots, Peak annotaion, Integrate RNA-seq with peak-related data, Integrate summary, GO enrichment on integrated results, Find motif on integrated results), Utils (useful functions when dealing with RNA-seq data, including gene name conversion and count normalization). 
 output: 
   BiocStyle::html_document:
     toc_depth: 4
@@ -62,7 +62,7 @@ library("DEbPeak")
   - Basic info: scree plot (help to select the useful PCs), biplot (sample similarity with corresponding genes with larger loadings) and PC pairs plot (sample similarity under different PC combinations).
   - Loading related: visualize genes with larger positive and negative loadings on selected PCs, conduct GO enrichment analysis on genes with larger positive and negative loadings on selected PCs.
   - 3D visualization: visualize samples on three selected PCs.
-* **Differential Analysis and Visualization**: this module includes six powerful visualization methods (Volcano Plot, Scatter Plot, MA Plot, Rank Plot, Gene/Peak Plot, Heatmap).
+* **Differential Analysis and Visualization**: this module includes seven powerful visualization methods (Volcano Plot, Scatter Plot, MA Plot, Rank Plot, Gene/Peak Plot, Heatmap, Pie Plot for peak-related data).
 * **Functional Enrichment Analysis (FEA)**: GO enrichment analysis, KEGG enrichment analysis, Gene Set Enrichment Analysis (GSEA).
   - GO (Biological Process, Molecular Function, Cellular Component) and KEGG on differential expression genes or accessible/binding peaks.
   - GSEA on all genes (Notice: GSEA is not available for peak-related data)
@@ -572,7 +572,7 @@ head(debchip.res)
 # debchip.plot = PlotDEbPeak(debchip.res, peak.type = "ChIP", show_percentage=FALSE)
 # debchip.plot
 debchip.plot = InteVenn(inte.res = debchip.res, inte.type = "DEbPeak", peak.type = "ChIP", 
-                        peak.mode = "consenus", gene.col = "SYMBOL",show_percentage = FALSE)
+                        peak.mode = "consensus", gene.col = "SYMBOL",show_percentage = FALSE)
 debchip.plot
 ```
 
@@ -626,7 +626,7 @@ There are **five categories** for users to choose to perform motif enrichment: `
 # debatac.res: similar to debatac.res
 # this step is time consuming!
 ATAC.motif = FindMotif(inte.res = debchip.res, peak.anno.res = peak.anno[["df"]],
-                       peak.motif.key = "UPbPeak", peak.mode = "consenus", homer.motif.path = '~/anaconda3/bin/findMotifsGenome.pl',
+                       peak.motif.key = "UPbPeak", peak.mode = "consensus", homer.motif.path = '~/anaconda3/bin/findMotifsGenome.pl',
                        out.folder = "/path/to/out/folder", other.paras = "-len 8,10,12 -size -100,50 -S 25")
 ```
 

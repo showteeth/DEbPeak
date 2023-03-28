@@ -7,7 +7,7 @@
 PeakbPeak(
   peak1.res,
   peak2.res,
-  peak.mode = c("consenus", "diff"),
+  peak.mode = c("consensus", "diff"),
   peak.anno.key = c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream",
     "Distal Intergenic", "All"),
   peak1.signif = "padj",
@@ -19,17 +19,17 @@ PeakbPeak(
 )
 }
 \arguments{
-\item{peak1.res}{Peak1 dataframe contains all peak annotation (\code{peak.mode} is consenus) or
+\item{peak1.res}{Peak1 dataframe contains all peak annotation (\code{peak.mode} is consensus) or
 differential analysis results of peak-related data (\code{peak.mode} is diff).}
 
-\item{peak2.res}{Peak2 dataframe contains all peak annotation (\code{peak.mode} is consenus) or
+\item{peak2.res}{Peak2 dataframe contains all peak annotation (\code{peak.mode} is consensus) or
 differential analysis results of peak-related data (\code{peak.mode} is diff).}
 
-\item{peak.mode}{The source of peak results, choose from consenus (peak annotation) and diff (differential analysis).
-Default: consenus.}
+\item{peak.mode}{The source of peak results, choose from consensus (peak annotation) and diff (differential analysis).
+Default: consensus.}
 
 \item{peak.anno.key}{Peak location, chosen from "Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic","All".
-Used when \code{peak.mode} is consenus. Default: "Promoter".}
+Used when \code{peak.mode} is consensus. Default: "Promoter".}
 
 \item{peak1.signif}{Used when \code{peak.mode} is diff. Significance criterion for peak-associated results for Peak1. For DESeq2 results, can be chosen from padj, pvalue.
 For edgeR results, can be chosen from FDR, PValue. Default: padj.}
@@ -47,7 +47,7 @@ For edgeR results, can be chosen from FDR, PValue. Default: padj.}
 }
 \value{
 Dataframe contains integration results. When \code{peak.mode} is 'diff', the 'Type' column contains "Down_Up", "Up_Up", "Down_Down", "Up_Down", "Peak1_Up", "Peak1_Down", "Peak2_Up", "Peak2_Down".
-When \code{peak.mode} is 'consenus', the 'Type' column contains "Common", "Peak1", "Peak2".
+When \code{peak.mode} is 'consensus', the 'Type' column contains "Common", "Peak1", "Peak2".
 }
 \description{
 Integrate Two Peak Annotation/Differential Analysis Results.
@@ -69,5 +69,5 @@ atac.anno <- AnnoPeak(
   seq.style = "UCSC", up.dist = 20000, down.dist = 20000
 )
 # integrate
-chip.atac <- PeakbPeak(peak1.res = chip.anno$df, peak2.res = atac.anno$df, peak.mode = "consenus", peak.anno.key = "Promoter")
+chip.atac <- PeakbPeak(peak1.res = chip.anno$df, peak2.res = atac.anno$df, peak.mode = "consensus", peak.anno.key = "Promoter")
 }

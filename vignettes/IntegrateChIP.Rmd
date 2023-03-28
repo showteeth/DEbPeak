@@ -106,7 +106,7 @@ head(debchip.res)
 # debchip.plot = PlotDEbPeak(debchip.res, peak.type = "ChIP", show_percentage=FALSE)
 # debchip.plot
 debchip.plot = InteVenn(inte.res = debchip.res, inte.type = "DEbPeak", peak.type = "ChIP", 
-                        peak.mode = "consenus", gene.col = "SYMBOL",show_percentage = FALSE)
+                        peak.mode = "consensus", gene.col = "SYMBOL",show_percentage = FALSE)
 debchip.plot
 ```
 

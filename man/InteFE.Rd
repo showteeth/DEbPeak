@@ -96,7 +96,7 @@ atac.anno <- AnnoPeak(
   seq.style = "UCSC", up.dist = 20000, down.dist = 20000
 )
 # integrate
-chip.atac <- PeakbPeak(peak1.res = chip.anno$df, peak2.res = atac.anno$df, peak.mode = "consenus", peak.anno.key = "Promoter")
+chip.atac <- PeakbPeak(peak1.res = chip.anno$df, peak2.res = atac.anno$df, peak.mode = "consensus", peak.anno.key = "Promoter")
 # functional enrichment
 chip.atac.fe <- InteFE(
   inte.res = chip.atac, fe.key = "Common", inte.type = "PeakbPeak", gene.type = "SYMBOL",

@@ -1,12 +1,12 @@
 #' Integrate Differential Expression Results with Peak Annotation/Differential Expression Results.
 #'
 #' @param de.res Dataframe contains all genes of differential expression analysis.
-#' @param peak.mode The source of peak results, choose from consenus (peak annotation) and diff (differential analysis).
-#' Default: consenus.
-#' @param peak.res Dataframe contains all peak annotation (\code{peak.mode} is consenus) or
+#' @param peak.mode The source of peak results, choose from consensus (peak annotation) and diff (differential analysis).
+#' Default: consensus.
+#' @param peak.res Dataframe contains all peak annotation (\code{peak.mode} is consensus) or
 #' differential analysis results of peak-related data (\code{peak.mode} is diff).
 #' @param peak.anno.key Peak location, chosen from "Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic","All".
-#' Used when \code{peak.mode} is consenus. Default: "Promoter".
+#' Used when \code{peak.mode} is consensus. Default: "Promoter".
 #' @param signif Significance criterion for RNA-seq results. For DESeq2 results, can be chosen from padj, pvalue.
 #' For edgeR results, can be chosen from FDR, PValue. Default: padj.
 #' @param signif.threshold Significance threshold for RNA-seq to get differentially expressed genes. Default: 0.05.
@@ -20,7 +20,7 @@
 #' @param org.db Organism database. Used when \code{peak.mode} is diff and \code{merge.key} is not "SYMBOL".
 #' For peak-associated differential expression results, only support merging on "SYMBOL". Default: org.Mm.eg.db.
 #'
-#' @return Dataframe contains integrated results. The results will contain five categories: UPbPeak, DOWNbPeak, UP, DOWN, Peak when \code{peak.mode} is consenus
+#' @return Dataframe contains integrated results. The results will contain five categories: UPbPeak, DOWNbPeak, UP, DOWN, Peak when \code{peak.mode} is consensus
 #' and Down_Up, Up_Up, Down_Down, Up_Down when \code{peak.mode} is diff. RNA in front.
 #' @export
 #' @importFrom magrittr %>%
@@ -93,7 +93,7 @@
 #'   de.res = rna.diff, peak.res = dds.peak.results.ordered, peak.mode = "diff", peak.anno.key = "All", l2fc.threshold = 0,
 #'   peak.l2fc.threshold = 0, org.db = "org.Mm.eg.db", merge.key = "SYMBOL"
 #' )
-DEbPeak <- function(de.res, peak.res, peak.mode = c("consenus", "diff"),
+DEbPeak <- function(de.res, peak.res, peak.mode = c("consensus", "diff"),
                     peak.anno.key = c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic", "All"),
                     signif = "padj", signif.threshold = 0.05, l2fc.threshold = 1, label.key = NULL,
                     peak.signif = "padj", peak.signif.threshold = 0.05, peak.l2fc.threshold = 1,
@@ -104,7 +104,7 @@ DEbPeak <- function(de.res, peak.res, peak.mode = c("consenus", "diff"),
   peak.anno.key <- match.arg(arg = peak.anno.key)
   merge.key <- match.arg(arg = merge.key)
 
-  if (peak.mode == "consenus") {
+  if (peak.mode == "consensus") {
     # process RNA de results
     de.df <- PrepareDEPlot(
       deres = de.res, signif = signif, signif.threshold = signif.threshold,
@@ -249,8 +249,8 @@ PrepareVenn <- function(key, named.vec) {
 #'
 #' @param de.peak Dataframe contains integrated results.
 #' @param peak.type The source of peaks, chosen from ATAC, ChIP and Peak (ChIP and ATAC). Default: ChIP.
-#' @param peak.mode The source of peak results, choose from consenus (peak annotation) and diff (differential expression analysis).
-#' Default: consenus.
+#' @param peak.mode The source of peak results, choose from consensus (peak annotation) and diff (differential expression analysis).
+#' Default: consensus.
 #' @param gene.col Column of \code{inte.res} contains genes. Same as \code{merge.key} in \code{\link{DEbPeak}}.
 #' @param ... Parameters for \code{\link{ggvenn}}.
 #'
@@ -298,7 +298,7 @@ PrepareVenn <- function(key, named.vec) {
 #'   de.peak = debchip.res, peak.type = "ChIP", gene.col = "SYMBOL",
 #'   show_percentage = FALSE
 #' )
-PlotDEbPeak <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), peak.mode = c("consenus", "diff"),
+PlotDEbPeak <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), peak.mode = c("consensus", "diff"),
                         gene.col = c("geneId", "ENSEMBL", "SYMBOL"), ...) {
   # check parameters
   peak.type <- match.arg(arg = peak.type)
@@ -306,7 +306,7 @@ PlotDEbPeak <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), peak.mod
   # get summary results
   # distinct Type and gene, show gene number instead of peak number
   if (peak.type %in% c("ChIP", "ATAC")) {
-    if (peak.mode == "consenus") {
+    if (peak.mode == "consensus") {
       de.peak <- de.peak %>%
         dplyr::distinct(.data[[gene.col]], .data[["Type"]], .keep_all = TRUE)
     } else if (peak.mode == "diff") {
@@ -348,7 +348,7 @@ PlotDEbPeak <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), peak.mod
     plot.list[["ATAC"]] <- ATAC.vec
     plot <- ggvenn::ggvenn(plot.list, ...)
   } else if (peak.type %in% c("ChIP", "ATAC")) {
-    if (peak.mode == "consenus") {
+    if (peak.mode == "consensus") {
       # create number vector
       Peak.vec <- c(
         PrepareVenn("Peak", type.summary), PrepareVenn("UPbPeak", type.summary),
@@ -400,9 +400,9 @@ PlotDEbPeak <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), peak.mod
 #' @param inte.res Integration results, can be output of \code{DEbPeak}, \code{PeakbPeak}, \code{DEbDE}.
 #' @param inte.type The integration type, choose from "DEbDE", "PeakbPeak", "DEbPeak". Default: "DEbPeak".
 #' @param peak.type Used when \code{inte.type} is "DEbPeak". The source of peaks, chosen from ATAC, ChIP and Peak (ChIP and ATAC). Default: ChIP.
-#' @param peak.mode Used when \code{inte.type} is "DEbPeak" or "PeakbPeak". The source of peak results, choose from consenus (peak annotation) and diff (differential expression analysis).
-#' Default: consenus.
-#' @param gene.col Used when \code{inte.type} is "DEbPeak" and \code{peak.type} is Peak or \code{peak.mode} is "consenus" in \code{peak.type} ATAC or ChIP.
+#' @param peak.mode Used when \code{inte.type} is "DEbPeak" or "PeakbPeak". The source of peak results, choose from consensus (peak annotation) and diff (differential expression analysis).
+#' Default: consensus.
+#' @param gene.col Used when \code{inte.type} is "DEbPeak" and \code{peak.type} is Peak or \code{peak.mode} is "consensus" in \code{peak.type} ATAC or ChIP.
 #' Column of \code{inte.res} contains genes. Same as \code{merge.key} in \code{\link{DEbPeak}}.
 #' @param ... Parameters for \code{\link{ggvenn}}.
 #'
@@ -439,9 +439,9 @@ PlotDEbPeak <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), peak.mod
 #'   seq.style = "UCSC", up.dist = 20000, down.dist = 20000
 #' )
 #' # integrate
-#' chip.atac <- PeakbPeak(peak1.res = chip.anno$df, peak2.res = atac.anno$df, peak.mode = "consenus", peak.anno.key = "Promoter")
+#' chip.atac <- PeakbPeak(peak1.res = chip.anno$df, peak2.res = atac.anno$df, peak.mode = "consensus", peak.anno.key = "Promoter")
 #' # functional enrichment
-#' chip.atac.venn <- InteVenn(inte.res = chip.atac, inte.type = "PeakbPeak", peak.mode = "consenus", show_percentage = FALSE)
+#' chip.atac.venn <- InteVenn(inte.res = chip.atac, inte.type = "PeakbPeak", peak.mode = "consensus", show_percentage = FALSE)
 #' #### RNA-seq and peak-related
 #' library(DESeq2)
 #' # ChIP-Seq data
@@ -479,7 +479,7 @@ PlotDEbPeak <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), peak.mod
 #'   peak.type = "ATAC", show_percentage = FALSE
 #' )
 InteVenn <- function(inte.res, inte.type = c("DEbPeak", "PeakbPeak", "DEbDE"), peak.type = c("ChIP", "ATAC", "Peak"),
-                     peak.mode = c("consenus", "diff"), gene.col = c("geneId", "ENSEMBL", "SYMBOL"), ...) {
+                     peak.mode = c("consensus", "diff"), gene.col = c("geneId", "ENSEMBL", "SYMBOL"), ...) {
   # check parameters
   inte.type <- match.arg(arg = inte.type)
   peak.type <- match.arg(arg = peak.type)
@@ -490,7 +490,7 @@ InteVenn <- function(inte.res, inte.type = c("DEbPeak", "PeakbPeak", "DEbDE"), p
   if (inte.type == "DEbPeak") {
     # distinct Type and gene, show gene number instead of peak number
     if (peak.type %in% c("ChIP", "ATAC")) {
-      if (peak.mode == "consenus") {
+      if (peak.mode == "consensus") {
         inte.res <- inte.res %>%
           dplyr::distinct(.data[[gene.col]], .data[["Type"]], .keep_all = TRUE)
       } else if (peak.mode == "diff") {
@@ -542,7 +542,7 @@ InteVenn <- function(inte.res, inte.type = c("DEbPeak", "PeakbPeak", "DEbDE"), p
       plot.list[["ATAC"]] <- ATAC.vec
       plot <- ggvenn::ggvenn(plot.list, ...)
     } else if (peak.type %in% c("ChIP", "ATAC")) {
-      if (peak.mode == "consenus") {
+      if (peak.mode == "consensus") {
         # create number vector
         Peak.vec <- c(
           PrepareVenn("Peak", type.summary), PrepareVenn("UPbPeak", type.summary),
@@ -587,7 +587,7 @@ InteVenn <- function(inte.res, inte.type = c("DEbPeak", "PeakbPeak", "DEbDE"), p
       plot <- ggvenn::ggvenn(plot.list, ...)
     }
   } else if (inte.type == "PeakbPeak") {
-    if (peak.mode == "consenus") {
+    if (peak.mode == "consensus") {
       peak1.vec <- c(
         PrepareVenn("Peak1", type.summary), PrepareVenn("Common", type.summary)
       )
@@ -863,7 +863,7 @@ InteDiffQuad <- function(inte.res, inte.type = c("DEbPeak", "PeakbPeak", "DEbDE"
 #'   seq.style = "UCSC", up.dist = 20000, down.dist = 20000
 #' )
 #' # integrate
-#' chip.atac <- PeakbPeak(peak1.res = chip.anno$df, peak2.res = atac.anno$df, peak.mode = "consenus", peak.anno.key = "Promoter")
+#' chip.atac <- PeakbPeak(peak1.res = chip.anno$df, peak2.res = atac.anno$df, peak.mode = "consensus", peak.anno.key = "Promoter")
 #' # functional enrichment
 #' chip.atac.fe <- InteFE(
 #'   inte.res = chip.atac, fe.key = "Common", inte.type = "PeakbPeak", gene.type = "SYMBOL",

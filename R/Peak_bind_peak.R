@@ -1,13 +1,13 @@
 #' Integrate Two Peak Annotation/Differential Analysis Results.
 #'
-#' @param peak1.res Peak1 dataframe contains all peak annotation (\code{peak.mode} is consenus) or
+#' @param peak1.res Peak1 dataframe contains all peak annotation (\code{peak.mode} is consensus) or
 #' differential analysis results of peak-related data (\code{peak.mode} is diff).
-#' @param peak2.res Peak2 dataframe contains all peak annotation (\code{peak.mode} is consenus) or
+#' @param peak2.res Peak2 dataframe contains all peak annotation (\code{peak.mode} is consensus) or
 #' differential analysis results of peak-related data (\code{peak.mode} is diff).
-#' @param peak.mode The source of peak results, choose from consenus (peak annotation) and diff (differential analysis).
-#' Default: consenus.
+#' @param peak.mode The source of peak results, choose from consensus (peak annotation) and diff (differential analysis).
+#' Default: consensus.
 #' @param peak.anno.key Peak location, chosen from "Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic","All".
-#' Used when \code{peak.mode} is consenus. Default: "Promoter".
+#' Used when \code{peak.mode} is consensus. Default: "Promoter".
 #' @param peak1.signif Used when \code{peak.mode} is diff. Significance criterion for peak-associated results for Peak1. For DESeq2 results, can be chosen from padj, pvalue.
 #' For edgeR results, can be chosen from FDR, PValue. Default: padj.
 #' @param peak1.signif.threshold Used when \code{peak.mode} is diff. Significance threshold for peak-associated results to get differentially accessible/binding peaks for Peak1. Default: 0.05.
@@ -18,7 +18,7 @@
 #' @param peak2.l2fc.threshold Used when \code{peak.mode} is diff. Log2 fold change threshold for peak-associated results to get differentially accessible/binding peaks for Peak2. Default: 1.
 #'
 #' @return Dataframe contains integration results. When \code{peak.mode} is 'diff', the 'Type' column contains "Down_Up", "Up_Up", "Down_Down", "Up_Down", "Peak1_Up", "Peak1_Down", "Peak2_Up", "Peak2_Down".
-#' When \code{peak.mode} is 'consenus', the 'Type' column contains "Common", "Peak1", "Peak2".
+#' When \code{peak.mode} is 'consensus', the 'Type' column contains "Common", "Peak1", "Peak2".
 #' @importFrom tibble rownames_to_column
 #' @importFrom dplyr select mutate case_when mutate_at vars filter
 #' @importFrom purrr set_names
@@ -43,8 +43,8 @@
 #'   seq.style = "UCSC", up.dist = 20000, down.dist = 20000
 #' )
 #' # integrate
-#' chip.atac <- PeakbPeak(peak1.res = chip.anno$df, peak2.res = atac.anno$df, peak.mode = "consenus", peak.anno.key = "Promoter")
-PeakbPeak <- function(peak1.res, peak2.res, peak.mode = c("consenus", "diff"),
+#' chip.atac <- PeakbPeak(peak1.res = chip.anno$df, peak2.res = atac.anno$df, peak.mode = "consensus", peak.anno.key = "Promoter")
+PeakbPeak <- function(peak1.res, peak2.res, peak.mode = c("consensus", "diff"),
                       peak.anno.key = c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic", "All"),
                       peak1.signif = "padj", peak1.signif.threshold = 0.05, peak1.l2fc.threshold = 1,
                       peak2.signif = "padj", peak2.signif.threshold = 0.05, peak2.l2fc.threshold = 1) {
@@ -52,7 +52,7 @@ PeakbPeak <- function(peak1.res, peak2.res, peak.mode = c("consenus", "diff"),
   peak.mode <- match.arg(arg = peak.mode)
   peak.anno.key <- match.arg(arg = peak.anno.key)
 
-  if (peak.mode == "consenus") {
+  if (peak.mode == "consensus") {
     # prepare peak1
     peak1.res.used <- peak1.res %>%
       dplyr::filter(anno == peak.anno.key) %>%
@@ -206,7 +206,7 @@ PeakbPeak <- function(peak1.res, peak2.res, peak.mode = c("consenus", "diff"),
 #'   seq.style = "UCSC", up.dist = 20000, down.dist = 20000
 #' )
 #' # integrate
-#' chip.atac <- PeakbPeak(peak1.res = chip.anno$df, peak2.res = atac.anno$df, peak.mode = "consenus", peak.anno.key = "Promoter")
+#' chip.atac <- PeakbPeak(peak1.res = chip.anno$df, peak2.res = atac.anno$df, peak.mode = "consensus", peak.anno.key = "Promoter")
 #' # functional enrichment
 #' chip.atac.fe <- PeakbPeakFE(
 #'   peak.peak = chip.atac, peak.fe.key = "Common", gene.type = "SYMBOL",

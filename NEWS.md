@@ -1,3 +1,10 @@
+# DEbPeak 1.0.1
+## New features
+* Added `DiffPeakPie` to stat genomic regions of differential peaks with pie plot.
+
+
+-------------
+
 # DEbPeak 1.0.0
 ## New features
 * Added `DEbDE` and `DEbDEFE` to support integrating two differential expression results.
@@ -11,6 +18,7 @@
 * Removed parameter `gene.type` in `DEbPeakFE`.
 * Added parameter `gene.col` in `PlotDEbPeak` to show genes instead of peaks.
 * Fixed bug in `PrepareVenn`.
+* Fixed spelling mistakes (`consenus` -> `consensus`).
 
 -------------
 

@@ -1,6 +1,6 @@
 Package: DEbPeak
 Title: DEbPeak - Analyze and integrate multi-omics to unravel the regulation of gene expression
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: 
     person(given = "Yabing",
            family = "Song",

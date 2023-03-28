@@ -132,7 +132,7 @@
       School of Life Sciences, Tsinghua University<br><a class="author_email" href="mailto:#"></a><a href="mailto:songyb18@mails.tsinghua.edu.cn" class="email">songyb18@mails.tsinghua.edu.cn</a>
       </address>
                   
-            <h4 class="date">14 三月 2023</h4>
+            <h4 class="date">15 三月 2023</h4>
       
       
       <div class="hidden name"><code>DEbPeak_All.Rmd</code></div>
@@ -1252,22 +1252,22 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="sourceCode" id="cb165"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># peak profile plot</span>
 <span class="va">peak.profile</span> <span class="op">=</span> <span class="fu"><a href="../reference/PeakProfile.html">PeakProfile</a></span><span class="op">(</span><span class="va">peak.df</span> ,species<span class="op">=</span><span class="st">"Mouse"</span>, by <span class="op">=</span> <span class="st">"gene"</span>, region.type <span class="op">=</span> <span class="st">"body"</span>, nbin <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing promoter regions...  2023-03-14 00时20分43秒 
-## &gt;&gt; preparing tag matrix...        2023-03-14 00时20分44秒 
-## &gt;&gt; preparing start_site regions by ... 2023-03-14 00时20分44秒
-## &gt;&gt; preparing tag matrix...  2023-03-14 00时20分44秒 
-## &gt;&gt; generating figure...       2023-03-14 00时21分01秒</code></pre>
-<pre><code>## &gt;&gt; done...            2023-03-14 00时21分02秒</code></pre>
-<pre><code>## &gt;&gt; binning method is used...2023-03-14 00时21分02秒
-## &gt;&gt; preparing start_site regions by gene... 2023-03-14 00时21分02秒
-## &gt;&gt; preparing tag matrix by binning...  2023-03-14 00时21分02秒 
-## &gt;&gt; Running bootstrapping for tag matrix...        2023-03-14 00时21分10秒 
-## &gt;&gt; binning method is used...2023-03-14 00时21分10秒
-## &gt;&gt; preparing body regions by gene... 2023-03-14 00时21分10秒
-## &gt;&gt; preparing tag matrix by binning...  2023-03-14 00时21分10秒 
-## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2023-03-14 00时21分10秒
-## &gt;&gt; 1 peaks(0.1536098%), having lengths smaller than 800bp, are filtered... 2023-03-14 00时21分15秒
-## &gt;&gt; Running bootstrapping for tag matrix...        2023-03-14 00时22分10秒</code></pre>
+<pre><code>## &gt;&gt; preparing promoter regions...  2023-03-15 12时46分09秒 
+## &gt;&gt; preparing tag matrix...        2023-03-15 12时46分09秒 
+## &gt;&gt; preparing start_site regions by ... 2023-03-15 12时46分09秒
+## &gt;&gt; preparing tag matrix...  2023-03-15 12时46分09秒 
+## &gt;&gt; generating figure...       2023-03-15 12时46分19秒</code></pre>
+<pre><code>## &gt;&gt; done...            2023-03-15 12时46分19秒</code></pre>
+<pre><code>## &gt;&gt; binning method is used...2023-03-15 12时46分19秒
+## &gt;&gt; preparing start_site regions by gene... 2023-03-15 12时46分19秒
+## &gt;&gt; preparing tag matrix by binning...  2023-03-15 12时46分19秒 
+## &gt;&gt; Running bootstrapping for tag matrix...        2023-03-15 12时46分24秒 
+## &gt;&gt; binning method is used...2023-03-15 12时46分25秒
+## &gt;&gt; preparing body regions by gene... 2023-03-15 12时46分25秒
+## &gt;&gt; preparing tag matrix by binning...  2023-03-15 12时46分25秒 
+## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2023-03-15 12时46分25秒
+## &gt;&gt; 1 peaks(0.1536098%), having lengths smaller than 800bp, are filtered... 2023-03-15 12时46分28秒
+## &gt;&gt; Running bootstrapping for tag matrix...        2023-03-15 12时47分06秒</code></pre>
 <div class="sourceCode" id="cb169"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">peak.profile</span><span class="op">$</span><span class="va">profile.plot</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debchip_peak_profile-1.png" width="960" style="display: block; margin: auto;"></p>
@@ -1280,14 +1280,14 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="sourceCode" id="cb170"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># peak annotation</span>
 <span class="va">peak.anno</span> <span class="op">=</span> <span class="fu"><a href="../reference/AnnoPeak.html">AnnoPeak</a></span><span class="op">(</span>peak.df <span class="op">=</span> <span class="va">peak.df</span>,species <span class="op">=</span> <span class="st">"Mouse"</span>,seq.style <span class="op">=</span> <span class="st">"UCSC"</span>,up.dist <span class="op">=</span> <span class="fl">20000</span>,down.dist <span class="op">=</span> <span class="fl">20000</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing features information...      2023-03-14 00时22分12秒 
-## &gt;&gt; identifying nearest features...        2023-03-14 00时22分13秒 
-## &gt;&gt; calculating distance from peak to TSS...   2023-03-14 00时22分14秒 
-## &gt;&gt; assigning genomic annotation...        2023-03-14 00时22分14秒 
-## &gt;&gt; adding gene annotation...          2023-03-14 00时22分35秒</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2023-03-15 12时47分08秒 
+## &gt;&gt; identifying nearest features...        2023-03-15 12时47分08秒 
+## &gt;&gt; calculating distance from peak to TSS...   2023-03-15 12时47分08秒 
+## &gt;&gt; assigning genomic annotation...        2023-03-15 12时47分08秒 
+## &gt;&gt; adding gene annotation...          2023-03-15 12时47分20秒</code></pre>
 <pre><code>## 'select()' returned 1:many mapping between keys and columns</code></pre>
-<pre><code>## &gt;&gt; assigning chromosome lengths           2023-03-14 00时22分35秒 
-## &gt;&gt; done...                    2023-03-14 00时22分35秒</code></pre>
+<pre><code>## &gt;&gt; assigning chromosome lengths           2023-03-15 12时47分20秒 
+## &gt;&gt; done...                    2023-03-15 12时47分20秒</code></pre>
 <pre><code>## Warning: Removed 6 rows containing non-finite values (stat_count).</code></pre>
 <div class="sourceCode" id="cb175"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">peak.anno.df</span> <span class="op">=</span> <span class="va">peak.anno</span><span class="op">$</span><span class="va">df</span>
@@ -1383,7 +1383,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="co"># debchip.plot = PlotDEbPeak(debchip.res, peak.type = "ChIP", show_percentage=FALSE)</span>
 <span class="co"># debchip.plot</span>
 <span class="va">debchip.plot</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteVenn.html">InteVenn</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debchip.res</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>, peak.type <span class="op">=</span> <span class="st">"ChIP"</span>, 
-                        peak.mode <span class="op">=</span> <span class="st">"consenus"</span>, gene.col <span class="op">=</span> <span class="st">"SYMBOL"</span>,show_percentage <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+                        peak.mode <span class="op">=</span> <span class="st">"consensus"</span>, gene.col <span class="op">=</span> <span class="st">"SYMBOL"</span>,show_percentage <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">debchip.plot</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debchip_integrate_plot-1.png" width="384" style="display: block; margin: auto;"></p>
 <hr>
@@ -1497,7 +1497,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <td>There are <strong>five categories</strong> for users to choose to perform motif enrichment: <code>UP</code>, <code>Peak</code>, <code>DOWN</code>, <code>DOWNbPeak</code>, <code>UPbPeak</code>. Here, we will use <code>UPbPeak</code> as example:</td>
 </tr>
 <tr class="odd">
-<td><code>r # debatac.res: similar to debatac.res # this step is time consuming! ATAC.motif = FindMotif(inte.res = debchip.res, peak.anno.res = peak.anno[["df"]], peak.motif.key = "UPbPeak", peak.mode = "consenus", homer.motif.path = '~/anaconda3/bin/findMotifsGenome.pl', out.folder = "/path/to/out/folder", other.paras = "-len 8,10,12 -size -100,50 -S 25")</code></td>
+<td><code>r # debatac.res: similar to debatac.res # this step is time consuming! ATAC.motif = FindMotif(inte.res = debchip.res, peak.anno.res = peak.anno[["df"]], peak.motif.key = "UPbPeak", peak.mode = "consensus", homer.motif.path = '~/anaconda3/bin/findMotifsGenome.pl', out.folder = "/path/to/out/folder", other.paras = "-len 8,10,12 -size -100,50 -S 25")</code></td>
 </tr>
 </tbody>
 </table>
@@ -1527,22 +1527,22 @@ document.addEventListener("DOMContentLoaded", function() {
 <div class="sourceCode" id="cb206"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># peak profile plot</span>
 <span class="va">atac.peak.profile</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PeakProfile.html">PeakProfile</a></span><span class="op">(</span><span class="va">atac.peak.df</span>, species <span class="op">=</span> <span class="st">"Mouse"</span>, by <span class="op">=</span> <span class="st">"gene"</span>, region.type <span class="op">=</span> <span class="st">"body"</span>, nbin <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing promoter regions...  2023-03-14 00时23分47秒 
-## &gt;&gt; preparing tag matrix...        2023-03-14 00时23分47秒 
-## &gt;&gt; preparing start_site regions by ... 2023-03-14 00时23分47秒
-## &gt;&gt; preparing tag matrix...  2023-03-14 00时23分47秒 
-## &gt;&gt; generating figure...       2023-03-14 00时23分59秒</code></pre>
-<pre><code>## &gt;&gt; done...            2023-03-14 00时24分06秒</code></pre>
-<pre><code>## &gt;&gt; binning method is used...2023-03-14 00时24分10秒
-## &gt;&gt; preparing start_site regions by gene... 2023-03-14 00时24分10秒
-## &gt;&gt; preparing tag matrix by binning...  2023-03-14 00时24分10秒 
-## &gt;&gt; Running bootstrapping for tag matrix...        2023-03-14 00时25分16秒 
-## &gt;&gt; binning method is used...2023-03-14 00时25分16秒
-## &gt;&gt; preparing body regions by gene... 2023-03-14 00时25分16秒
-## &gt;&gt; preparing tag matrix by binning...  2023-03-14 00时25分16秒 
-## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2023-03-14 00时25分17秒
-## &gt;&gt; 16 peaks(0.296077%), having lengths smaller than 800bp, are filtered... 2023-03-14 00时25分26秒
-## &gt;&gt; Running bootstrapping for tag matrix...        2023-03-14 00时29分39秒</code></pre>
+<pre><code>## &gt;&gt; preparing promoter regions...  2023-03-15 12时48分07秒 
+## &gt;&gt; preparing tag matrix...        2023-03-15 12时48分07秒 
+## &gt;&gt; preparing start_site regions by ... 2023-03-15 12时48分07秒
+## &gt;&gt; preparing tag matrix...  2023-03-15 12时48分07秒 
+## &gt;&gt; generating figure...       2023-03-15 12时48分13秒</code></pre>
+<pre><code>## &gt;&gt; done...            2023-03-15 12时48分17秒</code></pre>
+<pre><code>## &gt;&gt; binning method is used...2023-03-15 12时48分19秒
+## &gt;&gt; preparing start_site regions by gene... 2023-03-15 12时48分19秒
+## &gt;&gt; preparing tag matrix by binning...  2023-03-15 12时48分19秒 
+## &gt;&gt; Running bootstrapping for tag matrix...        2023-03-15 12时49分01秒 
+## &gt;&gt; binning method is used...2023-03-15 12时49分01秒
+## &gt;&gt; preparing body regions by gene... 2023-03-15 12时49分01秒
+## &gt;&gt; preparing tag matrix by binning...  2023-03-15 12时49分01秒 
+## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2023-03-15 12时49分02秒
+## &gt;&gt; 16 peaks(0.296077%), having lengths smaller than 800bp, are filtered... 2023-03-15 12时49分07秒
+## &gt;&gt; Running bootstrapping for tag matrix...        2023-03-15 12时52分01秒</code></pre>
 <div class="sourceCode" id="cb210"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">atac.peak.profile</span><span class="op">$</span><span class="va">profile.plot</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debchip_atac_peak_profile-1.png" width="960" style="display: block; margin: auto;"></p>
@@ -1557,14 +1557,14 @@ document.addEventListener("DOMContentLoaded", function() {
   peak.df <span class="op">=</span> <span class="va">atac.peak.df</span>, species <span class="op">=</span> <span class="st">"Mouse"</span>,
   seq.style <span class="op">=</span> <span class="st">"UCSC"</span>, up.dist <span class="op">=</span> <span class="fl">20000</span>, down.dist <span class="op">=</span> <span class="fl">20000</span>
 <span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing features information...      2023-03-14 00时29分44秒 
-## &gt;&gt; identifying nearest features...        2023-03-14 00时29分44秒 
-## &gt;&gt; calculating distance from peak to TSS...   2023-03-14 00时29分45秒 
-## &gt;&gt; assigning genomic annotation...        2023-03-14 00时29分45秒 
-## &gt;&gt; adding gene annotation...          2023-03-14 00时29分51秒</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2023-03-15 12时52分04秒 
+## &gt;&gt; identifying nearest features...        2023-03-15 12时52分04秒 
+## &gt;&gt; calculating distance from peak to TSS...   2023-03-15 12时52分04秒 
+## &gt;&gt; assigning genomic annotation...        2023-03-15 12时52分04秒 
+## &gt;&gt; adding gene annotation...          2023-03-15 12时52分08秒</code></pre>
 <pre><code>## 'select()' returned 1:many mapping between keys and columns</code></pre>
-<pre><code>## &gt;&gt; assigning chromosome lengths           2023-03-14 00时29分51秒 
-## &gt;&gt; done...                    2023-03-14 00时29分51秒</code></pre>
+<pre><code>## &gt;&gt; assigning chromosome lengths           2023-03-15 12时52分08秒 
+## &gt;&gt; done...                    2023-03-15 12时52分08秒</code></pre>
 <pre><code>## Warning: Removed 23 rows containing non-finite values (stat_count).</code></pre>
 <div class="sourceCode" id="cb216"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">atac.peak.anno.df</span> <span class="op">=</span> <span class="va">atac.peak.anno</span><span class="op">$</span><span class="va">df</span>

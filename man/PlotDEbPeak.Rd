@@ -7,7 +7,7 @@
 PlotDEbPeak(
   de.peak,
   peak.type = c("ChIP", "ATAC", "Peak"),
-  peak.mode = c("consenus", "diff"),
+  peak.mode = c("consensus", "diff"),
   gene.col = c("geneId", "ENSEMBL", "SYMBOL"),
   ...
 )
@@ -17,8 +17,8 @@ PlotDEbPeak(
 
 \item{peak.type}{The source of peaks, chosen from ATAC, ChIP and Peak (ChIP and ATAC). Default: ChIP.}
 
-\item{peak.mode}{The source of peak results, choose from consenus (peak annotation) and diff (differential expression analysis).
-Default: consenus.}
+\item{peak.mode}{The source of peak results, choose from consensus (peak annotation) and diff (differential expression analysis).
+Default: consensus.}
 
 \item{gene.col}{Column of \code{inte.res} contains genes. Same as \code{merge.key} in \code{\link{DEbPeak}}.}
 

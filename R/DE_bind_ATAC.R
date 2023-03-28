@@ -17,7 +17,7 @@
 #' @importFrom tidyr separate
 #' @export
 #'
-FindMotif <- function(inte.res, peak.anno.res = NULL, peak.motif.key, peak.mode = c("consenus", "diff"),
+FindMotif <- function(inte.res, peak.anno.res = NULL, peak.motif.key, peak.mode = c("consensus", "diff"),
                       gene.key = "geneId", homer.motif.path = NULL,
                       genome = "mm10", out.folder = NULL, other.paras = NULL) {
   # check parameters
@@ -52,7 +52,7 @@ FindMotif <- function(inte.res, peak.anno.res = NULL, peak.motif.key, peak.mode 
   # find motif
   if (length(inte.genes) >= 1) {
     # get peak
-    if (peak.mode == "consenus") {
+    if (peak.mode == "consensus") {
       inte.peak <- peak.anno.res[
         peak.anno.res[[gene.key]] %in% inte.genes,
         c("seqnames", "start", "end", "name", "score")

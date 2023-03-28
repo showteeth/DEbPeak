@@ -8,7 +8,7 @@ FindMotif(
   inte.res,
   peak.anno.res = NULL,
   peak.motif.key,
-  peak.mode = c("consenus", "diff"),
+  peak.mode = c("consensus", "diff"),
   gene.key = "geneId",
   homer.motif.path = NULL,
   genome = "mm10",

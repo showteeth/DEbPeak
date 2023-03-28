@@ -7,7 +7,7 @@
 DEbPeak(
   de.res,
   peak.res,
-  peak.mode = c("consenus", "diff"),
+  peak.mode = c("consensus", "diff"),
   peak.anno.key = c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream",
     "Distal Intergenic", "All"),
   signif = "padj",
@@ -24,14 +24,14 @@ DEbPeak(
 \arguments{
 \item{de.res}{Dataframe contains all genes of differential expression analysis.}
 
-\item{peak.res}{Dataframe contains all peak annotation (\code{peak.mode} is consenus) or
+\item{peak.res}{Dataframe contains all peak annotation (\code{peak.mode} is consensus) or
 differential analysis results of peak-related data (\code{peak.mode} is diff).}
 
-\item{peak.mode}{The source of peak results, choose from consenus (peak annotation) and diff (differential analysis).
-Default: consenus.}
+\item{peak.mode}{The source of peak results, choose from consensus (peak annotation) and diff (differential analysis).
+Default: consensus.}
 
 \item{peak.anno.key}{Peak location, chosen from "Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic","All".
-Used when \code{peak.mode} is consenus. Default: "Promoter".}
+Used when \code{peak.mode} is consensus. Default: "Promoter".}
 
 \item{signif}{Significance criterion for RNA-seq results. For DESeq2 results, can be chosen from padj, pvalue.
 For edgeR results, can be chosen from FDR, PValue. Default: padj.}
@@ -55,7 +55,7 @@ For edgeR results, can be chosen from FDR, PValue. Default: padj.}
 For peak-associated differential expression results, only support merging on "SYMBOL". Default: org.Mm.eg.db.}
 }
 \value{
-Dataframe contains integrated results. The results will contain five categories: UPbPeak, DOWNbPeak, UP, DOWN, Peak when \code{peak.mode} is consenus
+Dataframe contains integrated results. The results will contain five categories: UPbPeak, DOWNbPeak, UP, DOWN, Peak when \code{peak.mode} is consensus
 and Down_Up, Up_Up, Down_Down, Up_Down when \code{peak.mode} is diff. RNA in front.
 }
 \description{

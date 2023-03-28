@@ -15,7 +15,8 @@
 <meta property="og:description" content="DEbPeak aims to explore, visualize, interpret multi-omics data and unravel the regulation of gene expression by 
     combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains six functional panels: 
     Quality Control (QC), Principal Component Analysis (PCA), Differential Analysis (DA), Functional Enrichment Analysis (FEA), 
-    Integrate RNA-seq with peak-related data (support the simultaneous integration of two kinds of peak-related data), Utils.">
+    Integrate RNA-seq with peak-related data (support the simultaneous integration of two kinds of peak-related data), 
+    Integrate RNA-seq with RNA-seq, Integrate peak-related data with peak-related data, Utils.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -168,6 +169,20 @@
 <li>Integration summary: include venn diagram and quadrant diagram (differential mode).</li>
 <li>GO enrichment on integrated results.</li>
 <li>Find motif on integrated results: Due to the nature of ATAC-seq, we usually need to find motif on integrated results to obtain potential regulatory factors.</li>
+</ul>
+</li>
+<li>
+<strong>Integrate RNA-seq with RNA-seq</strong>:
+<ul>
+<li>Integration summary: include venn diagram and quadrant diagram.</li>
+<li>GO enrichment on integrated results.</li>
+</ul>
+</li>
+<li>
+<strong>Integrate peak-related data with peak-related data</strong>:
+<ul>
+<li>Integration summary: include venn diagram and quadrant diagram (differential mode).</li>
+<li>GO enrichment on integrated results.</li>
 </ul>
 </li>
 <li>
@@ -576,7 +591,7 @@ Integrate RNA-seq with Peak-related Data
 DEbPeak
 </td>
 <td>
-Integrate differential expression results and peak annotation/differential expression results.
+Integrate differential expression results and peak annotation/differential analysis results.
 </td>
 <td>
 tidyverse
@@ -584,10 +599,10 @@ tidyverse
 </tr>
 <tr>
 <td>
-PlotDEbPeak
+InteVenn
 </td>
 <td>
-Create integrated summary plot
+Create venn diagram for integration results (support <code>DEbPeak</code>, <code>DEbDE</code>, <code>PeakbPeak</code>)
 </td>
 <td>
 ggvenn
@@ -598,7 +613,7 @@ ggvenn
 InteDiffQuad
 </td>
 <td>
-Create quadrant diagram for differential expression analysis of RNA-seq and peak-related data
+Create quadrant diagram for integration results (support <code>DEbPeak</code>, <code>DEbDE</code>, <code>PeakbPeak</code>)
 </td>
 <td>
 ggplot2
@@ -606,10 +621,10 @@ ggplot2
 </tr>
 <tr>
 <td>
-DEbPeakFE
+InteFE
 </td>
 <td>
-GO enrichment on integrated results
+GO enrichment on integration results (support <code>DEbPeak</code>, <code>DEbDE</code>, <code>PeakbPeak</code>)
 </td>
 <td>
 clusterProfiler
@@ -620,7 +635,7 @@ clusterProfiler
 FindMotif
 </td>
 <td>
-Find motif on integrated results
+Find motif on integration results
 </td>
 <td>
 HOMER
@@ -635,6 +650,56 @@ Integrate differential expression results and peak annotation results (two kinds
 </td>
 <td>
 tidyverse
+</td>
+</tr>
+<tr>
+<td rowspan="2">
+Integrate RNA-seq with RNA-seq
+</td>
+<td>
+DEbDE
+</td>
+<td>
+Integrate Two Differential Expression Results
+</td>
+<td>
+tidyverse
+</td>
+</tr>
+<tr>
+<td>
+DEbDEFE
+</td>
+<td>
+GO Enrichment on Two Differential Expression Integration Results.
+</td>
+<td>
+clusterProfiler
+</td>
+</tr>
+<tr>
+<td rowspan="2">
+Integrate Peak-related Data with Peak-related Data
+</td>
+<td>
+PeakbPeak
+</td>
+<td>
+Integrate Two Peak Annotation/Differential Analysis Results.
+</td>
+<td>
+tidyverse
+</td>
+</tr>
+<tr>
+<td>
+PeakbPeakFE
+</td>
+<td>
+GO Enrichment on Two Peak Annotation/Differential Analysis Integration Results.
+</td>
+<td>
+clusterProfiler
 </td>
 </tr>
 <tr>

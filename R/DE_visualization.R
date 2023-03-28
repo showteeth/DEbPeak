@@ -1145,3 +1145,42 @@ DEHeatmap <- function(deobj, deres, group.key = NULL, ref.group = NULL, group.co
   }
   return(ht)
 }
+
+#' Stat Genomic Regions of Differential Peaks with Pie Plot.
+#'
+#' @param deres Data frame contains all peaks.
+#' @param signif Significance criterion. For DESeq2 results, can be chosen from padj, pvalue.
+#' For edgeR results, can be chosen from FDR, PValue. Default: padj.
+#' @param signif.threshold Significance threshold to get differentially accessible/binding peaks. Default: 0.05.
+#' @param l2fc.threshold Log2 fold change threshold to get differentially accessible/binding peaks. Default: 1.
+#'
+#' @return A ggplot2 object.
+#' @importFrom magrittr %>%
+#' @importFrom tibble rownames_to_column
+#' @importFrom dplyr mutate case_when mutate_at vars filter
+#' @importFrom tidyr drop_na separate
+#' @importFrom rlang :=
+#' @importFrom ggpie ggpie
+#' @export
+#'
+DiffPeakPie <- function(deres, signif = "padj", signif.threshold = 0.05, l2fc.threshold = 1) {
+  # extract differential analysis results
+  de.res <- ExtractDA(
+    deres = deres, data.type = "ATAC", peak.anno.key = "All",
+    signif = signif, signif.threshold = signif.threshold, l2fc.threshold = l2fc.threshold
+  )
+  # change annotation information
+  anno.key.named <- c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic")
+  names(anno.key.named) <- c("P", "5U", "3U", "E", "I", "D", "DI")
+  de.res$Annotation <- anno.key.named[de.res$Annotation]
+  # filter not regulated
+  de.degs <- de.res[de.res$regulation != "Not_regulated", ]
+  # create plot
+  diff.peak.pie <-
+    ggpie::ggpie(
+      data = de.degs, group_key = "Annotation", count_type = "full",
+      label_info = "ratio", label_type = "horizon", label_split = NULL,
+      label_size = 4, label_pos = "in", label_threshold = 10
+    )
+  return(diff.peak.pie)
+}

@@ -106,6 +106,19 @@ head(all.res)
 
 <hr />
 
+## Stat
+Here, we will stat the differential peaks with pie plot to show genomic regions of these differential peaks.
+
+```{r atac_stat,warning=FALSE ,fig.height = 5, fig.width = 5, fig.align = "center"}
+# pie plot for DESeq2
+DiffPeakPie(deres = dds.atac.results.ordered, signif="pvalue", l2fc.threshold=0.3)
+
+# pie plot for edgeR
+DiffPeakPie(deres = all.res, signif="PValue", l2fc.threshold=0.3)
+```
+
+<hr />
+
 ## Visualization
 ### VolcanoPlot
 ```{r atac_volcanoplot,warning=FALSE ,fig.height = 6, fig.width = 5, fig.align = "center"}

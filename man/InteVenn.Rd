@@ -8,7 +8,7 @@ InteVenn(
   inte.res,
   inte.type = c("DEbPeak", "PeakbPeak", "DEbDE"),
   peak.type = c("ChIP", "ATAC", "Peak"),
-  peak.mode = c("consenus", "diff"),
+  peak.mode = c("consensus", "diff"),
   gene.col = c("geneId", "ENSEMBL", "SYMBOL"),
   ...
 )
@@ -20,10 +20,10 @@ InteVenn(
 
 \item{peak.type}{Used when \code{inte.type} is "DEbPeak". The source of peaks, chosen from ATAC, ChIP and Peak (ChIP and ATAC). Default: ChIP.}
 
-\item{peak.mode}{Used when \code{inte.type} is "DEbPeak" or "PeakbPeak". The source of peak results, choose from consenus (peak annotation) and diff (differential expression analysis).
-Default: consenus.}
+\item{peak.mode}{Used when \code{inte.type} is "DEbPeak" or "PeakbPeak". The source of peak results, choose from consensus (peak annotation) and diff (differential expression analysis).
+Default: consensus.}
 
-\item{gene.col}{Used when \code{inte.type} is "DEbPeak" and \code{peak.type} is Peak or \code{peak.mode} is "consenus" in \code{peak.type} ATAC or ChIP.
+\item{gene.col}{Used when \code{inte.type} is "DEbPeak" and \code{peak.type} is Peak or \code{peak.mode} is "consensus" in \code{peak.type} ATAC or ChIP.
 Column of \code{inte.res} contains genes. Same as \code{merge.key} in \code{\link{DEbPeak}}.}
 
 \item{...}{Parameters for \code{\link{ggvenn}}.}
@@ -59,9 +59,9 @@ atac.anno <- AnnoPeak(
   seq.style = "UCSC", up.dist = 20000, down.dist = 20000
 )
 # integrate
-chip.atac <- PeakbPeak(peak1.res = chip.anno$df, peak2.res = atac.anno$df, peak.mode = "consenus", peak.anno.key = "Promoter")
+chip.atac <- PeakbPeak(peak1.res = chip.anno$df, peak2.res = atac.anno$df, peak.mode = "consensus", peak.anno.key = "Promoter")
 # functional enrichment
-chip.atac.venn <- InteVenn(inte.res = chip.atac, inte.type = "PeakbPeak", peak.mode = "consenus", show_percentage = FALSE)
+chip.atac.venn <- InteVenn(inte.res = chip.atac, inte.type = "PeakbPeak", peak.mode = "consensus", show_percentage = FALSE)
 #### RNA-seq and peak-related
 library(DESeq2)
 # ChIP-Seq data

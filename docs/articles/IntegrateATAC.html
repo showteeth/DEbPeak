@@ -224,22 +224,22 @@
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># peak profile plot</span>
 <span class="va">atac.peak.profile</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PeakProfile.html">PeakProfile</a></span><span class="op">(</span><span class="va">atac.peak.df</span>, species <span class="op">=</span> <span class="st">"Mouse"</span>, by <span class="op">=</span> <span class="st">"gene"</span>, region.type <span class="op">=</span> <span class="st">"body"</span>, nbin <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing promoter regions...  2023-03-14 00时45分40秒 
-## &gt;&gt; preparing tag matrix...        2023-03-14 00时45分41秒 
-## &gt;&gt; preparing start_site regions by ... 2023-03-14 00时45分41秒
-## &gt;&gt; preparing tag matrix...  2023-03-14 00时45分41秒 
-## &gt;&gt; generating figure...       2023-03-14 00时46分02秒</code></pre>
-<pre><code>## &gt;&gt; done...            2023-03-14 00时46分10秒</code></pre>
-<pre><code>## &gt;&gt; binning method is used...2023-03-14 00时46分11秒
-## &gt;&gt; preparing start_site regions by gene... 2023-03-14 00时46分11秒
-## &gt;&gt; preparing tag matrix by binning...  2023-03-14 00时46分11秒 
-## &gt;&gt; Running bootstrapping for tag matrix...        2023-03-14 00时47分16秒 
-## &gt;&gt; binning method is used...2023-03-14 00时47分17秒
-## &gt;&gt; preparing body regions by gene... 2023-03-14 00时47分17秒
-## &gt;&gt; preparing tag matrix by binning...  2023-03-14 00时47分17秒 
-## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2023-03-14 00时47分17秒
-## &gt;&gt; 16 peaks(0.296077%), having lengths smaller than 800bp, are filtered... 2023-03-14 00时47分26秒
-## &gt;&gt; Running bootstrapping for tag matrix...        2023-03-14 00时51分37秒</code></pre>
+<pre><code>## &gt;&gt; preparing promoter regions...  2023-03-15 13时01分16秒 
+## &gt;&gt; preparing tag matrix...        2023-03-15 13时01分17秒 
+## &gt;&gt; preparing start_site regions by ... 2023-03-15 13时01分17秒
+## &gt;&gt; preparing tag matrix...  2023-03-15 13时01分17秒 
+## &gt;&gt; generating figure...       2023-03-15 13时01分29秒</code></pre>
+<pre><code>## &gt;&gt; done...            2023-03-15 13时01分32秒</code></pre>
+<pre><code>## &gt;&gt; binning method is used...2023-03-15 13时01分33秒
+## &gt;&gt; preparing start_site regions by gene... 2023-03-15 13时01分33秒
+## &gt;&gt; preparing tag matrix by binning...  2023-03-15 13时01分33秒 
+## &gt;&gt; Running bootstrapping for tag matrix...        2023-03-15 13时02分15秒 
+## &gt;&gt; binning method is used...2023-03-15 13时02分16秒
+## &gt;&gt; preparing body regions by gene... 2023-03-15 13时02分16秒
+## &gt;&gt; preparing tag matrix by binning...  2023-03-15 13时02分16秒 
+## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2023-03-15 13时02分16秒
+## &gt;&gt; 16 peaks(0.296077%), having lengths smaller than 800bp, are filtered... 2023-03-15 13时02分22秒
+## &gt;&gt; Running bootstrapping for tag matrix...        2023-03-15 13时05分11秒</code></pre>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">atac.peak.profile</span><span class="op">$</span><span class="va">profile.plot</span></code></pre></div>
 <p><img src="IntegrateATAC_files/figure-html/debatac_atac_peak_profile-1.png" width="960" style="display: block; margin: auto;"></p>
@@ -256,14 +256,14 @@
   seq.style <span class="op">=</span> <span class="st">"UCSC"</span>, up.dist <span class="op">=</span> <span class="fl">20000</span>, down.dist <span class="op">=</span> <span class="fl">20000</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>## </code></pre>
-<pre><code>## &gt;&gt; preparing features information...      2023-03-14 00时51分42秒 
-## &gt;&gt; identifying nearest features...        2023-03-14 00时51分43秒 
-## &gt;&gt; calculating distance from peak to TSS...   2023-03-14 00时51分43秒 
-## &gt;&gt; assigning genomic annotation...        2023-03-14 00时51分43秒 
-## &gt;&gt; adding gene annotation...          2023-03-14 00时52分02秒</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2023-03-15 13时05分14秒 
+## &gt;&gt; identifying nearest features...        2023-03-15 13时05分15秒 
+## &gt;&gt; calculating distance from peak to TSS...   2023-03-15 13时05分15秒 
+## &gt;&gt; assigning genomic annotation...        2023-03-15 13时05分15秒 
+## &gt;&gt; adding gene annotation...          2023-03-15 13时05分27秒</code></pre>
 <pre><code>## 'select()' returned 1:many mapping between keys and columns</code></pre>
-<pre><code>## &gt;&gt; assigning chromosome lengths           2023-03-14 00时52分02秒 
-## &gt;&gt; done...                    2023-03-14 00时52分02秒</code></pre>
+<pre><code>## &gt;&gt; assigning chromosome lengths           2023-03-15 13时05分27秒 
+## &gt;&gt; done...                    2023-03-15 13时05分27秒</code></pre>
 <pre><code>## Warning: Removed 23 rows containing non-finite values (stat_count).</code></pre>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">atac.peak.anno.df</span> <span class="op">=</span> <span class="va">atac.peak.anno</span><span class="op">$</span><span class="va">df</span>
@@ -344,7 +344,7 @@
 <code class="sourceCode R"><span class="co"># DE and ATAC venn plot</span>
 <span class="co"># debatac.plot = PlotDEbPeak(debatac.res, peak.type = "ATAC", gene.col = "SYMBOL", show_percentage=FALSE)</span>
 <span class="va">debatac.plot</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteVenn.html">InteVenn</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debatac.res</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>, 
-                        peak.mode <span class="op">=</span> <span class="st">"consenus"</span>, gene.col <span class="op">=</span> <span class="st">"SYMBOL"</span>, show_percentage<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+                        peak.mode <span class="op">=</span> <span class="st">"consensus"</span>, gene.col <span class="op">=</span> <span class="st">"SYMBOL"</span>, show_percentage<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">debatac.plot</span></code></pre></div>
 <p><img src="IntegrateATAC_files/figure-html/debatac_integrate_plot-1.png" width="384" style="display: block; margin: auto;"></p>
 <hr>
@@ -491,7 +491,7 @@
 <code class="sourceCode R"><span class="co"># debatac.res: similar to debatac.res</span>
 <span class="co"># this step is time consuming!</span>
 <span class="va">ATAC.motif</span> <span class="op">=</span> <span class="fu"><a href="../reference/FindMotif.html">FindMotif</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debchip.res</span>, peak.anno.res <span class="op">=</span> <span class="va">peak.anno</span><span class="op">[[</span><span class="st">"df"</span><span class="op">]</span><span class="op">]</span>,
-                       peak.motif.key <span class="op">=</span> <span class="st">"UPbPeak"</span>, peak.mode <span class="op">=</span> <span class="st">"consenus"</span>, homer.motif.path <span class="op">=</span> <span class="st">'~/anaconda3/bin/findMotifsGenome.pl'</span>,
+                       peak.motif.key <span class="op">=</span> <span class="st">"UPbPeak"</span>, peak.mode <span class="op">=</span> <span class="st">"consensus"</span>, homer.motif.path <span class="op">=</span> <span class="st">'~/anaconda3/bin/findMotifsGenome.pl'</span>,
                        out.folder <span class="op">=</span> <span class="st">"/path/to/out/folder"</span>, other.paras <span class="op">=</span> <span class="st">"-len 8,10,12 -size -100,50 -S 25"</span><span class="op">)</span></code></pre></div>
 <hr>
 </div>

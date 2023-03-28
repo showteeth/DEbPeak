@@ -190,23 +190,23 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>peak1.res</th>
-      <td><p>Peak1 dataframe contains all peak annotation (<code>peak.mode</code> is consenus) or
+      <td><p>Peak1 dataframe contains all peak annotation (<code>peak.mode</code> is consensus) or
 differential analysis results of peak-related data (<code>peak.mode</code> is diff).</p></td>
     </tr>
     <tr>
       <th>peak2.res</th>
-      <td><p>Peak2 dataframe contains all peak annotation (<code>peak.mode</code> is consenus) or
+      <td><p>Peak2 dataframe contains all peak annotation (<code>peak.mode</code> is consensus) or
 differential analysis results of peak-related data (<code>peak.mode</code> is diff).</p></td>
     </tr>
     <tr>
       <th>peak.mode</th>
-      <td><p>The source of peak results, choose from consenus (peak annotation) and diff (differential analysis).
-Default: consenus.</p></td>
+      <td><p>The source of peak results, choose from consensus (peak annotation) and diff (differential analysis).
+Default: consensus.</p></td>
     </tr>
     <tr>
       <th>peak.anno.key</th>
       <td><p>Peak location, chosen from "Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic","All".
-Used when <code>peak.mode</code> is consenus. Default: "Promoter".</p></td>
+Used when <code>peak.mode</code> is consensus. Default: "Promoter".</p></td>
     </tr>
     <tr>
       <th>peak1.signif</th>
@@ -239,7 +239,7 @@ For edgeR results, can be chosen from FDR, PValue. Default: padj.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Dataframe contains integration results. When <code>peak.mode</code> is 'diff', the 'Type' column contains "Down_Up", "Up_Up", "Down_Down", "Up_Down", "Peak1_Up", "Peak1_Down", "Peak2_Up", "Peak2_Down".
-When <code>peak.mode</code> is 'consenus', the 'Type' column contains "Common", "Peak1", "Peak2".</p>
+When <code>peak.mode</code> is 'consensus', the 'Type' column contains "Common", "Peak1", "Peak2".</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>DEbPeak</span><span class='op'>)</span>
@@ -250,26 +250,26 @@ When <code>peak.mode</code> is 'consenus', the 'Type' column contains "Common", 
   peak.df <span class='op'>=</span> <span class='va'>chip.df</span>, species <span class='op'>=</span> <span class='st'>"Mouse"</span>,
   seq.style <span class='op'>=</span> <span class='st'>"UCSC"</span>, up.dist <span class='op'>=</span> <span class='fl'>20000</span>, down.dist <span class='op'>=</span> <span class='fl'>20000</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; &gt;&gt; preparing features information...		 2023-03-14 00时01分22秒 
-#&gt; &gt;&gt; identifying nearest features...		 2023-03-14 00时01分22秒 
-#&gt; &gt;&gt; calculating distance from peak to TSS...	 2023-03-14 00时01分22秒 
-#&gt; &gt;&gt; assigning genomic annotation...		 2023-03-14 00时01分22秒 
-#&gt; &gt;&gt; adding gene annotation...			 2023-03-14 00时01分24秒 </div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:many mapping between keys and columns</span></div><div class='output co'>#&gt; &gt;&gt; assigning chromosome lengths			 2023-03-14 00时01分24秒 
-#&gt; &gt;&gt; done...					 2023-03-14 00时01分24秒 </div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 6 rows containing non-finite values (stat_count).</span></div><div class='input'><span class='co'># ATAC-seq data</span>
+</div><div class='output co'>#&gt; &gt;&gt; preparing features information...		 2023-03-15 12时33分02秒 
+#&gt; &gt;&gt; identifying nearest features...		 2023-03-15 12时33分02秒 
+#&gt; &gt;&gt; calculating distance from peak to TSS...	 2023-03-15 12时33分02秒 
+#&gt; &gt;&gt; assigning genomic annotation...		 2023-03-15 12时33分02秒 
+#&gt; &gt;&gt; adding gene annotation...			 2023-03-15 12时33分04秒 </div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:many mapping between keys and columns</span></div><div class='output co'>#&gt; &gt;&gt; assigning chromosome lengths			 2023-03-15 12时33分04秒 
+#&gt; &gt;&gt; done...					 2023-03-15 12时33分04秒 </div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 6 rows containing non-finite values (stat_count).</span></div><div class='input'><span class='co'># ATAC-seq data</span>
 <span class='va'>atac.file</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"debatac_peaks.bed"</span>, package <span class='op'>=</span> <span class='st'>"DEbPeak"</span><span class='op'>)</span>
 <span class='va'>atac.df</span> <span class='op'>&lt;-</span> <span class='fu'><a href='GetConsensusPeak.html'>GetConsensusPeak</a></span><span class='op'>(</span>peak.file <span class='op'>=</span> <span class='va'>atac.file</span><span class='op'>)</span>
 <span class='va'>atac.anno</span> <span class='op'>&lt;-</span> <span class='fu'><a href='AnnoPeak.html'>AnnoPeak</a></span><span class='op'>(</span>
   peak.df <span class='op'>=</span> <span class='va'>atac.df</span>, species <span class='op'>=</span> <span class='st'>"Mouse"</span>,
   seq.style <span class='op'>=</span> <span class='st'>"UCSC"</span>, up.dist <span class='op'>=</span> <span class='fl'>20000</span>, down.dist <span class='op'>=</span> <span class='fl'>20000</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; &gt;&gt; preparing features information...		 2023-03-14 00时01分25秒 
-#&gt; &gt;&gt; identifying nearest features...		 2023-03-14 00时01分25秒 
-#&gt; &gt;&gt; calculating distance from peak to TSS...	 2023-03-14 00时01分26秒 
-#&gt; &gt;&gt; assigning genomic annotation...		 2023-03-14 00时01分26秒 
-#&gt; &gt;&gt; adding gene annotation...			 2023-03-14 00时01分28秒 </div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:many mapping between keys and columns</span></div><div class='output co'>#&gt; &gt;&gt; assigning chromosome lengths			 2023-03-14 00时01分28秒 
-#&gt; &gt;&gt; done...					 2023-03-14 00时01分28秒 </div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 23 rows containing non-finite values (stat_count).</span></div><div class='input'><span class='co'># integrate</span>
-<span class='va'>chip.atac</span> <span class='op'>&lt;-</span> <span class='fu'>PeakbPeak</span><span class='op'>(</span>peak1.res <span class='op'>=</span> <span class='va'>chip.anno</span><span class='op'>$</span><span class='va'>df</span>, peak2.res <span class='op'>=</span> <span class='va'>atac.anno</span><span class='op'>$</span><span class='va'>df</span>, peak.mode <span class='op'>=</span> <span class='st'>"consenus"</span>, peak.anno.key <span class='op'>=</span> <span class='st'>"Promoter"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in match.arg(arg = peak.mode): 'arg'应当是“consensus”, “diff”其中的一个</span></div></pre>
+</div><div class='output co'>#&gt; &gt;&gt; preparing features information...		 2023-03-15 12时33分05秒 
+#&gt; &gt;&gt; identifying nearest features...		 2023-03-15 12时33分05秒 
+#&gt; &gt;&gt; calculating distance from peak to TSS...	 2023-03-15 12时33分05秒 
+#&gt; &gt;&gt; assigning genomic annotation...		 2023-03-15 12时33分05秒 
+#&gt; &gt;&gt; adding gene annotation...			 2023-03-15 12时33分07秒 </div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:many mapping between keys and columns</span></div><div class='output co'>#&gt; &gt;&gt; assigning chromosome lengths			 2023-03-15 12时33分07秒 
+#&gt; &gt;&gt; done...					 2023-03-15 12时33分07秒 </div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 23 rows containing non-finite values (stat_count).</span></div><div class='input'><span class='co'># integrate</span>
+<span class='va'>chip.atac</span> <span class='op'>&lt;-</span> <span class='fu'>PeakbPeak</span><span class='op'>(</span>peak1.res <span class='op'>=</span> <span class='va'>chip.anno</span><span class='op'>$</span><span class='va'>df</span>, peak2.res <span class='op'>=</span> <span class='va'>atac.anno</span><span class='op'>$</span><span class='va'>df</span>, peak.mode <span class='op'>=</span> <span class='st'>"consensus"</span>, peak.anno.key <span class='op'>=</span> <span class='st'>"Promoter"</span><span class='op'>)</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
