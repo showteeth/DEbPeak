@@ -70,6 +70,33 @@ up.go.res[["plot"]]
 
 <hr />
 
+#### Visualize selected terms
+Here, we can visualize selected terms with `EnrichPlot`.
+
+Extract results:
+```{r go_up_select}
+# get all go results
+all.up.go.fe.res = all.go.results$UP$GO$table
+# extract MF
+up.go.mf.fe.res = all.up.go.fe.res[all.up.go.fe.res$ONTOLOGY=="MF",]
+# select terms to plot
+up.go.mf.selected = up.go.mf.fe.res[up.go.mf.fe.res$ID %in% c("GO:0017016", "GO:0031267", "GO:0017048", "GO:0005085", "GO:0005088"), ]
+```
+
+Create bar plot:
+```{r go_up_select_plot_bar,fig.height = 6, fig.width = 5, fig.align = "center", warning=FALSE}
+# create bar plot
+EnrichPlot(fe.res = up.go.mf.selected, grad.col.vec=c("grey", "red"))
+```
+
+Create dot plot:
+```{r go_up_select_plot_dot,fig.height = 6, fig.width = 5, fig.align = "center", warning=FALSE}
+# create dot plot
+EnrichPlot(fe.res = up.go.mf.selected, grad.col.vec=c("grey", "red"), plot.type = "dot")
+```
+
+<hr />
+
 ### Down regulated genes
 #### Overview
 ```{r go_down_overview, warning=FALSE}
@@ -83,6 +110,33 @@ head(down.go.res.table)
 #### Visualization
 ```{r go_down_plot,fig.height = 12, fig.width = 8, fig.align = "center", warning=FALSE}
 down.go.res[["plot"]]
+```
+
+<hr />
+
+#### Visualize selected terms
+Here, we can visualize selected terms with `EnrichPlot`.
+
+Extract results:
+```{r go_down_select}
+# get all go results
+all.down.go.fe.res = all.go.results$DOWN$GO$table
+# extract MF
+down.go.cc.fe.res = all.down.go.fe.res[all.down.go.fe.res$ONTOLOGY=="CC",]
+# select terms to plot
+down.go.cc.selected = down.go.cc.fe.res[down.go.cc.fe.res$ID %in% c("GO:0005604"), ]
+```
+
+Create bar plot:
+```{r go_down_select_plot_bar,fig.height = 6, fig.width = 5, fig.align = "center", warning=FALSE}
+# create bar plot
+EnrichPlot(fe.res = down.go.cc.selected, grad.col.vec=c("grey", "red"))
+```
+
+Create dot plot:
+```{r go_down_select_plot_dot,fig.height = 6, fig.width = 5, fig.align = "center", warning=FALSE}
+# create dot plot
+EnrichPlot(fe.res = down.go.cc.selected, grad.col.vec=c("grey", "red"), plot.type = "dot")
 ```
 
 <hr />
@@ -111,6 +165,31 @@ up.kegg.res[["plot"]]
 
 <hr />
 
+#### Visualize selected terms
+Here, we can visualize selected terms with `EnrichPlot`.
+
+Extract results:
+```{r kegg_up_select}
+# get all kegg results
+all.up.kegg.fe.res = all.kegg.results$UP$KEGG$table
+# select terms to plot
+up.kegg.selected = all.up.kegg.fe.res[all.up.kegg.fe.res$ID %in% c("mmu04911", "mmu04024"), ]
+```
+
+Create bar plot:
+```{r kegg_up_select_plot_bar,fig.height = 6, fig.width = 5, fig.align = "center", warning=FALSE}
+# create bar plot
+EnrichPlot(fe.res = up.kegg.selected, grad.col.vec=c("grey", "red"))
+```
+
+Create dot plot:
+```{r kegg_up_select_plot_dot,fig.height = 6, fig.width = 5, fig.align = "center", warning=FALSE}
+# create dot plot
+EnrichPlot(fe.res = up.kegg.selected, grad.col.vec=c("grey", "red"), plot.type = "dot")
+```
+
+<hr />
+
 ### Down regulated genes
 #### Overview
 ```{r kegg_down_overview, warning=FALSE}
@@ -124,6 +203,31 @@ head(down.kegg.res.table)
 #### Visualization
 ```{r kegg_down_plot,fig.height = 6, fig.width = 8, fig.align = "center", warning=FALSE}
 down.kegg.res[["plot"]]
+```
+
+<hr />
+
+#### Visualize selected terms
+Here, we can visualize selected terms with `EnrichPlot`.
+
+Extract results:
+```{r kegg_down_select}
+# get all kegg results
+all.down.kegg.fe.res = all.kegg.results$DOWN$KEGG$table
+# select terms to plot
+down.kegg.selected = all.down.kegg.fe.res
+```
+
+Create bar plot:
+```{r kegg_down_select_plot_bar,fig.height = 6, fig.width = 5, fig.align = "center", warning=FALSE}
+# create bar plot
+EnrichPlot(fe.res = down.kegg.selected, grad.col.vec=c("grey", "red"))
+```
+
+Create dot plot:
+```{r kegg_down_select_plot_dot,fig.height = 6, fig.width = 5, fig.align = "center", warning=FALSE}
+# create dot plot
+EnrichPlot(fe.res = down.kegg.selected, grad.col.vec=c("grey", "red"), plot.type = "dot")
 ```
 
 <hr />

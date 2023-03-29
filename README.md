@@ -198,10 +198,15 @@ Detailed usage is available in [here](https://showteeth.github.io/DEbPeak/). We 
     <td>NOISeq, stats, sva, rrcov, PCAtools, DESeq2, ggplot2, ComplexHeatmap, clusterProfiler, plot3D, tidyverse</td>
   </tr>
   <tr>
-    <td rowspan="3">Functional Enrichment Analysis</td>
+    <td rowspan="4">Functional Enrichment Analysis</td>
     <td>ConductFE</td>
     <td>Conduct functional enrichment analysis (GO and KEGG)</td>
     <td>clusterProfiler</td>
+  </tr>
+  <tr>
+    <td>EnrichPlot</td>
+    <td>Create bar or dot plot for functional enrichment analysis (GO and KEGG)</td>
+    <td>ggplot2</td>
   </tr>
   <tr>
     <td>ConductGSEA</td>

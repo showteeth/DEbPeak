@@ -510,3 +510,132 @@ ConductFE <- function(deres, out.folder = NULL, data.type = c("RNA", "ChIP", "AT
     return(go.results)
   }
 }
+
+#' Create Plot for Functional Enrichment Analysis.
+#'
+#' @param fe.res Functional enrichment analysis results to plot, usually selected from raw results.
+#' @param signif Significance criterion of the results, choose from p.adjust, pvalue, qvalue,
+#' NULL (do not show significance information). Default: p.adjust.
+#' @param show.num The number of terms to show, select in descending order of the FoldEnrichment. Default: 10.
+#' @param grad.col.vec Two color gradient vector (low, high) for \code{signif}.
+#' Used when \code{signif} is not NULL. Default: c("grey", "red").
+#' @param fill.color Color used to color the geom when \code{signif} is NULL. Default: "red".
+#' @param str.width Length of enrichment term in plot. If NULL, use raw length. Default: 30.
+#' @param plot.type The type of the plot, choose from bar and dot. Default: bar.
+#' @param plot.resolution Resolution of plot. Default: 300.
+#' @param plot.width The width of plot. Default: 7.
+#' @param plot.height The height of plot. Default: 9.
+#' @param save Logical value, whether to save all results. Default: FALSE.
+#'
+#' @return If \code{save} is TRUE, return NULL, else return a ggplot2 object.
+#' @importFrom magrittr %>%
+#' @importFrom dplyr arrange desc select
+#' @import ggplot2
+#' @importFrom stringr str_wrap
+#' @importFrom grDevices pdf dev.off
+#' @export
+#'
+#' @examples
+#' # show p.adjust
+#' # EnrichPlot(fe.res = fe.res, grad.col.vec=c("grey", "red"))
+#' # EnrichPlot(fe.res = fe.res, grad.col.vec=c("grey", "red"), plot.type = "dot")
+#' # do not show signif
+#' # EnrichPlot(fe.res = fe.res, signif = NULL, fill.color = "red")
+#' # EnrichPlot(fe.res = fe.res, signif = NULL, fill.color = "red", plot.type = "dot")
+EnrichPlot <- function(fe.res, signif = "p.adjust", show.num = 10, grad.col.vec = c("grey", "red"),
+                       fill.color = "red", str.width = 30, plot.type = c("bar", "dot"),
+                       plot.resolution = 300, plot.width = 7, plot.height = 9, save = FALSE) {
+  # check parameters
+  plot.type <- match.arg(arg = plot.type)
+  # create dataframe
+  fe.res <- as.data.frame(fe.res)
+  # check dataframe
+  if (nrow(fe.res) < 1) {
+    warning("The functional enrichment dataframe is empty!")
+    enrich.plot <- ggplot() +
+      theme_void() +
+      geom_text(aes(0, 0, label = "N/A")) +
+      xlab(NULL)
+  } else {
+    # calculated fold enrichment
+    fe.res$BgRatio <- sapply(X = fe.res$BgRatio, FUN = function(x) {
+      eval(parse(text = x))
+    })
+    fe.res$GeneRatio <- sapply(X = fe.res$GeneRatio, FUN = function(x) {
+      eval(parse(text = x))
+    })
+    fe.res$FoldEnrichment <- round(fe.res$GeneRatio / fe.res$BgRatio, 4)
+    fe.res <- fe.res %>% dplyr::arrange(desc(FoldEnrichment))
+    # prepare show number
+    if (show.num < nrow(fe.res)) {
+      fe.res.used <- fe.res[1:show.num, ]
+    } else {
+      fe.res.used <- fe.res[1:nrow(fe.res), ]
+    }
+    fe.res.used$Description <- factor(fe.res.used$Description, levels = rev(fe.res.used$Description))
+    if (is.null(signif)) {
+      # process functional enrichment results
+      fe.res.used <- fe.res.used %>% dplyr::select(c("ID", "Description", "FoldEnrichment", "Count"))
+      # create plot
+      if (plot.type == "bar") {
+        enrich.plot <- ggplot(fe.res.used) +
+          geom_bar(aes_string(x = "FoldEnrichment", y = "Description"),
+            stat = "identity", width = 0.6, fill = fill.color
+          ) +
+          labs(x = "Fold Enrichment", y = "Enriched Terms")
+      } else if (plot.type == "dot") {
+        enrich.plot <- ggplot(fe.res.used) +
+          geom_point(aes_string(x = "FoldEnrichment", y = "Description", size = "Count"),
+            colour = fill.color
+          ) +
+          labs(x = "Fold Enrichment", y = "Enriched Terms")
+      }
+    } else {
+      # process functional enrichment results
+      fe.res.used <- fe.res.used %>% dplyr::select(c("ID", "Description", "FoldEnrichment", signif, "Count"))
+      # calculated -log10(pvalue)
+      colnames(fe.res.used) <- c("ID", "Description", "FoldEnrichment", "signif", "Count")
+      fe.res.used$signif <- -1 * log10(fe.res.used$signif)
+      # create plot
+      if (plot.type == "bar") {
+        enrich.plot <- ggplot(fe.res.used) +
+          geom_bar(aes_string(x = "FoldEnrichment", y = "Description", fill = "signif"),
+            stat = "identity", width = 0.6
+          ) +
+          scale_fill_gradient(low = grad.col.vec[1], high = grad.col.vec[2]) +
+          labs(fill = paste0("-log10 (", signif, ")"), x = "Fold Enrichment", y = "Enriched Terms")
+      } else if (plot.type == "dot") {
+        enrich.plot <- ggplot(fe.res.used) +
+          geom_point(aes_string(x = "FoldEnrichment", y = "Description", size = "Count", color = "signif")) +
+          labs(x = "FoldEnrichment", y = "Enriched Terms") +
+          scale_color_gradient(low = grad.col.vec[1], high = grad.col.vec[2]) +
+          labs(color = paste0("-log10 (", signif, ")"), x = "Fold Enrichment", y = "Enriched Terms")
+      }
+    }
+  }
+  # chenge term length
+  if (!is.null(str.width)) {
+    enrich.plot <- enrich.plot +
+      scale_y_discrete(labels = function(enrich) stringr::str_wrap(enrich, width = str.width))
+  }
+  # change theme
+  enrich.plot <- enrich.plot +
+    theme_classic() +
+    theme(
+      axis.text.x = element_text(color = "black"),
+      axis.text.y = element_text(color = "black"),
+      panel.border = element_rect(colour = "black", fill = NA, size = 1)
+    )
+  # plot
+  if (save) {
+    # save png
+    ggsave("Enrichment_plot.png", plot = enrich.plot, dpi = plot.resolution, width = plot.width, height = plot.height)
+    # save pdf
+    grDevices::pdf("Enrichment_plot.pdf")
+    print(enrich.plot)
+    grDevices::dev.off()
+    return(NULL)
+  } else {
+    return(enrich.plot)
+  }
+}
