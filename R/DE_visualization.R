@@ -1154,7 +1154,7 @@ DEHeatmap <- function(deobj, deres, group.key = NULL, ref.group = NULL, group.co
 #' @param signif.threshold Significance threshold to get differentially accessible/binding peaks. Default: 0.05.
 #' @param l2fc.threshold Log2 fold change threshold to get differentially accessible/binding peaks. Default: 1.
 #'
-#' @return A ggplot2 object.
+#' @return List contains ggplot2 objects.
 #' @importFrom magrittr %>%
 #' @importFrom tibble rownames_to_column
 #' @importFrom dplyr mutate case_when mutate_at vars filter
@@ -1175,12 +1175,34 @@ DiffPeakPie <- function(deres, signif = "padj", signif.threshold = 0.05, l2fc.th
   de.res$Annotation <- anno.key.named[de.res$Annotation]
   # filter not regulated
   de.degs <- de.res[de.res$regulation != "Not_regulated", ]
+  de.degs$Annotation <- factor(de.degs$Annotation,
+    levels = intersect(anno.key.named, unique(de.degs$Annotation))
+  )
+  de.up.degs <- de.degs[de.degs$regulation == "Up_regulated", ]
+  de.down.degs <- de.degs[de.degs$regulation == "Down_regulated", ]
   # create plot
+  ## total
   diff.peak.pie <-
     ggpie::ggpie(
       data = de.degs, group_key = "Annotation", count_type = "full",
       label_info = "ratio", label_type = "horizon", label_split = NULL,
       label_size = 4, label_pos = "in", label_threshold = 10
     )
-  return(diff.peak.pie)
+  ## up-regulated
+  up.peak.pie <-
+    ggpie::ggpie(
+      data = de.up.degs, group_key = "Annotation", count_type = "full",
+      label_info = "ratio", label_type = "horizon", label_split = NULL,
+      label_size = 4, label_pos = "in", label_threshold = 10
+    )
+  ## down-regulated
+  down.peak.pie <-
+    ggpie::ggpie(
+      data = de.down.degs, group_key = "Annotation", count_type = "full",
+      label_info = "ratio", label_type = "horizon", label_split = NULL,
+      label_size = 4, label_pos = "in", label_threshold = 10
+    )
+  # all results
+  pie.list <- list(diff.pie = diff.peak.pie, up.pie = up.peak.pie, down.pie = down.peak.pie)
+  return(pie.list)
 }

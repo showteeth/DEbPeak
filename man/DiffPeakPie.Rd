@@ -22,7 +22,7 @@ For edgeR results, can be chosen from FDR, PValue. Default: padj.}
 \item{l2fc.threshold}{Log2 fold change threshold to get differentially accessible/binding peaks. Default: 1.}
 }
 \value{
-A ggplot2 object.
+List contains ggplot2 objects.
 }
 \description{
 Stat Genomic Regions of Differential Peaks with Pie Plot.
