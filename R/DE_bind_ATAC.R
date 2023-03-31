@@ -59,6 +59,7 @@ FindMotif <- function(inte.res, peak.anno.res = NULL, peak.motif.key, peak.mode 
       ]
     } else if (peak.mode == "diff") {
       inte.peak <- inte.res %>%
+        dplyr::filter(Type == peak.motif.key) %>%
         dplyr::filter(!is.na(Peak_Gene)) %>%
         dplyr::select(Peak_Gene) %>%
         dplyr::mutate(name = Peak_Gene) %>%

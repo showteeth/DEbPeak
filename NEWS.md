@@ -3,6 +3,9 @@
 * Added `DiffPeakPie` to stat genomic regions of differential peaks with pie plot.
 * Added `EnrichPlot` to create bar or dot plot for functional enrichment analysis, this is useful for visualizing selected terms.
 
+## Minor changes
+* Fixed bug in `FindMotif`
+
 -------------
 
 # DEbPeak 1.0.0
