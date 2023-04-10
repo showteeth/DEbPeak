@@ -34,7 +34,7 @@
 * **Integrate peak-related data with peak-related data**:
   - Integration summary: include venn diagram and quadrant diagram (differential mode).
   - GO enrichment on integrated results.
-* **Utils**: useful functions when dealing with RNA-seq data, including gene name conversion and count normalization(DESeq2’s median of ratios, TMM, CPM, TPM, RPKM).
+* **Utils**: useful functions, including creating enrichment plot for selected enrichment terms, gene ID conversion and count normalization(DESeq2’s median of ratios, TMM, CPM, TPM, RPKM).
 
 To enhance the ease of use of the tool, we have also developed an **web server** for `DEbPeak` that allows users to submit files to the web page and set parameters to get the desired results. Unlike the standalone R package, *the web server has built-in `DESeq2` for differential analysis*, while the R package can accept user input results from `DESeq2` or `edgeR`, which will be **more flexible**.
 
@@ -198,15 +198,10 @@ Detailed usage is available in [here](https://showteeth.github.io/DEbPeak/). We 
     <td>NOISeq, stats, sva, rrcov, PCAtools, DESeq2, ggplot2, ComplexHeatmap, clusterProfiler, plot3D, tidyverse</td>
   </tr>
   <tr>
-    <td rowspan="4">Functional Enrichment Analysis</td>
+    <td rowspan="3">Functional Enrichment Analysis</td>
     <td>ConductFE</td>
     <td>Conduct functional enrichment analysis (GO and KEGG)</td>
     <td>clusterProfiler</td>
-  </tr>
-  <tr>
-    <td>EnrichPlot</td>
-    <td>Create bar or dot plot for functional enrichment analysis (GO and KEGG)</td>
-    <td>ggplot2</td>
   </tr>
   <tr>
     <td>ConductGSEA</td>
@@ -303,7 +298,12 @@ Detailed usage is available in [here](https://showteeth.github.io/DEbPeak/). We 
     <td>clusterProfiler</td>
   </tr>
   <tr>
-    <td rowspan="3">Utils</td>
+    <td rowspan="4">Utils</td>
+    <td>EnrichPlot</td>
+    <td>Create bar or dot plot for selected functional enrichment analysis results (GO and KEGG)</td>
+    <td>ggplot2</td>
+  </tr>
+  <tr>
     <td>IDConversion</td>
     <td>Gene ID conversion between ENSEMBL ENTREZID SYMBOL</td>
     <td>clusterProfiler</td>
