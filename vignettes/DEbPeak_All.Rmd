@@ -53,7 +53,7 @@ library("DEbPeak")
 # Introduction
 <img src = "../man/figures/DEbPeak.png" align = "right" width = "200"/>
 
-`DEbPeak` aims to **explore**, **visualize**, **interpret** multi-omics data and **unravel the regulation of gene expression** by combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains **six functional modules**:
+`DEbPeak` aims to **explore**, **visualize**, **interpret** multi-omics data and **unravel the regulation of gene expression** by combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains **eight functional modules**:
 
 * **Quality Control (QC)**: QC on count matrix and samples. 
   - QC on count matrix: Proportion of genes detected in different samples under different CPM thresholds and the saturation of the number of genes detected.

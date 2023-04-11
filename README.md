@@ -6,7 +6,7 @@
 [![CODE\_SIZE](https://img.shields.io/github/languages/code-size/showteeth/DEbPeak.svg)](https://github.com/showteeth/DEbPeak)
 
 ## Introduction
-`DEbPeak` aims to **explore**, **visualize**, **interpret** multi-omics data and **unravel the regulation of gene expression** by combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains **six functional modules**:
+`DEbPeak` aims to **explore**, **visualize**, **interpret** multi-omics data and **unravel the regulation of gene expression** by combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains **eight functional modules**:
 
 * **Quality Control (QC)**: QC on count matrix and samples. 
   - QC on count matrix: Proportion of genes detected in different samples under different CPM thresholds and the saturation of the number of genes detected.
