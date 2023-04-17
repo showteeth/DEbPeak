@@ -8,4 +8,50 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Introduction
-[GEO](https://www.ncbi.nlm.nih.gov/) 
+[GEO is an international public repository that archives and freely distributes microarray, next-generation sequencing, and other forms of high-throughput functional genomics data submitted by the research community.](https://www.ncbi.nlm.nih.gov/geo/info/overview.html). 
+
+`DEbPeak` provides `ParseGEO` for users to extract study information, raw count matrix and metadata from GEO.
+
+<hr />
+
+## Extract data
+Here, we will extract data from [GSE122774](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE122774).
+
+```{r extract_geo}
+# library DEbPeak
+suppressWarnings(suppressMessages(library(DEbPeak)))
+# extract data from GEO
+GSE122774.list = ParseGEO(acce = "GSE122774", platform = "GPL17021")
+```
+
+The GEO object:
+```{r geo_obj}
+GSE122774.list$obj
+```
+
+Study information:
+```{r geo_study_info}
+GSE122774.list$exp.info
+```
+
+Raw count matrix:
+```{r geo_count_matrix}
+GSE122774.list$count
+```
+
+Sample metadata:
+```{r geo_metadata}
+GSE122774.list$metadata
+```
+
+<hr />
+
+## Session info
+```{r session}
+sessionInfo()
+```
+
+<hr />
+
+
+

@@ -9,7 +9,7 @@ author:
 date: "`r BiocStyle::doc_date()`"
 package: "`r BiocStyle::pkg_ver('DEbPeak')`"
 abstract: >
-  The goal of `DEbPeak` is to explore, visualize, interpret multi-omics data and unravel the regulation of gene expression by combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains six functional modules: Quality Control (QC) on count matrix and samples, Principal Component Analysis (PCA) ,Differential Analysis and Visualization (Volcano Plot, Scatter Plot, MA Plot, Rank Plot, Gene Plot, Heatmap, Pie Plot for peak-related data), Functional Enrichment Analysis (GO enrichment analysis, KEGG enrichment analysis, Gene Set Enrichment Analysis), Integrate RNA-seq with peak-related data (Get consensus peaks, Peak profile plots, Peak annotaion, Integrate RNA-seq with peak-related data, Integrate summary, GO enrichment on integrated results, Find motif on integrated results), Utils (useful functions when dealing with RNA-seq data, including gene name conversion and count normalization). 
+  The goal of `DEbPeak` is to explore, visualize, interpret multi-omics data and unravel the regulation of gene expression by combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains nine functional modules: Parse GEO (extract study information, raw count matrix and metadata), Quality Control (QC) on count matrix and samples, Principal Component Analysis (PCA) ,Differential Analysis and Visualization (Volcano Plot, Scatter Plot, MA Plot, Rank Plot, Gene Plot, Heatmap, Pie Plot for peak-related data), Functional Enrichment Analysis (GO enrichment analysis, KEGG enrichment analysis, Gene Set Enrichment Analysis), Integrate RNA-seq with peak-related data (Get consensus peaks, Peak profile plots, Peak annotaion, Integrate RNA-seq with peak-related data, Integrate summary, GO enrichment on integrated results, Find motif on integrated results), Integrate RNA-seq with RNA-seq (Integrate summary, GO enrichment on integrated results), Integrate peak-related data with peak-related data (Integrate summary, GO enrichment on integrated results), Utils (useful functions when dealing with RNA-seq data, including gene name conversion and count normalization). 
 output: 
   BiocStyle::html_document:
     toc_depth: 4
@@ -53,8 +53,9 @@ library("DEbPeak")
 # Introduction
 <img src = "../man/figures/DEbPeak.png" align = "right" width = "200"/>
 
-`DEbPeak` aims to **explore**, **visualize**, **interpret** multi-omics data and **unravel the regulation of gene expression** by combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains **eight functional modules**:
+`DEbPeak` aims to **explore**, **visualize**, **interpret** multi-omics data and **unravel the regulation of gene expression** by combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains **nine functional modules**:
 
+* **Parse GEO**: Extract study information, raw count matrix and metadata from GEO database.
 * **Quality Control (QC)**: QC on count matrix and samples. 
   - QC on count matrix: Proportion of genes detected in different samples under different CPM thresholds and the saturation of the number of genes detected.
   - QC on samples: Euclidean distance and pearson correlation coefficient of samples across different conditions, sample similarity on selected principal components (check batch information and conduct batch correction) and outlier detection with robust PCA.
@@ -83,13 +84,44 @@ By the way, all plots generated are **publication-ready** , and most of them are
 
 -------------
 
+## Parse GEO
+Here, we will extract data from [GSE122774](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE122774).
+
+```{r extract_geo}
+# library DEbPeak
+suppressWarnings(suppressMessages(library(DEbPeak)))
+# extract data from GEO
+GSE122774.list = ParseGEO(acce = "GSE122774", platform = "GPL17021")
+```
+
+The GEO object:
+```{r geo_obj}
+GSE122774.list$obj
+```
+
+Study information:
+```{r geo_study_info}
+GSE122774.list$exp.info
+```
+
+Raw count matrix:
+```{r geo_count_matrix}
+GSE122774.list$count
+```
+
+Sample metadata:
+```{r geo_metadata}
+GSE122774.list$metadata
+```
+
+----------
+
 # Load the data
 The data used here are RNA-seq data of the external granule layer in the cerebellum of control and conditional SnoN knockout mice, the raw data are stored in [GSE120279](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE120279), they are used in [Robust principal component analysis for accurate outlier sample detection in RNA-seq data](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-020-03608-0).
 
 First, we create `DESeqDataSet` object with above dataset:
 ```{r loadData, warning=FALSE}
 suppressWarnings(suppressMessages(library(DESeq2)))
-suppressWarnings(suppressMessages(library(DEbPeak)))
 count.file <- system.file("extdata", "snon_count.txt", package = "DEbPeak")
 meta.file <- system.file("extdata", "snon_meta.txt", package = "DEbPeak")
 count.matrix <- read.table(file = count.file, header = T, sep = "\t")

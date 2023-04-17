@@ -11,7 +11,7 @@ ExtractGEOExp(pf.obj, acce, supp.idx = 1, down.supp = FALSE)
 
 \item{acce}{GEO accession number.}
 
-\item{supp.idx}{The index of supplementary files to download. This should be consistent with \code{platform}. Default: 1.}
+\item{supp.idx}{The index of supplementary files to download. Default: 1.}
 
 \item{down.supp}{Logical value, whether to download supplementary files to create count matrix. If TRUE, always
 download supplementary files. If FALSE, use \code{ExpressionSet} (If contains non-integer or emoty,

@@ -16,6 +16,8 @@ navbar:
       href: articles/DEbPeak_All.html
     - text: Articles
       menu:
+      - text: Parse GEO
+        href: articles/ParseGEO.html
       - text: Quality Control
         href: articles/QualityControl.html
       - text: Principal Component Analysis (RNA-seq)

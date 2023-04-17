@@ -170,11 +170,14 @@ ExtractGEOExpSupp <- function(acce, supp.idx = 1) {
   # create tmp folder
   tmp.folder <- tempdir()
   # download supplementary file
-  supp.down.log <- getGEOSuppFiles(GEO = acce, baseDir = tmp.folder)
+  supp.down.log <- GEOquery::getGEOSuppFiles(GEO = acce, baseDir = tmp.folder)
   if (supp.idx > nrow(supp.down.log)) {
     stop("Please provide valid supplementary file index.")
   }
   supp.file.path <- rownames(supp.down.log)[supp.idx]
+  # remove unused supplementary file
+  unused.supp <- setdiff(rownames(supp.down.log), supp.file.path)
+  unused.supp.remove <- file.remove(unused.supp)
   # file unzip
   file.ext <- tools::file_ext(supp.file.path)
   if (file.ext == "gz") {
@@ -228,7 +231,7 @@ ExtractGEOExpSupp <- function(acce, supp.idx = 1) {
 #'
 #' @param pf.obj GEO object of platform.
 #' @param acce GEO accession number.
-#' @param supp.idx The index of supplementary files to download. This should be consistent with \code{platform}. Default: 1.
+#' @param supp.idx The index of supplementary files to download. Default: 1.
 #' @param down.supp Logical value, whether to download supplementary files to create count matrix. If TRUE, always
 #' download supplementary files. If FALSE, use \code{ExpressionSet} (If contains non-integer or emoty,
 #' download supplementary files automatically). Default: FALSE.
@@ -260,6 +263,35 @@ ExtractGEOExp <- function(pf.obj, acce, supp.idx = 1, down.supp = FALSE) {
 }
 
 
-
-
-
+#' Download GEO Supplementary Files.
+#'
+#' @param acce GEO accession number.
+#' @param supp.idx The index of supplementary files to download. If NULL, download all supplementary files. Default: 1.
+#' @param out.folder The output folder used to save downloaded results.
+#'
+#' @return A vector contains paths.
+#' @importFrom GEOquery getGEOSuppFiles
+#' @export
+#'
+#' @examples
+#' # DownloadGEOSupp(acce = "GSE149836", supp.idx = NULL, out.folder = "/path/to/suppfiles")
+DownloadGEOSupp <- function(acce, supp.idx = 1, out.folder = NULL) {
+  # prepare output folder
+  if (is.null(out.folder)) {
+    out.folder <- getwd()
+  }
+  # download supplementary file
+  supp.down.log <- GEOquery::getGEOSuppFiles(GEO = acce, baseDir = out.folder)
+  if (is.null(supp.idx)) {
+    supp.file.path <- rownames(supp.down.log)
+  } else {
+    if (supp.idx > nrow(supp.down.log)) {
+      stop("Please provide valid supplementary file index.")
+    }
+    supp.file.path <- rownames(supp.down.log)[supp.idx]
+    # remove unused supplementary file
+    unused.supp <- setdiff(rownames(supp.down.log), supp.file.path)
+    unused.supp.remove <- file.remove(unused.supp)
+  }
+  return(supp.file.path)
+}

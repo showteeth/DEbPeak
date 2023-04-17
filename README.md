@@ -66,7 +66,7 @@ In general, it is **recommended** to install from [Github repository](https://gi
 Detailed usage is available in [here](https://showteeth.github.io/DEbPeak/). We divide these vignettes into four categories:
 
 * For parse **GEO**:
-
+  * [Parse GEO](https://showteeth.github.io/DEbPeak/articles/ParseGEO.html)
 
 * For analyzing **RNA-seq**:
   * [Quality Control](https://showteeth.github.io/DEbPeak/articles/QualityControl.html)
