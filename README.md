@@ -6,8 +6,9 @@
 [![CODE\_SIZE](https://img.shields.io/github/languages/code-size/showteeth/DEbPeak.svg)](https://github.com/showteeth/DEbPeak)
 
 ## Introduction
-`DEbPeak` aims to **explore**, **visualize**, **interpret** multi-omics data and **unravel the regulation of gene expression** by combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains **eight functional modules**:
+`DEbPeak` aims to **explore**, **visualize**, **interpret** multi-omics data and **unravel the regulation of gene expression** by combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains **nine functional modules**:
 
+* **Parse GEO**: Extract study information, raw count matrix and metadata from GEO database.
 * **Quality Control (QC)**: QC on count matrix and samples. 
   - QC on count matrix: Proportion of genes detected in different samples under different CPM thresholds and the saturation of the number of genes detected.
   - QC on samples: Euclidean distance and pearson correlation coefficient of samples across different conditions, sample similarity on selected principal components (check batch information and conduct batch correction) and outlier detection with robust PCA.
@@ -64,6 +65,9 @@ In general, it is **recommended** to install from [Github repository](https://gi
 
 Detailed usage is available in [here](https://showteeth.github.io/DEbPeak/). We divide these vignettes into four categories:
 
+* For parse **GEO**:
+
+
 * For analyzing **RNA-seq**:
   * [Quality Control](https://showteeth.github.io/DEbPeak/articles/QualityControl.html)
   * [Principal Component Analysis (RNA-seq)](https://showteeth.github.io/DEbPeak/articles/PrincipalComponentAnalysis.html)
@@ -99,6 +103,12 @@ Detailed usage is available in [here](https://showteeth.github.io/DEbPeak/). We 
   </tr>
 </thead>
 <tbody>
+  <tr>
+    <td>Parse GEO</td>
+    <td>ParseGEO</td>
+    <td>Extract study information, raw count matrix and metadata from GEO database</td>
+    <td>GEOquery</td>
+  </tr>
   <tr>
     <td rowspan="4">Quality Control</td>
     <td>CountQC</td>

@@ -1,3 +1,9 @@
+# DEbPeak 1.1.0
+## New features
+* Added `ParseGEO` to parse data from GEO.
+
+-------------
+
 # DEbPeak 1.0.1
 ## New features
 * Added `DiffPeakPie` to stat genomic regions of differential peaks with pie plot.
