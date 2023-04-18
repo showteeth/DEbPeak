@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DEbPeak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -94,6 +94,9 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/ParseGEO.html">Parse GEO</a>
+    </li>
     <li>
       <a href="../articles/QualityControl.html">Quality Control</a>
     </li>
@@ -216,29 +219,29 @@ Default: consensus.</p></td>
 <span class='va'>peak.file</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"debchip_peaks.bed"</span>, package <span class='op'>=</span> <span class='st'>"DEbPeak"</span><span class='op'>)</span>
 <span class='va'>peak.df</span> <span class='op'>&lt;-</span> <span class='fu'><a href='GetConsensusPeak.html'>GetConsensusPeak</a></span><span class='op'>(</span>peak.file <span class='op'>=</span> <span class='va'>peak.file</span><span class='op'>)</span>
 <span class='va'>peak.profile</span> <span class='op'>&lt;-</span> <span class='fu'><a href='PeakProfile.html'>PeakProfile</a></span><span class='op'>(</span><span class='va'>peak.df</span>, species <span class='op'>=</span> <span class='st'>"Mouse"</span>, by <span class='op'>=</span> <span class='st'>"gene"</span>, region.type <span class='op'>=</span> <span class='st'>"body"</span>, nbin <span class='op'>=</span> <span class='fl'>800</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; &gt;&gt; preparing promoter regions...	 2023-04-10 22时53分51秒 
-#&gt; &gt;&gt; preparing tag matrix...		 2023-04-10 22时53分51秒 
-#&gt; &gt;&gt; preparing start_site regions by ... 2023-04-10 22时53分51秒
-#&gt; &gt;&gt; preparing tag matrix...  2023-04-10 22时53分51秒 
-#&gt; &gt;&gt; generating figure...		 2023-04-10 22时53分59秒 </div><div class='output co'>#&gt; &gt;&gt; done...			 2023-04-10 22时53分59秒 </div><div class='output co'>#&gt; &gt;&gt; binning method is used...2023-04-10 22时53分59秒
-#&gt; &gt;&gt; preparing start_site regions by gene... 2023-04-10 22时53分59秒
-#&gt; &gt;&gt; preparing tag matrix by binning...  2023-04-10 22时53分59秒 
-#&gt; &gt;&gt; Running bootstrapping for tag matrix...		 2023-04-10 22时54分06秒 
-#&gt; &gt;&gt; binning method is used...2023-04-10 22时54分06秒
-#&gt; &gt;&gt; preparing body regions by gene... 2023-04-10 22时54分06秒
-#&gt; &gt;&gt; preparing tag matrix by binning...  2023-04-10 22时54分06秒 
-#&gt; &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2023-04-10 22时54分06秒
-#&gt; &gt;&gt; 1 peaks(0.1536098%), having lengths smaller than 800bp, are filtered... 2023-04-10 22时54分09秒
-#&gt; &gt;&gt; Running bootstrapping for tag matrix...		 2023-04-10 22时54分47秒 </div><div class='input'><span class='va'>peak.anno</span> <span class='op'>&lt;-</span> <span class='fu'><a href='AnnoPeak.html'>AnnoPeak</a></span><span class='op'>(</span>
+</div><div class='output co'>#&gt; &gt;&gt; preparing promoter regions...	 2023-04-18 11时14分46秒 
+#&gt; &gt;&gt; preparing tag matrix...		 2023-04-18 11时14分46秒 
+#&gt; &gt;&gt; preparing start_site regions by ... 2023-04-18 11时14分46秒
+#&gt; &gt;&gt; preparing tag matrix...  2023-04-18 11时14分46秒 
+#&gt; &gt;&gt; generating figure...		 2023-04-18 11时14分52秒 </div><div class='output co'>#&gt; &gt;&gt; done...			 2023-04-18 11时14分52秒 </div><div class='output co'>#&gt; &gt;&gt; binning method is used...2023-04-18 11时14分52秒
+#&gt; &gt;&gt; preparing start_site regions by gene... 2023-04-18 11时14分52秒
+#&gt; &gt;&gt; preparing tag matrix by binning...  2023-04-18 11时14分52秒 
+#&gt; &gt;&gt; Running bootstrapping for tag matrix...		 2023-04-18 11时14分58秒 
+#&gt; &gt;&gt; binning method is used...2023-04-18 11时14分59秒
+#&gt; &gt;&gt; preparing body regions by gene... 2023-04-18 11时14分59秒
+#&gt; &gt;&gt; preparing tag matrix by binning...  2023-04-18 11时14分59秒 
+#&gt; &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2023-04-18 11时14分59秒
+#&gt; &gt;&gt; 1 peaks(0.1536098%), having lengths smaller than 800bp, are filtered... 2023-04-18 11时15分02秒
+#&gt; &gt;&gt; Running bootstrapping for tag matrix...		 2023-04-18 11时15分42秒 </div><div class='input'><span class='va'>peak.anno</span> <span class='op'>&lt;-</span> <span class='fu'><a href='AnnoPeak.html'>AnnoPeak</a></span><span class='op'>(</span>
   peak.df <span class='op'>=</span> <span class='va'>peak.df</span>, species <span class='op'>=</span> <span class='st'>"Mouse"</span>,
   seq.style <span class='op'>=</span> <span class='st'>"UCSC"</span>, up.dist <span class='op'>=</span> <span class='fl'>20000</span>, down.dist <span class='op'>=</span> <span class='fl'>20000</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; &gt;&gt; preparing features information...		 2023-04-10 22时54分48秒 
-#&gt; &gt;&gt; identifying nearest features...		 2023-04-10 22时54分48秒 
-#&gt; &gt;&gt; calculating distance from peak to TSS...	 2023-04-10 22时54分48秒 
-#&gt; &gt;&gt; assigning genomic annotation...		 2023-04-10 22时54分48秒 
-#&gt; &gt;&gt; adding gene annotation...			 2023-04-10 22时54分50秒 </div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:many mapping between keys and columns</span></div><div class='output co'>#&gt; &gt;&gt; assigning chromosome lengths			 2023-04-10 22时54分50秒 
-#&gt; &gt;&gt; done...					 2023-04-10 22时54分50秒 </div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 6 rows containing non-finite values (stat_count).</span></div><div class='input'><span class='co'># RNA-Seq data</span>
+</div><div class='output co'>#&gt; &gt;&gt; preparing features information...		 2023-04-18 11时15分43秒 
+#&gt; &gt;&gt; identifying nearest features...		 2023-04-18 11时15分43秒 
+#&gt; &gt;&gt; calculating distance from peak to TSS...	 2023-04-18 11时15分43秒 
+#&gt; &gt;&gt; assigning genomic annotation...		 2023-04-18 11时15分43秒 
+#&gt; &gt;&gt; adding gene annotation...			 2023-04-18 11时15分45秒 </div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:many mapping between keys and columns</span></div><div class='output co'>#&gt; &gt;&gt; assigning chromosome lengths			 2023-04-18 11时15分45秒 
+#&gt; &gt;&gt; done...					 2023-04-18 11时15分45秒 </div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 6 rows containing non-finite values (stat_count).</span></div><div class='input'><span class='co'># RNA-Seq data</span>
 <span class='va'>count.file</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"debchip_count.txt"</span>, package <span class='op'>=</span> <span class='st'>"DEbPeak"</span><span class='op'>)</span>
 <span class='va'>meta.file</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"debchip_meta.txt"</span>, package <span class='op'>=</span> <span class='st'>"DEbPeak"</span><span class='op'>)</span>
 <span class='va'>count.matrix</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/utils/read.table.html'>read.table</a></span><span class='op'>(</span>file <span class='op'>=</span> <span class='va'>count.file</span>, header <span class='op'>=</span> <span class='cn'>TRUE</span>, sep <span class='op'>=</span> <span class='st'>"\t"</span><span class='op'>)</span>

@@ -46,6 +46,9 @@
     <loc>https://showteeth.github.io/DEbPeak//reference/DiscreteColorPalette.html</loc>
   </url>
   <url>
+    <loc>https://showteeth.github.io/DEbPeak//reference/DownloadGEOSupp.html</loc>
+  </url>
+  <url>
     <loc>https://showteeth.github.io/DEbPeak//reference/EnrichPlot.html</loc>
   </url>
   <url>
@@ -53,6 +56,18 @@
   </url>
   <url>
     <loc>https://showteeth.github.io/DEbPeak//reference/ExtractDA.html</loc>
+  </url>
+  <url>
+    <loc>https://showteeth.github.io/DEbPeak//reference/ExtractGEOExp.html</loc>
+  </url>
+  <url>
+    <loc>https://showteeth.github.io/DEbPeak//reference/ExtractGEOExpSupp.html</loc>
+  </url>
+  <url>
+    <loc>https://showteeth.github.io/DEbPeak//reference/ExtractGEOInfo.html</loc>
+  </url>
+  <url>
+    <loc>https://showteeth.github.io/DEbPeak//reference/ExtractGEOMeta.html</loc>
   </url>
   <url>
     <loc>https://showteeth.github.io/DEbPeak//reference/FindMotif.html</loc>
@@ -104,6 +119,9 @@
   </url>
   <url>
     <loc>https://showteeth.github.io/DEbPeak//reference/PCABasic.html</loc>
+  </url>
+  <url>
+    <loc>https://showteeth.github.io/DEbPeak//reference/ParseGEO.html</loc>
   </url>
   <url>
     <loc>https://showteeth.github.io/DEbPeak//reference/PeakAnnoPie.html</loc>
@@ -170,6 +188,9 @@
   </url>
   <url>
     <loc>https://showteeth.github.io/DEbPeak//articles/MotifEnrichment.html</loc>
+  </url>
+  <url>
+    <loc>https://showteeth.github.io/DEbPeak//articles/ParseGEO.html</loc>
   </url>
   <url>
     <loc>https://showteeth.github.io/DEbPeak//articles/PrincipalComponentAnalysis.html</loc>

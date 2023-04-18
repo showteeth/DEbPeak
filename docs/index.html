@@ -13,8 +13,8 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="DEbPeak - Analyze and integrate multi-omics to unravel the regulation of gene expression">
 <meta property="og:description" content="DEbPeak aims to explore, visualize, interpret multi-omics data and unravel the regulation of gene expression by 
-    combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains six functional panels: 
-    Quality Control (QC), Principal Component Analysis (PCA), Differential Analysis (DA), Functional Enrichment Analysis (FEA), 
+    combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains nine functional panels: 
+    Parse GEO, Quality Control (QC), Principal Component Analysis (PCA), Differential Analysis (DA), Functional Enrichment Analysis (FEA), 
     Integrate RNA-seq with peak-related data (support the simultaneous integration of two kinds of peak-related data), 
     Integrate RNA-seq with RNA-seq, Integrate peak-related data with peak-related data, Utils.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -35,7 +35,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">DEbPeak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -58,6 +58,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="articles/ParseGEO.html">Parse GEO</a>
+    </li>
+    <li>
       <a href="articles/QualityControl.html">Quality Control</a>
     </li>
     <li>
@@ -132,8 +135,10 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p><code>DEbPeak</code> aims to <strong>explore</strong>, <strong>visualize</strong>, <strong>interpret</strong> multi-omics data and <strong>unravel the regulation of gene expression</strong> by combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains <strong>eight functional modules</strong>:</p>
+<p><code>DEbPeak</code> aims to <strong>explore</strong>, <strong>visualize</strong>, <strong>interpret</strong> multi-omics data and <strong>unravel the regulation of gene expression</strong> by combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains <strong>nine functional modules</strong>:</p>
 <ul>
+<li>
+<strong>Parse GEO</strong>: Extract study information, raw count matrix and metadata from GEO database.</li>
 <li>
 <strong>Quality Control (QC)</strong>: QC on count matrix and samples.
 <ul>
@@ -217,6 +222,11 @@
 <a href="#vignette" class="anchor"></a>Vignette</h3>
 <p>Detailed usage is available in <a href="https://showteeth.github.io/DEbPeak/">here</a>. We divide these vignettes into four categories:</p>
 <ul>
+<li>For parse <strong>GEO</strong>:
+<ul>
+<li><a href="https://showteeth.github.io/DEbPeak/articles/ParseGEO.html">Parse GEO</a></li>
+</ul>
+</li>
 <li>For analyzing <strong>RNA-seq</strong>:
 <ul>
 <li><a href="https://showteeth.github.io/DEbPeak/articles/QualityControl.html">Quality Control</a></li>
@@ -271,6 +281,20 @@ Key packages
 </th>
 </tr></thead>
 <tbody>
+<tr>
+<td>
+Parse GEO
+</td>
+<td>
+ParseGEO
+</td>
+<td>
+Extract study information, raw count matrix and metadata from GEO database
+</td>
+<td>
+GEOquery
+</td>
+</tr>
 <tr>
 <td rowspan="4">
 Quality Control
