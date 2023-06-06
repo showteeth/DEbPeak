@@ -1,20 +1,26 @@
 #' Prepare Count Matrix and Sample Metadata for Peak-related data.
 #'
-#' @param meta.file Sample metadata contains peak related information (eg: sample, peakPath, bamPath, condition).
+#' @param meta.file Sample metadata contains peak related information (eg: sample, peakPath, bamPath, condition) or
+#' peak count matrix file. Should be tab-separated.
+#' @param count.matrix Logical value, whether the \code{meta.file} is a count matrix file. Default: FALSE.
 #' @param min.overlap Only include peaks in at least this many peaksets in the main binding matrix. Default: 2.
-#' Parameter of \code{\link{dba}}.
-#' @param submits If the value is greater than zero, all consensus peaks will be re-centered around a consensus summit,
+#' Parameter of \code{\link{dba}}. Used when \code{count.matrix} is FALSE.
+#' @param summits If the value is greater than zero, all consensus peaks will be re-centered around a consensus summit,
 #' with the value of summits indicating how many base pairs to include upstream and downstream of the
 #' summit (so all consensus peaks will be of the same width, namely \code{2 * summits + 1}).
-#' Default: 200. Parameter of \code{\link{dba.count}}.
+#' Default: 200. Parameter of \code{\link{dba.count}}. Used when \code{count.matrix} is FALSE.
 #' @param use.summarizeOverlaps Logical value, indicating that \code{\link{summarizeOverlaps}} should be used for counting
-#' instead of the built-in counting code. Default: TRUE. Parameter of \code{\link{dba.count}}.
+#' instead of the built-in counting code. Default: TRUE. Parameter of \code{\link{dba.count}}. Used when \code{count.matrix} is FALSE.
+#' @param filter Filter intervals with low read counts based on RPKM values. Default: 1.
+#' Parameter of \code{\link{dba.count}}. Used when \code{count.matrix} is FALSE.
 #' @param blacklist Species-specific abnormal regions to be removed. Choose from "DBA_BLACKLIST_HG19", "DBA_BLACKLIST_HG38", "DBA_BLACKLIST_GRCH37",
 #' "DBA_BLACKLIST_GRCH38", "DBA_BLACKLIST_MM9", "DBA_BLACKLIST_MM10", "DBA_BLACKLIST_CE10", "DBA_BLACKLIST_CE11", "DBA_BLACKLIST_DM3", "DBA_BLACKLIST_DM6",
-#' TRUE (auto-detection genome), a GRanges object containing the blacklisted regions. Default:TRUE. Parameter of \code{\link{dba.blacklist}}.
+#' TRUE (auto-detection genome), a GRanges object containing the blacklisted regions. Default:TRUE.
+#' Parameter of \code{\link{dba.blacklist}}. Used when \code{count.matrix} is FALSE.
 #' @param sub.control Logical value, whether Control read counts are subtracted for each site in each sample.
-#' Default: TRUE. Parameter of \code{\link{dba.count}}.
-#' @param used.cols Used columns used to create sample metadata. If specified, sampleID should be placed first. Default: c("SampleID", "Condition").
+#' Default: TRUE. Parameter of \code{\link{dba.count}}. Used when \code{count.matrix} is FALSE.
+#' @param used.cols Used columns used to create sample metadata. If specified, sampleID should be placed first.
+#' Default: c("SampleID", "Condition"). Used when \code{count.matrix} is FALSE.
 #' @param out.folder Output folder to save created count matrix and sample metadata. Default: NULL (current working directory).
 #' @param species Species used, chosen from "Human","Mouse","Rat","Fly","Arabidopsis","Yeast","Zebrafish","Worm","Bovine","Pig","Chicken","Rhesus",
 #' "Canine","Xenopus","Anopheles","Chimp","E coli strain Sakai","Myxococcus xanthus DK 1622". Default: "Human".
@@ -25,7 +31,8 @@
 #' @param down.dist The downstream distance from the TSS. Default: 3000bp.
 #' @param ... Parameters for \code{\link{annotatePeak}}.
 #'
-#' @return A dataframe contains count matrix, peak annotation and sample metadata (if provided \code{used.cols}).
+#' @return A dataframe contains count matrix, peak annotation and sample metadata (if provided \code{used.cols}). And
+#' all save the corresponding results to consensus_peak_matrix.txt, consensus_peak_anno.txt and peak_metadata.txt files.
 #' @importFrom utils read.table write.table
 #' @importFrom magrittr %>%
 #' @importFrom dplyr mutate select case_when
@@ -46,11 +53,12 @@
 #' # library(DEbPeak)
 #' # library(DESeq2)
 #' # metadata file contains peak and bam information
+#' # beaware of the PeakCaller type (determine the score column)
 #' # meta.file = 'path/to/metadata'
 #' # PeakMatrix(meta.file = meta.file, species = "Human",  seq.style = "UCSC",
 #' #            up.dist = 20000, down.dist = 20000)
-PeakMatrix <- function(meta.file, min.overlap = 2, submits = 200, use.summarizeOverlaps = TRUE,
-                       blacklist = TRUE, sub.control = TRUE, used.cols = c("SampleID", "Condition"),
+PeakMatrix <- function(meta.file, count.matrix = FALSE, min.overlap = 2, summits = 200, use.summarizeOverlaps = TRUE,
+                       filter = 1, blacklist = TRUE, sub.control = TRUE, used.cols = c("SampleID", "Condition"),
                        out.folder = NULL, species = c(
                          "Human", "Mouse", "Rat", "Fly", "Arabidopsis", "Yeast", "Zebrafish", "Worm", "Bovine", "Pig", "Chicken", "Rhesus",
                          "Canine", "Xenopus", "Anopheles", "Chimp", "E coli strain Sakai", "Myxococcus xanthus DK 1622"
@@ -58,37 +66,59 @@ PeakMatrix <- function(meta.file, min.overlap = 2, submits = 200, use.summarizeO
                        seq.style = c("UCSC", "NCBI", "Ensembl", "None"), gtf.file = NULL, up.dist = 3000, down.dist = 3000, ...) {
   # load sample meta info
   sample.info <- read.table(meta.file, sep = "\t", header = TRUE, check.names = FALSE)
-  # check columns
-  required.cols <- c("SampleID", "bamReads", "bamControl", "Peaks", "PeakCaller")
-  if (!all(intersect(colnames(sample.info), required.cols) == required.cols)) {
-    stop("The metadata should contain SampleID, bamReads, bamControl, Peaks, PeakCaller columns!")
-  }
-  # create dba object
-  dbaObj <- DiffBind::dba(sampleSheet = sample.info, minOverlap = min.overlap)
-  # count
-  suppressWarnings(suppressMessages(library(parallel)))
-  dbaObj <- DiffBind::dba.count(dbaObj, bUseSummarizeOverlaps = use.summarizeOverlaps)
-  # remove blacklist region
-  if (!is.null(blacklist)) {
-    if (isTRUE(blacklist)) {
-      dbaObj <- DiffBind::dba.blacklist(dbaObj, blacklist = blacklist, greylist = FALSE)
-    } else if (blacklist %in% c(
-      "DBA_BLACKLIST_HG19", "DBA_BLACKLIST_HG38", "DBA_BLACKLIST_GRCH37",
-      "DBA_BLACKLIST_GRCH38", "DBA_BLACKLIST_MM9", "DBA_BLACKLIST_MM10",
-      "DBA_BLACKLIST_CE10", "DBA_BLACKLIST_CE11", "DBA_BLACKLIST_DM3", "DBA_BLACKLIST_DM6"
-    )) {
-      dbaObj <- DiffBind::dba.blacklist(dbaObj, blacklist = get(blacklist), greylist = FALSE)
-    } else {
-      stop("Please provide valid blacklist!")
+  if (count.matrix) {
+    # check columns
+    required.cols <- c("CHR", "START", "END")
+    if (!all(intersect(colnames(sample.info), required.cols) == required.cols)) {
+      stop("The metadata (count matrix) should contain CHR, START, and END columns!")
     }
-  }
-  # extract count
-  if (sub.control) {
-    dbaObj <- DiffBind::dba.count(dbaObj, peaks = NULL, score = DBA_SCORE_READS_MINUS)
+    count.df <- sample.info
   } else {
-    dbaObj <- DiffBind::dba.count(dbaObj, peaks = NULL, score = DBA_SCORE_READS)
+    # check columns
+    required.cols <- c("SampleID", "bamReads", "bamControl", "Peaks", "PeakCaller")
+    if (!all(intersect(colnames(sample.info), required.cols) == required.cols)) {
+      stop("The metadata should contain SampleID, bamReads, bamControl, Peaks, PeakCaller columns!")
+    }
+    # create dba object
+    dbaObj <- DiffBind::dba(sampleSheet = sample.info, minOverlap = min.overlap)
+    # count
+    suppressWarnings(suppressMessages(library(parallel)))
+    dbaObj <- DiffBind::dba.count(dbaObj,
+      minOverlap = min.overlap, filter = filter,
+      bUseSummarizeOverlaps = use.summarizeOverlaps, summits = summits
+    )
+    # remove blacklist region
+    if (!is.null(blacklist)) {
+      if (isTRUE(blacklist)) {
+        dbaObj <- DiffBind::dba.blacklist(dbaObj, blacklist = blacklist, greylist = FALSE)
+      } else if (blacklist %in% c(
+        "DBA_BLACKLIST_HG19", "DBA_BLACKLIST_HG38", "DBA_BLACKLIST_GRCH37",
+        "DBA_BLACKLIST_GRCH38", "DBA_BLACKLIST_MM9", "DBA_BLACKLIST_MM10",
+        "DBA_BLACKLIST_CE10", "DBA_BLACKLIST_CE11", "DBA_BLACKLIST_DM3", "DBA_BLACKLIST_DM6"
+      )) {
+        dbaObj <- DiffBind::dba.blacklist(dbaObj, blacklist = get(blacklist), greylist = FALSE)
+      } else {
+        stop("Please provide valid blacklist!")
+      }
+    }
+    # extract count
+    if (sub.control) {
+      dbaObj <- DiffBind::dba.count(dbaObj,
+        peaks = NULL,
+        score = DBA_SCORE_READS_MINUS,
+        minOverlap = min.overlap, filter = filter,
+        bUseSummarizeOverlaps = use.summarizeOverlaps, summits = summits
+      )
+    } else {
+      dbaObj <- DiffBind::dba.count(dbaObj,
+        peaks = NULL,
+        score = DBA_SCORE_READS,
+        minOverlap = min.overlap, filter = filter,
+        bUseSummarizeOverlaps = use.summarizeOverlaps, summits = summits
+      )
+    }
+    count.df <- DiffBind::dba.peakset(dbaObj, bRetrieve = TRUE, minOverlap = min.overlap, DataType = DBA_DATA_FRAME)
   }
-  count.df <- DiffBind::dba.peakset(dbaObj, bRetrieve = TRUE, DataType = DBA_DATA_FRAME)
   # prepare peak dataframe for peak annotation
   peak.df <- count.df[c("CHR", "START", "END")]
   colnames(peak.df) <- c("chr", "start", "stop")
@@ -138,21 +168,25 @@ PeakMatrix <- function(meta.file, min.overlap = 2, submits = 200, use.summarizeO
     sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE
   )
   # create metadata
-  if (!is.null(used.cols)) {
-    valid.used.cols <- intersect(colnames(sample.info), used.cols)
-    if (!all(valid.used.cols == used.cols)) {
-      stop("The metadata does not contain all columns specified by used.cols!")
-    }
-    sample.meta <- sample.info[used.cols]
-    rownames(sample.meta) <- sample.meta[, 1]
-    sample.meta[, 1] <- NULL
-    # write sample meta
-    write.table(
-      x = sample.meta, file = file.path(out.folder, "peak_metadata.txt"),
-      sep = "\t", quote = FALSE, row.names = TRUE, col.names = TRUE
-    )
-    return(list(count = count.df, meta = sample.meta, peak_anno = peak.anno$df))
-  } else {
+  if (count.matrix) {
     return(list(count = count.df, peak_anno = peak.anno$df))
+  } else {
+    if (!is.null(used.cols)) {
+      valid.used.cols <- intersect(colnames(sample.info), used.cols)
+      if (!all(valid.used.cols == used.cols)) {
+        stop("The metadata does not contain all columns specified by used.cols!")
+      }
+      sample.meta <- sample.info[used.cols]
+      rownames(sample.meta) <- sample.meta[, 1]
+      sample.meta[, 1] <- NULL
+      # write sample meta
+      write.table(
+        x = sample.meta, file = file.path(out.folder, "peak_metadata.txt"),
+        sep = "\t", quote = FALSE, row.names = TRUE, col.names = TRUE
+      )
+      return(list(count = count.df, meta = sample.meta, peak_anno = peak.anno$df))
+    } else {
+      return(list(count = count.df, peak_anno = peak.anno$df))
+    }
   }
 }

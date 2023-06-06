@@ -11,7 +11,7 @@
 #' For edgeR results, can be chosen from FDR, PValue. Default: padj.
 #' @param signif.threshold Significance threshold for RNA-seq to get differentially expressed genes. Default: 0.05.
 #' @param l2fc.threshold Log2 fold change threshold for RNA-seq to get differentially expressed genes. Default: 1.
-#' @param label.key Which column to use as label. Default: NULL (use rownames of \code{deres}).
+#' @param label.key Which column to use as label. Default: NULL (use rownames of \code{de.res}).
 #' @param peak.signif Significance criterion for peak-associated results. For DESeq2 results, can be chosen from padj, pvalue.
 #' For edgeR results, can be chosen from FDR, PValue. Default: padj.
 #' @param peak.signif.threshold Significance threshold for peak-associated results to get differentially accessible/binding peaks. Default: 0.05.

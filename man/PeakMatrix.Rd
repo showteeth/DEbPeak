@@ -6,9 +6,11 @@
 \usage{
 PeakMatrix(
   meta.file,
+  count.matrix = FALSE,
   min.overlap = 2,
-  submits = 200,
+  summits = 200,
   use.summarizeOverlaps = TRUE,
+  filter = 1,
   blacklist = TRUE,
   sub.control = TRUE,
   used.cols = c("SampleID", "Condition"),
@@ -24,27 +26,35 @@ PeakMatrix(
 )
 }
 \arguments{
-\item{meta.file}{Sample metadata contains peak related information (eg: sample, peakPath, bamPath, condition).}
+\item{meta.file}{Sample metadata contains peak related information (eg: sample, peakPath, bamPath, condition) or
+peak count matrix file. Should be tab-separated.}
+
+\item{count.matrix}{Logical value, whether the \code{meta.file} is a count matrix file. Default: FALSE.}
 
 \item{min.overlap}{Only include peaks in at least this many peaksets in the main binding matrix. Default: 2.
-Parameter of \code{\link{dba}}.}
+Parameter of \code{\link{dba}}. Used when \code{count.matrix} is FALSE.}
 
-\item{submits}{If the value is greater than zero, all consensus peaks will be re-centered around a consensus summit,
+\item{summits}{If the value is greater than zero, all consensus peaks will be re-centered around a consensus summit,
 with the value of summits indicating how many base pairs to include upstream and downstream of the
 summit (so all consensus peaks will be of the same width, namely \code{2 * summits + 1}).
-Default: 200. Parameter of \code{\link{dba.count}}.}
+Default: 200. Parameter of \code{\link{dba.count}}. Used when \code{count.matrix} is FALSE.}
 
 \item{use.summarizeOverlaps}{Logical value, indicating that \code{\link{summarizeOverlaps}} should be used for counting
-instead of the built-in counting code. Default: TRUE. Parameter of \code{\link{dba.count}}.}
+instead of the built-in counting code. Default: TRUE. Parameter of \code{\link{dba.count}}. Used when \code{count.matrix} is FALSE.}
+
+\item{filter}{Filter intervals with low read counts based on RPKM values. Default: 1.
+Parameter of \code{\link{dba.count}}. Used when \code{count.matrix} is FALSE.}
 
 \item{blacklist}{Species-specific abnormal regions to be removed. Choose from "DBA_BLACKLIST_HG19", "DBA_BLACKLIST_HG38", "DBA_BLACKLIST_GRCH37",
 "DBA_BLACKLIST_GRCH38", "DBA_BLACKLIST_MM9", "DBA_BLACKLIST_MM10", "DBA_BLACKLIST_CE10", "DBA_BLACKLIST_CE11", "DBA_BLACKLIST_DM3", "DBA_BLACKLIST_DM6",
-TRUE (auto-detection genome), a GRanges object containing the blacklisted regions. Default:TRUE. Parameter of \code{\link{dba.blacklist}}.}
+TRUE (auto-detection genome), a GRanges object containing the blacklisted regions. Default:TRUE.
+Parameter of \code{\link{dba.blacklist}}. Used when \code{count.matrix} is FALSE.}
 
 \item{sub.control}{Logical value, whether Control read counts are subtracted for each site in each sample.
-Default: TRUE. Parameter of \code{\link{dba.count}}.}
+Default: TRUE. Parameter of \code{\link{dba.count}}. Used when \code{count.matrix} is FALSE.}
 
-\item{used.cols}{Used columns used to create sample metadata. If specified, sampleID should be placed first. Default: c("SampleID", "Condition").}
+\item{used.cols}{Used columns used to create sample metadata. If specified, sampleID should be placed first.
+Default: c("SampleID", "Condition"). Used when \code{count.matrix} is FALSE.}
 
 \item{out.folder}{Output folder to save created count matrix and sample metadata. Default: NULL (current working directory).}
 
@@ -63,7 +73,8 @@ to generate count matrix and peak files. Default: "UCSC".}
 \item{...}{Parameters for \code{\link{annotatePeak}}.}
 }
 \value{
-A dataframe contains count matrix, peak annotation and sample metadata (if provided \code{used.cols}).
+A dataframe contains count matrix, peak annotation and sample metadata (if provided \code{used.cols}). And
+all save the corresponding results to consensus_peak_matrix.txt, consensus_peak_anno.txt and peak_metadata.txt files.
 }
 \description{
 Prepare Count Matrix and Sample Metadata for Peak-related data.
@@ -72,6 +83,7 @@ Prepare Count Matrix and Sample Metadata for Peak-related data.
 # library(DEbPeak)
 # library(DESeq2)
 # metadata file contains peak and bam information
+# beaware of the PeakCaller type (determine the score column)
 # meta.file = 'path/to/metadata'
 # PeakMatrix(meta.file = meta.file, species = "Human",  seq.style = "UCSC",
 #            up.dist = 20000, down.dist = 20000)

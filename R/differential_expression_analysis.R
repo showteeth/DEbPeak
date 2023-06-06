@@ -215,14 +215,25 @@ ConductDESeq2 <- function(counts.folder, count.matrix.file = NULL, meta.file, gr
   pca.results$plot
   grDevices::dev.off()
   pca.info <- pca.results$pca
-  grDevices::pdf("PCA_screen_plot.pdf", width = 10, height = 6)
+  # check loading PC
+  total.pcs <- ncol(pca.info$rotated)
+  if (length(loding.pc) > total.pcs) {
+    message("Total PCs ", total.pcs, " is smaller than loding.pc you provided, use ", total.pcs)
+    loding.pc <- 1:total.pcs
+  }
+  # check loading PC for enrichment analysis
+  if (length(enrich.loading.pc) > total.pcs) {
+    message("Total PCs ", total.pcs, " is smaller than loding.pc you provided, use ", total.pcs)
+    enrich.loading.pc <- 1:total.pcs
+  }
+  grDevices::pdf("PCA_scree_plot.pdf", width = 10, height = 6)
   PCAtools::screeplot(pca.info, axisLabSize = 18, titleLabSize = 22)
   grDevices::dev.off()
   grDevices::pdf("PCA_biplot.pdf", width = 8, height = 8)
   PCAtools::biplot(pca.info, x = pca.x, y = pca.y, showLoadings = TRUE, labSize = 5, pointSize = 5, sizeLoadingsNames = 5)
   grDevices::dev.off()
   grDevices::pdf("PCA_pairs_plot.pdf", width = 8, height = 8)
-  PCAtools::pairsplot(pca.info, colby = group.key)
+  PCAtools::pairsplot(pca.info, colby = group.key, components = paste0("PC", loding.pc))
   grDevices::dev.off()
   grDevices::pdf("PCA_loading_bar.pdf", width = 10, height = 6)
   LoadingPlot(pca = pca.info, type = "bar", pc = loding.pc, gene.num = loading.gene.num)

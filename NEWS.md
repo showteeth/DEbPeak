@@ -1,3 +1,16 @@
+# DEbPeak 1.2.0
+## New features
+* Added `ProcessEnhancer` to get near genes of differential peaks.
+
+## Minor changes
+* Fixed bug in `ConductFE` when no KEGG enrichment results.
+* Fixed bug in `ConductDESeq2` when total PCs number is smaller than 5.
+* Fixed bug in `AnnoPeak` when using gtf file.
+* Fixed bus in `PeakMatrix`.
+* Added `count.matrix` parameter in `PeakMatrix` to support custom count matrix.
+
+-------------
+
 # DEbPeak 1.1.0
 ## New features
 * Added `ParseGEO` to parse data from GEO.

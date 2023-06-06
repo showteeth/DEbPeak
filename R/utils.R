@@ -227,3 +227,7 @@ NormalizedCount <- function(deobj, gtf.file = NULL, gene.length.file = NULL,
   }
   return(normalized.matrix)
 }
+
+
+
+

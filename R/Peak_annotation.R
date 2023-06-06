@@ -217,24 +217,27 @@ AnnoPeak <- function(peak.df, species = c(
   if (!is.null(gtf.file)) {
     message("Create txdb from gtf file!")
     txdb <- GenomicFeatures::makeTxDbFromGFF(gtf.file)
+    # annotation
+    txdb.obj <- txdb
   } else {
     txdb <- spe.anno[["txdb"]]
+    # library txdb
+    if (!require(txdb, quietly = TRUE, character.only = TRUE)) {
+      message("Install txdb: ", txdb)
+      BiocManager::install(txdb)
+    }
+    suppressWarnings(suppressMessages(library(txdb, character.only = TRUE)))
+    # annotation
+    txdb.obj <- get(txdb)
   }
   # library orgdb
   if (!require(org.db, quietly = TRUE, character.only = TRUE)) {
     message("Install org.db: ", org.db)
     BiocManager::install(org.db)
   }
-  # library txdb
-  if (!require(txdb, quietly = TRUE, character.only = TRUE)) {
-    message("Install txdb: ", txdb)
-    BiocManager::install(txdb)
-  }
   suppressWarnings(suppressMessages(library(org.db, character.only = TRUE)))
-  suppressWarnings(suppressMessages(library(txdb, character.only = TRUE)))
 
-  # annotation
-  txdb.obj <- get(txdb)
+  # process sequence level
   if (seq.style != "None") {
     GenomeInfoDb::seqlevelsStyle(txdb.obj) <- seq.style
     peak.seqs <- unique(as.character(peak.df$chr))

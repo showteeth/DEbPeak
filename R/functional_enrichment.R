@@ -22,7 +22,9 @@ KEGG_func <- function(pvalue, qvalue, entrez_id, organism, org_db, padj.method) 
     qvalueCutoff = qvalue,
     pAdjustMethod = padj.method
   )
-  enrich.kegg <- setReadable(enrich.kegg, OrgDb = org_db, keyType = "ENTREZID")
+  if (!is.null(enrich.kegg)) {
+    enrich.kegg <- setReadable(enrich.kegg, OrgDb = org_db, keyType = "ENTREZID")
+  }
   return(enrich.kegg)
 }
 

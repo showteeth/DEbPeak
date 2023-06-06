@@ -1,6 +1,6 @@
 Package: DEbPeak
 Title: DEbPeak - Analyze and integrate multi-omics to unravel the regulation of gene expression
-Version: 1.1.0
+Version: 1.2.0
 Authors@R: 
     person(given = "Yabing",
            family = "Song",
@@ -68,7 +68,9 @@ Imports:
     GEOquery,
     Biobase,
     tools,
-    openxlsx
+    openxlsx,
+    IRanges,
+    BiocParallel
 Suggests: 
     rmarkdown,
     knitr,
