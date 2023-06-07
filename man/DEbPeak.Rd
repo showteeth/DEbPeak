@@ -18,7 +18,14 @@ DEbPeak(
   peak.signif.threshold = 0.05,
   peak.l2fc.threshold = 1,
   merge.key = c("geneId", "ENSEMBL", "SYMBOL"),
-  org.db = "org.Mm.eg.db"
+  species = c("Human", "Mouse", "Rat", "Fly", "Arabidopsis", "Yeast", "Zebrafish",
+    "Worm", "Bovine", "Pig", "Chicken", "Rhesus", "Canine", "Xenopus", "Anopheles",
+    "Chimp", "E coli strain Sakai", "Myxococcus xanthus DK 1622"),
+  enhancer = TRUE,
+  seq.style = "Ensembl",
+  gtf.file = NULL,
+  dis.threshold = 250000,
+  n.cores = 1
 )
 }
 \arguments{
@@ -51,8 +58,20 @@ For edgeR results, can be chosen from FDR, PValue. Default: padj.}
 
 \item{merge.key}{The columns used for merging, chosen from geneId (ENTREZID), ENSEMBL, SYMBOL. Default: geneId.}
 
-\item{org.db}{Organism database. Used when \code{peak.mode} is diff and \code{merge.key} is not "SYMBOL".
-For peak-associated differential expression results, only support merging on "SYMBOL". Default: org.Mm.eg.db.}
+\item{species}{Species used, chosen from "Human","Mouse","Rat","Fly","Arabidopsis",
+"Yeast","Zebrafish","Worm","Bovine","Pig","Chicken","Rhesus",
+"Canine","Xenopus","Anopheles","Chimp","E coli strain Sakai","Myxococcus xanthus DK 1622". Default: "Human".}
+
+\item{enhancer}{Logical value. Whether the data is enhancer-related data. Default: TRUE.}
+
+\item{seq.style}{The style of sequence, chosen from UCSC, NCBI, Ensembl, None. This should be compatible with the genome and gtf file you used
+to generate count matrix and peak files. Default: "UCSC".}
+
+\item{gtf.file}{GTF file used to create TxDb object. Useful when specie you used is not available in \code{species}. Default: NULL.}
+
+\item{dis.threshold}{Distance threshold. Default: 250000.}
+
+\item{n.cores}{The number of cores to be used for this job. Default:1.}
 }
 \value{
 Dataframe contains integrated results. The results will contain five categories: UPbPeak, DOWNbPeak, UP, DOWN, Peak when \code{peak.mode} is consensus
@@ -121,6 +140,6 @@ rna.diff <- read.table(file = rna.diff.file, header = TRUE, sep = "\t")
 # integrate differential expression results of RNA-seq and ATAC-seq
 debatac.res <- DEbPeak(
   de.res = rna.diff, peak.res = dds.peak.results.ordered, peak.mode = "diff", peak.anno.key = "All", l2fc.threshold = 0,
-  peak.l2fc.threshold = 0, org.db = "org.Mm.eg.db", merge.key = "SYMBOL"
+  peak.l2fc.threshold = 0, species = "Mouse", merge.key = "SYMBOL"
 )
 }

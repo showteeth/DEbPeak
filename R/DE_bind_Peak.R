@@ -17,8 +17,15 @@
 #' @param peak.signif.threshold Significance threshold for peak-associated results to get differentially accessible/binding peaks. Default: 0.05.
 #' @param peak.l2fc.threshold Log2 fold change threshold for peak-associated results to get differentially accessible/binding peaks. Default: 1.
 #' @param merge.key The columns used for merging, chosen from geneId (ENTREZID), ENSEMBL, SYMBOL. Default: geneId.
-#' @param org.db Organism database. Used when \code{peak.mode} is diff and \code{merge.key} is not "SYMBOL".
-#' For peak-associated differential expression results, only support merging on "SYMBOL". Default: org.Mm.eg.db.
+#' @param species Species used, chosen from "Human","Mouse","Rat","Fly","Arabidopsis",
+#' "Yeast","Zebrafish","Worm","Bovine","Pig","Chicken","Rhesus",
+#' "Canine","Xenopus","Anopheles","Chimp","E coli strain Sakai","Myxococcus xanthus DK 1622". Default: "Human".
+#' @param seq.style The style of sequence, chosen from UCSC, NCBI, Ensembl, None. This should be compatible with the genome and gtf file you used
+#' to generate count matrix and peak files. Default: "UCSC".
+#' @param enhancer Logical value. Whether the data is enhancer-related data. Default: TRUE.
+#' @param gtf.file GTF file used to create TxDb object. Useful when specie you used is not available in \code{species}. Default: NULL.
+#' @param dis.threshold Distance threshold. Default: 250000.
+#' @param n.cores The number of cores to be used for this job. Default:1.
 #'
 #' @return Dataframe contains integrated results. The results will contain five categories: UPbPeak, DOWNbPeak, UP, DOWN, Peak when \code{peak.mode} is consensus
 #' and Down_Up, Up_Up, Down_Down, Up_Down when \code{peak.mode} is diff. RNA in front.
@@ -26,10 +33,17 @@
 #' @importFrom magrittr %>%
 #' @importFrom dplyr filter select distinct mutate case_when mutate_at vars arrange desc
 #' @importFrom purrr set_names
-#' @importFrom tidyr drop_na
-#' @importFrom tibble rownames_to_column column_to_rownames
 #' @importFrom clusterProfiler bitr
 #' @importFrom rlang .data
+#' @importFrom GenomicFeatures makeTxDbFromGFF genes
+#' @importFrom BiocManager install
+#' @importFrom tibble rownames_to_column column_to_rownames
+#' @importFrom tidyr drop_na separate separate_rows
+#' @importFrom GenomeInfoDb seqlevels seqlevelsStyle keepSeqlevels seqnames
+#' @importFrom GenomicRanges makeGRangesFromDataFrame
+#' @importFrom IRanges distance
+#' @importFrom BiocParallel register MulticoreParam bplapply
+#' @importFrom AnnotationDbi keytypes keys
 #'
 #' @examples
 #' library(DEbPeak)
@@ -91,18 +105,32 @@
 #' # integrate differential expression results of RNA-seq and ATAC-seq
 #' debatac.res <- DEbPeak(
 #'   de.res = rna.diff, peak.res = dds.peak.results.ordered, peak.mode = "diff", peak.anno.key = "All", l2fc.threshold = 0,
-#'   peak.l2fc.threshold = 0, org.db = "org.Mm.eg.db", merge.key = "SYMBOL"
+#'   peak.l2fc.threshold = 0, species = "Mouse", merge.key = "SYMBOL"
 #' )
 DEbPeak <- function(de.res, peak.res, peak.mode = c("consensus", "diff"),
                     peak.anno.key = c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic", "All"),
                     signif = "padj", signif.threshold = 0.05, l2fc.threshold = 1, label.key = NULL,
                     peak.signif = "padj", peak.signif.threshold = 0.05, peak.l2fc.threshold = 1,
-                    merge.key = c("geneId", "ENSEMBL", "SYMBOL"), org.db = "org.Mm.eg.db") {
+                    merge.key = c("geneId", "ENSEMBL", "SYMBOL"), species = c(
+                      "Human", "Mouse", "Rat", "Fly", "Arabidopsis", "Yeast", "Zebrafish", "Worm", "Bovine", "Pig", "Chicken", "Rhesus",
+                      "Canine", "Xenopus", "Anopheles", "Chimp", "E coli strain Sakai", "Myxococcus xanthus DK 1622"
+                    ), enhancer = TRUE, seq.style = "Ensembl", gtf.file = NULL, dis.threshold = 250000, n.cores = 1) {
 
   # check parameters
   peak.mode <- match.arg(arg = peak.mode)
   peak.anno.key <- match.arg(arg = peak.anno.key)
   merge.key <- match.arg(arg = merge.key)
+  species <- match.arg(arg = species)
+
+  # get org.db
+  spe.anno <- GetSpeciesAnno(species)
+  org.db <- spe.anno[["OrgDb"]]
+  # library orgdb
+  if (!require(org.db, quietly = TRUE, character.only = TRUE)) {
+    message("Install org.db: ", org.db)
+    BiocManager::install(org.db)
+  }
+  suppressWarnings(suppressMessages(library(org.db, character.only = TRUE)))
 
   if (peak.mode == "consensus") {
     # process RNA de results
@@ -171,26 +199,57 @@ DEbPeak <- function(de.res, peak.res, peak.mode = c("consensus", "diff"),
     }
     # remove gene version information
     de.df$Gene <- gsub(pattern = "\\.[0-9]*$", replacement = "", x = de.df$Gene)
-    # ID conversion for peak data
-    peak.res <- IDConversionPeak(deres = peak.res, org.db = org.db, sort.key = "log2FoldChange")
-    # prepare diff peak results
-    peak.de.df <- PrepareDEPlot(
-      deres = peak.res, signif = peak.signif, signif.threshold = peak.signif.threshold,
-      l2fc.threshold = peak.l2fc.threshold, label.key = "SYMBOL"
-    )
-    # filter with peak.anno.key
-    if (peak.anno.key == "All") {
-      peak.de.df <- peak.de.df
+    if (enhancer) {
+      peak.deg.df <- ProcessEnhancer(
+        de.res = all.enhancer.res, signif = peak.signif, signif.threshold = peak.signif.threshold,
+        l2fc.threshold = peak.l2fc.threshold, label.key = label.key, species = species,
+        n.cores = n.cores, seq.style = seq.style, gtf.file = gtf.file, dis.threshold = dis.threshold
+      )
+      peak.deg.df <- peak.deg.df %>% tibble::rownames_to_column(var = "Gene")
+      # seperate Near_gene and distance
+      peak.deg.df <- suppressWarnings(peak.deg.df %>%
+        tidyr::separate_rows(Near_Gene, sep = ", ") %>%
+        tidyr::separate(col = Near_Gene, into = c("Near_Gene", "Near_Distance"), sep = "\\|") %>%
+        as.data.frame())
+      # get gene type
+      peak.gene.type <- CheckGeneName(as.character(peak.deg.df$Near_Gene), org.db)
+      if (peak.gene.type != "SYMBOL") {
+        colnames(peak.deg.df) <- gsub(pattern = "^Gene", replacement = "GeneID", x = colnames(peak.deg.df))
+        colnames(peak.deg.df) <- gsub(pattern = "^Near_Gene", replacement = "Gene", x = colnames(peak.deg.df))
+        peak.deg.df <- IDConversion_internal(
+          de.df = peak.deg.df, gene.type = peak.gene.type,
+          org.db = org.db, sort.key = "log2FoldChange"
+        )
+        colnames(peak.deg.df) <- gsub(pattern = "^Gene$", replacement = peak.gene.type, x = colnames(peak.deg.df))
+        colnames(peak.deg.df) <- gsub(pattern = "^GeneID$", replacement = "Gene", x = colnames(peak.deg.df))
+      } else {
+        colnames(peak.deg.df) <- gsub(pattern = "^Near_Gene$", replacement = "SYMBOL", x = colnames(peak.deg.df))
+      }
+      # select used columns
+      peak.deg.df <- peak.deg.df[c("Gene", "log2FoldChange", "abundance", "signif", "SYMBOL", "regulation", "Near_Distance")]
+      colnames(peak.deg.df) <- gsub(pattern = "^", replacement = "Peak_", x = colnames(peak.deg.df))
     } else {
-      peak.de.df$PeakRegion <- gsub(pattern = ".*\\|.*\\|(.*)", replacement = "\\1", x = peak.de.df$Gene)
-      anno.key.named <- c("P", "5U", "3U", "E", "I", "D", "DI")
-      names(anno.key.named) <- c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic")
-      peak.de.df <- peak.de.df[peak.de.df$PeakRegion == anno.key.named[peak.anno.key], ]
-      peak.de.df$PeakRegion <- NULL
+      # ID conversion for peak data
+      peak.res <- IDConversionPeak(deres = peak.res, org.db = org.db, sort.key = "log2FoldChange")
+      # prepare diff peak results
+      peak.de.df <- PrepareDEPlot(
+        deres = peak.res, signif = peak.signif, signif.threshold = peak.signif.threshold,
+        l2fc.threshold = peak.l2fc.threshold, label.key = "SYMBOL"
+      )
+      # filter with peak.anno.key
+      if (peak.anno.key == "All") {
+        peak.de.df <- peak.de.df
+      } else {
+        peak.de.df$PeakRegion <- gsub(pattern = ".*\\|.*\\|(.*)", replacement = "\\1", x = peak.de.df$Gene)
+        anno.key.named <- c("P", "5U", "3U", "E", "I", "D", "DI")
+        names(anno.key.named) <- c("Promoter", "5' UTR", "3' UTR", "Exon", "Intron", "Downstream", "Distal Intergenic")
+        peak.de.df <- peak.de.df[peak.de.df$PeakRegion == anno.key.named[peak.anno.key], ]
+        peak.de.df$PeakRegion <- NULL
+      }
+      # extract de results
+      peak.deg.df <- peak.de.df %>% dplyr::filter(regulation != "Not_regulated")
+      colnames(peak.deg.df) <- gsub(pattern = "^", replacement = "Peak_", x = colnames(peak.deg.df))
     }
-    # extract de results
-    peak.deg.df <- peak.de.df %>% dplyr::filter(regulation != "Not_regulated")
-    colnames(peak.deg.df) <- gsub(pattern = "^", replacement = "Peak_", x = colnames(peak.deg.df))
     # make sure Gene column are SYMBOL
     if (merge.key != "SYMBOL") {
       if (merge.key == "geneId") {
@@ -228,6 +287,12 @@ DEbPeak <- function(de.res, peak.res, peak.mode = c("consensus", "diff"),
       "RNAUp", "RNADown", "PeakUp", "PeakDown"
     ))
     colnames(de.peak) <- gsub(pattern = "^RNA_geneId$", replacement = "geneId", x = colnames(de.peak))
+  }
+  # arrange distance
+  if (enhancer) {
+    de.peak <- de.peak %>%
+      dplyr::group_by(Peak_SYMBOL) %>%
+      dplyr::arrange(Peak_Near_Distance)
   }
   return(de.peak)
 }

@@ -70,7 +70,8 @@ Imports:
     tools,
     openxlsx,
     IRanges,
-    BiocParallel
+    BiocParallel,
+    AnnotationDbi
 Suggests: 
     rmarkdown,
     knitr,

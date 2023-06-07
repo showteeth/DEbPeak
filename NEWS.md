@@ -1,6 +1,7 @@
 # DEbPeak 1.2.0
 ## New features
 * Added `ProcessEnhancer` to get near genes of differential peaks.
+* Updated `DEbPeak` to support enhancer-related data (use `species` instead of `org.db`. add `enhancer`, `seq.style`, `gtf.file`, `dis.threshold` and `n.cores`).
 
 ## Minor changes
 * Fixed bug in `ConductFE` when no KEGG enrichment results.

@@ -134,6 +134,7 @@ Region2Gene <- function(x.df, gene.gr, dis.threshold) {
   if (length(valid.dis) > 0) {
     x.dis <- gene.df[valid.dis, ]
     x.dis$dist <- dis[valid.dis]
+    x.dis$gene_id <- paste(x.dis$gene_id, x.dis$dist, sep = "|")
     x.df$Near_Gene <- paste0(x.dis$gene_id, collapse = ", ")
   } else {
     x.df$Near_Gene <- ""
