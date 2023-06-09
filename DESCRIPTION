@@ -71,7 +71,9 @@ Imports:
     openxlsx,
     IRanges,
     BiocParallel,
-    AnnotationDbi
+    AnnotationDbi,
+    igraph,
+    ggnetwork
 Suggests: 
     rmarkdown,
     knitr,

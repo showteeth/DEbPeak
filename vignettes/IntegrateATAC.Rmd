@@ -95,7 +95,7 @@ PeakAnnoPie(atac.peak.anno$anno.obj)
 In this step, we will integrate ATAC-seq and RNA-seq to explore the role of chromatin structure of promoter region in regulating target gene expression.
 ### Integrate
 ```{r debatac_integrate}
-debatac.res = DEbPeak(de.res = debatac.dds.results.ordered, peak.res = atac.peak.anno.df, peak.anno.key = "Promoter", merge.key="SYMBOL")
+debatac.res = DEbPeak(de.res = debatac.dds.results.ordered, peak.res = atac.peak.anno.df, peak.anno.key = "Promoter", merge.key="SYMBOL", species = "Mouse")
 head(debatac.res)
 ```
 

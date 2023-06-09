@@ -36,6 +36,8 @@ navbar:
         href: articles/MotifEnrichment.html
       - text: Integrate RNA-seq with ChIP-seq (consensus peak)
         href: articles/IntegrateChIP.html
+      - text: Integrate RNA-seq with ChIP-seq (differential analysis)
+        href: articles/IntegrateChIPDE.html
       - text: Integrate RNA-seq with ATAC-seq (consensus peak)
         href: articles/IntegrateATAC.html
       - text: Integrate RNA-seq with ATAC-seq (differential analysis)

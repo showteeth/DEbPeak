@@ -142,6 +142,9 @@
     <loc>https://showteeth.github.io/DEbPeak//reference/PlotDEbPeak.html</loc>
   </url>
   <url>
+    <loc>https://showteeth.github.io/DEbPeak//reference/ProcessEnhancer.html</loc>
+  </url>
+  <url>
     <loc>https://showteeth.github.io/DEbPeak//reference/QCPCA.html</loc>
   </url>
   <url>
@@ -185,6 +188,9 @@
   </url>
   <url>
     <loc>https://showteeth.github.io/DEbPeak//articles/IntegrateChIPATAC.html</loc>
+  </url>
+  <url>
+    <loc>https://showteeth.github.io/DEbPeak//articles/IntegrateChIPDE.html</loc>
   </url>
   <url>
     <loc>https://showteeth.github.io/DEbPeak//articles/MotifEnrichment.html</loc>

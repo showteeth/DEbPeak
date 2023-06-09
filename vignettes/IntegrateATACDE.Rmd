@@ -9,9 +9,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-[Eukaryotic chromatin is tightly packaged into nucleosomes, and the positioning of nucleosomes can regulate gene expression by changing the in vivo availability of binding sites to transcription factors (TFs)](https://epigeneticsandchromatin.biomedcentral.com/articles/10.1186/1756-8935-7-33). Assay of Transposase Accessible Chromatin sequencing (ATAC-seq) is a technique used to assess genome-wide chromatin accessibility. Thus, combining ATAC-seq with RNA-seq can be used to understanding the role of chromatin structure in regulating gene expression.
+[Eukaryotic chromatin is tightly packaged into nucleosomes, and the positioning of nucleosomes can regulate gene expression by changing the in vivo availability of binding sites to transcription factors (TFs)](https://epigeneticsandchromatin.biomedcentral.com/articles/10.1186/1756-8935-7-33). Assay of Transposase Accessible Chromatin sequencing (ATAC-seq) is a technique used to assess genome-wide chromatin accessibility. It is widely used to identify cis-regulatory regions (e.g. promoters and enhancers). Thus, combining ATAC-seq with RNA-seq can be used to understanding the role of cis-regulatory regions in regulating gene expression.
 
 Different from those in [Integrate RNA-seq with ATAC-seq (intersection)](https://showteeth.github.io/DEbPeak/articles/IntegrateATAC.html), we will integrate RNA-seq and ATAC-seq based on differential expression analysis results. In detail, **integrating differentially expressed genes with differentially accessible peaks**.
+
+**In this vignette, we will focus on promoter regions.** For the enhancer regions, we will talk about in [Integrate RNA-seq with ChIP-seq (differential analysis)](https://showteeth.github.io/DEbPeak/articles/IntegrateChIPDE.html).
 
 <hr />
 
@@ -33,14 +35,48 @@ suppressWarnings(suppressMessages(library(DEbPeak)))
 
 <hr />
 
-## Differential Expression Analysis 
+## Prepare ATAC-seq counts
+The following is an example with count matrix, if you only have bam files and peak files, please refer to [Integrate RNA-seq with ChIP-seq (differential analysis)](https://showteeth.github.io/DEbPeak/articles/IntegrateChIPDE.html).
+
+Format the count matrix:
+```{r debatac_atac_prepare, eval=FALSE}
+# the GSE149836_combUnionReadsWithLabels.txt is downloaded from https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE149836
+atac.counts = read.table(file = "GSE149836_combUnionReadsWithLabels.txt", sep = "\t", header = T)
+# the first three columns should be "CHR", "START", "END"
+colnames(atac.counts) = c("CHR", "START", "END", "Fli1KO_1","Fli1KO_2","Fli1KO_3","Fli1KO_4","WT_1","WT_2")
+# save file
+write.table(x = atac.counts, file = "RA_ATAC_counts_raw.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+```
+
+Annotate the count matrix:
+```{r debatac_atac_prepare2, eval=FALSE}
+# this will save count matrix and annotated results to consensus_peak_matrix.txt and consensus_peak_anno.txt
+PeakMatrix(meta.file = "RA_ATAC_counts_raw.txt",
+           count.matrix = TRUE, species = "Mouse",  seq.style = "UCSC",
+           up.dist = 2000, down.dist = 2000)
+```
+
+Prepare metadata:
+```{r debatac_atac_prepare3, eval=FALSE}
+atac.meta = data.frame(SampleName = c("Fli1KO_1","Fli1KO_2","Fli1KO_3","Fli1KO_4","WT_1","WT_2"),
+                       condition = c(rep("KO", 4), rep("WT", 2))) %>%
+  tibble::column_to_rownames(var = "SampleName")
+# save file
+write.table(x = atac.meta, file = "RA_ATAC_mata_raw.txt", sep = "\t", quote = FALSE, row.names = TRUE)
+```
+
+<hr />
+
+## Differential Analysis 
 
 To simplify the steps of obtaining differential expression analysis results, `DEbPeak` provides `ConductDESeq2` to perfrom all steps of differential expression analysis, including **quality control**, **principal component analysis**, **differential expression analysis** and **functional enrichment analysis**.
 
 ### ATAC-seq
-
+With count matrix, we will perform differential analysis:
 ```{r debatac_atac_da_peak}
+# RA_ATAC_count.txt is above consensus_peak_matrix.txt
 peak.matrix.file <- system.file("extdata", "RA_ATAC_count.txt", package = "DEbPeak")
+# RA_ATAC_meta.txt is above RA_ATAC_mata_raw.txt
 peak.meta.file <- system.file("extdata", "RA_ATAC_meta.txt", package = "DEbPeak")
 ConductDESeq2(count.matrix.file = peak.matrix.file, meta.file = peak.meta.file, data.type = "ATAC",
               gene.type = "SYMBOL", outlier.detection = F, min.count = 0,
@@ -75,12 +111,12 @@ rna.diff <- read.table(file = rna.diff.file, header = TRUE, sep = "\t")
 
 ## Integrate ATAC-seq and RNA-seq
 
-In this step, we will integrate ATAC-seq and RNA-seq to explore the role of chromatin structure of promoter region in regulating target gene expression.
+In this step, we will integrate ATAC-seq and RNA-seq to explore the role of chromatin structure of **promoter region** in regulating target gene expression.
 
 ### Integrate
 ```{r debatac_integrate}
-debatac.res <- DEbPeak(de.res = rna.diff, peak.res = dds.peak.results.ordered, peak.mode = "diff", peak.anno.key = "All",
-                       l2fc.threshold = 0, peak.l2fc.threshold = 0, org.db = "org.Mm.eg.db", merge.key = "SYMBOL")
+debatac.res <- DEbPeak(de.res = rna.diff, peak.res = dds.peak.results.ordered, peak.mode = "diff", peak.anno.key = "Promoter",
+                       l2fc.threshold = 0, peak.l2fc.threshold = 0, species = "Mouse", merge.key = "SYMBOL")
 head(debatac.res)
 ```
 

@@ -1,0 +1,9 @@
+condition
+SHAM_rep1	SHAM
+SHAM_rep2	SHAM
+SHAM_rep3	SHAM
+SHAM_rep4	SHAM
+SNL_rep1	SNL
+SNL_rep2	SNL
+SNL_rep3	SNL
+SNL_rep4	SNL

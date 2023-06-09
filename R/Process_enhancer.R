@@ -18,6 +18,7 @@
 #' @return Dataframe contains differential peaks and their near genes.
 #' @export
 #' @importFrom GenomicFeatures makeTxDbFromGFF genes
+#' @importFrom magrittr %>%
 #' @importFrom BiocManager install
 #' @importFrom tibble rownames_to_column column_to_rownames
 #' @importFrom dplyr select mutate case_when mutate_at vars filter

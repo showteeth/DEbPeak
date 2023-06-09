@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DEbPeak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -123,6 +123,9 @@
     </li>
     <li>
       <a href="../articles/IntegrateChIP.html">Integrate RNA-seq with ChIP-seq (consensus peak)</a>
+    </li>
+    <li>
+      <a href="../articles/IntegrateChIPDE.html">Integrate RNA-seq with ChIP-seq (differential analysis)</a>
     </li>
     <li>
       <a href="../articles/IntegrateATAC.html">Integrate RNA-seq with ATAC-seq (consensus peak)</a>
@@ -273,8 +276,8 @@
 <span class='co'># use same file as example</span>
 <span class='va'>de.de</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DEbDE.html'>DEbDE</a></span><span class='op'>(</span>de1.res <span class='op'>=</span> <span class='va'>de1.res</span>, de2.res <span class='op'>=</span> <span class='va'>de2.res</span>, de1.l2fc.threshold <span class='op'>=</span> <span class='fl'>0.5</span>, de2.l2fc.threshold <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>Differential expression analysis with DESeq2!</span></div><div class='output co'>#&gt; <span class='message'>Differential expression analysis with DESeq2!</span></div><div class='input'><span class='va'>de.de.fe</span> <span class='op'>&lt;-</span> <span class='fu'>DEbDEFE</span><span class='op'>(</span>de.de <span class='op'>=</span> <span class='va'>de.de</span>, de.fe.key <span class='op'>=</span> <span class='st'>"Down_Down"</span>, gene.type <span class='op'>=</span> <span class='st'>"SYMBOL"</span>, go.type <span class='op'>=</span> <span class='st'>"BP"</span>, species <span class='op'>=</span> <span class='st'>"Mouse"</span>, save <span class='op'>=</span> <span class='cn'>F</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Convert SYMBOL to ENTREZID!</span></div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:1 mapping between keys and columns</span></div><div class='output co'>#&gt; <span class='warning'>Warning: 5.76% of input gene IDs are fail to map...</span></div><div class='output co'>#&gt; <span class='message'>conduct BP GO enrichment analysis.</span></div><div class='output co'>#&gt; <span class='message'>wrong orderBy parameter; set to default `orderBy = "x"`</span></div><div class='output co'>#&gt; <span class='message'>Scale for 'y' is already present. Adding another scale for 'y', which will</span>
-#&gt; <span class='message'>replace the existing scale.</span></div></pre>
+</div><div class='output co'>#&gt; <span class='message'>Convert SYMBOL to ENTREZID!</span></div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:1 mapping between keys and columns</span></div><div class='output co'>#&gt; <span class='warning'>Warning: 5.76% of input gene IDs are fail to map...</span></div><div class='output co'>#&gt; <span class='message'>conduct BP GO enrichment analysis.</span></div><div class='output co'>#&gt; <span class='message'>wrong orderBy parameter; set to default `orderBy = "x"`</span></div><div class='output co'>#&gt; <span class='message'>Scale for <span style='color: #00BB00;'>y</span><span> is already present.</span>
+#&gt; <span class='message'>Adding another scale for </span><span style='color: #00BB00;'>y</span><span>, which will replace the existing scale.</span></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

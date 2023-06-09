@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DEbPeak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -123,6 +123,9 @@
     </li>
     <li>
       <a href="../articles/IntegrateChIP.html">Integrate RNA-seq with ChIP-seq (consensus peak)</a>
+    </li>
+    <li>
+      <a href="../articles/IntegrateChIPDE.html">Integrate RNA-seq with ChIP-seq (differential analysis)</a>
     </li>
     <li>
       <a href="../articles/IntegrateATAC.html">Integrate RNA-seq with ATAC-seq (consensus peak)</a>
@@ -176,9 +179,11 @@
 
     <pre class="usage"><span class='fu'>PeakMatrix</span><span class='op'>(</span>
   <span class='va'>meta.file</span>,
+  count.matrix <span class='op'>=</span> <span class='cn'>FALSE</span>,
   min.overlap <span class='op'>=</span> <span class='fl'>2</span>,
-  submits <span class='op'>=</span> <span class='fl'>200</span>,
+  summits <span class='op'>=</span> <span class='fl'>200</span>,
   use.summarizeOverlaps <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  filter <span class='op'>=</span> <span class='fl'>1</span>,
   blacklist <span class='op'>=</span> <span class='cn'>TRUE</span>,
   sub.control <span class='op'>=</span> <span class='cn'>TRUE</span>,
   used.cols <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"SampleID"</span>, <span class='st'>"Condition"</span><span class='op'>)</span>,
@@ -198,39 +203,51 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>meta.file</th>
-      <td><p>Sample metadata contains peak related information (eg: sample, peakPath, bamPath, condition).</p></td>
+      <td><p>Sample metadata contains peak related information (eg: sample, peakPath, bamPath, condition) or
+peak count matrix file. Should be tab-separated.</p></td>
+    </tr>
+    <tr>
+      <th>count.matrix</th>
+      <td><p>Logical value, whether the <code>meta.file</code> is a count matrix file. Default: FALSE.</p></td>
     </tr>
     <tr>
       <th>min.overlap</th>
       <td><p>Only include peaks in at least this many peaksets in the main binding matrix. Default: 2.
-Parameter of <code>dba</code>.</p></td>
+Parameter of <code>dba</code>. Used when <code>count.matrix</code> is FALSE.</p></td>
     </tr>
     <tr>
-      <th>submits</th>
+      <th>summits</th>
       <td><p>If the value is greater than zero, all consensus peaks will be re-centered around a consensus summit,
 with the value of summits indicating how many base pairs to include upstream and downstream of the
 summit (so all consensus peaks will be of the same width, namely <code>2 * summits + 1</code>).
-Default: 200. Parameter of <code>dba.count</code>.</p></td>
+Default: 200. Parameter of <code>dba.count</code>. Used when <code>count.matrix</code> is FALSE.</p></td>
     </tr>
     <tr>
       <th>use.summarizeOverlaps</th>
       <td><p>Logical value, indicating that <code>summarizeOverlaps</code> should be used for counting
-instead of the built-in counting code. Default: TRUE. Parameter of <code>dba.count</code>.</p></td>
+instead of the built-in counting code. Default: TRUE. Parameter of <code>dba.count</code>. Used when <code>count.matrix</code> is FALSE.</p></td>
+    </tr>
+    <tr>
+      <th>filter</th>
+      <td><p>Filter intervals with low read counts based on RPKM values. Default: 1.
+Parameter of <code>dba.count</code>. Used when <code>count.matrix</code> is FALSE.</p></td>
     </tr>
     <tr>
       <th>blacklist</th>
       <td><p>Species-specific abnormal regions to be removed. Choose from "DBA_BLACKLIST_HG19", "DBA_BLACKLIST_HG38", "DBA_BLACKLIST_GRCH37",
 "DBA_BLACKLIST_GRCH38", "DBA_BLACKLIST_MM9", "DBA_BLACKLIST_MM10", "DBA_BLACKLIST_CE10", "DBA_BLACKLIST_CE11", "DBA_BLACKLIST_DM3", "DBA_BLACKLIST_DM6",
-TRUE (auto-detection genome), a GRanges object containing the blacklisted regions. Default:TRUE. Parameter of <code>dba.blacklist</code>.</p></td>
+TRUE (auto-detection genome), a GRanges object containing the blacklisted regions. Default:TRUE.
+Parameter of <code>dba.blacklist</code>. Used when <code>count.matrix</code> is FALSE.</p></td>
     </tr>
     <tr>
       <th>sub.control</th>
       <td><p>Logical value, whether Control read counts are subtracted for each site in each sample.
-Default: TRUE. Parameter of <code>dba.count</code>.</p></td>
+Default: TRUE. Parameter of <code>dba.count</code>. Used when <code>count.matrix</code> is FALSE.</p></td>
     </tr>
     <tr>
       <th>used.cols</th>
-      <td><p>Used columns used to create sample metadata. If specified, sampleID should be placed first. Default: c("SampleID", "Condition").</p></td>
+      <td><p>Used columns used to create sample metadata. If specified, sampleID should be placed first.
+Default: c("SampleID", "Condition"). Used when <code>count.matrix</code> is FALSE.</p></td>
     </tr>
     <tr>
       <th>out.folder</th>
@@ -266,12 +283,14 @@ to generate count matrix and peak files. Default: "UCSC".</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A dataframe contains count matrix, peak annotation and sample metadata (if provided <code>used.cols</code>).</p>
+    <p>A dataframe contains count matrix, peak annotation and sample metadata (if provided <code>used.cols</code>). And
+all save the corresponding results to consensus_peak_matrix.txt, consensus_peak_anno.txt and peak_metadata.txt files.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># library(DEbPeak)</span>
 <span class='co'># library(DESeq2)</span>
 <span class='co'># metadata file contains peak and bam information</span>
+<span class='co'># beaware of the PeakCaller type (determine the score column)</span>
 <span class='co'># meta.file = 'path/to/metadata'</span>
 <span class='co'># PeakMatrix(meta.file = meta.file, species = "Human",  seq.style = "UCSC",</span>
 <span class='co'>#            up.dist = 20000, down.dist = 20000)</span>

@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DEbPeak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -86,6 +86,9 @@
       <a href="../articles/IntegrateChIP.html">Integrate RNA-seq with ChIP-seq (consensus peak)</a>
     </li>
     <li>
+      <a href="../articles/IntegrateChIPDE.html">Integrate RNA-seq with ChIP-seq (differential analysis)</a>
+    </li>
+    <li>
       <a href="../articles/IntegrateATAC.html">Integrate RNA-seq with ATAC-seq (consensus peak)</a>
     </li>
     <li>
@@ -135,7 +138,7 @@
       School of Life Sciences, Tsinghua University<br><a class="author_email" href="mailto:#"></a><a href="mailto:songyb18@mails.tsinghua.edu.cn" class="email">songyb18@mails.tsinghua.edu.cn</a>
       </address>
                   
-            <h4 class="date">18 四月 2023</h4>
+            <h4 class="date">8 六月 2023</h4>
       
       
       <div class="hidden name"><code>DEbPeak_All.Rmd</code></div>
@@ -234,22 +237,20 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="va">GSE122774.list</span> <span class="op">=</span> <span class="fu"><a href="../reference/ParseGEO.html">ParseGEO</a></span><span class="op">(</span>acce <span class="op">=</span> <span class="st">"GSE122774"</span>, platform <span class="op">=</span> <span class="st">"GPL17021"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Found 1 file(s)</code></pre>
 <pre><code>## GSE122774_series_matrix.txt.gz</code></pre>
-<pre><code>## 
+<pre><code>## Rows: 0 Columns: 7
 ## ── Column specification ────────────────────────────────────────────────────────
-## cols(
-##   ID_REF = col_character(),
-##   GSM3484767 = col_character(),
-##   GSM3484768 = col_character(),
-##   GSM3484769 = col_character(),
-##   GSM3484770 = col_character(),
-##   GSM3484771 = col_character(),
-##   GSM3484772 = col_character()
-## )</code></pre>
-<pre><code>## File stored at:</code></pre>
-<pre><code>## /tmp/RtmpOVueAQ/GPL17021.soft</code></pre>
-<pre><code>## Matrix not available! Downloading supplementary files.</code></pre>
+## Delimiter: "\t"
+## chr (7): ID_REF, GSM3484767, GSM3484768, GSM3484769, GSM3484770, GSM3484771,...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## File stored at: 
+## 
+## /tmp/RtmpilhsQV/GPL17021.soft
+## 
+## Matrix not available! Downloading supplementary files.</code></pre>
 <p>The GEO object:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">GSE122774.list</span><span class="op">$</span><span class="va">obj</span></code></pre></div>
 <pre><code>## ExpressionSet (storageMode: lockedEnvironment)
 ## assayData: 0 features, 6 samples 
@@ -263,7 +264,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## experimentData: use 'experimentData(object)'
 ## Annotation: GPL17021</code></pre>
 <p>Study information:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">GSE122774.list</span><span class="op">$</span><span class="va">exp.info</span></code></pre></div>
 <pre><code>##                                                                                Title
 ## 1 Runx1 and Runx3 cooperatively repress Pmp22 to drive neurofibromagenesis [RNA-seq]
@@ -286,7 +287,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ##            Contact PMID
 ## 1 Kwangmin,,Choi;</code></pre>
 <p>Raw count matrix:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">GSE122774.list</span><span class="op">$</span><span class="va">count</span></code></pre></div>
 <pre><code>##                    GSM3484767 GSM3484768 GSM3484769 GSM3484770 GSM3484771
 ## 0610005C13Rik               2          0          0          3          0
@@ -33624,7 +33625,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## Pgm2l1                   9542
 ##  [ reached 'max' / getOption("max.print") -- omitted 7396 rows ]</code></pre>
 <p>Sample metadata:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">GSE122774.list</span><span class="op">$</span><span class="va">metadata</span></code></pre></div>
 <pre><code>##             title geo_accession                                source_name_ch1
 ## GSM3484767  Nf809    GSM3484767                     Nf1-/- mouse nerve tissues
@@ -33655,7 +33656,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <a href="#load-the-data" class="anchor"></a>Load the data</h1>
 <p>The data used here are RNA-seq data of the external granule layer in the cerebellum of control and conditional SnoN knockout mice, the raw data are stored in <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE120279">GSE120279</a>, they are used in <a href="https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-020-03608-0">Robust principal component analysis for accurate outlier sample detection in RNA-seq data</a>.</p>
 <p>First, we create <code>DESeqDataSet</code> object with above dataset:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/warning.html">suppressWarnings</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mikelove/DESeq2">DESeq2</a></span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="va">count.file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"snon_count.txt"</span>, package <span class="op">=</span> <span class="st">"DEbPeak"</span><span class="op">)</span>
 <span class="va">meta.file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"snon_meta.txt"</span>, package <span class="op">=</span> <span class="st">"DEbPeak"</span><span class="op">)</span>
@@ -33675,7 +33676,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## ENSMUSG00000000031.16  193
 ## ENSMUSG00000000037.16  186
 ## ENSMUSG00000000049.11    0</code></pre>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">meta.info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">meta.file</span>, header <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">meta.info</span><span class="op">)</span></code></pre></div>
 <pre><code>##     condition
@@ -33685,7 +33686,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## KO4        KO
 ## KO5        KO
 ## KO6        KO</code></pre>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dds</span> <span class="op">&lt;-</span> <span class="fu">DESeq2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DESeq2/man/DESeqDataSet.html">DESeqDataSetFromMatrix</a></span><span class="op">(</span>countData <span class="op">=</span> <span class="va">count.matrix</span>, colData <span class="op">=</span> <span class="va">meta.info</span>, design <span class="op">=</span> <span class="op">~</span><span class="va">condition</span><span class="op">)</span>
 <span class="va">dds</span></code></pre></div>
 <pre><code>## class: DESeqDataSet 
@@ -33710,7 +33711,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <h3 class="hasAnchor">
 <a href="#cpm-threshold" class="anchor"></a>CPM threshold</h3>
 <p>This plot shows proportion of genes detected in different samples at different CPM thresholds. Theoretically, all samples should be similarly distributed, so as to avoid false positive results obtained from detection problems.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/CountQC.html">CountQC</a></span><span class="op">(</span>deobj <span class="op">=</span> <span class="va">dds</span>, group.key <span class="op">=</span> <span class="st">"condition"</span>, type <span class="op">=</span> <span class="st">"cpm"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Differential expression analysis with DESeq2!</code></pre>
 <pre><code>## [1] "Warning: 25096 features with 0 counts in all samples are to be removed for this analysis."
@@ -33723,7 +33724,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <h3 class="hasAnchor">
 <a href="#sequencing-saturation" class="anchor"></a>sequencing saturation</h3>
 <p>This plot shows the proportion of genes detected at different sequencing depths. If the proportion is too low, it indicates that many genes are not detected and therefore some important information may be missing, and increasing the sequencing volume can effectively solve this problem.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/CountQC.html">CountQC</a></span><span class="op">(</span>deobj <span class="op">=</span> <span class="va">dds</span>, group.key <span class="op">=</span> <span class="st">"condition"</span>, type <span class="op">=</span> <span class="st">"saturation"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Differential expression analysis with DESeq2!</code></pre>
 <p><img src="DEbPeak_All_files/figure-html/qc_counts_saturation-1.png" width="576" style="display: block; margin: auto;"></p>
@@ -33743,7 +33744,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="euclidean-distance-and-pearson-correlation-coefficient" class="section level3">
 <h3 class="hasAnchor">
 <a href="#euclidean-distance-and-pearson-correlation-coefficient" class="anchor"></a>Euclidean distance and pearson correlation coefficient</h3>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/SampleRelation.html">SampleRelation</a></span><span class="op">(</span>deobj <span class="op">=</span> <span class="va">dds</span>,transform.method <span class="op">=</span> <span class="st">"rlog"</span>,anno.key <span class="op">=</span> <span class="st">"condition"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Differential expression analysis with DESeq2!</code></pre>
 <p><img src="DEbPeak_All_files/figure-html/qc_samples_sr-1.png" width="960" style="display: block; margin: auto;"></p>
@@ -33752,11 +33753,11 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="pca" class="section level3">
 <h3 class="hasAnchor">
 <a href="#pca" class="anchor"></a>PCA</h3>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">qc.pca.res</span><span class="op">=</span><span class="fu"><a href="../reference/PCA.html">PCA</a></span><span class="op">(</span>deobj <span class="op">=</span> <span class="va">dds</span>,transform.method <span class="op">=</span> <span class="st">"rlog"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Differential expression analysis with DESeq2!</code></pre>
 <pre><code>## Use all genes for PCA!</code></pre>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">PCAtools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/PCAtools/man/biplot.html">biplot</a></span><span class="op">(</span><span class="va">qc.pca.res</span>,x<span class="op">=</span><span class="st">"PC1"</span>,y<span class="op">=</span><span class="st">"PC2"</span>,colby<span class="op">=</span><span class="st">"condition"</span>,legendPosition<span class="op">=</span><span class="st">"bottom"</span><span class="op">)</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/qc_samples_pca-1.png" width="576" style="display: block; margin: auto;"></p>
 <hr>
@@ -33764,19 +33765,19 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="outlier-detection-with-robust-pca" class="section level3">
 <h3 class="hasAnchor">
 <a href="#outlier-detection-with-robust-pca" class="anchor"></a>outlier detection with robust PCA</h3>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">outlier.res</span><span class="op">=</span><span class="fu"><a href="../reference/OutlierDetection.html">OutlierDetection</a></span><span class="op">(</span>deobj <span class="op">=</span> <span class="va">dds</span>,var.genes <span class="op">=</span> <span class="cn">NULL</span>,transform.method <span class="op">=</span> <span class="st">"rlog"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Differential expression analysis with DESeq2!</code></pre>
 <pre><code>## Use all genes for PCA!</code></pre>
 <pre><code>## Detecting 2 outlier(s): KO3,WT1</code></pre>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">outlier.res</span><span class="op">$</span><span class="va">outlier</span></code></pre></div>
 <pre><code>## [1] "KO3" "WT1"</code></pre>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">outlier.res</span><span class="op">$</span><span class="va">plot</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/qc_samples_outlier-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>For batch correction and outlier detection, you can use the following codes:</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># batch effect correction</span>
 <span class="co"># this is a demo scripts</span>
 <span class="va">batch.res</span><span class="op">=</span><span class="fu"><a href="../reference/QCPCA.html">QCPCA</a></span><span class="op">(</span>deobj <span class="op">=</span> <span class="va">dds</span>,var.genes <span class="op">=</span> <span class="cn">NULL</span>,remove.sample<span class="op">=</span><span class="cn">NULL</span>,transform.method <span class="op">=</span> <span class="st">"rlog"</span>,batch <span class="op">=</span> <span class="st">"cell"</span>,
@@ -33798,47 +33799,62 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="basic-info" class="section level2">
 <h2 class="hasAnchor">
 <a href="#basic-info" class="anchor"></a>basic info</h2>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># conduct PCA</span>
 <span class="va">pca.res</span><span class="op">=</span><span class="fu"><a href="../reference/PCA.html">PCA</a></span><span class="op">(</span>deobj <span class="op">=</span> <span class="va">dds</span>,remove.sample <span class="op">=</span> <span class="va">outlier.res</span><span class="op">$</span><span class="va">outlier</span>,transform.method <span class="op">=</span> <span class="st">"rlog"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Differential expression analysis with DESeq2!</code></pre>
 <pre><code>## Use all genes for PCA!</code></pre>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># get basic plots</span>
 <span class="va">basic.plots</span><span class="op">=</span><span class="fu"><a href="../reference/PCABasic.html">PCABasic</a></span><span class="op">(</span><span class="va">pca.res</span>,colby<span class="op">=</span><span class="st">"condition"</span>,legend.pos <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span></code></pre></div>
-<pre><code>## Coordinate system already present. Adding new coordinate system, which will replace the existing one.</code></pre>
-<pre><code>## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.</code></pre>
+<pre><code>## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.</code></pre>
+<pre><code>## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.</code></pre>
 <div id="screen-plot" class="section level3">
 <h3 class="hasAnchor">
 <a href="#screen-plot" class="anchor"></a>screen plot</h3>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">basic.plots</span><span class="op">[[</span><span class="st">"screen"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/pca_basic_screen-1.png" width="384" style="display: block; margin: auto;"></p>
 </div>
 <div id="biplot" class="section level3">
 <h3 class="hasAnchor">
 <a href="#biplot" class="anchor"></a>biplot</h3>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">basic.plots</span><span class="op">[[</span><span class="st">"biplot"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/pca_basic_biplot-1.png" width="768" style="display: block; margin: auto;"></p>
 </div>
 <div id="pc-pairs-plot" class="section level3">
 <h3 class="hasAnchor">
 <a href="#pc-pairs-plot" class="anchor"></a>PC pairs plot</h3>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">basic.plots</span><span class="op">[[</span><span class="st">"pairs"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/pca_basic_pairs-1.png" width="768" style="display: block; margin: auto;"></p>
 <hr>
@@ -33850,7 +33866,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="loading-bar-plot" class="section level3">
 <h3 class="hasAnchor">
 <a href="#loading-bar-plot" class="anchor"></a>loading bar plot</h3>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># loading bar plot</span>
 <span class="fu"><a href="../reference/LoadingPlot.html">LoadingPlot</a></span><span class="op">(</span><span class="va">pca.res</span>,type <span class="op">=</span> <span class="st">"bar"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Selecting by Loadding
@@ -33860,7 +33876,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="loading-heatmap" class="section level3">
 <h3 class="hasAnchor">
 <a href="#loading-heatmap" class="anchor"></a>loading heatmap</h3>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># loading heatmap</span>
 <span class="fu"><a href="../reference/LoadingPlot.html">LoadingPlot</a></span><span class="op">(</span><span class="va">pca.res</span>,deobj <span class="op">=</span> <span class="va">dds</span>,type <span class="op">=</span> <span class="st">"heat"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Differential expression analysis with DESeq2!</code></pre>
@@ -33871,12 +33887,12 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="export-loading-genes" class="section level3">
 <h3 class="hasAnchor">
 <a href="#export-loading-genes" class="anchor"></a>export loading genes</h3>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># export loading genes on PC1 and PC2 (200 positive genes and 200 negative genes) </span>
 <span class="va">loading.gene.df</span><span class="op">=</span><span class="fu"><a href="../reference/ExportPCGenes.html">ExportPCGenes</a></span><span class="op">(</span>pca <span class="op">=</span> <span class="va">pca.res</span>, pc <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, gene.num <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></code></pre></div>
 <pre><code>## Selecting by Loadding
 ## Selecting by Loadding</code></pre>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">loading.gene.df</span><span class="op">)</span></code></pre></div>
 <pre><code>##    PC                  Gene   Loadding     Type
 ## 1 PC1 ENSMUSG00000038252.13 0.02543092 Positive
@@ -33889,7 +33905,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="go-enrichment-on-loading-genes" class="section level3">
 <h3 class="hasAnchor">
 <a href="#go-enrichment-on-loading-genes" class="anchor"></a>GO enrichment on loading genes</h3>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># save results to working folder</span>
 <span class="co"># LoadingGO(pca.res,gene.type="ENSEMBL",go.type="BP",padj.method="BH",save = T)</span>
 <span class="co"># return list</span>
@@ -33897,32 +33913,22 @@ document.addEventListener("DOMContentLoaded", function() {
 <pre><code>## Selecting by Loadding
 ## Selecting by Loadding
 ## 
-## 
 ## Convert ENSEMBL to ENTREZID!
-## 
 ## 'select()' returned 1:many mapping between keys and columns
-## 
 ## conduct BP GO enrichment analysis.
-## 
 ## wrong orderBy parameter; set to default `orderBy = "x"`
-## 
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## 
+## Scale for y is already present. Adding another scale for y, which will replace
+## the existing scale.
 ## Convert ENSEMBL to ENTREZID!
-## 
 ## 'select()' returned 1:many mapping between keys and columns
-## 
 ## conduct BP GO enrichment analysis.
-## 
 ## wrong orderBy parameter; set to default `orderBy = "x"`
-## 
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.</code></pre>
+## Scale for y is already present. Adding another scale for y, which will replace
+## the existing scale.</code></pre>
 <div id="positive-loading-genes-go" class="section level4">
 <h4 class="hasAnchor">
 <a href="#positive-loading-genes-go" class="anchor"></a>positive loading genes GO</h4>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># positive loading genes</span>
 <span class="va">positive_go_results</span><span class="op">=</span><span class="va">loading.go.results</span><span class="op">[[</span><span class="st">"Positive"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">positive_go_results</span><span class="op">[[</span><span class="st">"table"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
@@ -33954,14 +33960,14 @@ document.addEventListener("DOMContentLoaded", function() {
 ## GO:0031331    15
 ## GO:0042254    13
 ## GO:0006397    16</code></pre>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">positive_go_results</span><span class="op">[[</span><span class="st">"plot"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/loading_go_positive-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 <div id="negative-loading-genes-go" class="section level4">
 <h4 class="hasAnchor">
 <a href="#negative-loading-genes-go" class="anchor"></a>negative loading genes GO</h4>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># negative loading genes</span>
 <span class="va">negative_go_results</span><span class="op">=</span><span class="va">loading.go.results</span><span class="op">[[</span><span class="st">"Negative"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">negative_go_results</span><span class="op">[[</span><span class="st">"table"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
@@ -34000,7 +34006,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## GO:0010976    13
 ## GO:0048813     9
 ## GO:0010769    12</code></pre>
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">negative_go_results</span><span class="op">[[</span><span class="st">"plot"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/loading_go_negative-1.png" width="672" style="display: block; margin: auto;"></p>
 <hr>
@@ -34010,7 +34016,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="d-visualization" class="section level2">
 <h2 class="hasAnchor">
 <a href="#d-visualization" class="anchor"></a>3D visualization</h2>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/PCA3D.html">PCA3D</a></span><span class="op">(</span>pca <span class="op">=</span> <span class="va">pca.res</span>,color.key <span class="op">=</span> <span class="st">"condition"</span>,main <span class="op">=</span> <span class="st">"3D PCA"</span><span class="op">)</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/pca_3d-1.png" width="480" style="display: block; margin: auto;"></p>
 <hr>
@@ -34023,7 +34029,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <h2 class="hasAnchor">
 <a href="#differential-expression-analysis" class="anchor"></a>Differential Expression Analysis</h2>
 <p>First you should get differential expression genes. For <code>DESeq2</code> results:</p>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># set control level</span>
 <span class="va">dds</span><span class="op">$</span><span class="va">condition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/relevel.html">relevel</a></span><span class="op">(</span><span class="va">dds</span><span class="op">$</span><span class="va">condition</span>, ref <span class="op">=</span> <span class="st">"WT"</span><span class="op">)</span>
 <span class="co"># conduct differential expressed genes analysis</span>
@@ -34034,7 +34040,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <pre><code>## mean-dispersion relationship</code></pre>
 <pre><code>## final dispersion estimates</code></pre>
 <pre><code>## fitting model and testing</code></pre>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># extract results</span>
 <span class="va">dds.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DESeq2/man/results.html">results</a></span><span class="op">(</span><span class="va">dds</span>,contrast<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"condition"</span>,<span class="st">'KO'</span>,<span class="st">'WT'</span><span class="op">)</span><span class="op">)</span>
 <span class="va">dds.results.ordered</span> <span class="op">&lt;-</span> <span class="va">dds.results</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">dds.results</span><span class="op">$</span><span class="va">log2FoldChange</span>,decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,<span class="op">]</span>
@@ -34059,7 +34065,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## ENSMUSG00000102474.1    0.99973
 ## ENSMUSG00000042677.7    0.99973</code></pre>
 <p>For <code>edgeR</code> results:</p>
-<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://bioinf.wehi.edu.au/edgeR">edgeR</a></span><span class="op">)</span></code></pre></div>
 <pre><code>## 载入需要的程辑包：limma</code></pre>
 <pre><code>## 
@@ -34070,7 +34076,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <pre><code>## The following object is masked from 'package:BiocGenerics':
 ## 
 ##     plotMA</code></pre>
-<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">snon.edgeR</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/edgeR/man/DGEList.html">DGEList</a></span><span class="op">(</span>counts<span class="op">=</span><span class="va">count.matrix</span>, group<span class="op">=</span><span class="va">meta.info</span><span class="op">$</span><span class="va">condition</span><span class="op">)</span>
 <span class="va">keep</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/edgeR/man/filterByExpr.html">filterByExpr</a></span><span class="op">(</span><span class="va">snon.edgeR</span>,min.count<span class="op">=</span><span class="fl">10</span><span class="op">)</span>
 <span class="va">snon.edgeR</span> <span class="op">&lt;-</span> <span class="va">snon.edgeR</span><span class="op">[</span><span class="va">keep</span>, , keep.lib.sizes<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span>
@@ -34097,13 +34103,13 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="volcanoplot" class="section level3">
 <h3 class="hasAnchor">
 <a href="#volcanoplot" class="anchor"></a>VolcanoPlot</h3>
-<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># VolcanoPlot for DESeq2</span>
 <span class="fu"><a href="../reference/VolcanoPlot.html">VolcanoPlot</a></span><span class="op">(</span><span class="va">dds.results.ordered</span>,signif<span class="op">=</span><span class="st">"pvalue"</span>,l2fc.threshold<span class="op">=</span><span class="fl">0.3</span>,label.num<span class="op">=</span><span class="fl">2</span>,
             point.alpha <span class="op">=</span> <span class="fl">0.8</span>, label.color<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"purple"</span>,<span class="st">"green"</span><span class="op">)</span>,tick.trans <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
 <pre><code>## Differential expression analysis with DESeq2!</code></pre>
 <p><img src="DEbPeak_All_files/figure-html/volcanoplot-1.png" width="480" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># VolcanoPlot for edgeR</span>
 <span class="fu"><a href="../reference/VolcanoPlot.html">VolcanoPlot</a></span><span class="op">(</span><span class="va">all.res</span>,signif<span class="op">=</span><span class="st">"PValue"</span>,l2fc.threshold<span class="op">=</span><span class="fl">0.3</span>,label.num<span class="op">=</span><span class="fl">2</span>,point.alpha <span class="op">=</span> <span class="fl">0.8</span>,
             label.color<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"purple"</span>,<span class="st">"green"</span><span class="op">)</span>,tick.trans <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
@@ -34113,14 +34119,14 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="scatterplot" class="section level3">
 <h3 class="hasAnchor">
 <a href="#scatterplot" class="anchor"></a>ScatterPlot</h3>
-<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># ScatterPlot for DESeq2</span>
 <span class="fu"><a href="../reference/ScatterPlot.html">ScatterPlot</a></span><span class="op">(</span>deobj <span class="op">=</span> <span class="va">dds</span>,deres <span class="op">=</span> <span class="va">dds.results.ordered</span>,group.key <span class="op">=</span> <span class="st">"condition"</span>,
             ref.group <span class="op">=</span> <span class="st">"WT"</span>,signif<span class="op">=</span><span class="st">"pvalue"</span>,l2fc.threshold<span class="op">=</span><span class="fl">0.3</span>,label.num <span class="op">=</span> <span class="fl">2</span>,
             point.alpha <span class="op">=</span> <span class="fl">0.8</span>,label.color<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"purple"</span>,<span class="st">"green"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## Differential expression analysis with DESeq2!</code></pre>
 <p><img src="DEbPeak_All_files/figure-html/ScatterPlot-1.png" width="576" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># ScatterPlot for edgeR</span>
 <span class="fu"><a href="../reference/ScatterPlot.html">ScatterPlot</a></span><span class="op">(</span>deobj <span class="op">=</span> <span class="va">snon.edgeR</span>,deres <span class="op">=</span> <span class="va">all.res</span>,group.key <span class="op">=</span> <span class="st">"condition"</span>,
             ref.group <span class="op">=</span> <span class="st">"WT"</span>,signif<span class="op">=</span><span class="st">"PValue"</span>,l2fc.threshold<span class="op">=</span><span class="fl">0.3</span>,label.num <span class="op">=</span> <span class="fl">2</span>,
@@ -34131,13 +34137,13 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="maplot" class="section level3">
 <h3 class="hasAnchor">
 <a href="#maplot" class="anchor"></a>MAPlot</h3>
-<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># MAPlot for DESeq2</span>
 <span class="fu"><a href="../reference/MAPlot.html">MAPlot</a></span><span class="op">(</span><span class="va">dds.results.ordered</span>,signif<span class="op">=</span><span class="st">"pvalue"</span>,l2fc.threshold<span class="op">=</span><span class="fl">0.3</span>,label.num<span class="op">=</span><span class="fl">2</span>,
        point.alpha <span class="op">=</span> <span class="fl">0.8</span>, label.color<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"purple"</span>,<span class="st">"green"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## Differential expression analysis with DESeq2!</code></pre>
 <p><img src="DEbPeak_All_files/figure-html/MAPlot-1.png" width="768" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># MAPlot for edgeR</span>
 <span class="fu"><a href="../reference/MAPlot.html">MAPlot</a></span><span class="op">(</span><span class="va">all.res</span>,signif<span class="op">=</span><span class="st">"PValue"</span>,l2fc.threshold<span class="op">=</span><span class="fl">0.3</span>,label.num<span class="op">=</span><span class="fl">2</span>,point.alpha <span class="op">=</span> <span class="fl">0.8</span>,
        label.color<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"purple"</span>,<span class="st">"green"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
@@ -34147,13 +34153,13 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="rankplot" class="section level3">
 <h3 class="hasAnchor">
 <a href="#rankplot" class="anchor"></a>RankPlot</h3>
-<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># RankPlot for DESeq2</span>
 <span class="fu"><a href="../reference/RankPlot.html">RankPlot</a></span><span class="op">(</span><span class="va">dds.results.ordered</span>,signif<span class="op">=</span><span class="st">"pvalue"</span>,l2fc.threshold<span class="op">=</span><span class="fl">0.3</span>,label.num<span class="op">=</span><span class="fl">2</span>,
          point.alpha <span class="op">=</span> <span class="fl">0.8</span>, label.color<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"purple"</span>,<span class="st">"green"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## Differential expression analysis with DESeq2!</code></pre>
 <p><img src="DEbPeak_All_files/figure-html/RankPlot-1.png" width="576" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># RankPlot for edgeR</span>
 <span class="fu"><a href="../reference/RankPlot.html">RankPlot</a></span><span class="op">(</span><span class="va">all.res</span>,signif<span class="op">=</span><span class="st">"PValue"</span>,l2fc.threshold<span class="op">=</span><span class="fl">0.3</span>,label.num<span class="op">=</span><span class="fl">2</span>,point.alpha <span class="op">=</span> <span class="fl">0.8</span>,
          label.color<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"purple"</span>,<span class="st">"green"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
@@ -34163,14 +34169,14 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="geneplot" class="section level3">
 <h3 class="hasAnchor">
 <a href="#geneplot" class="anchor"></a>GenePlot</h3>
-<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># GenePlot for DESeq2</span>
 <span class="fu"><a href="../reference/GenePlot.html">GenePlot</a></span><span class="op">(</span>deobj <span class="op">=</span> <span class="va">dds</span>,deres <span class="op">=</span> <span class="va">dds.results.ordered</span>,group.key <span class="op">=</span> <span class="st">"condition"</span>,
          ref.group <span class="op">=</span> <span class="st">"WT"</span>,fill.color<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>,<span class="st">"blue"</span><span class="op">)</span>, fill.alpha <span class="op">=</span> <span class="fl">0.8</span>,
          gene.num <span class="op">=</span><span class="fl">2</span>,signif<span class="op">=</span><span class="st">"pvalue"</span>,l2fc.threshold<span class="op">=</span><span class="fl">0.3</span><span class="op">)</span></code></pre></div>
 <pre><code>## Differential expression analysis with DESeq2!</code></pre>
 <p><img src="DEbPeak_All_files/figure-html/GenePlot-1.png" width="576" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># GenePlot for edgeR</span>
 <span class="fu"><a href="../reference/GenePlot.html">GenePlot</a></span><span class="op">(</span>deobj <span class="op">=</span> <span class="va">snon.edgeR</span>,deres <span class="op">=</span> <span class="va">all.res</span>,group.key <span class="op">=</span> <span class="st">"condition"</span>,
          ref.group <span class="op">=</span> <span class="st">"WT"</span>,fill.color<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>,<span class="st">"blue"</span><span class="op">)</span>,fill.alpha <span class="op">=</span> <span class="fl">0.8</span>,
@@ -34181,13 +34187,13 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="deheatmap" class="section level3">
 <h3 class="hasAnchor">
 <a href="#deheatmap" class="anchor"></a>DEHeatmap</h3>
-<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># DEHeatmap for DESeq2</span>
 <span class="fu"><a href="../reference/DEHeatmap.html">DEHeatmap</a></span><span class="op">(</span>deobj <span class="op">=</span> <span class="va">dds</span>,deres <span class="op">=</span> <span class="va">dds.results.ordered</span>,group.key <span class="op">=</span> <span class="st">"condition"</span>,
           ref.group <span class="op">=</span> <span class="st">"WT"</span>, signif<span class="op">=</span><span class="st">"pvalue"</span>,l2fc.threshold<span class="op">=</span><span class="fl">0.3</span><span class="op">)</span></code></pre></div>
 <pre><code>## Differential expression analysis with DESeq2!</code></pre>
 <p><img src="DEbPeak_All_files/figure-html/DEHeatmap-1.png" width="960" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># DEHeatmap for edgeR</span>
 <span class="fu"><a href="../reference/DEHeatmap.html">DEHeatmap</a></span><span class="op">(</span>deobj <span class="op">=</span> <span class="va">snon.edgeR</span>,deres <span class="op">=</span> <span class="va">all.res</span>,group.key <span class="op">=</span> <span class="st">"condition"</span>,
           ref.group <span class="op">=</span> <span class="st">"WT"</span>, signif<span class="op">=</span><span class="st">"PValue"</span>,l2fc.threshold<span class="op">=</span><span class="fl">0.3</span><span class="op">)</span></code></pre></div>
@@ -34203,7 +34209,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="go-enrichment" class="section level2">
 <h2 class="hasAnchor">
 <a href="#go-enrichment" class="anchor"></a>GO enrichment</h2>
-<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># save results to working directory</span>
 <span class="co"># ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threshold = 0.3,enrich.type = "GO")</span>
 <span class="va">all.go.results</span><span class="op">=</span><span class="fu"><a href="../reference/ConductFE.html">ConductFE</a></span><span class="op">(</span>deres <span class="op">=</span> <span class="va">dds.results.ordered</span>, signif <span class="op">=</span> <span class="st">"pvalue"</span>, l2fc.threshold <span class="op">=</span> <span class="fl">0.3</span>,enrich.type <span class="op">=</span> <span class="st">"GO"</span>,str.width <span class="op">=</span> <span class="fl">50</span>, save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
@@ -34212,24 +34218,29 @@ document.addEventListener("DOMContentLoaded", function() {
 <pre><code>## 'select()' returned 1:many mapping between keys and columns</code></pre>
 <pre><code>## conduct ALL GO enrichment analysis on: UP</code></pre>
 <pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
-<pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.</code></pre>
-<pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
-<pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.</code></pre>
-<pre><code>## Convert ENSEMBL to ENTREZID!</code></pre>
-<pre><code>## 'select()' returned 1:1 mapping between keys and columns</code></pre>
-<pre><code>## conduct ALL GO enrichment analysis on: DOWN</code></pre>
-<pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
-<pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.</code></pre>
+<pre><code>## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
+## wrong orderBy parameter; set to default `orderBy = "x"`
+## 
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
+## Convert ENSEMBL to ENTREZID!
+## 
+## 'select()' returned 1:1 mapping between keys and columns
+## 
+## conduct ALL GO enrichment analysis on: DOWN
+## 
+## wrong orderBy parameter; set to default `orderBy = "x"`
+## 
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.</code></pre>
 <div id="up-regulated" class="section level3">
 <h3 class="hasAnchor">
 <a href="#up-regulated" class="anchor"></a>Up regulated</h3>
 <div id="overview" class="section level4">
 <h4 class="hasAnchor">
 <a href="#overview" class="anchor"></a>overview</h4>
-<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">up.go.res</span><span class="op">=</span><span class="va">all.go.results</span><span class="op">[[</span><span class="st">"UP"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span>
 <span class="va">up.go.res.table</span><span class="op">=</span><span class="va">up.go.res</span><span class="op">[[</span><span class="st">"table"</span><span class="op">]</span><span class="op">]</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">up.go.res.table</span><span class="op">)</span></code></pre></div>
@@ -34265,7 +34276,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="plot" class="section level4">
 <h4 class="hasAnchor">
 <a href="#plot" class="anchor"></a>plot</h4>
-<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">up.go.res</span><span class="op">[[</span><span class="st">"plot"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/go_up_plot-1.png" width="768" style="display: block; margin: auto;"></p>
 <hr>
@@ -34277,7 +34288,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="overview-1" class="section level4">
 <h4 class="hasAnchor">
 <a href="#overview-1" class="anchor"></a>overview</h4>
-<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">down.go.res</span><span class="op">=</span><span class="va">all.go.results</span><span class="op">[[</span><span class="st">"DOWN"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span>
 <span class="va">down.go.res.table</span> <span class="op">=</span> <span class="va">down.go.res</span><span class="op">[[</span><span class="st">"table"</span><span class="op">]</span><span class="op">]</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">down.go.res.table</span><span class="op">)</span></code></pre></div>
@@ -34291,7 +34302,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="plot-1" class="section level4">
 <h4 class="hasAnchor">
 <a href="#plot-1" class="anchor"></a>plot</h4>
-<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">down.go.res</span><span class="op">[[</span><span class="st">"plot"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/go_down_plot-1.png" width="768" style="display: block; margin: auto;"></p>
 <hr>
@@ -34301,7 +34312,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="kegg-enrichment" class="section level2">
 <h2 class="hasAnchor">
 <a href="#kegg-enrichment" class="anchor"></a>KEGG enrichment</h2>
-<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># save results to working directory</span>
 <span class="co"># ConductFE(deres = dds.results.ordered, signif = "pvalue", l2fc.threshold = 0.3,enrich.type = "KEGG")</span>
 <span class="va">all.kegg.results</span><span class="op">=</span><span class="fu"><a href="../reference/ConductFE.html">ConductFE</a></span><span class="op">(</span>deres <span class="op">=</span> <span class="va">dds.results.ordered</span>, signif <span class="op">=</span> <span class="st">"pvalue"</span>, l2fc.threshold <span class="op">=</span> <span class="fl">0.3</span>,enrich.type <span class="op">=</span> <span class="st">"KEGG"</span>, str.width <span class="op">=</span> <span class="fl">50</span>, save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
@@ -34312,27 +34323,29 @@ document.addEventListener("DOMContentLoaded", function() {
 <pre><code>## Reading KEGG annotation online: "https://rest.kegg.jp/link/mmu/pathway"...</code></pre>
 <pre><code>## Reading KEGG annotation online: "https://rest.kegg.jp/list/pathway/mmu"...</code></pre>
 <pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
-<pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.</code></pre>
-<pre><code>## Convert ENSEMBL to ENTREZID!</code></pre>
-<pre><code>## 'select()' returned 1:1 mapping between keys and columns</code></pre>
-<pre><code>## conduct KEGG enrichment analysis.</code></pre>
+<pre><code>## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
+## Convert ENSEMBL to ENTREZID!
+## 
+## 'select()' returned 1:1 mapping between keys and columns
+## 
+## conduct KEGG enrichment analysis.</code></pre>
 <div id="up" class="section level3">
 <h3 class="hasAnchor">
 <a href="#up" class="anchor"></a>Up</h3>
 <div id="overview-2" class="section level4">
 <h4 class="hasAnchor">
 <a href="#overview-2" class="anchor"></a>overview</h4>
-<div class="sourceCode" id="cb142"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">up.kegg.res</span><span class="op">=</span><span class="va">all.kegg.results</span><span class="op">[[</span><span class="st">"UP"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"KEGG"</span><span class="op">]</span><span class="op">]</span>
 <span class="va">up.kegg.res.table</span><span class="op">=</span><span class="va">up.kegg.res</span><span class="op">[[</span><span class="st">"table"</span><span class="op">]</span><span class="op">]</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">up.kegg.res.table</span><span class="op">)</span></code></pre></div>
 <pre><code>##                ID                                         Description GeneRatio
-## mmu04911 mmu04911      Insulin secretion - Mus musculus (house mouse)     7/104
-## mmu04024 mmu04024 cAMP signaling pathway - Mus musculus (house mouse)    10/104
+## mmu04911 mmu04911      Insulin secretion - Mus musculus (house mouse)     7/105
+## mmu04024 mmu04024 cAMP signaling pathway - Mus musculus (house mouse)    10/105
 ##           BgRatio       pvalue   p.adjust     qvalue
-## mmu04911  86/9174 5.064914e-05 0.01114281 0.01007651
-## mmu04024 224/9174 2.164615e-04 0.02381076 0.02153222
+## mmu04911  86/9213 5.244736e-05 0.01159087 0.01043426
+## mmu04024 224/9213 2.264363e-04 0.02502121 0.02252445
 ##                                                                    geneID Count
 ## mmu04911                  Kcnmb2/Kcnn3/Creb5/Rapgef4/Creb3l2/Snap25/Adcy1     7
 ## mmu04024 Cftr/Atp2a3/Creb5/Rapgef4/Tiam1/Creb3l2/Sox9/Atp2b2/Crebbp/Adcy1    10</code></pre>
@@ -34340,7 +34353,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="plot-2" class="section level4">
 <h4 class="hasAnchor">
 <a href="#plot-2" class="anchor"></a>plot</h4>
-<div class="sourceCode" id="cb144"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">up.kegg.res</span><span class="op">[[</span><span class="st">"plot"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/kegg_up_plot-1.png" width="768" style="display: block; margin: auto;"></p>
 <hr>
@@ -34352,7 +34365,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="overview-3" class="section level4">
 <h4 class="hasAnchor">
 <a href="#overview-3" class="anchor"></a>overview</h4>
-<div class="sourceCode" id="cb145"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">down.kegg.res</span><span class="op">=</span><span class="va">all.kegg.results</span><span class="op">[[</span><span class="st">"DOWN"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"KEGG"</span><span class="op">]</span><span class="op">]</span>
 <span class="va">down.kegg.res.table</span><span class="op">=</span><span class="va">down.kegg.res</span><span class="op">[[</span><span class="st">"table"</span><span class="op">]</span><span class="op">]</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">down.kegg.res.table</span><span class="op">)</span></code></pre></div>
@@ -34363,7 +34376,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="plot-3" class="section level4">
 <h4 class="hasAnchor">
 <a href="#plot-3" class="anchor"></a>plot</h4>
-<div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">down.kegg.res</span><span class="op">[[</span><span class="st">"plot"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/kegg_down_plot-1.png" width="768" style="display: block; margin: auto;"></p>
 <hr>
@@ -34377,39 +34390,39 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="msigdbr-gene-sets" class="section level3">
 <h3 class="hasAnchor">
 <a href="#msigdbr-gene-sets" class="anchor"></a>msigdbr gene sets</h3>
-<div class="sourceCode" id="cb148"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://igordot.github.io/msigdbr/">msigdbr</a></span><span class="op">)</span>
 <span class="co"># list all possible species</span>
 <span class="fu"><a href="https://igordot.github.io/msigdbr/reference/msigdbr_species.html">msigdbr_species</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## # A tibble: 20 x 2
-##    species_name                species_common_name                              
-##    &lt;chr&gt;                       &lt;chr&gt;                                            
-##  1 Anolis carolinensis         Carolina anole, green anole                      
-##  2 Bos taurus                  bovine, cattle, cow, dairy cow, domestic cattle,…
-##  3 Caenorhabditis elegans      roundworm                                        
-##  4 Canis lupus familiaris      dog, dogs                                        
-##  5 Danio rerio                 leopard danio, zebra danio, zebra fish, zebrafish
-##  6 Drosophila melanogaster     fruit fly                                        
-##  7 Equus caballus              domestic horse, equine, horse                    
-##  8 Felis catus                 cat, cats, domestic cat                          
-##  9 Gallus gallus               bantam, chicken, chickens, Gallus domesticus     
-## 10 Homo sapiens                human                                            
-## 11 Macaca mulatta              rhesus macaque, rhesus macaques, Rhesus monkey, …
-## 12 Monodelphis domestica       gray short-tailed opossum                        
-## 13 Mus musculus                house mouse, mouse                               
-## 14 Ornithorhynchus anatinus    duck-billed platypus, duckbill platypus, platypus
-## 15 Pan troglodytes             chimpanzee                                       
-## 16 Rattus norvegicus           brown rat, Norway rat, rat, rats                 
-## 17 Saccharomyces cerevisiae    baker's yeast, brewer's yeast, S. cerevisiae     
-## 18 Schizosaccharomyces pombe … &lt;NA&gt;                                             
-## 19 Sus scrofa                  pig, pigs, swine, wild boar                      
-## 20 Xenopus tropicalis          tropical clawed frog, western clawed frog</code></pre>
-<div class="sourceCode" id="cb150"><pre class="downlit sourceCode r">
+<pre><code>## # A tibble: 20 × 2
+##    species_name                    species_common_name                          
+##    &lt;chr&gt;                           &lt;chr&gt;                                        
+##  1 Anolis carolinensis             Carolina anole, green anole                  
+##  2 Bos taurus                      bovine, cattle, cow, dairy cow, domestic cat…
+##  3 Caenorhabditis elegans          roundworm                                    
+##  4 Canis lupus familiaris          dog, dogs                                    
+##  5 Danio rerio                     leopard danio, zebra danio, zebra fish, zebr…
+##  6 Drosophila melanogaster         fruit fly                                    
+##  7 Equus caballus                  domestic horse, equine, horse                
+##  8 Felis catus                     cat, cats, domestic cat                      
+##  9 Gallus gallus                   bantam, chicken, chickens, Gallus domesticus 
+## 10 Homo sapiens                    human                                        
+## 11 Macaca mulatta                  rhesus macaque, rhesus macaques, Rhesus monk…
+## 12 Monodelphis domestica           gray short-tailed opossum                    
+## 13 Mus musculus                    house mouse, mouse                           
+## 14 Ornithorhynchus anatinus        duck-billed platypus, duckbill platypus, pla…
+## 15 Pan troglodytes                 chimpanzee                                   
+## 16 Rattus norvegicus               brown rat, Norway rat, rat, rats             
+## 17 Saccharomyces cerevisiae        baker's yeast, brewer's yeast, S. cerevisiae 
+## 18 Schizosaccharomyces pombe 972h- &lt;NA&gt;                                         
+## 19 Sus scrofa                      pig, pigs, swine, wild boar                  
+## 20 Xenopus tropicalis              tropical clawed frog, western clawed frog</code></pre>
+<div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># create gene sets</span>
 <span class="va">m_t2g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://igordot.github.io/msigdbr/reference/msigdbr.html">msigdbr</a></span><span class="op">(</span>species <span class="op">=</span> <span class="st">"Mus musculus"</span>, category <span class="op">=</span> <span class="st">"C5"</span>, subcategory <span class="op">=</span> <span class="st">"BP"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">gs_name</span>, <span class="va">entrez_gene</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">m_t2g</span><span class="op">)</span></code></pre></div>
-<pre><code>## # A tibble: 6 x 2
+<pre><code>## # A tibble: 6 × 2
 ##   gs_name                                          entrez_gene
 ##   &lt;chr&gt;                                                  &lt;int&gt;
 ## 1 GOBP_10_FORMYLTETRAHYDROFOLATE_METABOLIC_PROCESS       67618
@@ -34423,7 +34436,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="conduct-gsea" class="section level3">
 <h3 class="hasAnchor">
 <a href="#conduct-gsea" class="anchor"></a>Conduct GSEA</h3>
-<div class="sourceCode" id="cb152"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb139"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">gsea.results</span><span class="op">=</span><span class="fu"><a href="../reference/ConductGSEA.html">ConductGSEA</a></span><span class="op">(</span>deres <span class="op">=</span> <span class="va">dds.results.ordered</span>,gmt.file <span class="op">=</span> <span class="cn">NULL</span>,gene.sets <span class="op">=</span> <span class="va">m_t2g</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <pre><code>## Differential expression analysis with DESeq2!</code></pre>
 <pre><code>## Convert ENSEMBL to ENTREZID!</code></pre>
@@ -34437,7 +34450,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="results-overview" class="section level3">
 <h3 class="hasAnchor">
 <a href="#results-overview" class="anchor"></a>results overview</h3>
-<div class="sourceCode" id="cb160"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">gsea.results.table</span><span class="op">=</span><span class="va">gsea.results</span><span class="op">[[</span><span class="st">"table"</span><span class="op">]</span><span class="op">]</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">gsea.results.table</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] ID              Description     setSize         enrichmentScore
@@ -34448,7 +34461,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="results-plot" class="section level3">
 <h3 class="hasAnchor">
 <a href="#results-plot" class="anchor"></a>results plot</h3>
-<div class="sourceCode" id="cb162"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb149"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">gsea.results</span><span class="op">[[</span><span class="st">"plot"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <pre><code>## NULL</code></pre>
 <hr>
@@ -34459,7 +34472,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <h1 class="hasAnchor">
 <a href="#all-in-one-analysis" class="anchor"></a>All-in-one analysis</h1>
 <p>To enhance the usability of the tool, we create a all-in-one analysis command, all results will be saved in specific directory:</p>
-<div class="sourceCode" id="cb164"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb151"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://igordot.github.io/msigdbr/">msigdbr</a></span><span class="op">)</span>
 <span class="va">m_t2g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://igordot.github.io/msigdbr/reference/msigdbr.html">msigdbr</a></span><span class="op">(</span>species <span class="op">=</span> <span class="st">"Mus musculus"</span>, category <span class="op">=</span> <span class="st">"C5"</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">gs_name</span>, <span class="va">entrez_gene</span><span class="op">)</span>
@@ -34469,7 +34482,7 @@ document.addEventListener("DOMContentLoaded", function() {
               signif <span class="op">=</span> <span class="st">"pvalue"</span>, l2fc.threshold <span class="op">=</span> <span class="fl">0.3</span>,
               group.key <span class="op">=</span> <span class="st">"condition"</span>, ref.group <span class="op">=</span> <span class="st">"WT"</span>,gmt.file <span class="op">=</span> <span class="cn">NULL</span>, gene.sets <span class="op">=</span> <span class="va">m_t2g</span><span class="op">)</span></code></pre></div>
 <p>The structrue of results folder:</p>
-<div class="sourceCode" id="cb165"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb165-1"><a href="#cb165-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tree</span> /home/songyabing/R/learn/tmp/DEbPeak/AllInOne</span></code></pre></div>
+<div class="sourceCode" id="cb152"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb152-1"><a href="#cb152-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tree</span> /home/songyabing/R/learn/tmp/DEbPeak/AllInOne</span></code></pre></div>
 <pre><code>## /home/songyabing/R/learn/tmp/DEbPeak/AllInOne
 ## ├── CountQC_CPM.pdf
 ## ├── CountQC_saturation.pdf
@@ -34592,10 +34605,11 @@ document.addEventListener("DOMContentLoaded", function() {
 ## │   ├── PCA_loading_heat.pdf
 ## │   ├── PCA_overview.pdf
 ## │   ├── PCA_pairs_plot.pdf
-## │   └── PCA_screen_plot.pdf
+## │   ├── PCA_screen_plot.pdf
+## │   └── PCA_scree_plot.pdf
 ## └── SampleQC_dist_pcc.pdf
 ## 
-## 19 directories, 104 files</code></pre>
+## 19 directories, 105 files</code></pre>
 <hr>
 </div>
 <div id="integrate-rna-seq-and-chip-seqatac-seq" class="section level1">
@@ -34613,7 +34627,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="prepare-degs" class="section level2">
 <h2 class="hasAnchor">
 <a href="#prepare-degs" class="anchor"></a>Prepare DEGs</h2>
-<div class="sourceCode" id="cb167"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb154"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># prepare count matrix and metadata</span>
 <span class="va">debchip.count.file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"debchip_count.txt"</span>, package <span class="op">=</span> <span class="st">"DEbPeak"</span><span class="op">)</span>
 <span class="va">debchip.meta.file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"debchip_meta.txt"</span>, package <span class="op">=</span> <span class="st">"DEbPeak"</span><span class="op">)</span>
@@ -34625,7 +34639,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                               design <span class="op">=</span> <span class="op">~</span><span class="va">condition</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning in DESeqDataSet(se, design = design, ignoreRank): some variables in
 ## design formula are characters, converting to factors</code></pre>
-<div class="sourceCode" id="cb169"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb156"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># set control level</span>
 <span class="va">debchip.dds</span><span class="op">$</span><span class="va">condition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/relevel.html">relevel</a></span><span class="op">(</span><span class="va">debchip.dds</span><span class="op">$</span><span class="va">condition</span>, ref <span class="op">=</span> <span class="st">"NF"</span><span class="op">)</span>
 <span class="co"># conduct differential expressed genes analysis</span>
@@ -34636,7 +34650,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <pre><code>## mean-dispersion relationship</code></pre>
 <pre><code>## final dispersion estimates</code></pre>
 <pre><code>## fitting model and testing</code></pre>
-<div class="sourceCode" id="cb176"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb163"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># extract results</span>
 <span class="va">debchip.dds.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DESeq2/man/results.html">results</a></span><span class="op">(</span><span class="va">debchip.dds</span>,contrast<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"condition"</span>,<span class="st">'RX'</span>,<span class="st">'NF'</span><span class="op">)</span><span class="op">)</span>
 <span class="va">debchip.dds.results.ordered</span> <span class="op">&lt;-</span> <span class="va">debchip.dds.results</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">debchip.dds.results</span><span class="op">$</span><span class="va">log2FoldChange</span>,decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,<span class="op">]</span>
@@ -34661,7 +34675,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <h3 class="hasAnchor">
 <a href="#consensus-peaks" class="anchor"></a>Consensus peaks</h3>
 <p>In this step, we will get consensus peaks with <a href="https://genometric.github.io/MSPC/docs/quick_start/">MSPC</a> when multiple peak files are available, but when there is only one peak file, we will use it directly (<strong>make sure this peak file contains five columns: “chr”, “start”, “stop”, “name”, “score”</strong>).</p>
-<div class="sourceCode" id="cb178"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb165"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># get consensus peak</span>
 <span class="va">peak.file</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"debchip_peaks.bed"</span>, package <span class="op">=</span> <span class="st">"DEbPeak"</span><span class="op">)</span>
 <span class="va">peak.df</span> <span class="op">=</span> <span class="fu"><a href="../reference/GetConsensusPeak.html">GetConsensusPeak</a></span><span class="op">(</span>peak.file <span class="op">=</span> <span class="va">peak.file</span><span class="op">)</span>
@@ -34679,26 +34693,26 @@ document.addEventListener("DOMContentLoaded", function() {
 <h3 class="hasAnchor">
 <a href="#peak-profile" class="anchor"></a>Peak profile</h3>
 <p>Check the profle of consensus peaks:</p>
-<div class="sourceCode" id="cb180"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb167"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># peak profile plot</span>
 <span class="va">peak.profile</span> <span class="op">=</span> <span class="fu"><a href="../reference/PeakProfile.html">PeakProfile</a></span><span class="op">(</span><span class="va">peak.df</span> ,species<span class="op">=</span><span class="st">"Mouse"</span>, by <span class="op">=</span> <span class="st">"gene"</span>, region.type <span class="op">=</span> <span class="st">"body"</span>, nbin <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing promoter regions...  2023-04-18 11时28分41秒 
-## &gt;&gt; preparing tag matrix...        2023-04-18 11时28分42秒 
-## &gt;&gt; preparing start_site regions by ... 2023-04-18 11时28分42秒
-## &gt;&gt; preparing tag matrix...  2023-04-18 11时28分42秒 
-## &gt;&gt; generating figure...       2023-04-18 11时28分50秒</code></pre>
-<pre><code>## &gt;&gt; done...            2023-04-18 11时28分50秒</code></pre>
-<pre><code>## &gt;&gt; binning method is used...2023-04-18 11时28分51秒
-## &gt;&gt; preparing start_site regions by gene... 2023-04-18 11时28分51秒
-## &gt;&gt; preparing tag matrix by binning...  2023-04-18 11时28分51秒 
-## &gt;&gt; Running bootstrapping for tag matrix...        2023-04-18 11时28分57秒 
-## &gt;&gt; binning method is used...2023-04-18 11时28分57秒
-## &gt;&gt; preparing body regions by gene... 2023-04-18 11时28分57秒
-## &gt;&gt; preparing tag matrix by binning...  2023-04-18 11时28分57秒 
-## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2023-04-18 11时28分57秒
-## &gt;&gt; 1 peaks(0.1536098%), having lengths smaller than 800bp, are filtered... 2023-04-18 11时29分00秒
-## &gt;&gt; Running bootstrapping for tag matrix...        2023-04-18 11时29分38秒</code></pre>
-<div class="sourceCode" id="cb184"><pre class="downlit sourceCode r">
+<pre><code>## &gt;&gt; preparing promoter regions...  2023-06-09 00时08分40秒 
+## &gt;&gt; preparing tag matrix...        2023-06-09 00时08分40秒 
+## &gt;&gt; preparing start_site regions by ... 2023-06-09 00时08分40秒
+## &gt;&gt; preparing tag matrix...  2023-06-09 00时08分40秒 
+## &gt;&gt; generating figure...       2023-06-09 00时08分53秒</code></pre>
+<pre><code>## &gt;&gt; done...            2023-06-09 00时08分53秒</code></pre>
+<pre><code>## &gt;&gt; binning method is used...2023-06-09 00时08分53秒
+## &gt;&gt; preparing start_site regions by gene... 2023-06-09 00时08分53秒
+## &gt;&gt; preparing tag matrix by binning...  2023-06-09 00时08分53秒 
+## &gt;&gt; Running bootstrapping for tag matrix...        2023-06-09 00时09分02秒 
+## &gt;&gt; binning method is used...2023-06-09 00时09分02秒
+## &gt;&gt; preparing body regions by gene... 2023-06-09 00时09分02秒
+## &gt;&gt; preparing tag matrix by binning...  2023-06-09 00时09分02秒 
+## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2023-06-09 00时09分02秒
+## &gt;&gt; 1 peaks(0.1536098%), having lengths smaller than 800bp, are filtered... 2023-06-09 00时09分05秒
+## &gt;&gt; Running bootstrapping for tag matrix...        2023-06-09 00时09分42秒</code></pre>
+<div class="sourceCode" id="cb171"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">peak.profile</span><span class="op">$</span><span class="va">profile.plot</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debchip_peak_profile-1.png" width="960" style="display: block; margin: auto;"></p>
 <hr>
@@ -34707,19 +34721,19 @@ document.addEventListener("DOMContentLoaded", function() {
 <h3 class="hasAnchor">
 <a href="#peak-annotation" class="anchor"></a>Peak annotation</h3>
 <p>Peak annotation with <a href="https://bioconductor.org/packages/release/bioc/vignettes/ChIPseeker/inst/doc/ChIPseeker.html">ChIPseeker</a>:</p>
-<div class="sourceCode" id="cb185"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb172"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># peak annotation</span>
 <span class="va">peak.anno</span> <span class="op">=</span> <span class="fu"><a href="../reference/AnnoPeak.html">AnnoPeak</a></span><span class="op">(</span>peak.df <span class="op">=</span> <span class="va">peak.df</span>,species <span class="op">=</span> <span class="st">"Mouse"</span>,seq.style <span class="op">=</span> <span class="st">"UCSC"</span>,up.dist <span class="op">=</span> <span class="fl">20000</span>,down.dist <span class="op">=</span> <span class="fl">20000</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing features information...      2023-04-18 11时29分39秒 
-## &gt;&gt; identifying nearest features...        2023-04-18 11时29分40秒 
-## &gt;&gt; calculating distance from peak to TSS...   2023-04-18 11时29分40秒 
-## &gt;&gt; assigning genomic annotation...        2023-04-18 11时29分40秒 
-## &gt;&gt; adding gene annotation...          2023-04-18 11时29分52秒</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2023-06-09 00时09分43秒 
+## &gt;&gt; identifying nearest features...        2023-06-09 00时09分44秒 
+## &gt;&gt; calculating distance from peak to TSS...   2023-06-09 00时09分44秒 
+## &gt;&gt; assigning genomic annotation...        2023-06-09 00时09分44秒 
+## &gt;&gt; adding gene annotation...          2023-06-09 00时09分56秒</code></pre>
 <pre><code>## 'select()' returned 1:many mapping between keys and columns</code></pre>
-<pre><code>## &gt;&gt; assigning chromosome lengths           2023-04-18 11时29分52秒 
-## &gt;&gt; done...                    2023-04-18 11时29分52秒</code></pre>
-<pre><code>## Warning: Removed 6 rows containing non-finite values (stat_count).</code></pre>
-<div class="sourceCode" id="cb190"><pre class="downlit sourceCode r">
+<pre><code>## &gt;&gt; assigning chromosome lengths           2023-06-09 00时09分56秒 
+## &gt;&gt; done...                    2023-06-09 00时09分56秒</code></pre>
+<pre><code>## Warning: Removed 6 rows containing non-finite values (`stat_count()`).</code></pre>
+<div class="sourceCode" id="cb177"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">peak.anno.df</span> <span class="op">=</span> <span class="va">peak.anno</span><span class="op">$</span><span class="va">df</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">peak.anno.df</span><span class="op">)</span></code></pre></div>
 <pre><code>##   seqnames     start       end width strand     name score
@@ -34764,11 +34778,11 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 4   Intron
 ## 5 Promoter
 ## 6 Promoter</code></pre>
-<div class="sourceCode" id="cb192"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb179"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">peak.anno</span><span class="op">$</span><span class="va">plots</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debchip_peak_annotation_plot-1.png" width="1344" style="display: block; margin: auto;"></p>
 <p>The above pie plot is not based on <code>ggplot2</code>, here we provide function to create pie plot based on <code>ggplot2</code>:</p>
-<div class="sourceCode" id="cb193"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb180"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/PeakAnnoPie.html">PeakAnnoPie</a></span><span class="op">(</span><span class="va">peak.anno</span><span class="op">$</span><span class="va">anno.obj</span><span class="op">)</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debchip_peak_annotation_pie-1.png" width="960" style="display: block; margin: auto;"></p>
 <hr>
@@ -34778,10 +34792,10 @@ document.addEventListener("DOMContentLoaded", function() {
 <h2 class="hasAnchor">
 <a href="#integrate-chip-seq-and-rna-seq" class="anchor"></a>Integrate ChIP-seq and RNA-seq</h2>
 <p>In this step, we will integrate ChIP-seq and RNA-seq to get plausible direct targets of promoter (in this example, Runx). ### Integrate</p>
-<div class="sourceCode" id="cb194"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">debchip.res</span> <span class="op">=</span> <span class="fu"><a href="../reference/DEbPeak.html">DEbPeak</a></span><span class="op">(</span>de.res <span class="op">=</span> <span class="va">debchip.dds.results.ordered</span>, peak.res <span class="op">=</span> <span class="va">peak.anno.df</span>, peak.anno.key <span class="op">=</span> <span class="st">"Promoter"</span>, merge.key<span class="op">=</span><span class="st">"SYMBOL"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb181"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">debchip.res</span> <span class="op">=</span> <span class="fu"><a href="../reference/DEbPeak.html">DEbPeak</a></span><span class="op">(</span>de.res <span class="op">=</span> <span class="va">debchip.dds.results.ordered</span>, peak.res <span class="op">=</span> <span class="va">peak.anno.df</span>, peak.anno.key <span class="op">=</span> <span class="st">"Promoter"</span>, merge.key<span class="op">=</span><span class="st">"SYMBOL"</span>, species <span class="op">=</span> <span class="st">"Mouse"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Differential expression analysis with DESeq2!</code></pre>
-<div class="sourceCode" id="cb196"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb183"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">debchip.res</span><span class="op">)</span></code></pre></div>
 <pre><code>##          SYMBOL geneId         annotation     anno ENSEMBL
 ## 1 0610012G03Rik   &lt;NA&gt;               &lt;NA&gt;     &lt;NA&gt;    &lt;NA&gt;
@@ -34808,7 +34822,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="integrate-summary" class="section level3">
 <h3 class="hasAnchor">
 <a href="#integrate-summary" class="anchor"></a>Integrate summary</h3>
-<div class="sourceCode" id="cb198"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb185"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># DE and ChIP venn plot</span>
 <span class="co"># debchip.plot = PlotDEbPeak(debchip.res, peak.type = "ChIP", show_percentage=FALSE)</span>
 <span class="co"># debchip.plot</span>
@@ -34825,7 +34839,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="upbpeak" class="section level4">
 <h4 class="hasAnchor">
 <a href="#upbpeak" class="anchor"></a>UPbPeak</h4>
-<div class="sourceCode" id="cb199"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb186"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># functional enrichment on direct targets</span>
 <span class="co"># debchip.up.fe.results = DEbPeakFE(de.peak = debchip.res, peak.fe.key = "UPbPeak", </span>
 <span class="co">#                                   gene.type = "ENTREZID", species="Mouse",save = F)</span>
@@ -34833,16 +34847,18 @@ document.addEventListener("DOMContentLoaded", function() {
                                gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <pre><code>## conduct ALL GO enrichment analysis on: UPbPeak</code></pre>
 <pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
-<pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.</code></pre>
-<pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
-<pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.</code></pre>
-<pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
-<pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.</code></pre>
+<pre><code>## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
+## wrong orderBy parameter; set to default `orderBy = "x"`
+## 
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
+## wrong orderBy parameter; set to default `orderBy = "x"`
+## 
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.</code></pre>
 <p>The results:</p>
-<div class="sourceCode" id="cb207"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb190"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># the result table</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">debchip.up.fe.results</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"table"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code>##            ONTOLOGY         ID                                    Description
@@ -34866,7 +34882,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## GO:0022011        Pmp22/Prx     2
 ## GO:0032292        Pmp22/Prx     2
 ## GO:0014044        Pmp22/Prx     2</code></pre>
-<div class="sourceCode" id="cb209"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb192"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># the result plot</span>
 <span class="va">debchip.up.fe.results</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"plot"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debchip_integrate_fe_up_show-1.png" width="768" style="display: block; margin: auto;"></p>
@@ -34875,7 +34891,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="downbpeak" class="section level4">
 <h4 class="hasAnchor">
 <a href="#downbpeak" class="anchor"></a>DOWNbPeak</h4>
-<div class="sourceCode" id="cb210"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb193"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># functional enrichment on direct targets</span>
 <span class="co"># debchip.down.fe.results = DEbPeakFE(de.peak = debchip.res, peak.fe.key = "DOWNbPeak", </span>
 <span class="co">#                                     gene.type = "ENTREZID", species="Mouse",save = F)</span>
@@ -34883,13 +34899,14 @@ document.addEventListener("DOMContentLoaded", function() {
                                  gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <pre><code>## conduct ALL GO enrichment analysis on: DOWNbPeak</code></pre>
 <pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
-<pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.</code></pre>
-<pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
-<pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.</code></pre>
+<pre><code>## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
+## wrong orderBy parameter; set to default `orderBy = "x"`
+## 
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.</code></pre>
 <p>The results:</p>
-<div class="sourceCode" id="cb216"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb197"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># the result table</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">debchip.down.fe.results</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"table"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code>##            ONTOLOGY         ID                                  Description
@@ -34913,7 +34930,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## GO:0030198           Bcl3/Col8a1/Fbln2/Mmp14/Postn     5
 ## GO:0043062           Bcl3/Col8a1/Fbln2/Mmp14/Postn     5
 ## GO:0051250                   Il4ra/Lyn/Ptpn22/Sdc4     4</code></pre>
-<div class="sourceCode" id="cb218"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb199"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># the result plot</span>
 <span class="va">debchip.down.fe.results</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"plot"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debchip_integrate_fe_down_show-1.png" width="768" style="display: block; margin: auto;"></p>
@@ -34938,7 +34955,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <h2 class="hasAnchor">
 <a href="#integrate-rna-seq-chip-seq-and-atac-seq" class="anchor"></a>Integrate RNA-seq, ChIP-seq and ATAC-seq</h2>
 <p>We have integrated RNA-seq and ChIP-seq data in the above steps, now we will continue to integrate ATAC-seq data based on the previous results. ### Prepare ATAC-seq data #### Consensus peaks</p>
-<div class="sourceCode" id="cb219"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb200"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># get consensus peak</span>
 <span class="va">atac.peak.file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"debatac_peaks.bed"</span>, package <span class="op">=</span> <span class="st">"DEbPeak"</span><span class="op">)</span>
 <span class="va">atac.peak.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetConsensusPeak.html">GetConsensusPeak</a></span><span class="op">(</span>peak.file <span class="op">=</span> <span class="va">atac.peak.file</span><span class="op">)</span>
@@ -34954,26 +34971,26 @@ document.addEventListener("DOMContentLoaded", function() {
 <h4 class="hasAnchor">
 <a href="#peak-profile-1" class="anchor"></a>Peak profile</h4>
 <p>Check the profle of consensus peaks:</p>
-<div class="sourceCode" id="cb221"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb202"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># peak profile plot</span>
 <span class="va">atac.peak.profile</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PeakProfile.html">PeakProfile</a></span><span class="op">(</span><span class="va">atac.peak.df</span>, species <span class="op">=</span> <span class="st">"Mouse"</span>, by <span class="op">=</span> <span class="st">"gene"</span>, region.type <span class="op">=</span> <span class="st">"body"</span>, nbin <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing promoter regions...  2023-04-18 11时30分45秒 
-## &gt;&gt; preparing tag matrix...        2023-04-18 11时30分45秒 
-## &gt;&gt; preparing start_site regions by ... 2023-04-18 11时30分45秒
-## &gt;&gt; preparing tag matrix...  2023-04-18 11时30分45秒 
-## &gt;&gt; generating figure...       2023-04-18 11时30分52秒</code></pre>
-<pre><code>## &gt;&gt; done...            2023-04-18 11时30分57秒</code></pre>
-<pre><code>## &gt;&gt; binning method is used...2023-04-18 11时30分58秒
-## &gt;&gt; preparing start_site regions by gene... 2023-04-18 11时30分58秒
-## &gt;&gt; preparing tag matrix by binning...  2023-04-18 11时30分58秒 
-## &gt;&gt; Running bootstrapping for tag matrix...        2023-04-18 11时31分44秒 
-## &gt;&gt; binning method is used...2023-04-18 11时31分44秒
-## &gt;&gt; preparing body regions by gene... 2023-04-18 11时31分44秒
-## &gt;&gt; preparing tag matrix by binning...  2023-04-18 11时31分44秒 
-## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2023-04-18 11时31分44秒
-## &gt;&gt; 16 peaks(0.296077%), having lengths smaller than 800bp, are filtered... 2023-04-18 11时31分51秒
-## &gt;&gt; Running bootstrapping for tag matrix...        2023-04-18 11时34分51秒</code></pre>
-<div class="sourceCode" id="cb225"><pre class="downlit sourceCode r">
+<pre><code>## &gt;&gt; preparing promoter regions...  2023-06-09 00时10分46秒 
+## &gt;&gt; preparing tag matrix...        2023-06-09 00时10分46秒 
+## &gt;&gt; preparing start_site regions by ... 2023-06-09 00时10分46秒
+## &gt;&gt; preparing tag matrix...  2023-06-09 00时10分46秒 
+## &gt;&gt; generating figure...       2023-06-09 00时10分55秒</code></pre>
+<pre><code>## &gt;&gt; done...            2023-06-09 00时11分01秒</code></pre>
+<pre><code>## &gt;&gt; binning method is used...2023-06-09 00时11分02秒
+## &gt;&gt; preparing start_site regions by gene... 2023-06-09 00时11分02秒
+## &gt;&gt; preparing tag matrix by binning...  2023-06-09 00时11分02秒 
+## &gt;&gt; Running bootstrapping for tag matrix...        2023-06-09 00时11分51秒 
+## &gt;&gt; binning method is used...2023-06-09 00时11分51秒
+## &gt;&gt; preparing body regions by gene... 2023-06-09 00时11分51秒
+## &gt;&gt; preparing tag matrix by binning...  2023-06-09 00时11分51秒 
+## &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2023-06-09 00时11分51秒
+## &gt;&gt; 16 peaks(0.296077%), having lengths smaller than 800bp, are filtered... 2023-06-09 00时11分57秒
+## &gt;&gt; Running bootstrapping for tag matrix...        2023-06-09 00时14分57秒</code></pre>
+<div class="sourceCode" id="cb206"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">atac.peak.profile</span><span class="op">$</span><span class="va">profile.plot</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debchip_atac_peak_profile-1.png" width="960" style="display: block; margin: auto;"></p>
 </div>
@@ -34981,22 +34998,22 @@ document.addEventListener("DOMContentLoaded", function() {
 <h4 class="hasAnchor">
 <a href="#peak-annotation-1" class="anchor"></a>Peak annotation</h4>
 <p>Peak annotation with <a href="https://bioconductor.org/packages/release/bioc/vignettes/ChIPseeker/inst/doc/ChIPseeker.html">ChIPseeker</a>:</p>
-<div class="sourceCode" id="cb226"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb207"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># peak annotation</span>
 <span class="va">atac.peak.anno</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AnnoPeak.html">AnnoPeak</a></span><span class="op">(</span>
   peak.df <span class="op">=</span> <span class="va">atac.peak.df</span>, species <span class="op">=</span> <span class="st">"Mouse"</span>,
   seq.style <span class="op">=</span> <span class="st">"UCSC"</span>, up.dist <span class="op">=</span> <span class="fl">20000</span>, down.dist <span class="op">=</span> <span class="fl">20000</span>
 <span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing features information...      2023-04-18 11时34分53秒 
-## &gt;&gt; identifying nearest features...        2023-04-18 11时34分53秒 
-## &gt;&gt; calculating distance from peak to TSS...   2023-04-18 11时34分54秒 
-## &gt;&gt; assigning genomic annotation...        2023-04-18 11时34分54秒 
-## &gt;&gt; adding gene annotation...          2023-04-18 11时34分58秒</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2023-06-09 00时15分00秒 
+## &gt;&gt; identifying nearest features...        2023-06-09 00时15分00秒 
+## &gt;&gt; calculating distance from peak to TSS...   2023-06-09 00时15分00秒 
+## &gt;&gt; assigning genomic annotation...        2023-06-09 00时15分00秒 
+## &gt;&gt; adding gene annotation...          2023-06-09 00时15分03秒</code></pre>
 <pre><code>## 'select()' returned 1:many mapping between keys and columns</code></pre>
-<pre><code>## &gt;&gt; assigning chromosome lengths           2023-04-18 11时34分58秒 
-## &gt;&gt; done...                    2023-04-18 11时34分58秒</code></pre>
-<pre><code>## Warning: Removed 23 rows containing non-finite values (stat_count).</code></pre>
-<div class="sourceCode" id="cb231"><pre class="downlit sourceCode r">
+<pre><code>## &gt;&gt; assigning chromosome lengths           2023-06-09 00时15分03秒 
+## &gt;&gt; done...                    2023-06-09 00时15分03秒</code></pre>
+<pre><code>## Warning: Removed 23 rows containing non-finite values (`stat_count()`).</code></pre>
+<div class="sourceCode" id="cb212"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">atac.peak.anno.df</span> <span class="op">=</span> <span class="va">atac.peak.anno</span><span class="op">$</span><span class="va">df</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">atac.peak.anno.df</span><span class="op">)</span></code></pre></div>
 <pre><code>##   seqnames     start       end width strand     name score       annotation
@@ -35027,11 +35044,11 @@ document.addEventListener("DOMContentLoaded", function() {
 ## 4                       jun D proto-oncogene Promoter
 ## 5                    zinc finger protein 868 Promoter
 ## 6                  transmembrane protein 267 Promoter</code></pre>
-<div class="sourceCode" id="cb233"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb214"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">atac.peak.anno</span><span class="op">$</span><span class="va">plots</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debchip_atac_peak_annotation_plot-1.png" width="1344" style="display: block; margin: auto;"></p>
 <p>The above pie plot is not based on <code>ggplot2</code>, here we provide function to create pie plot based on <code>ggplot2</code>:</p>
-<div class="sourceCode" id="cb234"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb215"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/PeakAnnoPie.html">PeakAnnoPie</a></span><span class="op">(</span><span class="va">atac.peak.anno</span><span class="op">$</span><span class="va">anno.obj</span><span class="op">)</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debchip_atac_peak_annotation_pie-1.png" width="960" style="display: block; margin: auto;"></p>
 <hr>
@@ -35042,12 +35059,12 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="integrate" class="section level4">
 <h4 class="hasAnchor">
 <a href="#integrate" class="anchor"></a>Integrate</h4>
-<div class="sourceCode" id="cb235"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb216"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">debpeak.res</span> <span class="op">=</span> <span class="fu"><a href="../reference/DEbCA.html">DEbCA</a></span><span class="op">(</span>de.res <span class="op">=</span> <span class="va">debchip.dds.results.ordered</span>, chip.peak.res <span class="op">=</span> <span class="va">peak.anno.df</span>,
                     atac.peak.res <span class="op">=</span> <span class="va">atac.peak.anno.df</span>,
                     peak.anno.key <span class="op">=</span> <span class="st">"Promoter"</span>, merge.key <span class="op">=</span> <span class="st">"SYMBOL"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Differential expression analysis with DESeq2!</code></pre>
-<div class="sourceCode" id="cb237"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb218"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">debpeak.res</span><span class="op">)</span></code></pre></div>
 <pre><code>##          SYMBOL geneId_ChIP    annotation_ChIP anno_ChIP ENSEMBL_ChIP
 ## 1 0610009E02Rik        &lt;NA&gt;               &lt;NA&gt;      &lt;NA&gt;         &lt;NA&gt;
@@ -35081,7 +35098,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="integrate-summary-1" class="section level4">
 <h4 class="hasAnchor">
 <a href="#integrate-summary-1" class="anchor"></a>Integrate summary</h4>
-<div class="sourceCode" id="cb239"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb220"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># DE and ChIP venn plot</span>
 <span class="co"># debpeak.plot = PlotDEbPeak(debpeak.res, peak.type = "Peak", show_percentage=FALSE)</span>
 <span class="co"># debpeak.plot</span>
@@ -35097,20 +35114,21 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="upbpeak-1" class="section level5">
 <h5 class="hasAnchor">
 <a href="#upbpeak-1" class="anchor"></a>UPbPeak</h5>
-<div class="sourceCode" id="cb240"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb221"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># functional enrichment on direct targets</span>
 <span class="co"># debpeak.up.fe.results = DEbPeakFE(de.peak = debpeak.res, peak.fe.key = "UPbPeak", gene.type = "ENTREZID", species="Mouse",save = F)</span>
 <span class="va">debpeak.up.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteFE.html">InteFE</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debpeak.res</span>, fe.key <span class="op">=</span> <span class="st">"UPbPeak"</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>,
                                gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <pre><code>## conduct ALL GO enrichment analysis on: UPbPeak</code></pre>
 <pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
-<pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.</code></pre>
-<pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
-<pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.</code></pre>
+<pre><code>## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
+## wrong orderBy parameter; set to default `orderBy = "x"`
+## 
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.</code></pre>
 <p>The results:</p>
-<div class="sourceCode" id="cb246"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb225"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># the result table</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">debpeak.up.fe.results</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"table"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code>##            ONTOLOGY         ID                     Description GeneRatio
@@ -35127,7 +35145,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## GO:0043256  12/23271 4.632203e-03 0.043690148 0.020120463     Pmp22     1
 ## GO:0019898 320/23271 6.366508e-03 0.043690148 0.020120463  Bsn/Syt6     2
 ## GO:0030133 339/23271 7.118989e-03 0.043690148 0.020120463  Bsn/Syt6     2</code></pre>
-<div class="sourceCode" id="cb248"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb227"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># the result plot</span>
 <span class="va">debpeak.up.fe.results</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"plot"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debpeak_integrate_fe_up_show-1.png" width="768" style="display: block; margin: auto;"></p>
@@ -35136,7 +35154,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="downbpeak-1" class="section level5">
 <h5 class="hasAnchor">
 <a href="#downbpeak-1" class="anchor"></a>DOWNbPeak</h5>
-<div class="sourceCode" id="cb249"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb228"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># functional enrichment on direct targets</span>
 <span class="co"># debpeak.down.fe.results = DEbPeakFE(de.peak = debpeak.res, peak.fe.key = "DOWNbPeak", </span>
 <span class="co">#                                     gene.type = "ENTREZID", species="Mouse",save = F)</span>
@@ -35144,13 +35162,14 @@ document.addEventListener("DOMContentLoaded", function() {
                                  gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <pre><code>## conduct ALL GO enrichment analysis on: DOWNbPeak</code></pre>
 <pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
-<pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.</code></pre>
-<pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
-<pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.</code></pre>
+<pre><code>## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
+## wrong orderBy parameter; set to default `orderBy = "x"`
+## 
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.</code></pre>
 <p>The results:</p>
-<div class="sourceCode" id="cb255"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb232"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># the result table</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">debpeak.down.fe.results</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"table"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code>##            ONTOLOGY         ID                                    Description
@@ -35174,7 +35193,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## GO:0045860  Akap13/Ccnd1/Ern1/Sdc4     4
 ## GO:0042832              Bcl3/Il4ra     2
 ## GO:0010810       Col8a1/Fbln2/Sdc4     3</code></pre>
-<div class="sourceCode" id="cb257"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb234"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># the result plot</span>
 <span class="va">debpeak.down.fe.results</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"plot"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <p><img src="DEbPeak_All_files/figure-html/debpeak_integrate_fe_down_show-1.png" width="768" style="display: block; margin: auto;"></p>
@@ -35193,11 +35212,11 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="results-from-de-analysis" class="section level3">
 <h3 class="hasAnchor">
 <a href="#results-from-de-analysis" class="anchor"></a>results from DE analysis</h3>
-<div class="sourceCode" id="cb258"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb235"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># convert for DESeq2 results</span>
 <span class="va">dds.results.ordered</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/IDConversion.html">IDConversion</a></span><span class="op">(</span>deres <span class="op">=</span> <span class="va">dds.results.ordered</span>, gene.type <span class="op">=</span> <span class="st">"ENSEMBL"</span>,sort.key <span class="op">=</span> <span class="st">"log2FoldChange"</span><span class="op">)</span></code></pre></div>
 <pre><code>## 'select()' returned 1:many mapping between keys and columns</code></pre>
-<div class="sourceCode" id="cb260"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb237"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">dds.results.ordered</span><span class="op">)</span></code></pre></div>
 <pre><code>##                       baseMean log2FoldChange    lfcSE     stat       pvalue
 ## ENSMUSG00000025934.15 2.010933       4.460298 3.017418 1.478183           NA
@@ -35218,10 +35237,10 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="normal-matrix" class="section level3">
 <h3 class="hasAnchor">
 <a href="#normal-matrix" class="anchor"></a>normal matrix</h3>
-<div class="sourceCode" id="cb262"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb239"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">count.matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/IDConversion.html">IDConversion</a></span><span class="op">(</span>deres <span class="op">=</span> <span class="va">count.matrix</span>, gene.type <span class="op">=</span> <span class="st">"ENSEMBL"</span>,sort.key<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></code></pre></div>
 <pre><code>## 'select()' returned 1:many mapping between keys and columns</code></pre>
-<div class="sourceCode" id="cb264"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb241"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">count.matrix</span><span class="op">)</span></code></pre></div>
 <pre><code>##                        KO1  KO2  KO3  KO4  KO5  KO6  WT1  WT2  WT3  WT4  WT5
 ## ENSMUSG00000000001.4  4556 4218 3835 3718 5741 3875 4115 5074 2931 4374 5118
@@ -35251,7 +35270,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <p><span class="math display">\[
 \mathrm{CPM}=\frac{\text { Number of reads mapped to gene } \times 10^{6}}{\text { Total number of mapped reads }}
 \]</span></p>
-<div class="sourceCode" id="cb266"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb243"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cpm.matrix</span><span class="op">=</span><span class="fu"><a href="../reference/NormalizedCount.html">NormalizedCount</a></span><span class="op">(</span><span class="va">dds</span>, norm.type<span class="op">=</span><span class="st">"CPM"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">cpm.matrix</span><span class="op">)</span></code></pre></div>
 <pre><code>##                             KO1       KO2        KO3       KO4        KO5
@@ -35281,7 +35300,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <h3 class="hasAnchor">
 <a href="#tmm" class="anchor"></a>TMM</h3>
 <p>edgeR’s <em>T</em>rimmed <em>M</em>ean of <em>M</em> values (TMM) takes into account the <strong>sequencing depth</strong>, <strong>RNA composition</strong>, and <strong>gene length</strong>. For detailed information, please refer to <a href="https://genomebiology.biomedcentral.com/articles/10.1186/gb-2010-11-3-r25">A scaling normalization method for differential expression analysis of RNA-seq data</a>.</p>
-<div class="sourceCode" id="cb268"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb245"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tmm.matrix</span><span class="op">=</span><span class="fu"><a href="../reference/NormalizedCount.html">NormalizedCount</a></span><span class="op">(</span><span class="va">dds</span>, norm.type<span class="op">=</span><span class="st">"TMM"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">tmm.matrix</span><span class="op">)</span></code></pre></div>
 <pre><code>##                             KO1       KO2        KO3       KO4        KO5
@@ -35311,7 +35330,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <h3 class="hasAnchor">
 <a href="#deseq2s-median-of-ratios" class="anchor"></a>DESeq2’s median of ratios</h3>
 <p>DESeq2’s median of ratios takes into account the <strong>sequencing depth</strong> and <strong>RNA composition</strong>. For detailed information, please refer to <a href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0550-8">Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2</a>.</p>
-<div class="sourceCode" id="cb270"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb247"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">deseq2.matrix</span><span class="op">=</span><span class="fu"><a href="../reference/NormalizedCount.html">NormalizedCount</a></span><span class="op">(</span><span class="va">dds</span>, norm.type<span class="op">=</span><span class="st">"DESeq2"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">deseq2.matrix</span><span class="op">)</span></code></pre></div>
 <pre><code>##                             KO1       KO2        KO3       KO4        KO5
@@ -35344,7 +35363,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <p><span class="math display">\[
 \text { RPKM }=\frac{\text { Number of reads mapped to gene } \times 10^{3} \times 10^{6}}{\text { Total number of mapped reads } \times \text { gene length }}
 \]</span></p>
-<div class="sourceCode" id="cb272"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb249"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rpkm.matrix</span><span class="op">=</span><span class="fu"><a href="../reference/NormalizedCount.html">NormalizedCount</a></span><span class="op">(</span><span class="va">dds</span>,gtf.file <span class="op">=</span> <span class="st">'/path/to/gtf'</span>, norm.type<span class="op">=</span><span class="st">"RPKM"</span><span class="op">)</span></code></pre></div>
 <hr>
 </div>
@@ -35359,7 +35378,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <p><span class="math display">\[
 \mathrm{TPM}=\frac{R P K M}{\sum(R P K M)} \times 10^{6}
 \]</span></p>
-<div class="sourceCode" id="cb273"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb250"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tpm.matrix</span><span class="op">=</span><span class="fu"><a href="../reference/NormalizedCount.html">NormalizedCount</a></span><span class="op">(</span><span class="va">dds</span>,gtf.file <span class="op">=</span> <span class="st">'/path/to/gtf'</span>, norm.type<span class="op">=</span><span class="st">"TPM"</span><span class="op">)</span></code></pre></div>
 <hr>
 </div>
@@ -35368,7 +35387,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="session-info" class="section level1">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session info</h1>
-<div class="sourceCode" id="cb274"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb251"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <pre><code>## R version 4.0.3 (2020-10-10)
 ## Platform: x86_64-conda-linux-gnu (64-bit)
@@ -35407,7 +35426,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ## [15] IRanges_2.24.1                           
 ## [16] S4Vectors_0.28.1                         
 ## [17] BiocGenerics_0.42.0                      
-## [18] DEbPeak_1.1.0                            
+## [18] DEbPeak_1.2.0                            
 ## [19] knitr_1.37                               
 ## [20] BiocStyle_2.18.1                         
 ## 
@@ -35421,14 +35440,14 @@ document.addEventListener("DOMContentLoaded", function() {
 ##   [7] rprojroot_2.0.2                        
 ##   [8] crayon_1.4.1                           
 ##   [9] V8_3.4.2                               
-##  [10] MASS_7.3-53.1                          
+##  [10] MASS_7.3-58                            
 ##  [11] nlme_3.1-152                           
 ##  [12] backports_1.2.1                        
 ##  [13] sva_3.38.0                             
 ##  [14] GOSemSim_2.25.0                        
 ##  [15] rlang_1.1.0                            
 ##  [16] XVector_0.30.0                         
-##  [17] readxl_1.3.1                           
+##  [17] readxl_1.4.2                           
 ##  [18] irlba_2.3.5                            
 ##  [19] GOstats_2.56.0                         
 ##  [20] BiocParallel_1.24.1                    
@@ -35443,21 +35462,21 @@ document.addEventListener("DOMContentLoaded", function() {
 ##  [29] base64url_1.4                          
 ##  [30] tcltk_4.0.3                            
 ##  [31] DOSE_3.23.2                            
-##  [32] haven_2.3.1                            
-##  [33] tidyselect_1.1.0                       
+##  [32] haven_2.5.2                            
+##  [33] tidyselect_1.2.0                       
 ##  [34] rio_0.5.27                             
 ##  [35] XML_3.99-0.6                           
-##  [36] tidyr_1.1.3                            
+##  [36] tidyr_1.3.0                            
 ##  [37] ggpubr_0.4.0                           
 ##  [38] GenomicAlignments_1.26.0               
 ##  [39] xtable_1.8-4                           
-##  [40] magrittr_2.0.1                         
+##  [40] magrittr_2.0.3                         
 ##  [41] evaluate_0.14                          
-##  [42] ggplot2_3.3.5                          
+##  [42] ggplot2_3.4.2                          
 ##  [43] cli_3.6.1                              
 ##  [44] zlibbioc_1.36.0                        
 ##  [45] hwriter_1.3.2                          
-##  [46] rstudioapi_0.13                        
+##  [46] rstudioapi_0.14                        
 ##  [47] bslib_0.3.1                            
 ##  [48] GreyListChIP_1.22.0                    
 ##  [49] fastmatch_1.1-3                        
@@ -35469,11 +35488,11 @@ document.addEventListener("DOMContentLoaded", function() {
 ##  [55] cluster_2.1.1                          
 ##  [56] caTools_1.18.2                         
 ##  [57] tidygraph_1.2.0                        
-##  [58] tibble_3.1.0                           
+##  [58] tibble_3.2.1                           
 ##  [59] ggrepel_0.9.1                          
 ##  [60] Biostrings_2.58.0                      
 ##  [61] png_0.1-7                              
-##  [62] withr_2.4.1                            
+##  [62] withr_2.5.0                            
 ##  [63] bitops_1.0-6                           
 ##  [64] ggforce_0.3.3                          
 ##  [65] RBGL_1.66.0                            
@@ -35483,7 +35502,7 @@ document.addEventListener("DOMContentLoaded", function() {
 ##  [69] pcaPP_2.0-1                            
 ##  [70] dqrng_0.2.1                            
 ##  [71] coda_0.19-4                            
-##  [72] pillar_1.5.1                           
+##  [72] pillar_1.9.0                           
 ##  [73] gplots_3.1.1                           
 ##  [74] GlobalOptions_0.1.2                    
 ##  [75] cachem_1.0.4                           
@@ -35491,73 +35510,73 @@ document.addEventListener("DOMContentLoaded", function() {
 ##  [77] GetoptLong_1.0.5                       
 ##  [78] clusterProfiler_4.7.1                  
 ##  [79] DelayedMatrixStats_1.12.3              
-##  [80] vctrs_0.4.1                            
-##  [81] ellipsis_0.3.2                         
-##  [82] generics_0.1.0                         
-##  [83] plot3D_1.4                             
-##  [84] tools_4.0.3                            
-##  [85] foreign_0.8-81                         
-##  [86] NOISeq_2.34.0                          
-##  [87] munsell_0.5.0                          
-##  [88] tweenr_1.0.2                           
-##  [89] fgsea_1.16.0                           
-##  [90] DelayedArray_0.16.3                    
-##  [91] fastmap_1.1.0                          
-##  [92] compiler_4.0.3                         
-##  [93] abind_1.4-5                            
-##  [94] rtracklayer_1.50.0                     
-##  [95] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
-##  [96] GenomeInfoDbData_1.2.4                 
-##  [97] gridExtra_2.3                          
-##  [98] lattice_0.20-45                        
-##  [99] ggnewscale_0.4.7                       
-## [100] AnnotationForge_1.32.0                 
-## [101] utf8_1.2.1                             
-## [102] dplyr_1.0.5                            
-## [103] BiocFileCache_1.14.0                   
-## [104] jsonlite_1.7.2                         
-## [105] scales_1.1.1                           
-## [106] graph_1.68.0                           
-## [107] carData_3.0-4                          
-## [108] sparseMatrixStats_1.2.1                
-## [109] genefilter_1.72.1                      
-## [110] car_3.0-11                             
-## [111] doParallel_1.0.16                      
-## [112] latticeExtra_0.6-29                    
-## [113] brew_1.0-6                             
-## [114] checkmate_2.0.0                        
-## [115] rmarkdown_2.14                         
-## [116] openxlsx_4.2.3                         
-## [117] pkgdown_1.6.1                          
-## [118] cowplot_1.1.1                          
-## [119] textshaping_0.1.2                      
-## [120] forcats_0.5.1                          
-## [121] downloader_0.4                         
-## [122] BSgenome_1.58.0                        
-## [123] igraph_1.3.4                           
-## [124] survival_3.2-10                        
-## [125] numDeriv_2016.8-1.1                    
-## [126] yaml_2.2.1                             
-## [127] plotrix_3.8-2                          
-## [128] systemfonts_1.0.1                      
-## [129] ashr_2.2-47                            
-## [130] SQUAREM_2021.1                         
-## [131] htmltools_0.5.2                        
-## [132] memoise_2.0.0                          
-## [133] VariantAnnotation_1.36.0               
-## [134] locfit_1.5-9.4                         
-## [135] graphlayouts_0.7.1                     
-## [136] batchtools_0.9.15                      
-## [137] PCAtools_2.2.0                         
-## [138] viridisLite_0.4.0                      
-## [139] rrcov_1.7-0                            
-## [140] digest_0.6.27                          
-## [141] assertthat_0.2.1                       
-## [142] rappdirs_0.3.3                         
-## [143] emdbook_1.3.12                         
-## [144] RSQLite_2.2.5                          
-## [145] amap_0.8-18                            
-## [146] yulab.utils_0.0.4                      
+##  [80] vctrs_0.6.2                            
+##  [81] generics_0.1.0                         
+##  [82] plot3D_1.4                             
+##  [83] tools_4.0.3                            
+##  [84] foreign_0.8-81                         
+##  [85] NOISeq_2.34.0                          
+##  [86] munsell_0.5.0                          
+##  [87] tweenr_1.0.2                           
+##  [88] fgsea_1.16.0                           
+##  [89] DelayedArray_0.16.3                    
+##  [90] fastmap_1.1.0                          
+##  [91] compiler_4.0.3                         
+##  [92] abind_1.4-5                            
+##  [93] rtracklayer_1.50.0                     
+##  [94] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
+##  [95] GenomeInfoDbData_1.2.4                 
+##  [96] gridExtra_2.3                          
+##  [97] lattice_0.20-45                        
+##  [98] ggnewscale_0.4.7                       
+##  [99] AnnotationForge_1.32.0                 
+## [100] utf8_1.2.1                             
+## [101] dplyr_1.1.2                            
+## [102] BiocFileCache_1.14.0                   
+## [103] jsonlite_1.8.4                         
+## [104] scales_1.2.1                           
+## [105] graph_1.68.0                           
+## [106] carData_3.0-4                          
+## [107] sparseMatrixStats_1.2.1                
+## [108] genefilter_1.72.1                      
+## [109] car_3.0-11                             
+## [110] doParallel_1.0.16                      
+## [111] latticeExtra_0.6-29                    
+## [112] brew_1.0-6                             
+## [113] checkmate_2.0.0                        
+## [114] rmarkdown_2.14                         
+## [115] openxlsx_4.2.3                         
+## [116] pkgdown_1.6.1                          
+## [117] cowplot_1.1.1                          
+## [118] textshaping_0.3.6                      
+## [119] forcats_1.0.0                          
+## [120] downloader_0.4                         
+## [121] BSgenome_1.58.0                        
+## [122] igraph_1.3.4                           
+## [123] survival_3.2-10                        
+## [124] numDeriv_2016.8-1.1                    
+## [125] yaml_2.2.1                             
+## [126] plotrix_3.8-2                          
+## [127] systemfonts_1.0.4                      
+## [128] ashr_2.2-47                            
+## [129] SQUAREM_2021.1                         
+## [130] htmltools_0.5.2                        
+## [131] memoise_2.0.0                          
+## [132] VariantAnnotation_1.36.0               
+## [133] locfit_1.5-9.4                         
+## [134] graphlayouts_0.7.1                     
+## [135] batchtools_0.9.15                      
+## [136] PCAtools_2.2.0                         
+## [137] viridisLite_0.4.0                      
+## [138] rrcov_1.7-0                            
+## [139] digest_0.6.27                          
+## [140] assertthat_0.2.1                       
+## [141] rappdirs_0.3.3                         
+## [142] emdbook_1.3.12                         
+## [143] RSQLite_2.2.5                          
+## [144] amap_0.8-18                            
+## [145] yulab.utils_0.0.4                      
+## [146] debugme_1.1.0                          
 ## [147] misc3d_0.9-1                           
 ## [148] data.table_1.14.2                      
 ## [149] blob_1.2.1                             
@@ -35567,8 +35586,8 @@ document.addEventListener("DOMContentLoaded", function() {
 ## [153] Cairo_1.5-12.2                         
 ## [154] ggupset_0.3.0                          
 ## [155] RCurl_1.98-1.3                         
-## [156] broom_0.7.5                            
-## [157] hms_1.0.0                              
+## [156] broom_1.0.4                            
+## [157] hms_1.1.3                              
 ## [158] colorspace_2.0-0                       
 ## [159] BiocManager_1.30.16                    
 ## [160] shape_1.4.6                            
@@ -35580,72 +35599,74 @@ document.addEventListener("DOMContentLoaded", function() {
 ## [166] circlize_0.4.15                        
 ## [167] enrichplot_1.10.2                      
 ## [168] fansi_0.4.2                            
-## [169] truncnorm_1.0-8                        
-## [170] ChIPseeker_1.33.0.900                  
-## [171] R6_2.5.0                               
-## [172] grid_4.0.3                             
-## [173] lifecycle_1.0.3                        
-## [174] ShortRead_1.48.0                       
-## [175] zip_2.1.1                              
-## [176] curl_4.3                               
-## [177] ggsignif_0.6.3                         
-## [178] jquerylib_0.1.3                        
-## [179] robustbase_0.95-0                      
-## [180] DO.db_2.9                              
-## [181] Matrix_1.3-3                           
-## [182] qvalue_2.22.0                          
-## [183] desc_1.3.0                             
-## [184] RColorBrewer_1.1-2                     
-## [185] iterators_1.0.13                       
-## [186] stringr_1.4.0                          
-## [187] DOT_0.1                                
-## [188] ggpie_0.2.5                            
-## [189] beachmat_2.6.4                         
-## [190] polyclip_1.10-0                        
-## [191] biomaRt_2.46.3                         
-## [192] purrr_0.3.4                            
-## [193] shadowtext_0.0.9                       
-## [194] gridGraphics_0.5-1                     
-## [195] mgcv_1.8-34                            
-## [196] ComplexHeatmap_2.13.1                  
-## [197] openssl_1.4.3                          
-## [198] patchwork_1.0.0                        
-## [199] bdsmatrix_1.3-4                        
-## [200] codetools_0.2-18                       
-## [201] invgamma_1.1                           
-## [202] GO.db_3.12.1                           
-## [203] gtools_3.8.2                           
-## [204] prettyunits_1.1.1                      
-## [205] dbplyr_2.1.1                           
-## [206] gtable_0.3.0                           
-## [207] DBI_1.1.1                              
-## [208] highr_0.8                              
-## [209] ggfun_0.0.6                            
-## [210] httr_1.4.2                             
-## [211] KernSmooth_2.23-18                     
-## [212] stringi_1.5.3                          
-## [213] progress_1.2.2                         
-## [214] reshape2_1.4.4                         
-## [215] farver_2.1.0                           
-## [216] annotate_1.68.0                        
-## [217] viridis_0.6.1                          
-## [218] Rgraphviz_2.34.0                       
-## [219] xml2_1.3.2                             
-## [220] bbmle_1.0.24                           
-## [221] systemPipeR_1.24.3                     
-## [222] boot_1.3-28                            
-## [223] readr_1.4.0                            
-## [224] geneplotter_1.68.0                     
-## [225] ggplotify_0.1.0                        
-## [226] Category_2.56.0                        
-## [227] DEoptimR_1.0-11                        
-## [228] bit_4.0.4                              
-## [229] scatterpie_0.1.7                       
-## [230] jpeg_0.1-8.1                           
-## [231] ggraph_2.0.5                           
-## [232] babelgene_21.4                         
-## [233] pkgconfig_2.0.3                        
-## [234] rstatix_0.7.0</code></pre>
+## [169] tzdb_0.3.0                             
+## [170] truncnorm_1.0-8                        
+## [171] ChIPseeker_1.33.0.900                  
+## [172] R6_2.5.0                               
+## [173] grid_4.0.3                             
+## [174] lifecycle_1.0.3                        
+## [175] ShortRead_1.48.0                       
+## [176] zip_2.1.1                              
+## [177] curl_4.3                               
+## [178] ggsignif_0.6.3                         
+## [179] jquerylib_0.1.3                        
+## [180] robustbase_0.95-0                      
+## [181] DO.db_2.9                              
+## [182] Matrix_1.5-4                           
+## [183] qvalue_2.22.0                          
+## [184] desc_1.3.0                             
+## [185] RColorBrewer_1.1-2                     
+## [186] iterators_1.0.13                       
+## [187] stringr_1.5.0                          
+## [188] DOT_0.1                                
+## [189] ggpie_0.2.5                            
+## [190] beachmat_2.6.4                         
+## [191] polyclip_1.10-0                        
+## [192] biomaRt_2.46.3                         
+## [193] purrr_1.0.1                            
+## [194] shadowtext_0.0.9                       
+## [195] gridGraphics_0.5-1                     
+## [196] mgcv_1.8-34                            
+## [197] ComplexHeatmap_2.13.1                  
+## [198] openssl_1.4.3                          
+## [199] patchwork_1.0.0                        
+## [200] bdsmatrix_1.3-4                        
+## [201] codetools_0.2-18                       
+## [202] invgamma_1.1                           
+## [203] GO.db_3.12.1                           
+## [204] gtools_3.8.2                           
+## [205] prettyunits_1.1.1                      
+## [206] dbplyr_2.3.2                           
+## [207] gtable_0.3.0                           
+## [208] DBI_1.1.1                              
+## [209] highr_0.8                              
+## [210] ggfun_0.0.6                            
+## [211] httr_1.4.5                             
+## [212] KernSmooth_2.23-18                     
+## [213] vroom_1.6.1                            
+## [214] stringi_1.5.3                          
+## [215] progress_1.2.2                         
+## [216] reshape2_1.4.4                         
+## [217] farver_2.1.0                           
+## [218] annotate_1.68.0                        
+## [219] viridis_0.6.1                          
+## [220] Rgraphviz_2.34.0                       
+## [221] xml2_1.3.4                             
+## [222] bbmle_1.0.24                           
+## [223] systemPipeR_1.24.3                     
+## [224] boot_1.3-28                            
+## [225] readr_2.1.4                            
+## [226] geneplotter_1.68.0                     
+## [227] ggplotify_0.1.0                        
+## [228] Category_2.56.0                        
+## [229] DEoptimR_1.0-11                        
+## [230] bit_4.0.4                              
+## [231] scatterpie_0.1.7                       
+## [232] jpeg_0.1-8.1                           
+## [233] ggraph_2.0.5                           
+## [234] babelgene_21.4                         
+## [235] pkgconfig_2.0.3                        
+## [236] rstatix_0.7.0</code></pre>
 </div>
   </div>
 

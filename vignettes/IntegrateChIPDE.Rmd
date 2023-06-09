@@ -1,0 +1,275 @@
+---
+title: "IntegrateChIPDE"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+The gene expression can also be regulated by *cis*-regulatory elements, such as enhancers. Different from promoters which are typically located directly upstream or downstream of the transcription initiation sites (TSSs), [enhancers can act independent of orientation, distance, and location with respect to the target gene and can be located over as much as a million base pairs away](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-021-02322-1). This characteristic determines that annotating peak to its nearest gene for analysis is inaccurate. Here, we adopted the following strategies:
+
+* Step1: Extract differential binding peaks and differential expressed genes (both are based on hard-threshold)
+* Step2: Annotate differential binding peaks to genes within a given distance threshold
+* Step3: Merge the annotated genes with differential expressed genes
+
+<hr />
+
+## Example data
+
+The data used here are from [Persistent Alterations in Microglial Enhancers in a Model of Chronic Pain](https://doi.org/10.1016/j.celrep.2016.04.063):
+
+* **RNA-seq data**: RNA sequencing of the spinal microglia after SNL vs sham surgery, the raw data are stored in [GSE71133](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE71133)
+* **ChIP-seq data**: Genome-wide H3K4me1 enrichment profiles (ChIP-seq) of spinal cord microglia after SNL vs sham surgery, the raw data are stored in [GSE71134](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE71134)
+
+[Histone H3K4me1 and H3K27ac are enhancer-specific modifications and are required for enhancers to activate transcription of target genes](https://faseb.onlinelibrary.wiley.com/doi/epdf/10.1096/fj.202100488R). 
+
+<hr />
+
+## Load packages
+
+```{r dechip_load_example}
+# library
+suppressWarnings(suppressMessages(library(DEbPeak)))
+```
+
+<hr />
+
+## Prepare ChIP-seq counts
+
+To perform differential binding analysis, we need to prepare count matrix of ChIP-seq samples. `DEbPeak` provides `PeakMatrix` to do this, it contains two steps:
+
+* get read counts in each bin with `DiffBind` 
+* annotate the peak to its nearest gene with `ChIPseeker` (in the downstream analysis, we will not use this information)
+
+```{r dechip_chip_matrix, eval=FALSE}
+chip.peak.meta.file = system.file("extdata", "enhancer_ChIP_peak_meta.txt", package = "DEbPeak")
+# this will save count matrix and annotated results to consensus_peak_matrix.txt and consensus_peak_anno.txt
+peak.matrix.list = PeakMatrix(meta.file = chip.peak.meta.file, species = "Mouse",  seq.style = "Ensembl",
+                              summits = 0, up.dist = 250000, down.dist = 250000)
+```
+
+<hr />
+
+## Differential Expression Analysis 
+
+To simplify the steps of obtaining differential expression analysis results, `DEbPeak` provides `ConductDESeq2` to perfrom all steps of differential expression analysis, including **quality control**, **principal component analysis**, **differential expression analysis** and **functional enrichment analysis**.
+
+### RNA-seq
+
+In this step, we will perform differetial expression analysis for RNA-seq:
+
+```{r dechip_rna_de}
+count.matrix.file <- system.file("extdata", "enhancer_RNA_count.txt", package = "DEbPeak")
+meta.info.file <- system.file("extdata", "enhancer_RNA_meta.txt", package = "DEbPeak")
+ConductDESeq2(count.matrix.file = count.matrix.file, meta.file = meta.info.file, data.type = "RNA",
+              gene.type = "ENSEMBL", outlier.detection = F, min.count = 10,
+              group.key = "condition", ref.group = "SHAM",
+              out.folder = '/home/songyabing/R/learn/tmp/DEbPeak/enhancer/RNA-seq',
+              signif = "padj", signif.threshold = 0.05, l2fc.threshold = 0, gmt.file = '')
+```
+
+
+The structure of result directory:
+```{bash dechip_rna_de_struc}
+tree /home/songyabing/R/learn/tmp/DEbPeak/enhancer/RNA-seq
+```
+
+
+Load the data:
+```{r dechip_rna_de_data}
+enhancer.rna.res = read.csv( "/home/songyabing/R/learn/tmp/DEbPeak/enhancer/RNA-seq/DA/Condition_SNL_SHAM_all.csv", row.names = 1)
+head(enhancer.rna.res)
+```
+
+<hr />
+
+### ChIP-seq
+
+With the count matrix and sample metadata generated above, we will perform differential binding analysis:
+```{r dechip_chip_de}
+peak.matrix.file <- system.file("extdata", "consensus_peak_matrix.txt", package = "DEbPeak")
+peak.meta.file <- system.file("extdata", "consensus_peak_anno.txt", package = "DEbPeak")
+ConductDESeq2(count.matrix.file = peak.matrix.file, meta.file = peak.meta.file, data.type = "ATAC",
+              gene.type = "SYMBOL", outlier.detection = F, min.count = 0, loding.pc = 1:3,
+              peak.anno.key = "All", group.key = "Condition", ref.group = "SHAM",
+              out.folder = '/home/songyabing/R/learn/tmp/DEbPeak/enhancer/ChIP-seq',
+              signif = "padj", signif.threshold = 0.05, l2fc.threshold = 0, gmt.file = '')
+```
+
+The output structure is same as above.
+
+Load the data:
+```{r dechip_chip_de_data}
+all.enhancer.res = read.csv( "/home/songyabing/R/learn/tmp/DEbPeak/enhancer/ChIP-seq/DA/Condition_SNL_SHAM_all.csv", row.names = 1)
+head(all.enhancer.res)
+```
+
+<hr />
+
+## Integrate ChIP-seq and RNA-seq
+
+Here, we will integrate RNA-seq with **H3K4me1 ChIP-seq** data to explore the enhancers and their candidate targets.
+
+### Integrate
+[Previous work on latent enhancers indicates that 80% of binding sites emerge at this distance, and many are within 250 kb or less](https://doi.org/10.1016/j.celrep.2016.04.063). Here, we will use 250kb as a threshold, user can change this value with `dis.threshold`.
+
+```{r dechip_de_integrate}
+# set enhancer = TRUE to use enhancer mode
+debchip.res <- DEbPeak(
+    de.res = enhancer.rna.res, peak.res = all.enhancer.res, peak.mode = "diff",  enhancer = TRUE,
+    signif = "pvalue", signif.threshold = 0.05, l2fc.threshold = 0, peak.signif = "pvalue", label.key = NULL,
+    peak.signif.threshold = 0.05, peak.l2fc.threshold = 0, species = "Mouse", merge.key = "SYMBOL", n.cores = 5,
+    seq.style = "Ensembl", gtf.file = NULL, dis.threshold = 250000
+  )
+```
+
+<hr />
+
+### Integrate summary
+
+#### Venn plot
+
+```{r debchip_de_integrate_plot, fig.height = 4, fig.width = 4, fig.align = "center", warning=FALSE}
+debchip.plot = InteVenn(inte.res = debchip.res, inte.type = "DEbPeak", peak.mode = "diff",
+                        peak.type = "ChIP", show_percentage = FALSE)
+debchip.plot
+```
+
+#### Quadrant diagram
+
+```{r debchip_de_integrate_quad_plot, fig.height = 8, fig.width = 6, fig.align = "center", warning=FALSE}
+label.df = data.frame(Gene = c("Ripor2", "C4b", "Ccl12", "Fcgr2b", "Ly86", "Ccl5", "Ccr5"))
+quad.plot = InteDiffQuad(inte.res = debchip.res, inte.type = "DEbPeak",
+                         label.df = label.df, label.color = "green")
+quad.plot
+```
+
+<hr />
+
+## Functional enrichment
+
+There are **eight categories** for users to choose to perform functional enrichment: `Down_Up`, `Up_Up`, `Down_Down`, `Up_Down`, `RNAUp`, `RNADown`, `PeakUp`, `PeakDown`. Here, we will use `Up_Up` and `Down_Down` as examples.
+
+### Both up-regulated
+
+```{r debchip_de_integrate_fe_up}
+debchip.up.fe.results = InteFE(inte.res = debchip.res, fe.key = "Up_Up", inte.type = "DEbPeak",
+                               gene.type = "ENTREZID", species="Mouse",save = F)
+```
+
+The results:
+```{r debchip_de_integrate_fe_up_show, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
+head(debchip.up.fe.results[["GO"]][["table"]])
+
+debchip.up.fe.results[["GO"]][["plot"]]
+```
+
+<hr />
+
+### Both down-regulated
+
+```{r debchip_de_integrate_fe_down}
+debchip.down.fe.results = InteFE(inte.res = debchip.res, fe.key = "Down_Down", inte.type = "DEbPeak",
+                                 gene.type = "ENTREZID", species="Mouse",save = F)
+```
+
+The results:
+```{r debchip_de_integrate_fe_down_show, warning=FALSE, fig.height = 20, fig.width = 8, fig.align = "center"}
+head(debchip.down.fe.results[["GO"]][["table"]])
+
+debchip.down.fe.results[["GO"]][["plot"]]
+```
+
+<hr />
+
+## Motif enrichment
+
+[Different from ChIP-seq which profile specific protein–DNA interactions (depends on the antibody provided), ATAC-seq can proflie global chromatin accessibility](https://link.springer.com/article/10.1186/s43556-020-00009-w). Thus, the peaks of ATAC-seq may originate from hundreds of TFs. To reveal the possible TFs involved, motif enrichment analysis is a good solution.
+
+As pointed above, there are **eight categories** for users to choose to motif enrichment, we will use `Up_Up` as example.
+```{r debchip_de_integrate_motif_up, eval = FALSE}
+# debchip.res: similar to debchip.res
+# this step is time consuming!
+FindMotif(inte.res = debchip.res, peak.anno.res = NULL,
+          peak.motif.key = "Up_Up", peak.mode = "diff", homer.motif.path = '~/anaconda3/bin/findMotifsGenome.pl',
+          out.folder = "/path/to/out/folder", other.paras = "-len 8,10,12 -size -100,50 -S 25")
+```
+
+<hr />
+
+## Enhancer-gene network 
+[Multiple enhancers often regulate a single gene, and multiple genes can be regulated by a single enhancer](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6061867/). Here, we will create the regulatory network.
+
+### Whole category
+Here, we will show the whole enhancer-gene network of **Up_Up** category:
+```{r debchip_de_integrate_whole_network, warning=FALSE, fig.height = 10, fig.width = 10, fig.align = "center"}
+suppressWarnings(suppressMessages(library(igraph)))
+NetViz(inte.res = debchip.res, whole = TRUE, type = "Up_Up",
+       labels = c("Ripor2", "C4b", "Ccl12", "Fcgr2b", "Ly86", "Ccl5", "Ccr5"), seed = 1001)
+```
+
+We can extract subset of the whole network:
+```{r debchip_de_integrate_subset_network, warning=FALSE, fig.height = 10, fig.width = 10, fig.align = "center"}
+NetViz(inte.res = debchip.res, whole = FALSE, type = "Up_Up",
+       gene = c("Ripor2", "C4b", "Ccl12", "Fcgr2b", "Ly86", "Ccl5", "Ccr5"),
+       peak = c("15:74931074-74931694|Ly6e|P", "9:124012191-124012495|Ccr3|P", "7:141122254-141122774|Ptdss2|P", "1:170985190-170986301|Fcgr2b|P"),
+       show.all.labels = TRUE, seed = 1001)
+```
+
+<hr />
+
+### Gene-based
+Here, we will show enhancer-specific gene network of **Up_Up** category:
+```{r debchip_de_integrate_gene_network, warning=FALSE, fig.height = 10, fig.width = 10, fig.align = "center"}
+NetViz(inte.res = debchip.res, whole = FALSE, type = "Up_Up",
+       gene = c("Ripor2", "C4b", "Ccl12", "Fcgr2b", "Ly86", "Ccl5", "Ccr5"),
+       show.all.labels = TRUE, seed = 1001)
+```
+
+
+<hr />
+
+### Peak-based
+Here, we will show specific enhancer-gene network of **Up_Up** category:
+```{r debchip_de_integrate_peak_network, warning=FALSE, fig.height = 10, fig.width = 10, fig.align = "center"}
+NetViz(inte.res = debchip.res, whole = FALSE, type = "Up_Up",
+       peak = c("15:74931074-74931694|Ly6e|P", "9:124012191-124012495|Ccr3|P", "7:141122254-141122774|Ptdss2|P", "1:170985190-170986301|Fcgr2b|P"),
+       show.all.labels = TRUE, seed = 1001)
+```
+
+<hr />
+
+## Session info
+
+```{r session}
+sessionInfo()
+```
+
+<hr />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

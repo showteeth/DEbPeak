@@ -94,7 +94,7 @@ PeakAnnoPie(peak.anno$anno.obj)
 In this step, we will integrate ChIP-seq and RNA-seq to get plausible direct targets of TF (in this example, Runx).
 ### Integrate
 ```{r debchip_integrate}
-debchip.res = DEbPeak(de.res = debchip.dds.results.ordered, peak.res = peak.anno.df, peak.anno.key = "Promoter", merge.key="SYMBOL")
+debchip.res = DEbPeak(de.res = debchip.dds.results.ordered, peak.res = peak.anno.df, peak.anno.key = "Promoter", merge.key="SYMBOL", species = "Mouse")
 head(debchip.res)
 ```
 

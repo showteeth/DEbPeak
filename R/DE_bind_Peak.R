@@ -22,7 +22,7 @@
 #' "Canine","Xenopus","Anopheles","Chimp","E coli strain Sakai","Myxococcus xanthus DK 1622". Default: "Human".
 #' @param seq.style The style of sequence, chosen from UCSC, NCBI, Ensembl, None. This should be compatible with the genome and gtf file you used
 #' to generate count matrix and peak files. Default: "UCSC".
-#' @param enhancer Logical value. Whether the data is enhancer-related data. Default: TRUE.
+#' @param enhancer Logical value. Whether the data is enhancer-related data. Default: FALSE.
 #' @param gtf.file GTF file used to create TxDb object. Useful when specie you used is not available in \code{species}. Default: NULL.
 #' @param dis.threshold Distance threshold. Default: 250000.
 #' @param n.cores The number of cores to be used for this job. Default:1.
@@ -31,7 +31,7 @@
 #' and Down_Up, Up_Up, Down_Down, Up_Down when \code{peak.mode} is diff. RNA in front.
 #' @export
 #' @importFrom magrittr %>%
-#' @importFrom dplyr filter select distinct mutate case_when mutate_at vars arrange desc
+#' @importFrom dplyr filter select distinct mutate case_when mutate_at vars arrange desc group_by summarise_all
 #' @importFrom purrr set_names
 #' @importFrom clusterProfiler bitr
 #' @importFrom rlang .data
@@ -114,23 +114,13 @@ DEbPeak <- function(de.res, peak.res, peak.mode = c("consensus", "diff"),
                     merge.key = c("geneId", "ENSEMBL", "SYMBOL"), species = c(
                       "Human", "Mouse", "Rat", "Fly", "Arabidopsis", "Yeast", "Zebrafish", "Worm", "Bovine", "Pig", "Chicken", "Rhesus",
                       "Canine", "Xenopus", "Anopheles", "Chimp", "E coli strain Sakai", "Myxococcus xanthus DK 1622"
-                    ), enhancer = TRUE, seq.style = "Ensembl", gtf.file = NULL, dis.threshold = 250000, n.cores = 1) {
+                    ), enhancer = FALSE, seq.style = "Ensembl", gtf.file = NULL, dis.threshold = 250000, n.cores = 1) {
 
   # check parameters
   peak.mode <- match.arg(arg = peak.mode)
   peak.anno.key <- match.arg(arg = peak.anno.key)
   merge.key <- match.arg(arg = merge.key)
   species <- match.arg(arg = species)
-
-  # get org.db
-  spe.anno <- GetSpeciesAnno(species)
-  org.db <- spe.anno[["OrgDb"]]
-  # library orgdb
-  if (!require(org.db, quietly = TRUE, character.only = TRUE)) {
-    message("Install org.db: ", org.db)
-    BiocManager::install(org.db)
-  }
-  suppressWarnings(suppressMessages(library(org.db, character.only = TRUE)))
 
   if (peak.mode == "consensus") {
     # process RNA de results
@@ -169,6 +159,16 @@ DEbPeak <- function(de.res, peak.res, peak.mode = c("consensus", "diff"),
         !is.na(annotation) & regulation == "Down_regulated" ~ "DOWNbPeak"
       ))
   } else if (peak.mode == "diff") {
+    # get org.db
+    spe.anno <- GetSpeciesAnno(species)
+    org.db <- spe.anno[["OrgDb"]]
+    # library orgdb
+    if (!require(org.db, quietly = TRUE, character.only = TRUE)) {
+      message("Install org.db: ", org.db)
+      BiocManager::install(org.db)
+    }
+    suppressWarnings(suppressMessages(library(org.db, character.only = TRUE)))
+
     if (length(intersect(colnames(de.res), c("ENSEMBL", "ENTREZID", "SYMBOL"))) == 0) {
       warning("In diff mode, the rownames of de table should be SYMBOL or SYMBOL in columns!
               You can use IDConversion to perfrom gene ID conversion!")
@@ -201,7 +201,7 @@ DEbPeak <- function(de.res, peak.res, peak.mode = c("consensus", "diff"),
     de.df$Gene <- gsub(pattern = "\\.[0-9]*$", replacement = "", x = de.df$Gene)
     if (enhancer) {
       peak.deg.df <- ProcessEnhancer(
-        de.res = all.enhancer.res, signif = peak.signif, signif.threshold = peak.signif.threshold,
+        de.res = peak.res, signif = peak.signif, signif.threshold = peak.signif.threshold,
         l2fc.threshold = peak.l2fc.threshold, label.key = label.key, species = species,
         n.cores = n.cores, seq.style = seq.style, gtf.file = gtf.file, dis.threshold = dis.threshold
       )
@@ -271,6 +271,32 @@ DEbPeak <- function(de.res, peak.res, peak.mode = c("consensus", "diff"),
 
     # merge results
     de.peak <- merge(peak.deg.df, deg.df, by.x = "Peak_SYMBOL", by.y = "RNA_Gene", all = TRUE)
+    # simplify enhancer with no degs out
+    if (enhancer) {
+      # with RNA regulation information
+      de.peak.rna <- de.peak %>% dplyr::filter(!is.na(RNA_regulation))
+      # without RNA regulation information
+      de.peak.norna <- de.peak %>% dplyr::filter(is.na(RNA_regulation))
+      # store levels
+      de.peak.norna.reg.levels <- levels(de.peak.norna$Peak_regulation)
+      # convert to string
+      de.peak.norna$Peak_regulation <- as.character(de.peak.norna$Peak_regulation)
+      # store colnames
+      de.peak.norna.cols <- colnames(de.peak.norna)
+      # merge rows with same peak
+      de.peak.norna <- de.peak.norna %>%
+        dplyr::group_by(Peak_Gene) %>%
+        dplyr::summarise_all(~ toString(unique(.))) %>%
+        as.data.frame()
+      # convert NA
+      de.peak.norna[de.peak.norna == "NA"] <- NA
+      # restore cols
+      de.peak.norna <- de.peak.norna[de.peak.norna.cols]
+      # restore levels
+      de.peak.norna$Peak_regulation <- factor(de.peak.norna$Peak_regulation, levels = de.peak.norna.reg.levels)
+      # final out
+      de.peak <- rbind(de.peak.rna, de.peak.norna) %>% as.data.frame()
+    }
     # anno the results
     de.peak <- de.peak %>% dplyr::mutate(Type = dplyr::case_when(
       RNA_regulation == "Up_regulated" & Peak_regulation == "Up_regulated" ~ "Up_Up",
@@ -1209,4 +1235,119 @@ DEbPeakFE <- function(de.peak, peak.fe.key, out.folder = NULL,
     )
     return(DEbPeak.go.results)
   }
+}
+
+#' Visualization for Enhancer-Gene Network.
+#'
+#' @param inte.res Dataframe contains integrated results.
+#' @param type The type of integrated results ("Type" column of \code{inte.res}) to perform visualization.
+#' @param whole Logical value, whether to visualize all interactions. Default: TRUE.
+#' @param gene Genes used to extract subset of the whole network. Default: NULL.
+#' @param peak Peaks used to extract subset of the whole network. Default: NULL.
+#' @param labels Genes/Peaks used to label on the plot. Default: NULL.
+#' @param show.all.labels Logical value, whether to show all labels, useful when extracting subset of the whole network. Default: FALSE.
+#' @param seed Seed.
+#' @param edge.width The width of the edge. Default: 0.6.
+#' @param edge.color The color of the edge. Default: "black".
+#' @param edge.alpha The alpha of the edge. Default: 0.8.
+#' @param node.size The size of the node. Default: 3.
+#' @param node.color The color vector for enhancer and gene. Default: c("red", "blue").
+#' @param node.alpha The alpha of the node color. Default: 0.6.
+#' @param node.label.size The size of the node label. Default: 2.5.
+#' @param node.label.color The color of the node label. Default: "navy".
+#' @param node.label.len The line length of the node label. Default: 0.5.
+#'
+#' @return A ggplot2 object.
+#' @export
+#' @importFrom dplyr select filter
+#' @importFrom tidyr drop_na
+#' @importFrom magrittr %>%
+#' @importFrom igraph graph_from_data_frame layout_with_fr
+#' @importFrom ggnetwork ggnetwork geom_edges geom_nodes theme_blank geom_nodelabel_repel
+#' @importFrom ggplot2 ggplot aes_string scale_color_manual unit
+#'
+#' @examples
+#' # # whole network
+#' # NetViz(inte.res = test, whole = TRUE, type = "Up_Up",
+#' #        labels = c("Ripor2", "C4b", "Ccl12", "Fcgr2b", "Ly86", "Ccl5", "Ccr5"), seed = 1001)
+#' # # subset with gene and peak
+#' # NetViz(inte.res = test, whole = FALSE, type = "Up_Up",
+#' #        gene = c("Ripor2", "C4b", "Ccl12", "Fcgr2b", "Ly86", "Ccl5", "Ccr5"),
+#' #        peak = c("15:74931074-74931694|Ly6e|P", "9:124012191-124012495|Ccr3|P", "7:141122254-141122774|Ptdss2|P", "1:170985190-170986301|Fcgr2b|P"),
+#' #        show.all.labels = TRUE, seed = 1001)
+#' # # single gene
+#' # NetViz(inte.res = test, whole = FALSE, type = "Up_Up",
+#' #        gene = c("Ripor2", "C4b", "Ccl12", "Fcgr2b", "Ly86", "Ccl5", "Ccr5"),
+#' #        show.all.labels = TRUE, seed = 1001)
+#' # # single peak
+#' # NetViz(inte.res = test, whole = FALSE, type = "Up_Up",
+#' #        peak = c("15:74931074-74931694|Ly6e|P", "9:124012191-124012495|Ccr3|P", "7:141122254-141122774|Ptdss2|P", "1:170985190-170986301|Fcgr2b|P"),
+#' #        show.all.labels = TRUE, seed = 1001)
+NetViz <- function(inte.res, type, whole = TRUE, gene = NULL, peak = NULL,
+                   labels = NULL, show.all.labels = FALSE, seed = 1000,
+                   edge.width = 0.6, edge.color = "black", edge.alpha = 0.8,
+                   node.size = 3, node.color = c("red", "blue"), node.alpha = 0.5,
+                   node.label.size = 2.5, node.label.color = "navy", node.label.len = 0.5) {
+  # prepare used columns
+  net.df <- inte.res %>%
+    dplyr::select(c("Peak_SYMBOL", "Peak_Gene", "Type")) %>%
+    tidyr::drop_na() %>%
+    as.data.frame()
+  net.df$Type <- as.character(net.df$Type)
+  # select type
+  net.df.used <- net.df[net.df$Type == type, ]
+  # rename colnames
+  colnames(net.df.used) <- c("from", "to", "type")
+  # subset the network
+  if (whole) {
+    message("Visualize the whole network!")
+    net.df.used <- net.df.used
+  } else if (!is.null(gene) && !is.null(peak)) {
+    message("Visualize the subset network with genes and peaks!")
+    net.df.used <- net.df.used[net.df.used$from %in% gene | net.df.used$to %in% peak, ]
+  } else if (is.null(gene)) {
+    message("Visualize the subset network with peaks!")
+    net.df.used <- net.df.used[net.df.used$to %in% peak, ]
+  } else if (is.null(peak)) {
+    message("Visualize the subset network with peak!")
+    net.df.used <- net.df.used[net.df.used$from %in% gene, ]
+  }
+  # convert to graph
+  set.seed(seed)
+  net.gr <- igraph::graph_from_data_frame(net.df.used[, c("from", "to")], directed = FALSE)
+  # prepare dataframe
+  net.gr.df <- ggnetwork::ggnetwork(net.gr, layout = igraph::layout_with_fr(net.gr), cell.jitter = 0)
+  # get gene and enhancer
+  net.gr.df$Type <- ifelse(grepl(pattern = "\\|", x = net.gr.df$name), "Enhancer", "Gene")
+  net.gr.df$Type <- factor(net.gr.df$Type, levels = c("Enhancer", "Gene"))
+  # plot
+  net.plot <- ggplot(net.gr.df, aes_string(x = "x", y = "y", xend = "xend", yend = "yend")) +
+    ggnetwork::geom_edges(
+      color = edge.color, curvature = 0,
+      linewidth = edge.width, alpha = edge.alpha
+    ) +
+    ggnetwork::geom_nodes(aes_string(x = "x", y = "y", color = "Type"),
+      size = node.size, alpha = node.alpha
+    ) +
+    ggnetwork::theme_blank() +
+    scale_color_manual(values = node.color)
+  # prepare net labels
+  if (!is.null(labels)) {
+    net.label.df <- net.gr.df %>% dplyr::filter(name %in% labels)
+    if (nrow(net.label.df) >= 1) {
+      net.plot <- net.plot +
+        ggnetwork::geom_nodelabel_repel(
+          data = net.label.df, aes_string(x = "x", y = "y", label = "name"),
+          size = node.label.size, color = node.label.color,
+          box.padding = unit(node.label.len, "lines")
+        )
+    }
+  } else if (show.all.labels) {
+    net.plot <- net.plot +
+      ggnetwork::geom_nodelabel_repel(aes_string(label = "name"),
+        size = node.label.size, color = node.label.color,
+        box.padding = unit(node.label.len, "lines")
+      )
+  }
+  return(net.plot)
 }

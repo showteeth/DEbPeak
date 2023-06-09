@@ -2,6 +2,7 @@
 ## New features
 * Added `ProcessEnhancer` to get near genes of differential peaks.
 * Updated `DEbPeak` to support enhancer-related data (use `species` instead of `org.db`. add `enhancer`, `seq.style`, `gtf.file`, `dis.threshold` and `n.cores`).
+* Added `NetViz` to visualize enhancer-gene network.
 
 ## Minor changes
 * Fixed bug in `ConductFE` when no KEGG enrichment results.
@@ -9,6 +10,7 @@
 * Fixed bug in `AnnoPeak` when using gtf file.
 * Fixed bus in `PeakMatrix`.
 * Added `count.matrix` parameter in `PeakMatrix` to support custom count matrix.
+* Simplified the output of enhancer when integrating with RNA-seq.
 
 -------------
 

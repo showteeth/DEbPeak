@@ -21,7 +21,7 @@ DEbPeak(
   species = c("Human", "Mouse", "Rat", "Fly", "Arabidopsis", "Yeast", "Zebrafish",
     "Worm", "Bovine", "Pig", "Chicken", "Rhesus", "Canine", "Xenopus", "Anopheles",
     "Chimp", "E coli strain Sakai", "Myxococcus xanthus DK 1622"),
-  enhancer = TRUE,
+  enhancer = FALSE,
   seq.style = "Ensembl",
   gtf.file = NULL,
   dis.threshold = 250000,
@@ -62,7 +62,7 @@ For edgeR results, can be chosen from FDR, PValue. Default: padj.}
 "Yeast","Zebrafish","Worm","Bovine","Pig","Chicken","Rhesus",
 "Canine","Xenopus","Anopheles","Chimp","E coli strain Sakai","Myxococcus xanthus DK 1622". Default: "Human".}
 
-\item{enhancer}{Logical value. Whether the data is enhancer-related data. Default: TRUE.}
+\item{enhancer}{Logical value. Whether the data is enhancer-related data. Default: FALSE.}
 
 \item{seq.style}{The style of sequence, chosen from UCSC, NCBI, Ensembl, None. This should be compatible with the genome and gtf file you used
 to generate count matrix and peak files. Default: "UCSC".}

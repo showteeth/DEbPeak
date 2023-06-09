@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DEbPeak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -123,6 +123,9 @@
     </li>
     <li>
       <a href="../articles/IntegrateChIP.html">Integrate RNA-seq with ChIP-seq (consensus peak)</a>
+    </li>
+    <li>
+      <a href="../articles/IntegrateChIPDE.html">Integrate RNA-seq with ChIP-seq (differential analysis)</a>
     </li>
     <li>
       <a href="../articles/IntegrateATAC.html">Integrate RNA-seq with ATAC-seq (consensus peak)</a>
@@ -188,7 +191,14 @@
   peak.signif.threshold <span class='op'>=</span> <span class='fl'>0.05</span>,
   peak.l2fc.threshold <span class='op'>=</span> <span class='fl'>1</span>,
   merge.key <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"geneId"</span>, <span class='st'>"ENSEMBL"</span>, <span class='st'>"SYMBOL"</span><span class='op'>)</span>,
-  org.db <span class='op'>=</span> <span class='st'>"org.Mm.eg.db"</span>
+  species <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Human"</span>, <span class='st'>"Mouse"</span>, <span class='st'>"Rat"</span>, <span class='st'>"Fly"</span>, <span class='st'>"Arabidopsis"</span>, <span class='st'>"Yeast"</span>, <span class='st'>"Zebrafish"</span>,
+    <span class='st'>"Worm"</span>, <span class='st'>"Bovine"</span>, <span class='st'>"Pig"</span>, <span class='st'>"Chicken"</span>, <span class='st'>"Rhesus"</span>, <span class='st'>"Canine"</span>, <span class='st'>"Xenopus"</span>, <span class='st'>"Anopheles"</span>,
+    <span class='st'>"Chimp"</span>, <span class='st'>"E coli strain Sakai"</span>, <span class='st'>"Myxococcus xanthus DK 1622"</span><span class='op'>)</span>,
+  enhancer <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  seq.style <span class='op'>=</span> <span class='st'>"Ensembl"</span>,
+  gtf.file <span class='op'>=</span> <span class='cn'>NULL</span>,
+  dis.threshold <span class='op'>=</span> <span class='fl'>250000</span>,
+  n.cores <span class='op'>=</span> <span class='fl'>1</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -228,7 +238,7 @@ For edgeR results, can be chosen from FDR, PValue. Default: padj.</p></td>
     </tr>
     <tr>
       <th>label.key</th>
-      <td><p>Which column to use as label. Default: NULL (use rownames of <code>deres</code>).</p></td>
+      <td><p>Which column to use as label. Default: NULL (use rownames of <code>de.res</code>).</p></td>
     </tr>
     <tr>
       <th>peak.signif</th>
@@ -248,9 +258,31 @@ For edgeR results, can be chosen from FDR, PValue. Default: padj.</p></td>
       <td><p>The columns used for merging, chosen from geneId (ENTREZID), ENSEMBL, SYMBOL. Default: geneId.</p></td>
     </tr>
     <tr>
-      <th>org.db</th>
-      <td><p>Organism database. Used when <code>peak.mode</code> is diff and <code>merge.key</code> is not "SYMBOL".
-For peak-associated differential expression results, only support merging on "SYMBOL". Default: org.Mm.eg.db.</p></td>
+      <th>species</th>
+      <td><p>Species used, chosen from "Human","Mouse","Rat","Fly","Arabidopsis",
+"Yeast","Zebrafish","Worm","Bovine","Pig","Chicken","Rhesus",
+"Canine","Xenopus","Anopheles","Chimp","E coli strain Sakai","Myxococcus xanthus DK 1622". Default: "Human".</p></td>
+    </tr>
+    <tr>
+      <th>enhancer</th>
+      <td><p>Logical value. Whether the data is enhancer-related data. Default: FALSE.</p></td>
+    </tr>
+    <tr>
+      <th>seq.style</th>
+      <td><p>The style of sequence, chosen from UCSC, NCBI, Ensembl, None. This should be compatible with the genome and gtf file you used
+to generate count matrix and peak files. Default: "UCSC".</p></td>
+    </tr>
+    <tr>
+      <th>gtf.file</th>
+      <td><p>GTF file used to create TxDb object. Useful when specie you used is not available in <code>species</code>. Default: NULL.</p></td>
+    </tr>
+    <tr>
+      <th>dis.threshold</th>
+      <td><p>Distance threshold. Default: 250000.</p></td>
+    </tr>
+    <tr>
+      <th>n.cores</th>
+      <td><p>The number of cores to be used for this job. Default:1.</p></td>
     </tr>
     </table>
 
@@ -268,29 +300,29 @@ and Down_Up, Up_Up, Down_Down, Up_Down when <code>peak.mode</code> is diff. RNA 
 <span class='va'>peak.file</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"debchip_peaks.bed"</span>, package <span class='op'>=</span> <span class='st'>"DEbPeak"</span><span class='op'>)</span>
 <span class='va'>peak.df</span> <span class='op'>&lt;-</span> <span class='fu'><a href='GetConsensusPeak.html'>GetConsensusPeak</a></span><span class='op'>(</span>peak.file <span class='op'>=</span> <span class='va'>peak.file</span><span class='op'>)</span>
 <span class='va'>peak.profile</span> <span class='op'>&lt;-</span> <span class='fu'><a href='PeakProfile.html'>PeakProfile</a></span><span class='op'>(</span><span class='va'>peak.df</span>, species <span class='op'>=</span> <span class='st'>"Mouse"</span>, by <span class='op'>=</span> <span class='st'>"gene"</span>, region.type <span class='op'>=</span> <span class='st'>"body"</span>, nbin <span class='op'>=</span> <span class='fl'>800</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; &gt;&gt; preparing promoter regions...	 2023-04-18 11时03分58秒 
-#&gt; &gt;&gt; preparing tag matrix...		 2023-04-18 11时03分59秒 
-#&gt; &gt;&gt; preparing start_site regions by ... 2023-04-18 11时03分59秒
-#&gt; &gt;&gt; preparing tag matrix...  2023-04-18 11时03分59秒 
-#&gt; &gt;&gt; generating figure...		 2023-04-18 11时04分04秒 </div><div class='output co'>#&gt; &gt;&gt; done...			 2023-04-18 11时04分04秒 </div><div class='output co'>#&gt; &gt;&gt; binning method is used...2023-04-18 11时04分04秒
-#&gt; &gt;&gt; preparing start_site regions by gene... 2023-04-18 11时04分04秒
-#&gt; &gt;&gt; preparing tag matrix by binning...  2023-04-18 11时04分04秒 
-#&gt; &gt;&gt; Running bootstrapping for tag matrix...		 2023-04-18 11时04分10秒 
-#&gt; &gt;&gt; binning method is used...2023-04-18 11时04分11秒
-#&gt; &gt;&gt; preparing body regions by gene... 2023-04-18 11时04分11秒
-#&gt; &gt;&gt; preparing tag matrix by binning...  2023-04-18 11时04分11秒 
-#&gt; &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2023-04-18 11时04分11秒
-#&gt; &gt;&gt; 1 peaks(0.1536098%), having lengths smaller than 800bp, are filtered... 2023-04-18 11时04分14秒
-#&gt; &gt;&gt; Running bootstrapping for tag matrix...		 2023-04-18 11时04分54秒 </div><div class='input'><span class='va'>peak.anno</span> <span class='op'>&lt;-</span> <span class='fu'><a href='AnnoPeak.html'>AnnoPeak</a></span><span class='op'>(</span>
+</div><div class='output co'>#&gt; &gt;&gt; preparing promoter regions...	 2023-06-08 23时43分18秒 
+#&gt; &gt;&gt; preparing tag matrix...		 2023-06-08 23时43分18秒 
+#&gt; &gt;&gt; preparing start_site regions by ... 2023-06-08 23时43分18秒
+#&gt; &gt;&gt; preparing tag matrix...  2023-06-08 23时43分18秒 
+#&gt; &gt;&gt; generating figure...		 2023-06-08 23时43分23秒 </div><div class='output co'>#&gt; &gt;&gt; done...			 2023-06-08 23时43分23秒 </div><div class='output co'>#&gt; &gt;&gt; binning method is used...2023-06-08 23时43分24秒
+#&gt; &gt;&gt; preparing start_site regions by gene... 2023-06-08 23时43分24秒
+#&gt; &gt;&gt; preparing tag matrix by binning...  2023-06-08 23时43分24秒 
+#&gt; &gt;&gt; Running bootstrapping for tag matrix...		 2023-06-08 23时43分34秒 
+#&gt; &gt;&gt; binning method is used...2023-06-08 23时43分35秒
+#&gt; &gt;&gt; preparing body regions by gene... 2023-06-08 23时43分35秒
+#&gt; &gt;&gt; preparing tag matrix by binning...  2023-06-08 23时43分35秒 
+#&gt; &gt;&gt; preparing matrix with extension from (TSS-20%)~(TTS+20%)... 2023-06-08 23时43分35秒
+#&gt; &gt;&gt; 1 peaks(0.1536098%), having lengths smaller than 800bp, are filtered... 2023-06-08 23时43分38秒
+#&gt; &gt;&gt; Running bootstrapping for tag matrix...		 2023-06-08 23时44分20秒 </div><div class='input'><span class='va'>peak.anno</span> <span class='op'>&lt;-</span> <span class='fu'><a href='AnnoPeak.html'>AnnoPeak</a></span><span class='op'>(</span>
   peak.df <span class='op'>=</span> <span class='va'>peak.df</span>, species <span class='op'>=</span> <span class='st'>"Mouse"</span>,
   seq.style <span class='op'>=</span> <span class='st'>"UCSC"</span>, up.dist <span class='op'>=</span> <span class='fl'>20000</span>, down.dist <span class='op'>=</span> <span class='fl'>20000</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; &gt;&gt; preparing features information...		 2023-04-18 11时04分55秒 
-#&gt; &gt;&gt; identifying nearest features...		 2023-04-18 11时04分55秒 
-#&gt; &gt;&gt; calculating distance from peak to TSS...	 2023-04-18 11时04分55秒 
-#&gt; &gt;&gt; assigning genomic annotation...		 2023-04-18 11时04分55秒 
-#&gt; &gt;&gt; adding gene annotation...			 2023-04-18 11时04分57秒 </div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:many mapping between keys and columns</span></div><div class='output co'>#&gt; &gt;&gt; assigning chromosome lengths			 2023-04-18 11时04分58秒 
-#&gt; &gt;&gt; done...					 2023-04-18 11时04分58秒 </div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 6 rows containing non-finite values (stat_count).</span></div><div class='input'><span class='co'># RNA-Seq data</span>
+</div><div class='output co'>#&gt; &gt;&gt; preparing features information...		 2023-06-08 23时44分21秒 
+#&gt; &gt;&gt; identifying nearest features...		 2023-06-08 23时44分21秒 
+#&gt; &gt;&gt; calculating distance from peak to TSS...	 2023-06-08 23时44分21秒 
+#&gt; &gt;&gt; assigning genomic annotation...		 2023-06-08 23时44分21秒 
+#&gt; &gt;&gt; adding gene annotation...			 2023-06-08 23时44分23秒 </div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:many mapping between keys and columns</span></div><div class='output co'>#&gt; &gt;&gt; assigning chromosome lengths			 2023-06-08 23时44分23秒 
+#&gt; &gt;&gt; done...					 2023-06-08 23时44分23秒 </div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 6 rows containing non-finite values (`stat_count()`).</span></div><div class='input'><span class='co'># RNA-Seq data</span>
 <span class='va'>count.file</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"debchip_count.txt"</span>, package <span class='op'>=</span> <span class='st'>"DEbPeak"</span><span class='op'>)</span>
 <span class='va'>meta.file</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"debchip_meta.txt"</span>, package <span class='op'>=</span> <span class='st'>"DEbPeak"</span><span class='op'>)</span>
 <span class='va'>count.matrix</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/utils/read.table.html'>read.table</a></span><span class='op'>(</span>file <span class='op'>=</span> <span class='va'>count.file</span>, header <span class='op'>=</span> <span class='cn'>TRUE</span>, sep <span class='op'>=</span> <span class='st'>"\t"</span><span class='op'>)</span>
@@ -339,7 +371,7 @@ and Down_Up, Up_Up, Down_Down, Up_Down when <code>peak.mode</code> is diff. RNA 
 <span class='co'># integrate differential expression results of RNA-seq and ATAC-seq</span>
 <span class='va'>debatac.res</span> <span class='op'>&lt;-</span> <span class='fu'>DEbPeak</span><span class='op'>(</span>
   de.res <span class='op'>=</span> <span class='va'>rna.diff</span>, peak.res <span class='op'>=</span> <span class='va'>dds.peak.results.ordered</span>, peak.mode <span class='op'>=</span> <span class='st'>"diff"</span>, peak.anno.key <span class='op'>=</span> <span class='st'>"All"</span>, l2fc.threshold <span class='op'>=</span> <span class='fl'>0</span>,
-  peak.l2fc.threshold <span class='op'>=</span> <span class='fl'>0</span>, org.db <span class='op'>=</span> <span class='st'>"org.Mm.eg.db"</span>, merge.key <span class='op'>=</span> <span class='st'>"SYMBOL"</span>
+  peak.l2fc.threshold <span class='op'>=</span> <span class='fl'>0</span>, species <span class='op'>=</span> <span class='st'>"Mouse"</span>, merge.key <span class='op'>=</span> <span class='st'>"SYMBOL"</span>
 <span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>Differential expression analysis with DESeq2!</span></div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:many mapping between keys and columns</span></div><div class='output co'>#&gt; <span class='warning'>Warning: 1.63% of input gene IDs are fail to map...</span></div><div class='output co'>#&gt; <span class='message'>Differential expression analysis with DESeq2!</span></div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:many mapping between keys and columns</span></div><div class='output co'>#&gt; <span class='warning'>Warning: 13.86% of input gene IDs are fail to map...</span></div></pre>
   </div>
