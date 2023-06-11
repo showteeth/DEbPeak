@@ -115,8 +115,10 @@ In this step, we will integrate ATAC-seq and RNA-seq to explore the role of chro
 
 ### Integrate
 ```{r debatac_integrate}
-debatac.res <- DEbPeak(de.res = rna.diff, peak.res = dds.peak.results.ordered, peak.mode = "diff", peak.anno.key = "Promoter",
-                       l2fc.threshold = 0, peak.l2fc.threshold = 0, species = "Mouse", merge.key = "SYMBOL")
+debatac.res <- DEbPeak(de.res = rna.diff, peak.res = dds.peak.results.ordered, 
+                       peak.mode = "diff", peak.anno.key = "Promoter",
+                       l2fc.threshold = 0, peak.l2fc.threshold = 0, 
+                       species = "Mouse", merge.key = "SYMBOL")
 head(debatac.res)
 ```
 

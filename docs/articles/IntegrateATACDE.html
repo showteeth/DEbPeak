@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DEbPeak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -82,6 +82,9 @@
     </li>
     <li>
       <a href="../articles/IntegrateChIP.html">Integrate RNA-seq with ChIP-seq (consensus peak)</a>
+    </li>
+    <li>
+      <a href="../articles/IntegrateChIPDE.html">Integrate RNA-seq with ChIP-seq (differential analysis)</a>
     </li>
     <li>
       <a href="../articles/IntegrateATAC.html">Integrate RNA-seq with ATAC-seq (consensus peak)</a>
@@ -137,8 +140,9 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p><a href="https://epigeneticsandchromatin.biomedcentral.com/articles/10.1186/1756-8935-7-33">Eukaryotic chromatin is tightly packaged into nucleosomes, and the positioning of nucleosomes can regulate gene expression by changing the in vivo availability of binding sites to transcription factors (TFs)</a>. Assay of Transposase Accessible Chromatin sequencing (ATAC-seq) is a technique used to assess genome-wide chromatin accessibility. Thus, combining ATAC-seq with RNA-seq can be used to understanding the role of chromatin structure in regulating gene expression.</p>
+<p><a href="https://epigeneticsandchromatin.biomedcentral.com/articles/10.1186/1756-8935-7-33">Eukaryotic chromatin is tightly packaged into nucleosomes, and the positioning of nucleosomes can regulate gene expression by changing the in vivo availability of binding sites to transcription factors (TFs)</a>. Assay of Transposase Accessible Chromatin sequencing (ATAC-seq) is a technique used to assess genome-wide chromatin accessibility. It is widely used to identify cis-regulatory regions (e.g. promoters and enhancers). Thus, combining ATAC-seq with RNA-seq can be used to understanding the role of cis-regulatory regions in regulating gene expression.</p>
 <p>Different from those in <a href="https://showteeth.github.io/DEbPeak/articles/IntegrateATAC.html">Integrate RNA-seq with ATAC-seq (intersection)</a>, we will integrate RNA-seq and ATAC-seq based on differential expression analysis results. In detail, <strong>integrating differentially expressed genes with differentially accessible peaks</strong>.</p>
+<p><strong>In this vignette, we will focus on promoter regions.</strong> For the enhancer regions, we will talk about in <a href="https://showteeth.github.io/DEbPeak/articles/IntegrateChIPDE.html">Integrate RNA-seq with ChIP-seq (differential analysis)</a>.</p>
 <hr>
 </div>
 <div id="example-data" class="section level2">
@@ -163,15 +167,45 @@
 <span class="fu"><a href="https://rdrr.io/r/base/warning.html">suppressWarnings</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">DEbPeak</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <hr>
 </div>
-<div id="differential-expression-analysis" class="section level2">
+<div id="prepare-atac-seq-counts" class="section level2">
 <h2 class="hasAnchor">
-<a href="#differential-expression-analysis" class="anchor"></a>Differential Expression Analysis</h2>
+<a href="#prepare-atac-seq-counts" class="anchor"></a>Prepare ATAC-seq counts</h2>
+<p>The following is an example with count matrix, if you only have bam files and peak files, please refer to <a href="https://showteeth.github.io/DEbPeak/articles/IntegrateChIPDE.html">Integrate RNA-seq with ChIP-seq (differential analysis)</a>.</p>
+<p>Format the count matrix:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># the GSE149836_combUnionReadsWithLabels.txt is downloaded from https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE149836</span>
+<span class="va">atac.counts</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"GSE149836_combUnionReadsWithLabels.txt"</span>, sep <span class="op">=</span> <span class="st">"\t"</span>, header <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
+<span class="co"># the first three columns should be "CHR", "START", "END"</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">atac.counts</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"CHR"</span>, <span class="st">"START"</span>, <span class="st">"END"</span>, <span class="st">"Fli1KO_1"</span>,<span class="st">"Fli1KO_2"</span>,<span class="st">"Fli1KO_3"</span>,<span class="st">"Fli1KO_4"</span>,<span class="st">"WT_1"</span>,<span class="st">"WT_2"</span><span class="op">)</span>
+<span class="co"># save file</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/write.table.html">write.table</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">atac.counts</span>, file <span class="op">=</span> <span class="st">"RA_ATAC_counts_raw.txt"</span>, sep <span class="op">=</span> <span class="st">"\t"</span>, quote <span class="op">=</span> <span class="cn">FALSE</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<p>Annotate the count matrix:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># this will save count matrix and annotated results to consensus_peak_matrix.txt and consensus_peak_anno.txt</span>
+<span class="fu"><a href="../reference/PeakMatrix.html">PeakMatrix</a></span><span class="op">(</span>meta.file <span class="op">=</span> <span class="st">"RA_ATAC_counts_raw.txt"</span>,
+           count.matrix <span class="op">=</span> <span class="cn">TRUE</span>, species <span class="op">=</span> <span class="st">"Mouse"</span>,  seq.style <span class="op">=</span> <span class="st">"UCSC"</span>,
+           up.dist <span class="op">=</span> <span class="fl">2000</span>, down.dist <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></code></pre></div>
+<p>Prepare metadata:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">atac.meta</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>SampleName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Fli1KO_1"</span>,<span class="st">"Fli1KO_2"</span>,<span class="st">"Fli1KO_3"</span>,<span class="st">"Fli1KO_4"</span>,<span class="st">"WT_1"</span>,<span class="st">"WT_2"</span><span class="op">)</span>,
+                       condition <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"KO"</span>, <span class="fl">4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"WT"</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">column_to_rownames</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"SampleName"</span><span class="op">)</span>
+<span class="co"># save file</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/write.table.html">write.table</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">atac.meta</span>, file <span class="op">=</span> <span class="st">"RA_ATAC_mata_raw.txt"</span>, sep <span class="op">=</span> <span class="st">"\t"</span>, quote <span class="op">=</span> <span class="cn">FALSE</span>, row.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<hr>
+</div>
+<div id="differential-analysis" class="section level2">
+<h2 class="hasAnchor">
+<a href="#differential-analysis" class="anchor"></a>Differential Analysis</h2>
 <p>To simplify the steps of obtaining differential expression analysis results, <code>DEbPeak</code> provides <code>ConductDESeq2</code> to perfrom all steps of differential expression analysis, including <strong>quality control</strong>, <strong>principal component analysis</strong>, <strong>differential expression analysis</strong> and <strong>functional enrichment analysis</strong>.</p>
 <div id="atac-seq" class="section level3">
 <h3 class="hasAnchor">
 <a href="#atac-seq" class="anchor"></a>ATAC-seq</h3>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">peak.matrix.file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"RA_ATAC_count.txt"</span>, package <span class="op">=</span> <span class="st">"DEbPeak"</span><span class="op">)</span>
+<p>With count matrix, we will perform differential analysis:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># RA_ATAC_count.txt is above consensus_peak_matrix.txt</span>
+<span class="va">peak.matrix.file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"RA_ATAC_count.txt"</span>, package <span class="op">=</span> <span class="st">"DEbPeak"</span><span class="op">)</span>
+<span class="co"># RA_ATAC_meta.txt is above RA_ATAC_mata_raw.txt</span>
 <span class="va">peak.meta.file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"RA_ATAC_meta.txt"</span>, package <span class="op">=</span> <span class="st">"DEbPeak"</span><span class="op">)</span>
 <span class="fu"><a href="../reference/ConductDESeq2.html">ConductDESeq2</a></span><span class="op">(</span>count.matrix.file <span class="op">=</span> <span class="va">peak.matrix.file</span>, meta.file <span class="op">=</span> <span class="va">peak.meta.file</span>, data.type <span class="op">=</span> <span class="st">"ATAC"</span>,
               gene.type <span class="op">=</span> <span class="st">"SYMBOL"</span>, outlier.detection <span class="op">=</span> <span class="cn">F</span>, min.count <span class="op">=</span> <span class="fl">0</span>,
@@ -195,22 +229,37 @@
 ## Conduct PCA analysis!</code></pre>
 <pre><code>## Differential expression analysis with DESeq2!</code></pre>
 <pre><code>## Use all genes for PCA!</code></pre>
-<pre><code>## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.</code></pre>
-<pre><code>## Selecting by Loadding
+<pre><code>## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Coordinate system already present. Adding new coordinate system, which will
+## replace the existing one.
+## Selecting by Loadding
 ## Selecting by Loadding
 ## Differential expression analysis with DESeq2!
 ## 
@@ -279,9 +328,8 @@
 ## 
 ## wrong orderBy parameter; set to default `orderBy = "x"`
 ## 
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## 
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
 ## Convert SYMBOL to ENTREZID!
 ## 
 ## 'select()' returned 1:1 mapping between keys and columns
@@ -292,9 +340,8 @@
 ## 
 ## wrong orderBy parameter; set to default `orderBy = "x"`
 ## 
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## 
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
 ## Convert SYMBOL to ENTREZID!
 ## 
 ## 'select()' returned 1:1 mapping between keys and columns
@@ -305,9 +352,8 @@
 ## 
 ## wrong orderBy parameter; set to default `orderBy = "x"`
 ## 
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## 
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
 ## Convert SYMBOL to ENTREZID!
 ## 
 ## 'select()' returned 1:1 mapping between keys and columns
@@ -318,9 +364,8 @@
 ## 
 ## wrong orderBy parameter; set to default `orderBy = "x"`
 ## 
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## 
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
 ## Convert SYMBOL to ENTREZID!
 ## 
 ## 'select()' returned 1:1 mapping between keys and columns
@@ -331,9 +376,8 @@
 ## 
 ## wrong orderBy parameter; set to default `orderBy = "x"`
 ## 
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## 
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
 ## Convert SYMBOL to ENTREZID!
 ## 
 ## 'select()' returned 1:1 mapping between keys and columns
@@ -344,9 +388,8 @@
 ## 
 ## wrong orderBy parameter; set to default `orderBy = "x"`
 ## 
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## 
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
 ## Convert SYMBOL to ENTREZID!
 ## 
 ## 'select()' returned 1:1 mapping between keys and columns
@@ -357,24 +400,20 @@
 ## 
 ## wrong orderBy parameter; set to default `orderBy = "x"`
 ## 
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## 
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
 ## wrong orderBy parameter; set to default `orderBy = "x"`
 ## 
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## 
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
 ## wrong orderBy parameter; set to default `orderBy = "x"`
 ## 
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## 
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
 ## wrong orderBy parameter; set to default `orderBy = "x"`
 ## 
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## 
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
 ## Convert SYMBOL to ENTREZID!
 ## 
 ## 'select()' returned 1:1 mapping between keys and columns
@@ -385,19 +424,16 @@
 ## 
 ## wrong orderBy parameter; set to default `orderBy = "x"`
 ## 
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## 
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
 ## wrong orderBy parameter; set to default `orderBy = "x"`
 ## 
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## 
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
 ## wrong orderBy parameter; set to default `orderBy = "x"`
 ## 
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## 
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
 ## Convert SYMBOL to ENTREZID!
 ## 
 ## 'select()' returned 1:1 mapping between keys and columns
@@ -408,19 +444,16 @@
 ## 
 ## wrong orderBy parameter; set to default `orderBy = "x"`
 ## 
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## 
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
 ## wrong orderBy parameter; set to default `orderBy = "x"`
 ## 
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## 
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
 ## wrong orderBy parameter; set to default `orderBy = "x"`
 ## 
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## 
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
 ## Conduct Differential Expression Analysis!
 ## 
 ## estimating size factors
@@ -458,37 +491,29 @@
 ## conduct ALL GO enrichment analysis on: UP
 ## conduct KEGG enrichment analysis: UP
 ## wrong orderBy parameter; set to default `orderBy = "x"`
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## wrong orderBy parameter; set to default `orderBy = "x"`
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## wrong orderBy parameter; set to default `orderBy = "x"`
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## wrong orderBy parameter; set to default `orderBy = "x"`
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## Convert SYMBOL to ENTREZID!
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.wrong orderBy parameter; set to default `orderBy = "x"`
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.wrong orderBy parameter; set to default `orderBy = "x"`
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.wrong orderBy parameter; set to default `orderBy = "x"`
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.Convert SYMBOL to ENTREZID!
 ## 'select()' returned 1:1 mapping between keys and columns
 ## conduct ALL GO enrichment analysis on: DOWN
 ## conduct KEGG enrichment analysis: DOWN
 ## wrong orderBy parameter; set to default `orderBy = "x"`
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## wrong orderBy parameter; set to default `orderBy = "x"`
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## wrong orderBy parameter; set to default `orderBy = "x"`
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## wrong orderBy parameter; set to default `orderBy = "x"`
-## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.
-## Gene Set Enrichment Analysis is not available for ChIP-seq or ATAC-seq data!
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.wrong orderBy parameter; set to default `orderBy = "x"`
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.wrong orderBy parameter; set to default `orderBy = "x"`
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.wrong orderBy parameter; set to default `orderBy = "x"`
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.Gene Set Enrichment Analysis is not available for ChIP-seq or ATAC-seq data!
 ## All Analysis Done!</code></pre>
 <p>The structure of result directory:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tree</span> /home/songyabing/R/learn/tmp/DEbPeak/ATACDE</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tree</span> /home/songyabing/R/learn/tmp/DEbPeak/ATACDE</span></code></pre></div>
 <pre><code>## /home/songyabing/R/learn/tmp/DEbPeak/ATACDE
 ## ├── CountQC_CPM.pdf
 ## ├── CountQC_saturation.pdf
@@ -619,12 +644,13 @@
 ## │   ├── PCA_loading_heat.pdf
 ## │   ├── PCA_overview.pdf
 ## │   ├── PCA_pairs_plot.pdf
-## │   └── PCA_screen_plot.pdf
+## │   ├── PCA_screen_plot.pdf
+## │   └── PCA_scree_plot.pdf
 ## └── SampleQC_dist_pcc.pdf
 ## 
-## 19 directories, 112 files</code></pre>
+## 19 directories, 113 files</code></pre>
 <p>Load the data:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dds.peak.results.ordered</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span> <span class="st">"/home/songyabing/R/learn/tmp/DEbPeak/ATACDE/DA/Condition_KO_WT_all.csv"</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">dds.peak.results.ordered</span><span class="op">)</span></code></pre></div>
 <pre><code>##                                           baseMean log2FoldChange    lfcSE
@@ -661,7 +687,7 @@
 <h3 class="hasAnchor">
 <a href="#rna-seq" class="anchor"></a>RNA-seq</h3>
 <p><code>DEbPeak</code> has prepared the differential expression analysis results of RNA-seq:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rna.diff.file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"RA_RNA_diff.txt"</span>, package <span class="op">=</span> <span class="st">"DEbPeak"</span><span class="op">)</span>
 <span class="va">rna.diff</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">rna.diff.file</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, sep <span class="op">=</span> <span class="st">"\t"</span><span class="op">)</span></code></pre></div>
 <hr>
@@ -670,52 +696,43 @@
 <div id="integrate-atac-seq-and-rna-seq" class="section level2">
 <h2 class="hasAnchor">
 <a href="#integrate-atac-seq-and-rna-seq" class="anchor"></a>Integrate ATAC-seq and RNA-seq</h2>
-<p>In this step, we will integrate ATAC-seq and RNA-seq to explore the role of chromatin structure of promoter region in regulating target gene expression.</p>
+<p>In this step, we will integrate ATAC-seq and RNA-seq to explore the role of chromatin structure of <strong>promoter region</strong> in regulating target gene expression.</p>
 <div id="integrate" class="section level3">
 <h3 class="hasAnchor">
 <a href="#integrate" class="anchor"></a>Integrate</h3>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">debatac.res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DEbPeak.html">DEbPeak</a></span><span class="op">(</span>de.res <span class="op">=</span> <span class="va">rna.diff</span>, peak.res <span class="op">=</span> <span class="va">dds.peak.results.ordered</span>, peak.mode <span class="op">=</span> <span class="st">"diff"</span>, peak.anno.key <span class="op">=</span> <span class="st">"All"</span>,
-                       l2fc.threshold <span class="op">=</span> <span class="fl">0</span>, peak.l2fc.threshold <span class="op">=</span> <span class="fl">0</span>, org.db <span class="op">=</span> <span class="st">"org.Mm.eg.db"</span>, merge.key <span class="op">=</span> <span class="st">"SYMBOL"</span><span class="op">)</span></code></pre></div>
-<pre><code>## Differential expression analysis with DESeq2!</code></pre>
-<pre><code>## 'select()' returned 1:many mapping between keys and columns</code></pre>
-<pre><code>## Warning in clusterProfiler::bitr(de.df[, "Gene2Convert"], fromType =
-## gene.type, : 1.63% of input gene IDs are fail to map...</code></pre>
-<pre><code>## Differential expression analysis with DESeq2!</code></pre>
-<pre><code>## Warning: The `.data` argument of `add_column()` must have unique names as of tibble
-## 3.0.0.
-## ℹ Use `.name_repair = "minimal"`.
-## ℹ The deprecated feature was likely used in the tibble package.
-##   Please report the issue at &lt;https://github.com/tidyverse/tibble/issues&gt;.
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-## generated.</code></pre>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">debatac.res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DEbPeak.html">DEbPeak</a></span><span class="op">(</span>de.res <span class="op">=</span> <span class="va">rna.diff</span>, peak.res <span class="op">=</span> <span class="va">dds.peak.results.ordered</span>, 
+                       peak.mode <span class="op">=</span> <span class="st">"diff"</span>, peak.anno.key <span class="op">=</span> <span class="st">"Promoter"</span>,
+                       l2fc.threshold <span class="op">=</span> <span class="fl">0</span>, peak.l2fc.threshold <span class="op">=</span> <span class="fl">0</span>, 
+                       species <span class="op">=</span> <span class="st">"Mouse"</span>, merge.key <span class="op">=</span> <span class="st">"SYMBOL"</span><span class="op">)</span></code></pre></div>
+<pre><code>## Differential expression analysis with DESeq2!
+## Differential expression analysis with DESeq2!</code></pre>
 <pre><code>## 'select()' returned 1:many mapping between keys and columns</code></pre>
 <pre><code>## Warning in clusterProfiler::bitr(de.df[, "Gene2Convert"], fromType =
 ## gene.type, : 13.86% of input gene IDs are fail to map...</code></pre>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">debatac.res</span><span class="op">)</span></code></pre></div>
-<pre><code>##     Peak_SYMBOL                                 Peak_Gene Peak_log2FoldChange
-## 1 0610012G03Rik                                      &lt;NA&gt;                  NA
-## 2 0610038B21Rik    chr8:77506599-77506784|0610038B21Rik|I           2.6356218
-## 3 0610038B21Rik    chr8:77433472-77433594|0610038B21Rik|I           1.5644152
-## 4 0610038B21Rik    chr8:77461252-77461753|0610038B21Rik|I           0.8012059
-## 5 0610038B21Rik    chr8:77328578-77328867|0610038B21Rik|I          -1.4598963
-## 6 0610040F04Rik chr6:108665492-108665967|0610040F04Rik|3U          -0.3895841
+<pre><code>##     Peak_SYMBOL                               Peak_Gene Peak_log2FoldChange
+## 1 0610012G03Rik                                    &lt;NA&gt;                  NA
+## 2 1110008P14Rik                                    &lt;NA&gt;                  NA
+## 3 1110038B12Rik                                    &lt;NA&gt;                  NA
+## 4 1190007I07Rik                                    &lt;NA&gt;                  NA
+## 5 1500009L16Rik                                    &lt;NA&gt;                  NA
+## 6 1500015L24Rik chr19:20409568-20410053|1500015L24Rik|P           0.8313949
 ##   Peak_abundance Peak_signif Peak_regulation RNA_log2FoldChange RNA_abundance
 ## 1             NA          NA            &lt;NA&gt;         -0.9030355      755.4293
-## 2       33.32172    5.098303    Up_regulated                 NA            NA
-## 3       36.83648    2.753478    Up_regulated                 NA            NA
-## 4      122.95199    2.261173    Up_regulated                 NA            NA
-## 5       24.64638    2.101107  Down_regulated                 NA            NA
-## 6      354.09944    1.672098  Down_regulated                 NA            NA
-##   RNA_signif RNA_regulation        RNA_ENSEMBL geneId     Type
-## 1    4.75213 Down_regulated ENSMUSG00000107002 106264  RNADown
-## 2         NA           &lt;NA&gt;               &lt;NA&gt;   &lt;NA&gt;   PeakUp
-## 3         NA           &lt;NA&gt;               &lt;NA&gt;   &lt;NA&gt;   PeakUp
-## 4         NA           &lt;NA&gt;               &lt;NA&gt;   &lt;NA&gt;   PeakUp
-## 5         NA           &lt;NA&gt;               &lt;NA&gt;   &lt;NA&gt; PeakDown
-## 6         NA           &lt;NA&gt;               &lt;NA&gt;   &lt;NA&gt; PeakDown</code></pre>
+## 2             NA          NA            &lt;NA&gt;         -0.5990288      755.1468
+## 3             NA          NA            &lt;NA&gt;         -1.4727375      133.5649
+## 4             NA          NA            &lt;NA&gt;         -0.8460258      183.3374
+## 5             NA          NA            &lt;NA&gt;          1.0678110     1778.9745
+## 6       122.8101    3.151115    Up_regulated                 NA            NA
+##   RNA_signif RNA_regulation        RNA_ENSEMBL geneId    Type
+## 1   4.752130 Down_regulated ENSMUSG00000107002 106264 RNADown
+## 2   1.724792 Down_regulated ENSMUSG00000039195  73737 RNADown
+## 3   3.467581 Down_regulated ENSMUSG00000092203  68763 RNADown
+## 4   1.402928 Down_regulated ENSMUSG00000063320 544717 RNADown
+## 5   6.893316   Up_regulated ENSMUSG00000087651  69784   RNAUp
+## 6         NA           &lt;NA&gt;               &lt;NA&gt;   &lt;NA&gt;  PeakUp</code></pre>
 <hr>
 </div>
 <div id="integrate-summary" class="section level3">
@@ -724,7 +741,7 @@
 <div id="venn-plot" class="section level4">
 <h4 class="hasAnchor">
 <a href="#venn-plot" class="anchor"></a>Venn plot</h4>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># DE and ATAC venn plot</span>
 <span class="co"># debatac.plot = PlotDEbPeak(de.peak = debatac.res, peak.type = "ATAC", peak.mode = "diff", show_percentage = FALSE)</span>
 <span class="co"># debatac.plot</span>
@@ -736,7 +753,7 @@
 <div id="quadrant-diagram" class="section level4">
 <h4 class="hasAnchor">
 <a href="#quadrant-diagram" class="anchor"></a>Quadrant diagram</h4>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">label.df</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>Gene <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Ccl3"</span>, <span class="st">"Ccl5"</span>, <span class="st">"Cd28"</span>, <span class="st">"Cx3cr1"</span>, <span class="st">"Prdm1"</span>, <span class="st">"Tcf7"</span>, <span class="st">"Slamf6"</span>, <span class="st">"Id3"</span>, <span class="st">"Cxcr5"</span><span class="op">)</span><span class="op">)</span>
 <span class="va">quad.plot</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteDiffQuad.html">InteDiffQuad</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debatac.res</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>, 
                          label.df <span class="op">=</span> <span class="va">label.df</span>, label.color <span class="op">=</span> <span class="st">"green"</span><span class="op">)</span>
@@ -753,53 +770,51 @@
 <div id="both-up-regulated" class="section level3">
 <h3 class="hasAnchor">
 <a href="#both-up-regulated" class="anchor"></a>Both up-regulated</h3>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># debatac.up.fe.results = DEbPeakFE(de.peak = debatac.res, peak.fe.key = "Up_Up", </span>
 <span class="co">#                                   gene.type = "ENTREZID", species="Mouse",save = F)</span>
 <span class="va">debatac.up.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteFE.html">InteFE</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debatac.res</span>, fe.key <span class="op">=</span> <span class="st">"Up_Up"</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>,
                                gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <pre><code>## conduct ALL GO enrichment analysis on: Up_Up</code></pre>
 <pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
-<pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.</code></pre>
-<pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
-<pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.</code></pre>
-<pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
-<pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.</code></pre>
+<pre><code>## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
+## wrong orderBy parameter; set to default `orderBy = "x"`
+## 
+## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.</code></pre>
 <p>The results:</p>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">debatac.up.fe.results</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"table"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code>##            ONTOLOGY         ID                                  Description
-## GO:0022407       BP GO:0022407             regulation of cell-cell adhesion
-## GO:0002683       BP GO:0002683 negative regulation of immune system process
-## GO:0042098       BP GO:0042098                         T cell proliferation
-## GO:0042129       BP GO:0042129           regulation of T cell proliferation
-## GO:0007159       BP GO:0007159                 leukocyte cell-cell adhesion
-## GO:0046651       BP GO:0046651                     lymphocyte proliferation
-##            GeneRatio   BgRatio       pvalue     p.adjust       qvalue
-## GO:0022407    24/230 427/23328 7.408694e-12 2.547109e-08 1.973832e-08
-## GO:0002683    24/230 462/23328 3.819413e-11 5.035183e-08 3.901916e-08
-## GO:0042098    17/230 213/23328 4.393702e-11 5.035183e-08 3.901916e-08
-## GO:0042129    15/230 175/23328 2.314904e-10 1.797886e-07 1.393236e-07
-## GO:0007159    20/230 345/23328 2.614726e-10 1.797886e-07 1.393236e-07
-## GO:0046651    19/230 317/23328 4.264371e-10 2.262048e-07 1.752929e-07
-##                                                                                                                                                          geneID
-## GO:0022407     Adam19/Casp3/Cblb/Ccl5/Ccr2/Cd28/Cd44/Cd47/Ctla4/Cyld/Ets1/Havcr2/Il21/Lgals3/Malt1/Nckap1l/Notch1/Piezo1/Ptprc/Rdx/Slamf1/Tnfaip3/Twsg1/Ubash3b
-## GO:0002683 Abr/Casp3/Cblb/Ccr2/Cd44/Cd47/Cdk6/Ctla4/Cyld/Havcr2/Lgals3/Nlrc3/Notch1/Padi2/Plcl2/Prdm1/Ptprc/Samhd1/Samsn1/Serpinb9/Slamf1/Tnfaip3/Twsg1/Ubash3b
-## GO:0042098                                              Casp3/Cblb/Ccl5/Ccr2/Cd28/Cd44/Ctla4/Dock2/Havcr2/Il21/Lgals3/Malt1/Nckap1l/Ptprc/Slamf1/Tnfrsf1b/Twsg1
-## GO:0042129                                                          Casp3/Cblb/Ccl5/Ccr2/Cd28/Cd44/Ctla4/Havcr2/Il21/Lgals3/Nckap1l/Ptprc/Slamf1/Tnfrsf1b/Twsg1
-## GO:0007159                                 Casp3/Cblb/Ccl5/Ccr2/Cd28/Cd44/Cd47/Ctla4/Cyld/Ets1/Havcr2/Il21/Lgals3/Malt1/Nckap1l/Ptprc/Sema4d/Slamf1/Stk10/Twsg1
-## GO:0046651                                  Casp3/Cblb/Ccl5/Ccr2/Cd28/Cd44/Ctla4/Dock2/Havcr2/Il21/Lgals3/Malt1/Nckap1l/Plcl2/Prdm1/Ptprc/Slamf1/Tnfrsf1b/Twsg1
-##            Count
-## GO:0022407    24
-## GO:0002683    24
-## GO:0042098    17
-## GO:0042129    15
-## GO:0007159    20
-## GO:0046651    19</code></pre>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<pre><code>##            ONTOLOGY         ID
+## GO:0060326       BP GO:0060326
+## GO:0032652       BP GO:0032652
+## GO:0032102       BP GO:0032102
+## GO:0045639       BP GO:0045639
+## GO:0032612       BP GO:0032612
+## GO:0071346       BP GO:0071346
+##                                                     Description GeneRatio
+## GO:0060326                                      cell chemotaxis      8/66
+## GO:0032652               regulation of interleukin-1 production      5/66
+## GO:0032102 negative regulation of response to external stimulus      8/66
+## GO:0045639  positive regulation of myeloid cell differentiation      5/66
+## GO:0032612                             interleukin-1 production      5/66
+## GO:0071346                cellular response to interferon-gamma      5/66
+##              BgRatio       pvalue    p.adjust      qvalue
+## GO:0060326 303/23328 2.207004e-06 0.003261952 0.002425382
+## GO:0032652  98/23328 8.611721e-06 0.003832999 0.002849976
+## GO:0032102 384/23328 1.251477e-05 0.003832999 0.002849976
+## GO:0045639 108/23328 1.383104e-05 0.003832999 0.002849976
+## GO:0032612 110/23328 1.512035e-05 0.003832999 0.002849976
+## GO:0071346 114/23328 1.797906e-05 0.003832999 0.002849976
+##                                                       geneID Count
+## GO:0060326    Ccl3/Ccl5/Ccr9/Ccrl2/Cxcr6/Hmgb2/Nckap1l/Padi2     8
+## GO:0032652                     Casp8/Ccl3/Havcr2/Mndal/Nlrc3     5
+## GO:0032102 Abr/Cd109/Havcr2/Nfkb1/Nlrc3/Padi2/Prdm1/Serpinb9     8
+## GO:0045639                     Casp8/Ccl3/Ccl5/Hmgb2/Nckap1l     5
+## GO:0032612                     Casp8/Ccl3/Havcr2/Mndal/Nlrc3     5
+## GO:0071346                        Capg/Ccl3/Ccl5/Gbp3/Myo18a     5</code></pre>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">debatac.up.fe.results</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"plot"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <p><img src="IntegrateATACDE_files/figure-html/debatac_integrate_fe_up_show-1.png" width="768" style="display: block; margin: auto;"></p>
 <hr>
@@ -807,50 +822,27 @@
 <div id="both-down-regulated" class="section level3">
 <h3 class="hasAnchor">
 <a href="#both-down-regulated" class="anchor"></a>Both down-regulated</h3>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># debatac.down.fe.results = DEbPeakFE(de.peak = debatac.res, peak.fe.key = "Down_Down", </span>
 <span class="co">#                                     gene.type = "ENTREZID", species="Mouse",save = F)</span>
 <span class="va">debatac.down.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteFE.html">InteFE</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debatac.res</span>, fe.key <span class="op">=</span> <span class="st">"Down_Down"</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>,
                                  gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <pre><code>## conduct ALL GO enrichment analysis on: Down_Down</code></pre>
 <pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
-<pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.</code></pre>
-<pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
-<pre><code>## Scale for 'y' is already present. Adding another scale for 'y', which will
-## replace the existing scale.</code></pre>
+<pre><code>## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.</code></pre>
 <p>The results:</p>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">debatac.down.fe.results</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"table"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code>##            ONTOLOGY         ID                             Description
-## GO:0030217       BP GO:0030217                  T cell differentiation
-## GO:0007159       BP GO:0007159            leukocyte cell-cell adhesion
-## GO:0030098       BP GO:0030098              lymphocyte differentiation
-## GO:0046631       BP GO:0046631            alpha-beta T cell activation
-## GO:0050900       BP GO:0050900                     leukocyte migration
-## GO:1902105       BP GO:1902105 regulation of leukocyte differentiation
-##            GeneRatio   BgRatio       pvalue     p.adjust       qvalue
-## GO:0030217    15/126 282/23328 3.673777e-11 9.496714e-08 7.676260e-08
-## GO:0007159    15/126 345/23328 6.108900e-10 6.315386e-07 5.104771e-07
-## GO:0030098    16/126 409/23328 7.329268e-10 6.315386e-07 5.104771e-07
-## GO:0046631    11/126 166/23328 1.702958e-09 1.100537e-06 8.895715e-07
-## GO:0050900    14/126 360/23328 9.779100e-09 5.055795e-06 4.086634e-06
-## GO:1902105    13/126 309/23328 1.344419e-08 5.160997e-06 4.171671e-06
-##                                                                                                geneID
-## GO:0030217        Ccr6/Ccr7/Cd74/Cd83/Crtam/H2-Aa/Kit/Relb/Runx1/Slamf6/Syk/Tcf7/Tespa1/Tnfsf4/Tnfsf8
-## GO:0007159           Adk/Bmp7/Btla/Ccr7/Cd74/Cd83/Crtam/H2-Aa/Itgb1/Nt5e/Runx1/Sell/Syk/Tespa1/Tnfsf4
-## GO:0030098 Ccr6/Ccr7/Cd74/Cd83/Crtam/H2-Aa/Kit/Relb/Runx1/Slamf6/Syk/Tcf7/Tespa1/Tnfsf4/Tnfsf8/Zbtb7a
-## GO:0046631                              Btla/Ccr7/Cd83/Crtam/Relb/Runx1/Slamf6/Syk/Tcf7/Tnfsf4/Tnfsf8
-## GO:0050900                 Ccr6/Ccr7/Cd200/Cd74/Cd9/Crtam/Cxcl10/Cxcr5/Il16/Itgb1/Kit/Sell/Syk/Tnfsf4
-## GO:1902105                    Car2/Ccr7/Cd74/Cd83/Crtam/H2-Aa/Jun/Runx1/Syk/Tcf7/Tespa1/Tnfsf4/Zbtb7a
-##            Count
-## GO:0030217    15
-## GO:0007159    15
-## GO:0030098    16
-## GO:0046631    11
-## GO:0050900    14
-## GO:1902105    13</code></pre>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<pre><code>##            ONTOLOGY         ID         Description GeneRatio  BgRatio
+## GO:0005771       CC GO:0005771 multivesicular body      3/57 51/23271
+## GO:0031985       CC GO:0031985      Golgi cisterna      3/57 62/23271
+## GO:0005795       CC GO:0005795         Golgi stack      3/57 87/23271
+##                  pvalue   p.adjust     qvalue          geneID Count
+## GO:0005771 0.0002669169 0.02734606 0.02102581  Acpp/Cd74/Nsg2     3
+## GO:0031985 0.0004755837 0.02734606 0.02102581 Acpp/Nsg2/Nucb2     3
+## GO:0005795 0.0012764071 0.04892894 0.03762042 Acpp/Nsg2/Nucb2     3</code></pre>
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">debatac.down.fe.results</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"plot"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <p><img src="IntegrateATACDE_files/figure-html/debatac_integrate_fe_down_show-1.png" width="768" style="display: block; margin: auto;"></p>
 <hr>
@@ -861,7 +853,7 @@
 <a href="#motif-enrichment" class="anchor"></a>Motif enrichment</h2>
 <p><a href="https://link.springer.com/article/10.1186/s43556-020-00009-w">Different from ChIP-seq which profile specific protein–DNA interactions (depends on the antibody provided), ATAC-seq can proflie global chromatin accessibility</a>. Thus, the peaks of ATAC-seq may originate from hundreds of TFs. To reveal the possible TFs involved, motif enrichment analysis is a good solution.</p>
 <p>As pointed above, there are <strong>eight categories</strong> for users to choose to motif enrichment, we will use <code>Up_Up</code> as example.</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># debatac.res: similar to debatac.res</span>
 <span class="co"># this step is time consuming!</span>
 <span class="fu"><a href="../reference/FindMotif.html">FindMotif</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debatac.res</span>, peak.anno.res <span class="op">=</span> <span class="cn">NULL</span>,
@@ -872,7 +864,7 @@
 <div id="session-info" class="section level2">
 <h2 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session info</h2>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <pre><code>## R version 4.0.3 (2020-10-10)
 ## Platform: x86_64-conda-linux-gnu (64-bit)
@@ -896,7 +888,7 @@
 ## other attached packages:
 ## [1] org.Mm.eg.db_3.12.0  AnnotationDbi_1.52.0 IRanges_2.24.1      
 ## [4] S4Vectors_0.28.1     Biobase_2.50.0       BiocGenerics_0.42.0 
-## [7] DEbPeak_1.1.0       
+## [7] DEbPeak_1.2.0       
 ## 
 ## loaded via a namespace (and not attached):
 ##   [1] rsvd_1.0.3                             
@@ -908,14 +900,14 @@
 ##   [7] rprojroot_2.0.2                        
 ##   [8] crayon_1.4.1                           
 ##   [9] V8_3.4.2                               
-##  [10] MASS_7.3-53.1                          
+##  [10] MASS_7.3-58                            
 ##  [11] nlme_3.1-152                           
 ##  [12] backports_1.2.1                        
 ##  [13] sva_3.38.0                             
 ##  [14] GOSemSim_2.25.0                        
 ##  [15] rlang_1.1.0                            
 ##  [16] XVector_0.30.0                         
-##  [17] readxl_1.3.1                           
+##  [17] readxl_1.4.2                           
 ##  [18] irlba_2.3.5                            
 ##  [19] limma_3.46.0                           
 ##  [20] GOstats_2.56.0                         
@@ -931,58 +923,58 @@
 ##  [30] base64url_1.4                          
 ##  [31] tcltk_4.0.3                            
 ##  [32] DOSE_3.23.2                            
-##  [33] haven_2.3.1                            
-##  [34] tidyselect_1.1.0                       
+##  [33] haven_2.5.2                            
+##  [34] tidyselect_1.2.0                       
 ##  [35] SummarizedExperiment_1.20.0            
 ##  [36] rio_0.5.27                             
 ##  [37] XML_3.99-0.6                           
-##  [38] tidyr_1.1.3                            
+##  [38] tidyr_1.3.0                            
 ##  [39] ggpubr_0.4.0                           
 ##  [40] GenomicAlignments_1.26.0               
 ##  [41] xtable_1.8-4                           
-##  [42] magrittr_2.0.1                         
-##  [43] evaluate_0.14                          
-##  [44] ggplot2_3.3.5                          
-##  [45] cli_3.6.1                              
-##  [46] zlibbioc_1.36.0                        
-##  [47] hwriter_1.3.2                          
-##  [48] rstudioapi_0.13                        
-##  [49] bslib_0.3.1                            
-##  [50] GreyListChIP_1.22.0                    
-##  [51] fastmatch_1.1-3                        
-##  [52] BiocSingular_1.6.0                     
-##  [53] xfun_0.30                              
-##  [54] askpass_1.1                            
-##  [55] clue_0.3-59                            
-##  [56] gson_0.0.9                             
-##  [57] cluster_2.1.1                          
-##  [58] caTools_1.18.2                         
-##  [59] tidygraph_1.2.0                        
-##  [60] tibble_3.1.0                           
-##  [61] ggrepel_0.9.1                          
-##  [62] Biostrings_2.58.0                      
-##  [63] png_0.1-7                              
-##  [64] withr_2.4.1                            
-##  [65] bitops_1.0-6                           
-##  [66] ggforce_0.3.3                          
-##  [67] RBGL_1.66.0                            
-##  [68] plyr_1.8.6                             
-##  [69] cellranger_1.1.0                       
-##  [70] GSEABase_1.52.1                        
-##  [71] pcaPP_2.0-1                            
-##  [72] dqrng_0.2.1                            
-##  [73] coda_0.19-4                            
-##  [74] pillar_1.5.1                           
-##  [75] gplots_3.1.1                           
-##  [76] GlobalOptions_0.1.2                    
-##  [77] cachem_1.0.4                           
-##  [78] GenomicFeatures_1.42.2                 
-##  [79] fs_1.5.0                               
-##  [80] GetoptLong_1.0.5                       
-##  [81] clusterProfiler_4.7.1                  
-##  [82] DelayedMatrixStats_1.12.3              
-##  [83] vctrs_0.4.1                            
-##  [84] ellipsis_0.3.2                         
+##  [42] ggnetwork_0.5.12                       
+##  [43] magrittr_2.0.3                         
+##  [44] evaluate_0.14                          
+##  [45] ggplot2_3.4.2                          
+##  [46] cli_3.6.1                              
+##  [47] zlibbioc_1.36.0                        
+##  [48] hwriter_1.3.2                          
+##  [49] rstudioapi_0.14                        
+##  [50] bslib_0.3.1                            
+##  [51] GreyListChIP_1.22.0                    
+##  [52] fastmatch_1.1-3                        
+##  [53] BiocSingular_1.6.0                     
+##  [54] xfun_0.30                              
+##  [55] askpass_1.1                            
+##  [56] clue_0.3-59                            
+##  [57] gson_0.0.9                             
+##  [58] cluster_2.1.1                          
+##  [59] caTools_1.18.2                         
+##  [60] tidygraph_1.2.0                        
+##  [61] tibble_3.2.1                           
+##  [62] ggrepel_0.9.1                          
+##  [63] Biostrings_2.58.0                      
+##  [64] png_0.1-7                              
+##  [65] withr_2.5.0                            
+##  [66] bitops_1.0-6                           
+##  [67] ggforce_0.3.3                          
+##  [68] RBGL_1.66.0                            
+##  [69] plyr_1.8.6                             
+##  [70] cellranger_1.1.0                       
+##  [71] GSEABase_1.52.1                        
+##  [72] pcaPP_2.0-1                            
+##  [73] dqrng_0.2.1                            
+##  [74] coda_0.19-4                            
+##  [75] pillar_1.9.0                           
+##  [76] gplots_3.1.1                           
+##  [77] GlobalOptions_0.1.2                    
+##  [78] cachem_1.0.4                           
+##  [79] GenomicFeatures_1.42.2                 
+##  [80] fs_1.5.0                               
+##  [81] GetoptLong_1.0.5                       
+##  [82] clusterProfiler_4.7.1                  
+##  [83] DelayedMatrixStats_1.12.3              
+##  [84] vctrs_0.6.2                            
 ##  [85] generics_0.1.0                         
 ##  [86] plot3D_1.4                             
 ##  [87] tools_4.0.3                            
@@ -1004,10 +996,10 @@
 ## [103] ggnewscale_0.4.7                       
 ## [104] AnnotationForge_1.32.0                 
 ## [105] utf8_1.2.1                             
-## [106] dplyr_1.0.5                            
+## [106] dplyr_1.1.2                            
 ## [107] BiocFileCache_1.14.0                   
-## [108] jsonlite_1.7.2                         
-## [109] scales_1.1.1                           
+## [108] jsonlite_1.8.4                         
+## [109] scales_1.2.1                           
 ## [110] graph_1.68.0                           
 ## [111] carData_3.0-4                          
 ## [112] sparseMatrixStats_1.2.1                
@@ -1021,16 +1013,16 @@
 ## [120] openxlsx_4.2.3                         
 ## [121] pkgdown_1.6.1                          
 ## [122] cowplot_1.1.1                          
-## [123] textshaping_0.1.2                      
-## [124] forcats_0.5.1                          
+## [123] textshaping_0.3.6                      
+## [124] forcats_1.0.0                          
 ## [125] downloader_0.4                         
 ## [126] BSgenome_1.58.0                        
-## [127] igraph_1.3.4                           
+## [127] igraph_1.4.99.9024                     
 ## [128] survival_3.2-10                        
 ## [129] numDeriv_2016.8-1.1                    
 ## [130] yaml_2.2.1                             
 ## [131] plotrix_3.8-2                          
-## [132] systemfonts_1.0.1                      
+## [132] systemfonts_1.0.4                      
 ## [133] ashr_2.2-47                            
 ## [134] SQUAREM_2021.1                         
 ## [135] htmltools_0.5.2                        
@@ -1049,98 +1041,100 @@
 ## [148] RSQLite_2.2.5                          
 ## [149] amap_0.8-18                            
 ## [150] yulab.utils_0.0.4                      
-## [151] misc3d_0.9-1                           
-## [152] data.table_1.14.2                      
-## [153] blob_1.2.1                             
-## [154] ragg_0.4.0                             
-## [155] labeling_0.4.2                         
-## [156] splines_4.0.3                          
-## [157] Cairo_1.5-12.2                         
-## [158] ggupset_0.3.0                          
-## [159] RCurl_1.98-1.3                         
-## [160] broom_0.7.5                            
-## [161] hms_1.0.0                              
-## [162] colorspace_2.0-0                       
-## [163] BiocManager_1.30.16                    
-## [164] GenomicRanges_1.42.0                   
-## [165] shape_1.4.6                            
-## [166] sass_0.4.1                             
-## [167] GEOquery_2.58.0                        
-## [168] Rcpp_1.0.9                             
-## [169] mvtnorm_1.1-2                          
-## [170] circlize_0.4.15                        
-## [171] enrichplot_1.10.2                      
-## [172] fansi_0.4.2                            
-## [173] truncnorm_1.0-8                        
-## [174] ChIPseeker_1.33.0.900                  
-## [175] R6_2.5.0                               
-## [176] grid_4.0.3                             
-## [177] lifecycle_1.0.3                        
-## [178] ShortRead_1.48.0                       
-## [179] zip_2.1.1                              
-## [180] curl_4.3                               
-## [181] ggsignif_0.6.3                         
-## [182] jquerylib_0.1.3                        
-## [183] robustbase_0.95-0                      
-## [184] DO.db_2.9                              
-## [185] Matrix_1.3-3                           
-## [186] qvalue_2.22.0                          
-## [187] desc_1.3.0                             
-## [188] RColorBrewer_1.1-2                     
-## [189] iterators_1.0.13                       
-## [190] stringr_1.4.0                          
-## [191] DOT_0.1                                
-## [192] ggpie_0.2.5                            
-## [193] beachmat_2.6.4                         
-## [194] polyclip_1.10-0                        
-## [195] biomaRt_2.46.3                         
-## [196] purrr_0.3.4                            
-## [197] shadowtext_0.0.9                       
-## [198] gridGraphics_0.5-1                     
-## [199] mgcv_1.8-34                            
-## [200] ComplexHeatmap_2.13.1                  
-## [201] openssl_1.4.3                          
-## [202] patchwork_1.0.0                        
-## [203] bdsmatrix_1.3-4                        
-## [204] codetools_0.2-18                       
-## [205] matrixStats_0.58.0                     
-## [206] invgamma_1.1                           
-## [207] GO.db_3.12.1                           
-## [208] gtools_3.8.2                           
-## [209] prettyunits_1.1.1                      
-## [210] dbplyr_2.1.1                           
-## [211] GenomeInfoDb_1.26.7                    
-## [212] gtable_0.3.0                           
-## [213] DBI_1.1.1                              
-## [214] highr_0.8                              
-## [215] ggfun_0.0.6                            
-## [216] httr_1.4.2                             
-## [217] KernSmooth_2.23-18                     
-## [218] stringi_1.5.3                          
-## [219] progress_1.2.2                         
-## [220] reshape2_1.4.4                         
-## [221] farver_2.1.0                           
-## [222] annotate_1.68.0                        
-## [223] viridis_0.6.1                          
-## [224] Rgraphviz_2.34.0                       
-## [225] xml2_1.3.2                             
-## [226] bbmle_1.0.24                           
-## [227] systemPipeR_1.24.3                     
-## [228] boot_1.3-28                            
-## [229] readr_1.4.0                            
-## [230] geneplotter_1.68.0                     
-## [231] ggplotify_0.1.0                        
-## [232] Category_2.56.0                        
-## [233] DEoptimR_1.0-11                        
-## [234] DESeq2_1.30.1                          
-## [235] bit_4.0.4                              
-## [236] scatterpie_0.1.7                       
-## [237] jpeg_0.1-8.1                           
-## [238] MatrixGenerics_1.2.1                   
-## [239] ggraph_2.0.5                           
-## [240] pkgconfig_2.0.3                        
-## [241] rstatix_0.7.0                          
-## [242] knitr_1.37</code></pre>
+## [151] debugme_1.1.0                          
+## [152] misc3d_0.9-1                           
+## [153] data.table_1.14.2                      
+## [154] blob_1.2.1                             
+## [155] ragg_0.4.0                             
+## [156] labeling_0.4.2                         
+## [157] splines_4.0.3                          
+## [158] Cairo_1.5-12.2                         
+## [159] ggupset_0.3.0                          
+## [160] RCurl_1.98-1.3                         
+## [161] broom_1.0.4                            
+## [162] hms_1.1.3                              
+## [163] colorspace_2.0-0                       
+## [164] BiocManager_1.30.16                    
+## [165] GenomicRanges_1.42.0                   
+## [166] shape_1.4.6                            
+## [167] sass_0.4.1                             
+## [168] GEOquery_2.58.0                        
+## [169] Rcpp_1.0.9                             
+## [170] mvtnorm_1.1-2                          
+## [171] circlize_0.4.15                        
+## [172] enrichplot_1.10.2                      
+## [173] fansi_0.4.2                            
+## [174] tzdb_0.3.0                             
+## [175] truncnorm_1.0-8                        
+## [176] ChIPseeker_1.33.0.900                  
+## [177] R6_2.5.0                               
+## [178] grid_4.0.3                             
+## [179] lifecycle_1.0.3                        
+## [180] ShortRead_1.48.0                       
+## [181] zip_2.1.1                              
+## [182] curl_4.3                               
+## [183] ggsignif_0.6.3                         
+## [184] jquerylib_0.1.3                        
+## [185] robustbase_0.95-0                      
+## [186] DO.db_2.9                              
+## [187] Matrix_1.5-4                           
+## [188] qvalue_2.22.0                          
+## [189] desc_1.3.0                             
+## [190] RColorBrewer_1.1-2                     
+## [191] iterators_1.0.13                       
+## [192] stringr_1.5.0                          
+## [193] DOT_0.1                                
+## [194] ggpie_0.2.5                            
+## [195] beachmat_2.6.4                         
+## [196] polyclip_1.10-0                        
+## [197] biomaRt_2.46.3                         
+## [198] purrr_1.0.1                            
+## [199] shadowtext_0.0.9                       
+## [200] gridGraphics_0.5-1                     
+## [201] mgcv_1.8-34                            
+## [202] ComplexHeatmap_2.13.1                  
+## [203] openssl_1.4.3                          
+## [204] patchwork_1.0.0                        
+## [205] bdsmatrix_1.3-4                        
+## [206] codetools_0.2-18                       
+## [207] matrixStats_0.58.0                     
+## [208] invgamma_1.1                           
+## [209] GO.db_3.12.1                           
+## [210] gtools_3.8.2                           
+## [211] prettyunits_1.1.1                      
+## [212] dbplyr_2.3.2                           
+## [213] GenomeInfoDb_1.26.7                    
+## [214] gtable_0.3.0                           
+## [215] DBI_1.1.1                              
+## [216] highr_0.8                              
+## [217] ggfun_0.0.6                            
+## [218] httr_1.4.5                             
+## [219] KernSmooth_2.23-18                     
+## [220] stringi_1.5.3                          
+## [221] progress_1.2.2                         
+## [222] reshape2_1.4.4                         
+## [223] farver_2.1.0                           
+## [224] annotate_1.68.0                        
+## [225] viridis_0.6.1                          
+## [226] Rgraphviz_2.34.0                       
+## [227] xml2_1.3.4                             
+## [228] bbmle_1.0.24                           
+## [229] systemPipeR_1.24.3                     
+## [230] boot_1.3-28                            
+## [231] readr_2.1.4                            
+## [232] geneplotter_1.68.0                     
+## [233] ggplotify_0.1.0                        
+## [234] Category_2.56.0                        
+## [235] DEoptimR_1.0-11                        
+## [236] DESeq2_1.30.1                          
+## [237] bit_4.0.4                              
+## [238] scatterpie_0.1.7                       
+## [239] jpeg_0.1-8.1                           
+## [240] MatrixGenerics_1.2.1                   
+## [241] ggraph_2.0.5                           
+## [242] pkgconfig_2.0.3                        
+## [243] rstatix_0.7.0                          
+## [244] knitr_1.37</code></pre>
 <hr>
 </div>
   </div>

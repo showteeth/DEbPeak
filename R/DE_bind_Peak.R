@@ -230,7 +230,9 @@ DEbPeak <- function(de.res, peak.res, peak.mode = c("consensus", "diff"),
       colnames(peak.deg.df) <- gsub(pattern = "^", replacement = "Peak_", x = colnames(peak.deg.df))
     } else {
       # ID conversion for peak data
-      peak.res <- IDConversionPeak(deres = peak.res, org.db = org.db, sort.key = "log2FoldChange")
+      if (!"SYMBOL" %in% colnames(peak.res)) {
+        peak.res <- IDConversionPeak(deres = peak.res, org.db = org.db, sort.key = "log2FoldChange")
+      }
       # prepare diff peak results
       peak.de.df <- PrepareDEPlot(
         deres = peak.res, signif = peak.signif, signif.threshold = peak.signif.threshold,
@@ -296,6 +298,14 @@ DEbPeak <- function(de.res, peak.res, peak.mode = c("consensus", "diff"),
       de.peak.norna$Peak_regulation <- factor(de.peak.norna$Peak_regulation, levels = de.peak.norna.reg.levels)
       # final out
       de.peak <- rbind(de.peak.rna, de.peak.norna) %>% as.data.frame()
+      # change column type
+      de.peak$Peak_log2FoldChange <- as.numeric(de.peak$Peak_log2FoldChange)
+      de.peak$Peak_abundance <- as.numeric(de.peak$Peak_abundance)
+      de.peak$Peak_signif <- as.numeric(de.peak$Peak_signif)
+      de.peak$Peak_Near_Distance <- as.numeric(de.peak$Peak_Near_Distance)
+      de.peak$RNA_log2FoldChange <- as.numeric(de.peak$RNA_log2FoldChange)
+      de.peak$RNA_abundance <- as.numeric(de.peak$RNA_abundance)
+      de.peak$RNA_signif <- as.numeric(de.peak$RNA_signif)
     }
     # anno the results
     de.peak <- de.peak %>% dplyr::mutate(Type = dplyr::case_when(

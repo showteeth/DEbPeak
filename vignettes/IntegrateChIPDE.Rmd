@@ -45,7 +45,7 @@ To perform differential binding analysis, we need to prepare count matrix of ChI
 
 ```{r dechip_chip_matrix, eval=FALSE}
 chip.peak.meta.file = system.file("extdata", "enhancer_ChIP_peak_meta.txt", package = "DEbPeak")
-# this will save count matrix and annotated results to consensus_peak_matrix.txt and consensus_peak_anno.txt
+# this will save count matrix, annotated results and peak sample metadata to consensus_peak_matrix.txt, consensus_peak_anno.txt and peak_metadata.txt
 peak.matrix.list = PeakMatrix(meta.file = chip.peak.meta.file, species = "Mouse",  seq.style = "Ensembl",
                               summits = 0, up.dist = 250000, down.dist = 250000)
 ```
@@ -60,14 +60,15 @@ To simplify the steps of obtaining differential expression analysis results, `DE
 
 In this step, we will perform differetial expression analysis for RNA-seq:
 
-```{r dechip_rna_de}
+```{r dechip_rna_de, eval=FALSE}
 count.matrix.file <- system.file("extdata", "enhancer_RNA_count.txt", package = "DEbPeak")
 meta.info.file <- system.file("extdata", "enhancer_RNA_meta.txt", package = "DEbPeak")
+gmt.file <- system.file("extdata", "m5.go.bp.v2022.1.Mm.entrez.gmt", package = "DEbPeak")
 ConductDESeq2(count.matrix.file = count.matrix.file, meta.file = meta.info.file, data.type = "RNA",
               gene.type = "ENSEMBL", outlier.detection = F, min.count = 10,
               group.key = "condition", ref.group = "SHAM",
               out.folder = '/home/songyabing/R/learn/tmp/DEbPeak/enhancer/RNA-seq',
-              signif = "padj", signif.threshold = 0.05, l2fc.threshold = 0, gmt.file = '')
+              signif = "padj", signif.threshold = 0.05, l2fc.threshold = 0, gmt.file = gmt.file)
 ```
 
 
@@ -88,9 +89,9 @@ head(enhancer.rna.res)
 ### ChIP-seq
 
 With the count matrix and sample metadata generated above, we will perform differential binding analysis:
-```{r dechip_chip_de}
+```{r dechip_chip_de, eval=FALSE}
 peak.matrix.file <- system.file("extdata", "consensus_peak_matrix.txt", package = "DEbPeak")
-peak.meta.file <- system.file("extdata", "consensus_peak_anno.txt", package = "DEbPeak")
+peak.meta.file <- system.file("extdata", "peak_metadata.txt", package = "DEbPeak")
 ConductDESeq2(count.matrix.file = peak.matrix.file, meta.file = peak.meta.file, data.type = "ATAC",
               gene.type = "SYMBOL", outlier.detection = F, min.count = 0, loding.pc = 1:3,
               peak.anno.key = "All", group.key = "Condition", ref.group = "SHAM",
@@ -204,7 +205,7 @@ FindMotif(inte.res = debchip.res, peak.anno.res = NULL,
 
 ### Whole category
 Here, we will show the whole enhancer-gene network of **Up_Up** category:
-```{r debchip_de_integrate_whole_network, warning=FALSE, fig.height = 10, fig.width = 10, fig.align = "center"}
+```{r debchip_de_integrate_whole_network, warning=FALSE, fig.height = 10, fig.width = 11, fig.align = "center"}
 suppressWarnings(suppressMessages(library(igraph)))
 NetViz(inte.res = debchip.res, whole = TRUE, type = "Up_Up",
        labels = c("Ripor2", "C4b", "Ccl12", "Fcgr2b", "Ly86", "Ccl5", "Ccr5"), seed = 1001)

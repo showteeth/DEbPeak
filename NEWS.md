@@ -11,6 +11,7 @@
 * Fixed bus in `PeakMatrix`.
 * Added `count.matrix` parameter in `PeakMatrix` to support custom count matrix.
 * Simplified the output of enhancer when integrating with RNA-seq.
+* Fixed bug when `tibble` version > 3.1.8 (do not allow multiple columns with same name).
 
 -------------
 
