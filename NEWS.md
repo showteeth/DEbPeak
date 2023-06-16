@@ -1,3 +1,10 @@
+# DEbPeak 1.3.0
+## New features
+* Added `RunChEA3` to identify TFs from gene expression reults with ChEA3.
+* Added `RunBART2` to identify TFs from gene expression reults with BART2.
+
+-------------
+
 # DEbPeak 1.2.0
 ## New features
 * Added `ProcessEnhancer` to get near genes of differential peaks.

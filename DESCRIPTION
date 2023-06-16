@@ -73,7 +73,9 @@ Imports:
     BiocParallel,
     AnnotationDbi,
     igraph,
-    ggnetwork
+    ggnetwork,
+    httr,
+    jsonlite
 Suggests: 
     rmarkdown,
     knitr,
