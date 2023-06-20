@@ -143,3 +143,61 @@ RunBART2 <- function(genes, species = c("Human", "Mouse"), bart2.path = NULL, pr
   bart2.results.df <- read.table(file = bart2.results.file, sep = "\t", header = TRUE)
   return(bart2.results.df)
 }
+
+#' Identify TFs from Gene Expression Reults with TFEA.ChIP.
+#'
+#' @param genes Input genes of human, can be a set of differentially expressed genes.
+#' @param control.genes Input genes of human, can be a set of non-differentially expressed genes.
+#'
+#' @return Dataframe contains identified TFs with GSEA enrichment score.
+#' @importFrom BiocManager install
+#' @importFrom AnnotationDbi keytypes keys
+#' @importFrom TFEA.ChIP GeneID2entrez contingency_matrix getCMstats rankTFs
+#' @importFrom dplyr arrange desc
+#' @export
+#'
+#' @examples
+#' # genes = c("EGLN3","NFYA","ALS2","MYC","ARNT" )
+#' # control.genes = c("MTX1", "OSTF1", "HDAC3", "MTG2", "OPA3")
+#' # RunTFEA(genes = genes, control.genes = control.genes)
+RunTFEA <- function(genes, control.genes) {
+  # cehck gene type
+  # get org.db
+  spe.anno <- GetSpeciesAnno(species)
+  org.db <- spe.anno[["OrgDb"]]
+  # library orgdb
+  if (!require(org.db, quietly = TRUE, character.only = TRUE)) {
+    message("Install org.db: ", org.db)
+    BiocManager::install(org.db)
+  }
+  suppressWarnings(suppressMessages(library(org.db, character.only = TRUE)))
+  # input gene type
+  gene.type <- CheckGeneName(as.character(genes), org.db)
+  # control gene type
+  control.gene.type <- CheckGeneName(as.character(control.genes), org.db)
+  # gene id conversion
+  if (gene.type != "ENTREZID") {
+    message("Convert ", gene.type, " to ENTREZID!")
+    genes.id <- TFEA.ChIP::GeneID2entrez(gene.IDs = genes, mode = "h2h")
+  } else {
+    genes.id <- genes
+  }
+  if (control.gene.type != "ENTREZID") {
+    message("Convert ", control.gene.type, " to ENTREZID!")
+    control.genes.id <- TFEA.ChIP::GeneID2entrez(gene.IDs = control.genes, mode = "h2h")
+  } else {
+    control.genes.id <- control.genes
+  }
+  # analysis
+  contingency.matrix <- TFEA.ChIP::contingency_matrix(test_list = genes.id, control_list = control.genes.id)
+  contingency.matrix.stats <- TFEA.ChIP::getCMstats(contMatrix_list = contingency.matrix)
+  # rank TF
+  TF.ranking <- TFEA.ChIP::rankTFs(resultsTable = contingency.matrix.stats, rankMethod = "gsea")
+  # sort by ES
+  TF.ranking <- TF.ranking %>% dplyr::arrange(desc(ES), arg.ES)
+  return(TF.ranking)
+}
+
+
+
+

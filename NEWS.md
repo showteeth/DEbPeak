@@ -2,6 +2,7 @@
 ## New features
 * Added `RunChEA3` to identify TFs from gene expression reults with ChEA3.
 * Added `RunBART2` to identify TFs from gene expression reults with BART2.
+* Added `RunTFEA` to identify TFs from gene expression reults with TFEA.ChIP.
 
 -------------
 
