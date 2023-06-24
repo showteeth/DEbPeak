@@ -3,6 +3,11 @@
 * Added `RunChEA3` to identify TFs from gene expression reults with ChEA3.
 * Added `RunBART2` to identify TFs from gene expression reults with BART2.
 * Added `RunTFEA` to identify TFs from gene expression reults with TFEA.ChIP.
+* Added `InferRegulator` to identify TFs from gene expression reults with ChEA3, BART2 and TFEA.ChIP.
+* Added `VizRegulator` to visualize the identify TFs.
+
+## Minor changes
+* Fixed bug in `PeakProfile`.
 
 -------------
 

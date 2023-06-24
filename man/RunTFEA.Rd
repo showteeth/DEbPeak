@@ -18,6 +18,7 @@ Dataframe contains identified TFs with GSEA enrichment score.
 Identify TFs from Gene Expression Reults with TFEA.ChIP.
 }
 \examples{
+# library(DEbPeak)
 # genes = c("EGLN3","NFYA","ALS2","MYC","ARNT" )
 # control.genes = c("MTX1", "OSTF1", "HDAC3", "MTG2", "OPA3")
 # RunTFEA(genes = genes, control.genes = control.genes)

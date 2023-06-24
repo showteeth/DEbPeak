@@ -27,6 +27,7 @@ Dataframe contains identified TFs.
 Identify TFs from Gene Expression Reults with BART2.
 }
 \examples{
+# library(DEbPeak)
 # RunBART2(genes = c("SMAD9","FOXO1","MYC","STAT1",'STAT3',"SMAD3"), species = "Human",
 #          bart2.path = "~/anaconda3/envs/bart2/bin/bart2")
 }

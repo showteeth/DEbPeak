@@ -81,17 +81,20 @@ PeakProfile <- function(peak.df, species = c(
   if (!is.null(gtf.file)) {
     message("Create txdb from gtf file!")
     txdb <- GenomicFeatures::makeTxDbFromGFF(gtf.file)
+    # annotation
+    txdb.obj <- txdb
   } else {
     spe.anno <- GetSpeciesAnno(species)
     txdb <- spe.anno[["txdb"]]
+    # library txdb
+    if (!require(txdb, quietly = TRUE, character.only = TRUE)) {
+      message("Install txdb: ", txdb)
+      BiocManager::install(txdb)
+    }
+    suppressWarnings(suppressMessages(library(txdb, character.only = TRUE)))
+    # annotation
+    txdb.obj <- get(txdb)
   }
-
-  # library txdb
-  if (!require(txdb, quietly = TRUE, character.only = TRUE)) {
-    message("Install txdb: ", txdb)
-    BiocManager::install(txdb)
-  }
-  suppressWarnings(suppressMessages(library(txdb, character.only = TRUE)))
 
   # preare peak information used
   # notice that the output file of MSPC is in bed format
@@ -105,14 +108,14 @@ PeakProfile <- function(peak.df, species = c(
   peak.heatmap <- ggplotify::as.ggplot(function() {
     peakHeatmap(
       peak = peak.gr, weightCol = weight.col,
-      TxDb = get(txdb), upstream = up.dist, downstream = down.dist,
+      TxDb = txdb.obj, upstream = up.dist, downstream = down.dist,
       title = "Heatmap of Peak binding to TSS regions", color = color
     )
   })
 
   # create Average Profile
   avg.profile.plot <- plotAvgProf2(peak.gr,
-    TxDb = get(txdb), upstream = up.dist, downstream = down.dist,
+    TxDb = txdb.obj, upstream = up.dist, downstream = down.dist,
     conf = conf, weightCol = weight.col,
     xlab = "Genomic Region (5'->3')", ylab = "Read Count Frequency"
   )
@@ -121,13 +124,13 @@ PeakProfile <- function(peak.df, species = c(
     peak.type.profile <- plotPeakProf2(
       peak = peak.gr, upstream = up.dist, downstream = down.dist, conf = conf,
       weightCol = weight.col, by = by, type = region.type, nbin = nbin,
-      TxDb = get(txdb)
+      TxDb = txdb.obj
     )
   } else if (up.rel <= 1 & up.rel > 0 & down.rel > 0 & down.rel <= 1) {
     peak.type.profile <- plotPeakProf2(
       peak = peak.gr, upstream = rel(up.rel), downstream = rel(down.rel), conf = conf,
       weightCol = weight.col, by = by, type = region.type, nbin = nbin,
-      TxDb = get(txdb)
+      TxDb = txdb.obj
     )
   }
 
