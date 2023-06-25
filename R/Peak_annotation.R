@@ -285,3 +285,129 @@ AnnoPeak <- function(peak.df, species = c(
   )
   return(anno.res)
 }
+
+#' Generate Reads Profile with deepTools.
+#'
+#' @param bw.folder Folder contains bigWig files.
+#' @param up.dist The upstream distance from the TSS. Default: 3000bp.
+#' @param down.dist The downstream distance from the TSS. Default: 3000bp.
+#' @param species Species used, chosen from "Human","Mouse","Rat","Fly","Arabidopsis","Yeast","Zebrafish","Worm","Bovine","Pig","Chicken","Rhesus",
+#' "Canine","Xenopus","Anopheles","Chimp","E coli strain Sakai","Myxococcus xanthus DK 1622". Default: "Human".
+#' @param gtf.file GTF file used to create TxDb object. Useful when specie you used is not available in \code{species}. Default: NULL.
+#' @param compute.matrix.paras Parameters for deepTools \code{computeMatrix}. Default: "-p 2".
+#' @param plot.heatmap.paras Parameters for deepTools \code{plotHeatmap}. Default: "--whatToShow 'heatmap and colorbar'".
+#' @param deeptools.path Path contains \code{computeMatrix} and \code{plotHeatmap}. Default: NULL (conduct automatic detection).
+#' @param out.folder Output folder. Default: NULL (current working directory).
+#' @param out.format Output heatmap format. Choose from pdf, png, eps and svg. Default: pdf.
+#'
+#' @return NULL.
+#' @importFrom BiocManager install
+#' @importFrom GenomicFeatures makeTxDbFromGFF transcripts
+#' @importFrom magrittr %>%
+#' @importFrom dplyr arrange
+#' @importFrom utils write.table
+#' @export
+#'
+#' @examples
+#' # library(DEbPeak)
+#' # ReadProfile(bw.folder = path/to/bigWigs, species = "Mouse", deeptools.path = "~/anaconda3/bin")
+ReadProfile <- function(bw.folder, up.dist = 3000, down.dist = 3000,
+                        species = c(
+                          "Human", "Mouse", "Rat", "Fly", "Arabidopsis", "Yeast", "Zebrafish", "Worm", "Bovine", "Pig", "Chicken", "Rhesus",
+                          "Canine", "Xenopus", "Anopheles", "Chimp", "E coli strain Sakai", "Myxococcus xanthus DK 1622"
+                        ),
+                        gtf.file = NULL, compute.matrix.paras = "-p 2", plot.heatmap.paras = "--whatToShow 'heatmap and colorbar'",
+                        deeptools.path = NULL, out.folder = NULL, out.format = c("pdf", "png", "eps", "svg")) {
+  # check parameters
+  species <- match.arg(arg = species)
+  out.format <- match.arg(arg = out.format)
+  # prepare bw files
+  bw.files <- list.files(path = bw.folder, pattern = "bw$", full.names = TRUE)
+  if (is.null(bw.files)) {
+    stop("There is no bigWig files available!")
+  }
+  # prepare output folder
+  if (is.null(out.folder)) {
+    out.folder <- getwd()
+  }
+  # prepare txdb
+  if (!is.null(gtf.file)) {
+    message("Create txdb from gtf file!")
+    txdb <- GenomicFeatures::makeTxDbFromGFF(gtf.file)
+    # annotation
+    txdb.obj <- txdb
+  } else {
+    spe.anno <- GetSpeciesAnno(species)
+    txdb <- spe.anno[["txdb"]]
+    # library txdb
+    if (!require(txdb, quietly = TRUE, character.only = TRUE)) {
+      message("Install txdb: ", txdb)
+      BiocManager::install(txdb)
+    }
+    suppressWarnings(suppressMessages(library(txdb, character.only = TRUE)))
+    # annotation
+    txdb.obj <- get(txdb)
+  }
+  # extract all transcripts
+  tx.gr <- GenomicFeatures::transcripts(txdb.obj, columns = c("tx_id", "tx_name", "gene_id"), filter = NULL, use.names = FALSE)
+  tx.df <- as.data.frame(tx.gr)
+  # extract tss region
+  plus.tx.df <- tx.df[tx.df$strand == "+", ]
+  minus.tx.df <- tx.df[tx.df$strand == "-", ]
+  plus.tx.df$end <- plus.tx.df$start
+  # convert to 0-based
+  plus.tx.df$start <- plus.tx.df$start - 1
+  minus.tx.df$start <- minus.tx.df$end
+  # convert to 0-based
+  minus.tx.df$start <- minus.tx.df$start - 1
+  # tss dataframe
+  tss.df <- rbind(plus.tx.df, minus.tx.df) %>%
+    as.data.frame() %>%
+    dplyr::arrange(seqnames, start)
+  tss.df$name <- "."
+  tss.df <- tss.df[c(1, 2, 3, 8, 9, 5)]
+  # write to tmp file
+  tss.file <- tempfile(pattern = "deeptools_tss_", tmpdir = tempdir(), fileext = ".bed")
+  utils::write.table(x = tss.df, file = tss.file, quote = FALSE, row.names = FALSE, col.names = FALSE, sep = "\t")
+  # get deeptools path
+  if (is.null(deeptools.path)) {
+    # detect computeMatrix path
+    computeMatrix.path <- Sys.which("computeMatrix")
+    if (computeMatrix.path == "") {
+      stop("Can not find computeMatrix automatically, please specify the path!")
+    }
+    # detect plotHeatmap path
+    plotHeatmap.path <- Sys.which("plotHeatmap")
+    if (plotHeatmap.path == "") {
+      stop("Can not find plotHeatmap automatically, please specify the path!")
+    }
+  } else {
+    computeMatrix.path <- file.path(deeptools.path, "computeMatrix")
+    plotHeatmap.path <- file.path(deeptools.path, "plotHeatmap")
+  }
+  # prepare computeMatrix cmd
+  matrix.file <- file.path(out.folder, "matrix_tss.gz")
+  computeMatrix.cmd <- paste(
+    computeMatrix.path, "reference-point --referencePoint TSS", "-b", up.dist, "-a", down.dist,
+    "-R", tss.file, "--skipZeros", "-S", paste0(bw.files, collapse = " "), "-o", matrix.file, compute.matrix.paras
+  )
+  # run computeMatrix command
+  message(paste("Running computeMatrix: ", computeMatrix.cmd))
+  computeMatrix.status <- system(computeMatrix.cmd, intern = TRUE)
+  computeMatrix.status.code <- attr(computeMatrix.status, "status")
+  if (!is.null(computeMatrix.status.code)) {
+    stop("Run computeMatrix error!")
+  }
+  # prepare plotHeatmap cmd
+  heatmap.file <- file.path(out.folder, paste0("matrix_tss.", out.format))
+  plotHeatmap.cmd <- paste(
+    plotHeatmap.path, "-m", matrix.file, "-out", heatmap.file, plot.heatmap.paras
+  )
+  # run plotHeatmap command
+  message(paste("Running plotHeatmap: ", plotHeatmap.cmd))
+  plotHeatmap.status <- system(plotHeatmap.cmd, intern = TRUE)
+  plotHeatmap.status.code <- attr(plotHeatmap.status, "status")
+  if (!is.null(plotHeatmap.status.code)) {
+    stop("Run plotHeatmap error!")
+  }
+}

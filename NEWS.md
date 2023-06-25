@@ -5,6 +5,7 @@
 * Added `RunTFEA` to identify TFs from gene expression reults with TFEA.ChIP.
 * Added `InferRegulator` to identify TFs from gene expression reults with ChEA3, BART2 and TFEA.ChIP.
 * Added `VizRegulator` to visualize the identify TFs.
+* Added `ReadProfile` to generate reads profile with deepTools.
 
 ## Minor changes
 * Fixed bug in `PeakProfile`.

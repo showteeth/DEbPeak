@@ -223,6 +223,7 @@ RunBART2 <- function(genes, species = c("Human", "Mouse"), bart2.path = NULL, pr
 #' @importFrom AnnotationDbi keytypes keys
 #' @importFrom TFEA.ChIP GeneID2entrez contingency_matrix getCMstats rankTFs
 #' @importFrom dplyr arrange desc
+#' @importFrom magrittr %>%
 #' @export
 #'
 #' @examples

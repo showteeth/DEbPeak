@@ -66,6 +66,17 @@ atac.peak.profile <- PeakProfile(atac.peak.df, species = "Mouse", by = "gene", r
 atac.peak.profile$profile.plot
 ```
 
+Check the reads profile with [deepTools](https://deeptools.readthedocs.io/en/latest/index.html):
+```{r debatac_atac_read_profile, eval=FALSE}
+ReadProfile(bw.folder = '/home/songyabing/R/learn/tmp/DEbPeak/deeptools/ATAC-seq', species = "Mouse",
+            deeptools.path = "~/anaconda3/bin", 
+            out.folder = "/home/songyabing/R/learn/tmp/DEbPeak/deeptools/ATAC-seq")
+```
+
+```{r debatac_atac_read_profile_plot, out.height = 500, out.width=300, include=TRUE, fig.align="center", warning=FALSE, echo=FALSE}
+knitr::include_graphics("/home/songyabing/R/learn/tmp/DEbPeak/deeptools/ATAC-seq/matrix_tss.png")
+```
+
 <hr />
 
 ### Peak annotation
