@@ -9,6 +9,7 @@
 
 ## Minor changes
 * Fixed bug in `PeakProfile`.
+* Fixed bug in `VizRegulator`.
 
 -------------
 

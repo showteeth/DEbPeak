@@ -208,9 +208,9 @@ DEbPeak <- function(de.res, peak.res, peak.mode = c("consensus", "diff"),
       peak.deg.df <- peak.deg.df %>% tibble::rownames_to_column(var = "Gene")
       # seperate Near_gene and distance
       peak.deg.df <- suppressWarnings(peak.deg.df %>%
-        tidyr::separate_rows(Near_Gene, sep = ", ") %>%
-        tidyr::separate(col = Near_Gene, into = c("Near_Gene", "Near_Distance"), sep = "\\|") %>%
-        as.data.frame())
+                                        tidyr::separate_rows(Near_Gene, sep = ", ") %>%
+                                        tidyr::separate(col = Near_Gene, into = c("Near_Gene", "Near_Distance"), sep = "\\|") %>%
+                                        as.data.frame())
       # get gene type
       peak.gene.type <- CheckGeneName(as.character(peak.deg.df$Near_Gene), org.db)
       if (peak.gene.type != "SYMBOL") {
@@ -1337,7 +1337,7 @@ NetViz <- function(inte.res, type, whole = TRUE, gene = NULL, peak = NULL,
       linewidth = edge.width, alpha = edge.alpha
     ) +
     ggnetwork::geom_nodes(aes_string(x = "x", y = "y", color = "Type"),
-      size = node.size, alpha = node.alpha
+                          size = node.size, alpha = node.alpha
     ) +
     ggnetwork::theme_blank() +
     scale_color_manual(values = node.color)
@@ -1355,8 +1355,8 @@ NetViz <- function(inte.res, type, whole = TRUE, gene = NULL, peak = NULL,
   } else if (show.all.labels) {
     net.plot <- net.plot +
       ggnetwork::geom_nodelabel_repel(aes_string(label = "name"),
-        size = node.label.size, color = node.label.color,
-        box.padding = unit(node.label.len, "lines")
+                                      size = node.label.size, color = node.label.color,
+                                      box.padding = unit(node.label.len, "lines")
       )
   }
   return(net.plot)
