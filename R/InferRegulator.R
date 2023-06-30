@@ -295,20 +295,20 @@ VizRegulator <- function(infer.res, method = c("ChEA3", "BART2", "TFEA.ChIP"), l
   if (method == "ChEA3") {
     mapping <- aes_string(x = "Rank", y = "Score")
     label.mapping <- aes_string(x = "Rank", y = "Score", label = "TF")
-    infer.res$Rank = as.numeric(infer.res$Rank)
-    infer.res$Score = as.numeric(infer.res$Score)
+    infer.res$Rank <- as.numeric(infer.res$Rank)
+    infer.res$Score <- as.numeric(infer.res$Score)
   } else if (method == "BART2") {
     infer.res$Rank <- 1:nrow(infer.res)
     mapping <- aes_string(x = "Rank", y = "max_auc")
     label.mapping <- aes_string(x = "Rank", y = "max_auc", label = "TF")
-    infer.res$Rank = as.numeric(infer.res$Rank)
-    infer.res$max_auc = as.numeric(infer.res$max_auc)
+    infer.res$Rank <- as.numeric(infer.res$Rank)
+    infer.res$max_auc <- as.numeric(infer.res$max_auc)
   } else if (method == "TFEA.ChIP") {
     infer.res$Rank <- 1:nrow(infer.res)
     mapping <- aes_string(x = "Rank", y = "ES")
     label.mapping <- aes_string(x = "Rank", y = "ES", label = "TF")
-    infer.res$Rank = as.numeric(infer.res$Rank)
-    infer.res$ES = as.numeric(infer.res$ES)
+    infer.res$Rank <- as.numeric(infer.res$Rank)
+    infer.res$ES <- as.numeric(infer.res$ES)
   }
   # create basic plot
   basic.plot <- ggplot() +
