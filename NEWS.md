@@ -10,6 +10,7 @@
 ## Minor changes
 * Fixed bug in `PeakProfile`.
 * Fixed bug in `VizRegulator`.
+* Optimized bug in `FindMotif` and `DEbPeak`.
 
 -------------
 

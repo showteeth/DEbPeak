@@ -137,7 +137,8 @@ DEbPeak <- function(de.res, peak.res, peak.mode = c("consensus", "diff"),
     peak.alt.valid <- intersect(colnames(peak.res), peak.alt.columns)
     peak.df <- peak.res %>%
       dplyr::filter(anno == peak.anno.key) %>%
-      dplyr::select(c("geneId", "annotation", "anno", peak.alt.valid)) %>%
+      dplyr::mutate(Peak = paste(seqnames, paste(start, end, sep = "-"), sep = ":")) %>%
+      dplyr::select(c("geneId", "Peak", "annotation", "anno", peak.alt.valid)) %>%
       dplyr::distinct(geneId, anno, .keep_all = TRUE)
 
     # get all genes used

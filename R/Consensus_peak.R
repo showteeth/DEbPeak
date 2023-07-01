@@ -84,6 +84,7 @@ GetConsensusPeak <- function(peak.file, peak.folder = NULL, mspc.path = NULL, re
     }
     consensus.peak.file <- file.path(out.folder, "ConsensusPeaks.bed")
     consensus.peak.df <- read.table(file = consensus.peak.file, sep = "\t", header = TRUE)
+    colnames(consensus.peak.df) <- c("chr", "start", "stop", "name", "score")
   }
   return(consensus.peak.df)
 }

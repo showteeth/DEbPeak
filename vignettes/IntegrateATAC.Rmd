@@ -104,6 +104,7 @@ PeakAnnoPie(atac.peak.anno$anno.obj)
 
 ## Integrate ATAC-seq and RNA-seq
 In this step, we will integrate ATAC-seq and RNA-seq to explore the role of chromatin structure of promoter region in regulating target gene expression.
+
 ### Integrate
 ```{r debatac_integrate}
 debatac.res = DEbPeak(de.res = debatac.dds.results.ordered, peak.res = atac.peak.anno.df, peak.anno.key = "Promoter", merge.key="SYMBOL", species = "Mouse")
@@ -116,7 +117,7 @@ head(debatac.res)
 ```{r debatac_integrate_plot, fig.height = 4, fig.width = 4, fig.align = "center", warning=FALSE}
 # DE and ATAC venn plot
 # debatac.plot = PlotDEbPeak(debatac.res, peak.type = "ATAC", gene.col = "SYMBOL", show_percentage=FALSE)
-debatac.plot = InteVenn(inte.res = debatac.res, inte.type = "DEbPeak", 
+debatac.plot = InteVenn(inte.res = debatac.res, inte.type = "DEbPeak", peak.type = "ATAC", 
                         peak.mode = "consensus", gene.col = "SYMBOL", show_percentage=FALSE)
 debatac.plot
 ```
@@ -170,8 +171,8 @@ As pointed above, there are **five categories** for users to choose to motif enr
 ```{r debatac_integrate_motif_up, eval = FALSE}
 # debatac.res: similar to debatac.res
 # this step is time consuming!
-ATAC.motif = FindMotif(inte.res = debchip.res, peak.anno.res = peak.anno[["df"]],
-                       peak.motif.key = "UPbPeak", peak.mode = "consensus", homer.motif.path = '~/anaconda3/bin/findMotifsGenome.pl',
+ATAC.motif = FindMotif(inte.res = debatac.res, peak.motif.key = "UPbPeak", peak.mode = "consensus", 
+                       homer.motif.path = '~/anaconda3/bin/findMotifsGenome.pl',
                        out.folder = "/path/to/out/folder", other.paras = "-len 8,10,12 -size -100,50 -S 25")
 ```
 

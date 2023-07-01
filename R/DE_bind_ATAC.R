@@ -1,10 +1,7 @@
 #' Find Motif of Peaks from RNA-seq and Peak-related Data Integrated Results.
 #'
 #' @param inte.res DEGs and peak annotation integration results.
-#' @param peak.anno.res Peak annotation results.
 #' @param peak.motif.key The key type of integrated results ("Type" column of \code{de.peak}) to find motif.
-#' @param gene.key Gene key name, chosen from geneId, ENSEMBL, SYMBOL. Default: geneId.
-#' Should be consistent with \code{merge.key} of \code{DEbPeak}.
 #' @param homer.motif.path The path to Homer's \code{findMotifsGenome.pl}. Default: NULL.
 #' @param genome Parameter for \code{findMotifsGenome.pl}, can be genome FASTA files or pre-build genome info. Default: mm10.
 #' @param out.folder The output folder. Default: NULL (current directory).
@@ -17,9 +14,8 @@
 #' @importFrom tidyr separate
 #' @export
 #'
-FindMotif <- function(inte.res, peak.anno.res = NULL, peak.motif.key, peak.mode = c("consensus", "diff"),
-                      gene.key = "geneId", homer.motif.path = NULL,
-                      genome = "mm10", out.folder = NULL, other.paras = NULL) {
+FindMotif <- function(inte.res, peak.motif.key, peak.mode = c("consensus", "diff"),
+                      homer.motif.path = NULL, genome = "mm10", out.folder = NULL, other.paras = NULL) {
   # check parameters
   peak.mode <- match.arg(arg = peak.mode)
 
@@ -44,19 +40,24 @@ FindMotif <- function(inte.res, peak.anno.res = NULL, peak.motif.key, peak.mode 
 
   # prepare peak dataframe
   # get genes
-  inte.genes <- inte.res[inte.res$Type == peak.motif.key, gene.key]
-
+  # inte.genes <- inte.res[inte.res$Type == peak.motif.key, gene.key]
+  used.inte <- inte.res[inte.res$Type == peak.motif.key, ]
   # upbchip.genes <- inte.res[inte.res$Type == "UPbPeak", gene.key]
   # downbchip.genes <- inte.res[inte.res$Type == "DOWNbPeak", gene.key]
 
   # find motif
-  if (length(inte.genes) >= 1) {
+  if (nrow(used.inte) >= 1) {
     # get peak
     if (peak.mode == "consensus") {
-      inte.peak <- peak.anno.res[
-        peak.anno.res[[gene.key]] %in% inte.genes,
-        c("seqnames", "start", "end", "name", "score")
-      ]
+      inte.peak <- inte.res %>%
+        dplyr::filter(Type == peak.motif.key) %>%
+        dplyr::filter(!is.na(Peak)) %>%
+        dplyr::select(Peak) %>%
+        dplyr::mutate(name = Peak) %>%
+        tidyr::separate(col = Peak, into = c("seqnames", "region"), sep = ":") %>%
+        tidyr::separate(col = region, into = c("start", "end"), sep = "-") %>%
+        dplyr::select(c("seqnames", "start", "end", "name"))
+      inte.peak$score <- 1
     } else if (peak.mode == "diff") {
       inte.peak <- inte.res %>%
         dplyr::filter(Type == peak.motif.key) %>%

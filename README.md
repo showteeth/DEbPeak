@@ -6,7 +6,7 @@
 [![CODE\_SIZE](https://img.shields.io/github/languages/code-size/showteeth/DEbPeak.svg)](https://github.com/showteeth/DEbPeak)
 
 ## Introduction
-`DEbPeak` aims to **explore**, **visualize**, **interpret** multi-omics data and **unravel the regulation of gene expression** by combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains **nine functional modules**:
+`DEbPeak` aims to **explore**, **visualize**, **interpret** multi-omics data and **unravel the regulation of gene expression** by combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains **ten functional modules**:
 
 * **Parse GEO**: Extract study information, raw count matrix and metadata from GEO database.
 * **Quality Control (QC)**: QC on count matrix and samples. 
@@ -20,6 +20,7 @@
 * **Functional Enrichment Analysis (FEA)**: GO enrichment analysis, KEGG enrichment analysis, Gene Set Enrichment Analysis (GSEA).
   - GO (Biological Process, Molecular Function, Cellular Component) and KEGG on differential expression genes or accessible/binding peaks.
   - GSEA on all genes (Notice: GSEA is not available for peak-related data)
+* **Predict transcription factors (PredictTFs)**: Identify transcription factors with differentially expressed genes, `DEbPeak` provides three methods ([BART](https://academic.oup.com/bioinformatics/article/34/16/2867/4956015?login=false), [ChEA3](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6602523) and [TFEA.ChIP](https://academic.oup.com/bioinformatics/article/35/24/5339/5538988)).
 * **Integrate RNA-seq with peak-related data**: 
   - Get consensus peaks: For multiple peak files, get consensus peaks; for single peak file, use it directly (used in consensus integration mode).
   - Peak profile plots: Heatmap of peak binding to TSS regions, Average Profile of ChIP peaks binding to TSS region, Profile of ChIP peaks binding to different regions (used in consensus integration mode).
