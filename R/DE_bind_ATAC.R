@@ -1,8 +1,8 @@
 #' Find Motif of Peaks from RNA-seq and Peak-related Data Integrated Results.
 #'
-#' @param inte.res DEGs and peak annotation integration results.
-#' @param peak.motif.key The key type of integrated results ("Type" column of \code{de.peak}) to find motif.
-#' @param homer.motif.path The path to Homer's \code{findMotifsGenome.pl}. Default: NULL.
+#' @param inte.res RNA and peak-related data integration results.
+#' @param peak.motif.key The key type of integrated results ("Type" column of \code{inte.res}) to find motif.
+#' @param homer.motif.path The path to Homer's \code{findMotifsGenome.pl}. Default: NULL (conduct automatic detection).
 #' @param genome Parameter for \code{findMotifsGenome.pl}, can be genome FASTA files or pre-build genome info. Default: mm10.
 #' @param out.folder The output folder. Default: NULL (current directory).
 #' @param other.paras Parameter for \code{findMotifsGenome.pl}, can be '-len 8,10,12 -size -100,50 -S 25'. Default: NULL.

@@ -1,0 +1,113 @@
+---
+title: "MotifAnalysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+For peak-related data, there are two levels of motif analysis:
+
+* ***de novo* motif discovery**: this can be used to find the specific binding motif of regulator. 
+* **motif enrichment**: this can be used to find the TFs involved in the gene regulation, especially for ATAC-seq (ATAC-seq can proflie global chromatin accessibility. Thus, the peaks of ATAC-seq may originate from hundreds of TFs.).
+
+`DEbPeak` provides `MotifDiscovery` to perfrom *de novo* motif discovery with [STREME](https://meme-suite.org/meme/tools/streme) and `MotifEnrich` to perform *de novo* motif discovery and motif enrichment with [Homer](http://homer.ucsd.edu/homer/ngs/peakMotifs.html). While [Homer](http://homer.ucsd.edu/homer/ngs/peakMotifs.html) only supports human, mouse, rat, frog, zebrafish, fly, worm, yeast and arabidopsis, `DEbPeak` provides the `MotifCompare` to map motifs provided by users against *de novo* motif discovered by `MotifDiscovery`.
+
+<hr />
+
+## Example data
+The data used here are from [In vivo CD8+ T cell CRISPR screening reveals control by Fli1 in infection and cancer](https://doi.org/10.1016/j.cell.2021.02.019):
+
+* **RNA-seq data**: the sgCtrl vs sgFli1 RNA sequencing at D8 Cl13 p.i., the raw data are stored in [GSE149838](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE149838)
+* **ATAC-seq data**: sgCtrl vs sgFli1 ATAC sequencing at D9 Cl13 p.i., the raw data are stored in [GSE149836](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE149836)
+
+<hr />
+
+## Load packages
+
+```{r motif_load_example}
+# library
+suppressWarnings(suppressMessages(library(DEbPeak)))
+```
+
+<hr />
+
+## Differential Expression Analysis 
+To simplify the steps of obtaining differential expression analysis results, `DEbPeak` provides `ConductDESeq2` to perfrom all steps of differential expression analysis, including **quality control**, **principal component analysis**, **differential expression analysis** and **functional enrichment analysis**.
+
+```{r atac_da_peak}
+peak.matrix.file <- system.file("extdata", "RA_ATAC_count.txt", package = "DEbPeak")
+peak.meta.file <- system.file("extdata", "RA_ATAC_meta.txt", package = "DEbPeak")
+ConductDESeq2(count.matrix.file = peak.matrix.file, meta.file = peak.meta.file, data.type = "ATAC",
+              gene.type = "SYMBOL", outlier.detection = F, min.count = 0,
+              peak.anno.key = "All", group.key = "condition", ref.group = "WT",
+              out.folder = '/home/songyabing/R/learn/tmp/DEbPeak/ATACDE',
+              signif = "padj", signif.threshold = 0.05, l2fc.threshold = 0, gmt.file = '')
+```
+
+
+The structure of result directory:
+```{bash atac_da_peak_struc}
+tree /home/songyabing/R/learn/tmp/DEbPeak/ATACDE
+```
+
+Read the results:
+```{r atac_da_peak_all}
+dds.peak.results.ordered = read.csv( "/home/songyabing/R/learn/tmp/DEbPeak/ATACDE/DEG/Condition_KO_WT_all.csv", row.names = 1)
+head(dds.peak.results.ordered)
+```
+
+<hr />
+
+## Motif analysis with MEME
+### *de novo* motif discovery with STREME
+Here, we will perform *de novo* motif discovery with STREME. There are **three categories** for users to choose to perform *de novo* motif discovery: `Up_regulated`, `Down_regulated`, `Not_regulated`. Here, we will use `Up_regulated` as example.
+
+```{r atac_da_motif_up_streme, eval = FALSE}
+# this step is time consuming!
+MotifDiscovery(diff.peak = dds.peak.results.ordered, peak.motif.key = "Up_regulated",
+               genome = '/path/to/genome.fa', streme.path = "~/data/software/meme-5.5.2/bin/streme",
+               samtools.path = "/home/songyabing/data/software/samtools-1.17/samtools",
+               out.folder = "/home/songyabing/R/learn/tmp/DEbPeak/DAdenovo")
+# after running, there will be a browser pop-up window to show the results.
+```
+
+<hr />
+
+### Motif comparison
+
+In this step, we will map *de novo* motifs against motifs provided by users (known motif database).
+
+```{r atac_da_motif_up_tomtom, eval = FALSE}
+verteb.motifs = system.file("extdata", "homer_verteb.motifs.meme", package = "DEbPeak")
+motif.cmp = MotifCompare(motif.folder = "/home/songyabing/R/learn/tmp/DEbPeak/DAdenovo",
+                         known.motif = verteb.motifs,
+                         tomtom.path = '~/data/software/meme-5.5.2/bin/tomtom',
+                         out.folder = "/home/songyabing/R/learn/tmp/DEbPeak/DAdenovo")
+# after running, there will be a browser pop-up window to show the results.
+```
+
+<hr />
+
+## Motif analysis with Homer
+There are **three categories** for users to choose to perform motif enrichment: `Up_regulated`, `Down_regulated`, `Not_regulated`. Here, we will use `Up_regulated` as example.
+```{r atac_da_motif_up, eval = FALSE}
+# this step is time consuming!
+da.peak.motif = MotifEnrich(de.res = dds.peak.results.ordered, reg.type = "Up_regulated",
+                            homer.motif.path = '~/anaconda3/bin/findMotifsGenome.pl',
+                            out.folder = "/home/songyabing/R/learn/tmp/DEbPeak/DAmotif",
+                            other.paras = "-len 8,10,12 -size -100,50 -S 25")
+```
+
+The results will contains **de novo** motif results and known motif enrichment analysis results.
+
+<hr />
+
+## Session info
+```{r session}
+sessionInfo()
+```
+
+<hr />

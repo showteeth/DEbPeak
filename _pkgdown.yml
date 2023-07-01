@@ -32,8 +32,8 @@ navbar:
         href: articles/FunctionalEnrichmentAnalysis.html
       - text: Functional Enrichment Analysis (Peak-related)
         href: articles/FunctionalEnrichmentAnalysisPeak.html
-      - text: Motif Enrichment (Peak-related)
-        href: articles/MotifEnrichment.html
+      - text: Motif Analysis (Peak-related)
+        href: articles/MotifAnalysis.html
       - text: Identify regulators (RNA-seq)
         href: articles/IdentifyRegulator.html
       - text: Integrate RNA-seq with ChIP-seq (consensus peak)

@@ -15,11 +15,11 @@ FindMotif(
 )
 }
 \arguments{
-\item{inte.res}{DEGs and peak annotation integration results.}
+\item{inte.res}{RNA and peak-related data integration results.}
 
-\item{peak.motif.key}{The key type of integrated results ("Type" column of \code{de.peak}) to find motif.}
+\item{peak.motif.key}{The key type of integrated results ("Type" column of \code{inte.res}) to find motif.}
 
-\item{homer.motif.path}{The path to Homer's \code{findMotifsGenome.pl}. Default: NULL.}
+\item{homer.motif.path}{The path to Homer's \code{findMotifsGenome.pl}. Default: NULL (conduct automatic detection).}
 
 \item{genome}{Parameter for \code{findMotifsGenome.pl}, can be genome FASTA files or pre-build genome info. Default: mm10.}
 

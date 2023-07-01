@@ -193,8 +193,8 @@ As pointed above, there are **eight categories** for users to choose to motif en
 ```{r debchip_de_integrate_motif_up, eval = FALSE}
 # debchip.res: similar to debchip.res
 # this step is time consuming!
-FindMotif(inte.res = debchip.res, peak.anno.res = NULL,
-          peak.motif.key = "Up_Up", peak.mode = "diff", homer.motif.path = '~/anaconda3/bin/findMotifsGenome.pl',
+FindMotif(inte.res = debchip.res, peak.motif.key = "Up_Up", peak.mode = "diff", 
+          homer.motif.path = '~/anaconda3/bin/findMotifsGenome.pl',
           out.folder = "/path/to/out/folder", other.paras = "-len 8,10,12 -size -100,50 -S 25")
 ```
 

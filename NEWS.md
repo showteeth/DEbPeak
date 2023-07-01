@@ -1,3 +1,10 @@
+# DEbPeak 1.4.0
+## New features
+* Added `MotifDiscovery` to perform *de novo* motif discovery with STREME.
+* Added `MotifCompare` to map motifs against a motif database.
+
+-------------
+
 # DEbPeak 1.3.0
 ## New features
 * Added `RunChEA3` to identify TFs from gene expression reults with ChEA3.

@@ -21,12 +21,12 @@ MotifEnrich(
 
 \item{reg.type}{The regulation type, choose from Up_regulated, Not_regulated, Down_regulated.}
 
-\item{signif}{Significance criterion. For DESeq2 results, can be chosen from padj, pvalue.
+\item{signif}{Significance criterion to get differential peaks. For DESeq2 results, can be chosen from padj, pvalue.
 For edgeR results, can be chosen from FDR, PValue. Default: padj.}
 
-\item{signif.threshold}{Significance threshold to get differentially expressed results. Default: 0.05.}
+\item{signif.threshold}{Significance threshold to get differential peaks. Default: 0.05.}
 
-\item{l2fc.threshold}{Log2 fold change threshold to get differentially expressed results. Default: 0.}
+\item{l2fc.threshold}{Log2 fold change threshold to get differential peaks. Default: 0.}
 
 \item{homer.motif.path}{The path to Homer's \code{findMotifsGenome.pl}. Default: NULL.}
 
