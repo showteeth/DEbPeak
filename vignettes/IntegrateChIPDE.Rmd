@@ -8,6 +8,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Introduction
+
 The gene expression can also be regulated by *cis*-regulatory elements, such as enhancers. Different from promoters which are typically located directly upstream or downstream of the transcription initiation sites (TSSs), [enhancers can act independent of orientation, distance, and location with respect to the target gene and can be located over as much as a million base pairs away](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-021-02322-1). This characteristic determines that annotating peak to its nearest gene for analysis is inaccurate. Here, we adopted the following strategies:
 
 * Step1: Extract differential binding peaks and differential expressed genes (both are based on hard-threshold)
@@ -114,14 +115,17 @@ head(all.enhancer.res)
 Here, we will integrate RNA-seq with **H3K4me1 ChIP-seq** data to explore the enhancers and their candidate targets.
 
 ### Integrate
+
 [Previous work on latent enhancers indicates that 80% of binding sites emerge at this distance, and many are within 250 kb or less](https://doi.org/10.1016/j.celrep.2016.04.063). Here, we will use 250kb as a threshold, user can change this value with `dis.threshold`.
 
 ```{r dechip_de_integrate}
 # set enhancer = TRUE to use enhancer mode
 debchip.res <- DEbPeak(
     de.res = enhancer.rna.res, peak.res = all.enhancer.res, peak.mode = "diff",  enhancer = TRUE,
-    signif = "pvalue", signif.threshold = 0.05, l2fc.threshold = 0, peak.signif = "pvalue", label.key = NULL,
-    peak.signif.threshold = 0.05, peak.l2fc.threshold = 0, species = "Mouse", merge.key = "SYMBOL", n.cores = 5,
+    signif = "pvalue", signif.threshold = 0.05, l2fc.threshold = 0, 
+    peak.signif = "pvalue", label.key = NULL,
+    peak.signif.threshold = 0.05, peak.l2fc.threshold = 0, species = "Mouse", 
+    merge.key = "SYMBOL", n.cores = 5,
     seq.style = "Ensembl", gtf.file = NULL, dis.threshold = 250000
   )
 ```
@@ -190,6 +194,9 @@ debchip.down.fe.results[["GO"]][["plot"]]
 [Different from ChIP-seq which profile specific protein–DNA interactions (depends on the antibody provided), ATAC-seq can proflie global chromatin accessibility](https://link.springer.com/article/10.1186/s43556-020-00009-w). Thus, the peaks of ATAC-seq may originate from hundreds of TFs. To reveal the possible TFs involved, motif enrichment analysis is a good solution.
 
 As pointed above, there are **eight categories** for users to choose to motif enrichment, we will use `Up_Up` as example.
+
+### Motif analysis with Homer
+
 ```{r debchip_de_integrate_motif_up, eval = FALSE}
 # debchip.res: similar to debchip.res
 # this step is time consuming!
@@ -200,10 +207,37 @@ FindMotif(inte.res = debchip.res, peak.motif.key = "Up_Up", peak.mode = "diff",
 
 <hr />
 
+### Motif analysis with MEME
+
+#### de novo motif discovery
+
+```{r debchip_de_integrate_motif_up_denovo, eval = FALSE}
+# this step is time consuming!
+MotifDiscovery(inte.res = debchip.res, peak.motif.key = "Up_Up",
+               genome = '/path/to/genome.fa', peak.mode = "diff", 
+               streme.path = "~/data/software/meme-5.5.2/bin/streme",
+               samtools.path = "/home/songyabing/data/software/samtools-1.17/samtools",
+               out.folder = "/path/to/denovo/output")
+```
+
+#### Motif comparison
+
+```{r debchip_de_integrate_motif_up_comparison, eval = FALSE}
+verteb.motifs = system.file("extdata", "homer_verteb.motifs.meme", package = "DEbPeak")
+# this step is time consuming!
+chip.denovo.motif = MotifCompare(motif.folder = "/path/to/denovo/output",
+                                 known.motif = verteb.motifs, tomtom.path = '~/data/software/meme-5.5.2/bin/tomtom',
+                                 out.folder = "/path/to/denovo/output")
+```
+
+<hr />
+
 ## Enhancer-gene network 
+
 [Multiple enhancers often regulate a single gene, and multiple genes can be regulated by a single enhancer](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6061867/). Here, we will create the regulatory network.
 
 ### Whole category
+
 Here, we will show the whole enhancer-gene network of **Up_Up** category:
 ```{r debchip_de_integrate_whole_network, warning=FALSE, fig.height = 10, fig.width = 11, fig.align = "center"}
 suppressWarnings(suppressMessages(library(igraph)))
@@ -222,6 +256,7 @@ NetViz(inte.res = debchip.res, whole = FALSE, type = "Up_Up",
 <hr />
 
 ### Gene-based
+
 Here, we will show enhancer-specific gene network of **Up_Up** category:
 ```{r debchip_de_integrate_gene_network, warning=FALSE, fig.height = 10, fig.width = 10, fig.align = "center"}
 NetViz(inte.res = debchip.res, whole = FALSE, type = "Up_Up",
@@ -233,6 +268,7 @@ NetViz(inte.res = debchip.res, whole = FALSE, type = "Up_Up",
 <hr />
 
 ### Peak-based
+
 Here, we will show specific enhancer-gene network of **Up_Up** category:
 ```{r debchip_de_integrate_peak_network, warning=FALSE, fig.height = 10, fig.width = 10, fig.align = "center"}
 NetViz(inte.res = debchip.res, whole = FALSE, type = "Up_Up",

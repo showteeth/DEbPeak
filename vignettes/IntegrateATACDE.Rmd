@@ -36,6 +36,7 @@ suppressWarnings(suppressMessages(library(DEbPeak)))
 <hr />
 
 ## Prepare ATAC-seq counts
+
 The following is an example with count matrix, if you only have bam files and peak files, please refer to [Integrate RNA-seq with ChIP-seq (differential analysis)](https://showteeth.github.io/DEbPeak/articles/IntegrateChIPDE.html).
 
 Format the count matrix:
@@ -72,6 +73,7 @@ write.table(x = atac.meta, file = "RA_ATAC_mata_raw.txt", sep = "\t", quote = FA
 To simplify the steps of obtaining differential expression analysis results, `DEbPeak` provides `ConductDESeq2` to perfrom all steps of differential expression analysis, including **quality control**, **principal component analysis**, **differential expression analysis** and **functional enrichment analysis**.
 
 ### ATAC-seq
+
 With count matrix, we will perform differential analysis:
 ```{r debatac_atac_da_peak}
 # RA_ATAC_count.txt is above consensus_peak_matrix.txt
@@ -193,12 +195,40 @@ debatac.down.fe.results[["GO"]][["plot"]]
 [Different from ChIP-seq which profile specific protein–DNA interactions (depends on the antibody provided), ATAC-seq can proflie global chromatin accessibility](https://link.springer.com/article/10.1186/s43556-020-00009-w). Thus, the peaks of ATAC-seq may originate from hundreds of TFs. To reveal the possible TFs involved, motif enrichment analysis is a good solution.
 
 As pointed above, there are **eight categories** for users to choose to motif enrichment, we will use `Up_Up` as example.
+
+### Motif analysis with Homer
+
 ```{r debatac_integrate_motif_up, eval = FALSE}
 # debatac.res: similar to debatac.res
 # this step is time consuming!
 FindMotif(inte.res = debatac.res, peak.motif.key = "Up_Up", peak.mode = "diff", 
           homer.motif.path = '~/anaconda3/bin/findMotifsGenome.pl',
           out.folder = "/path/to/out/folder", other.paras = "-len 8,10,12 -size -100,50 -S 25")
+```
+
+<hr />
+
+### Motif analysis with MEME
+
+#### de novo motif discovery
+
+```{r debatac_integrate_motif_up_denovo, eval = FALSE}
+# this step is time consuming!
+MotifDiscovery(inte.res = debatac.res, peak.motif.key = "Up_Up",
+               genome = '/path/to/genome.fa', peak.mode = "diff", 
+               streme.path = "~/data/software/meme-5.5.2/bin/streme",
+               samtools.path = "/home/songyabing/data/software/samtools-1.17/samtools",
+               out.folder = "/path/to/denovo/output")
+```
+
+#### Motif comparison
+
+```{r debatac_integrate_motif_up_comparison, eval = FALSE}
+verteb.motifs = system.file("extdata", "homer_verteb.motifs.meme", package = "DEbPeak")
+# this step is time consuming!
+ATAC.denovo.motif = MotifCompare(motif.folder = "/path/to/denovo/output",
+                                 known.motif = verteb.motifs, tomtom.path = '~/data/software/meme-5.5.2/bin/tomtom',
+                                 out.folder = "/path/to/denovo/output")
 ```
 
 <hr />

@@ -516,6 +516,7 @@ tree /home/songyabing/R/learn/tmp/DEbPeak/AllInOne
 ---------------------
 
 # Integrate RNA-seq and ChIP-seq/ATAC-seq
+
 The data used here contains RNA-seq and ChIP-seq datasets from [RUNX represses Pmp22 to drive neurofibromagenesis](https://www.science.org/doi/10.1126/sciadv.aau8389): 
 
 * RNA-seq: two genotypes and three samples per genotype, the raw data are stored in [GSE122774](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE122774)
@@ -523,6 +524,7 @@ The data used here contains RNA-seq and ChIP-seq datasets from [RUNX represses P
 * ATAC-seq: two genotypes and one sample per genotype, the raw data are stored in [GSE122776](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE122776)
 
 ## Prepare DEGs
+
 ```{r debchip_degs}
 # prepare count matrix and metadata
 debchip.count.file <- system.file("extdata", "debchip_count.txt", package = "DEbPeak")
@@ -547,7 +549,9 @@ head(debchip.dds.results.ordered)
 ---------------------
 
 ## Prepare ChIP-seq data
+
 ### Consensus peaks
+
 In this step, we will get consensus peaks with [MSPC](https://genometric.github.io/MSPC/docs/quick_start/) when multiple peak files are available, but when there is only one peak file, we will use it directly (**make sure this peak file contains five columns: "chr", "start", "stop", "name", "score"**).
 ```{r debchip_consensus_peak}
 # get consensus peak
@@ -559,6 +563,7 @@ head(peak.df)
 ---------------------
 
 ### Peak profile
+
 Check the profle of consensus peaks:
 ```{r debchip_peak_profile, fig.height = 6, fig.width = 10, fig.align = "center", warning=FALSE}
 # peak profile plot
@@ -569,6 +574,7 @@ peak.profile$profile.plot
 ---------------------
 
 ### Peak annotation
+
 Peak annotation with [ChIPseeker](https://bioconductor.org/packages/release/bioc/vignettes/ChIPseeker/inst/doc/ChIPseeker.html):
 ```{r debchip_peak_annotation_df}
 # peak annotation
@@ -588,9 +594,27 @@ PeakAnnoPie(peak.anno$anno.obj)
 
 ---------------------
 
+### Motif analysis
+
+Here, we will perform *de novo* motif discovery to illustrate the binding motif:
+
+```{r debchip_peak_denovo, eval = FALSE}
+# this step is time consuming!
+MotifDiscovery(peak.df = peak.df, genome = '/path/to/genome.fa',
+               streme.path = "~/data/software/meme-5.5.2/bin/streme",
+               samtools.path = "/home/songyabing/data/software/samtools-1.17/samtools",
+               out.folder = "/path/to/output", show.html = FALSE)
+# after running, there will be a browser pop-up window to show the results.
+```
+
+---------------------
+
 ## Integrate ChIP-seq and RNA-seq
+
 In this step, we will integrate ChIP-seq and RNA-seq to get plausible direct targets of promoter (in this example, Runx).
+
 ### Integrate
+
 ```{r debchip_integrate}
 debchip.res = DEbPeak(de.res = debchip.dds.results.ordered, peak.res = peak.anno.df, peak.anno.key = "Promoter", merge.key="SYMBOL", species = "Mouse")
 head(debchip.res)
@@ -599,6 +623,7 @@ head(debchip.res)
 ---------------------
 
 ### Integrate summary
+
 ```{r debchip_integrate_plot, fig.height = 4, fig.width = 4, fig.align = "center", warning=FALSE}
 # DE and ChIP venn plot
 # debchip.plot = PlotDEbPeak(debchip.res, peak.type = "ChIP", show_percentage=FALSE)
@@ -611,9 +636,11 @@ debchip.plot
 ---------------------
 
 ### Functional enrichment
+
 There are **five categories** for users to choose to perform functional enrichment: `UP`, `Peak`, `DOWN`, `DOWNbPeak`, `UPbPeak`. Here, we will use `DOWNbPeak` and `UPbPeak` as examples.
 
 #### UPbPeak
+
 ```{r debchip_integrate_fe_up}
 # functional enrichment on direct targets
 # debchip.up.fe.results = DEbPeakFE(de.peak = debchip.res, peak.fe.key = "UPbPeak", 
@@ -633,6 +660,7 @@ debchip.up.fe.results[["GO"]][["plot"]]
 <hr />
 
 #### DOWNbPeak
+
 ```{r debchip_integrate_fe_down}
 # functional enrichment on direct targets
 # debchip.down.fe.results = DEbPeakFE(de.peak = debchip.res, peak.fe.key = "DOWNbPeak", 
@@ -650,25 +678,60 @@ debchip.down.fe.results[["GO"]][["plot"]]
 ```
 
 ---------------------
+
 ## Integrate ATAC-seq and RNA-seq
+
 All above steps are suitable for integrating ATAC-seq and RNA-seq data, but the following step (**Motif enrichment**) is usually unique to integrate ATAC-seq and RNA-seq data.
 
-There are **five categories** for users to choose to perform motif enrichment: `UP`, `Peak`, `DOWN`, `DOWNbPeak`, `UPbPeak`. Here, we will use `UPbPeak` as example:
+There are **five categories** for users to choose to perform motif enrichment: `UP`, `Peak`, `DOWN`, `DOWNbPeak`, `UPbPeak`. Here, we will use `UPbPeak` as example.
+
+### Motif analysis with Homer
+
 ```{r debatac_integrate_motif_up, eval = FALSE}
 # debatac.res: similar to debatac.res
 # this step is time consuming!
-ATAC.motif = FindMotif(inte.res = debchip.res, peak.anno.res = peak.anno[["df"]],
-                       peak.motif.key = "UPbPeak", peak.mode = "consensus", homer.motif.path = '~/anaconda3/bin/findMotifsGenome.pl',
+ATAC.motif = FindMotif(inte.res = debatac.res, peak.motif.key = "UPbPeak", peak.mode = "consensus", 
+                       homer.motif.path = '~/anaconda3/bin/findMotifsGenome.pl',
                        out.folder = "/path/to/out/folder", other.paras = "-len 8,10,12 -size -100,50 -S 25")
 ```
 
+<hr />
+
+### Motif analysis with MEME
+
+#### de novo motif discovery
+
+```{r debatac_integrate_motif_up_denovo, eval = FALSE}
+# this step is time consuming!
+MotifDiscovery(inte.res = debatac.res, peak.motif.key = "UPbPeak",
+               genome = '/path/to/genome.fa', peak.mode = "consensus", 
+               streme.path = "~/data/software/meme-5.5.2/bin/streme",
+               samtools.path = "/home/songyabing/data/software/samtools-1.17/samtools",
+               out.folder = "/path/to/denovo/output")
+```
+
+#### Motif comparison
+
+```{r debatac_integrate_motif_up_comparison, eval = FALSE}
+verteb.motifs = system.file("extdata", "homer_verteb.motifs.meme", package = "DEbPeak")
+# this step is time consuming!
+ATAC.denovo.motif = MotifCompare(motif.folder = "/path/to/denovo/output",
+                                 known.motif = verteb.motifs, tomtom.path = '~/data/software/meme-5.5.2/bin/tomtom',
+                                 out.folder = "/path/to/denovo/output")
+```
+
+<hr />
 
 ---------------------
 
 ## Integrate RNA-seq, ChIP-seq and ATAC-seq
+
 We have integrated RNA-seq and ChIP-seq data in the above steps, now we will continue to integrate ATAC-seq data based on the previous results.
+
 ### Prepare ATAC-seq data
+
 #### Consensus peaks
+
 ```{r debchip_atac_consensus_peak}
 # get consensus peak
 atac.peak.file <- system.file("extdata", "debatac_peaks.bed", package = "DEbPeak")
@@ -677,6 +740,7 @@ head(atac.peak.df)
 ```
 
 #### Peak profile
+
 Check the profle of consensus peaks:
 ```{r debchip_atac_peak_profile, fig.height = 6, fig.width = 10, fig.align = "center", warning=FALSE}
 # peak profile plot
@@ -685,6 +749,7 @@ atac.peak.profile$profile.plot
 ```
 
 #### Peak annotation
+
 Peak annotation with [ChIPseeker](https://bioconductor.org/packages/release/bioc/vignettes/ChIPseeker/inst/doc/ChIPseeker.html):
 ```{r debchip_atac_peak_annotation_df}
 # peak annotation
@@ -707,8 +772,24 @@ PeakAnnoPie(atac.peak.anno$anno.obj)
 
 ---------------------
 
+#### Motif analysis
+Here, we will perform *de novo* motif discovery to illustrate the binding motif:
+
+```{r debchip_atac_peak_annotation_denovo, eval = FALSE}
+# this step is time consuming!
+MotifDiscovery(peak.df = atac.peak.df, genome = '/path/to/genome.fa',
+               streme.path = "~/data/software/meme-5.5.2/bin/streme",
+               samtools.path = "/home/songyabing/data/software/samtools-1.17/samtools",
+               out.folder = "/path/to/output", show.html = FALSE)
+# after running, there will be a browser pop-up window to show the results.
+```
+
+---------------------
+
 ### Integrate RNA-seq, ChIP-seq and ATAC-seq
+
 #### Integrate
+
 ```{r debpeak_integrate}
 debpeak.res = DEbCA(de.res = debchip.dds.results.ordered, chip.peak.res = peak.anno.df,
                     atac.peak.res = atac.peak.anno.df,
@@ -717,6 +798,7 @@ head(debpeak.res)
 ```
 
 #### Integrate summary
+
 ```{r debpeak_integrate_plot, fig.height = 4, fig.width = 4, fig.align = "center", warning=FALSE}
 # DE and ChIP venn plot
 # debpeak.plot = PlotDEbPeak(debpeak.res, peak.type = "Peak", show_percentage=FALSE)
@@ -727,9 +809,11 @@ debpeak.plot
 ```
 
 #### Functional enrichment
+
 There are **five categories** for users to choose to perform functional enrichment: `ChIP`, `ATAC`, `UP`, `DOWN`, `ChIPbATAC`, `UPbChIP`, `DOWNbChIP`, `UPbPeak`, `DOWNbPeak`, `UPbATAC`, `DOWNbATAC`. Here, we will use `DOWNbPeak` and `UPbPeak` as examples.
 
 ##### UPbPeak
+
 ```{r debpeak_integrate_fe_up}
 # functional enrichment on direct targets
 # debpeak.up.fe.results = DEbPeakFE(de.peak = debpeak.res, peak.fe.key = "UPbPeak", gene.type = "ENTREZID", species="Mouse",save = F)
@@ -748,6 +832,7 @@ debpeak.up.fe.results[["GO"]][["plot"]]
 <hr />
 
 ##### DOWNbPeak
+
 ```{r debpeak_integrate_fe_down}
 # functional enrichment on direct targets
 # debpeak.down.fe.results = DEbPeakFE(de.peak = debpeak.res, peak.fe.key = "DOWNbPeak", 
@@ -767,8 +852,11 @@ debpeak.down.fe.results[["GO"]][["plot"]]
 ---------------------
 
 # Utils
+
 ## Gene name conversion
+
 ### results from DE analysis
+
 ```{r convert_deres, warning=FALSE}
 # convert for DESeq2 results
 dds.results.ordered <- IDConversion(deres = dds.results.ordered, gene.type = "ENSEMBL",sort.key = "log2FoldChange")
@@ -778,6 +866,7 @@ head(dds.results.ordered)
 ---------------------
 
 ### normal matrix
+
 ```{r convert_normal, warning=FALSE}
 count.matrix <- IDConversion(deres = count.matrix, gene.type = "ENSEMBL",sort.key=NULL)
 head(count.matrix)
@@ -786,6 +875,7 @@ head(count.matrix)
 ---------------------
 
 ## Count normalization
+
 Here, we provide five different normalization methods: **CPM**, **TMM**, **DESeq2’s median of ratios**, **RPKM** and **TPM**, of which **RPKM** and **TPM** need to provide gtf files to calculate gene length.
 
 ### CPM
@@ -803,6 +893,7 @@ head(cpm.matrix)
 ---------------------
 
 ### TMM
+
 edgeR’s *T*rimmed *M*ean of *M* values (TMM) takes into account the **sequencing depth**, **RNA composition**, and **gene length**. For detailed information, please refer to [A scaling normalization method for differential expression analysis of RNA-seq data](https://genomebiology.biomedcentral.com/articles/10.1186/gb-2010-11-3-r25).
 ```{r tmm ,warning=FALSE}
 tmm.matrix=NormalizedCount(dds, norm.type="TMM")
@@ -812,6 +903,7 @@ head(tmm.matrix)
 ---------------------
 
 ### DESeq2’s median of ratios
+
 DESeq2’s median of ratios takes into account the **sequencing depth** and **RNA composition**. For detailed information, please refer to [Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0550-8).
 ```{r deseq2_norm ,warning=FALSE}
 deseq2.matrix=NormalizedCount(dds, norm.type="DESeq2")
@@ -821,6 +913,7 @@ head(deseq2.matrix)
 ---------------------
 
 ### RPKM
+
 *R*eads *P*er *K*ilobase of exon per *M*illion reads mapped (RPKM) takes into account the **sequencing depth** and **gene length**. For each feature `i` as the count scaled by the feature's length times one thousand (to kilobase) and further scaled by the total number of reads times one million.
 
 $$
@@ -834,6 +927,7 @@ rpkm.matrix=NormalizedCount(dds,gtf.file = '/path/to/gtf', norm.type="RPKM")
 ---------------------
 
 ### TPM
+
 *T*ranscripts *P*er kilobase *M*illion (TPM) takes into account the **sequencing depth** and **gene length**. 
 
 $$

@@ -8,17 +8,20 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Introduction
+
 [Eukaryotic chromatin is tightly packaged into nucleosomes, and the positioning of nucleosomes can regulate gene expression by changing the in vivo availability of binding sites to transcription factors (TFs)](https://epigeneticsandchromatin.biomedcentral.com/articles/10.1186/1756-8935-7-33). Assay of Transposase Accessible Chromatin sequencing (ATAC-seq) is a technique used to assess genome-wide chromatin accessibility. Thus, combining ATAC-seq with RNA-seq can be used to understanding the role of chromatin structure in regulating gene expression.
 
 <hr />
 
 ## Example data
+
 The data used here contains RNA-seq and ATAC-seq datasets from [RUNX represses Pmp22 to drive neurofibromagenesis](https://www.science.org/doi/10.1126/sciadv.aau8389): 
 
 * RNA-seq: two genotypes and three samples per genotype, the raw data are stored in [GSE122774](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE122774)
 * ATAC-seq: two genotypes and one sample per genotype, the raw data are stored in [GSE122776](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE122776)
 
 ## Differential Expression Analysis (RNA-seq)
+
 The RNA-seq data used here are same as used in "IntegrateChIP" vignette.
 ```{r debatac_degs}
 # library
@@ -48,7 +51,9 @@ head(debatac.dds.results.ordered)
 <hr />
 
 ## Process ATAC-seq data
+
 ### Consensus peaks
+
 ```{r debatac_atac_consensus_peak}
 # get consensus peak
 atac.peak.file <- system.file("extdata", "debatac_peaks.bed", package = "DEbPeak")
@@ -59,6 +64,7 @@ head(atac.peak.df)
 <hr />
 
 ### Peak profile
+
 Check the profle of consensus peaks:
 ```{r debatac_atac_peak_profile, fig.height = 6, fig.width = 10, fig.align = "center", warning=FALSE}
 # peak profile plot
@@ -80,6 +86,7 @@ knitr::include_graphics("/home/songyabing/R/learn/tmp/DEbPeak/deeptools/ATAC-seq
 <hr />
 
 ### Peak annotation
+
 In this step, we will perform peak annotation with [ChIPseeker](https://bioconductor.org/packages/release/bioc/vignettes/ChIPseeker/inst/doc/ChIPseeker.html). This will include annotating peaks with its nearby genes, assigning genomic region of the peaks, et al.
 ```{r debatac_atac_peak_annotation_df}
 # peak annotation
@@ -102,10 +109,26 @@ PeakAnnoPie(atac.peak.anno$anno.obj)
 
 <hr />
 
+### Motif analysis
+Here, we will perform *de novo* motif discovery to illustrate the binding motif:
+
+```{r debatac_atac_peak_denovo, eval = FALSE}
+# this step is time consuming!
+MotifDiscovery(peak.df = atac.peak.df, genome = '/path/to/genome.fa',
+               streme.path = "~/data/software/meme-5.5.2/bin/streme",
+               samtools.path = "/home/songyabing/data/software/samtools-1.17/samtools",
+               out.folder = "/path/to/output", show.html = FALSE)
+# after running, there will be a browser pop-up window to show the results.
+```
+
+<hr />
+
 ## Integrate ATAC-seq and RNA-seq
+
 In this step, we will integrate ATAC-seq and RNA-seq to explore the role of chromatin structure of promoter region in regulating target gene expression.
 
 ### Integrate
+
 ```{r debatac_integrate}
 debatac.res = DEbPeak(de.res = debatac.dds.results.ordered, peak.res = atac.peak.anno.df, peak.anno.key = "Promoter", merge.key="SYMBOL", species = "Mouse")
 head(debatac.res)
@@ -114,6 +137,7 @@ head(debatac.res)
 <hr />
 
 ### Integrate summary
+
 ```{r debatac_integrate_plot, fig.height = 4, fig.width = 4, fig.align = "center", warning=FALSE}
 # DE and ATAC venn plot
 # debatac.plot = PlotDEbPeak(debatac.res, peak.type = "ATAC", gene.col = "SYMBOL", show_percentage=FALSE)
@@ -125,9 +149,11 @@ debatac.plot
 <hr />
 
 ## Functional enrichment
+
 There are **five categories** for users to choose to perform functional enrichment: `UP`, `Peak`, `DOWN`, `DOWNbPeak`, `UPbPeak`. Here, we will use `DOWNbPeak` and `UPbPeak` as examples.
 
 ### UPbPeak
+
 ```{r debatac_integrate_fe_up}
 # functional enrichment on direct targets
 # debatac.up.fe.results = DEbPeakFE(de.peak = debatac.res, peak.fe.key = "UPbPeak", gene.type = "ENTREZID", species="Mouse",save = F)
@@ -146,6 +172,7 @@ debatac.up.fe.results[["GO"]][["plot"]]
 <hr />
 
 ### DOWNbPeak
+
 ```{r debatac_integrate_fe_down}
 # functional enrichment on direct targets
 # debatac.down.fe.results = DEbPeakFE(de.peak = debatac.res, peak.fe.key = "DOWNbPeak", 
@@ -165,9 +192,13 @@ debatac.down.fe.results[["GO"]][["plot"]]
 <hr />
 
 ## Motif enrichment
+
 [Different from ChIP-seq which profile specific protein–DNA interactions (depends on the antibody provided), ATAC-seq can proflie global chromatin accessibility](https://link.springer.com/article/10.1186/s43556-020-00009-w). Thus, the peaks of ATAC-seq may originate from hundreds of TFs. To reveal the possible TFs involved, motif enrichment analysis is a good solution.
 
 As pointed above, there are **five categories** for users to choose to motif enrichment, we will use `UPbPeak` as example.
+
+### Motif analysis with Homer
+
 ```{r debatac_integrate_motif_up, eval = FALSE}
 # debatac.res: similar to debatac.res
 # this step is time consuming!
@@ -178,7 +209,33 @@ ATAC.motif = FindMotif(inte.res = debatac.res, peak.motif.key = "UPbPeak", peak.
 
 <hr />
 
+### Motif analysis with MEME
+
+#### de novo motif discovery
+
+```{r debatac_integrate_motif_up_denovo, eval = FALSE}
+# this step is time consuming!
+MotifDiscovery(inte.res = debatac.res, peak.motif.key = "UPbPeak",
+               genome = '/path/to/genome.fa', peak.mode = "consensus", 
+               streme.path = "~/data/software/meme-5.5.2/bin/streme",
+               samtools.path = "/home/songyabing/data/software/samtools-1.17/samtools",
+               out.folder = "/path/to/denovo/output")
+```
+
+#### Motif comparison
+
+```{r debatac_integrate_motif_up_comparison, eval = FALSE}
+verteb.motifs = system.file("extdata", "homer_verteb.motifs.meme", package = "DEbPeak")
+# this step is time consuming!
+ATAC.denovo.motif = MotifCompare(motif.folder = "/path/to/denovo/output",
+                                 known.motif = verteb.motifs, tomtom.path = '~/data/software/meme-5.5.2/bin/tomtom',
+                                 out.folder = "/path/to/denovo/output")
+```
+
+<hr />
+
 ## Save results
+
 Save results for downstream analysis:
 ```{r save_image}
 save.image(file = "/home/songyabing/R/learn/tmp/DEbPeak/RNAandATAC.RData")
@@ -187,6 +244,7 @@ save.image(file = "/home/songyabing/R/learn/tmp/DEbPeak/RNAandATAC.RData")
 <hr />
 
 ## Session info
+
 ```{r session}
 sessionInfo()
 ```

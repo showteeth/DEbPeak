@@ -190,7 +190,7 @@ RunBART2 <- function(genes, species = c("Human", "Mouse"), bart2.path = NULL, pr
     projet.name <- "DEbPeak"
   }
   # prepare BART2 cmd
-  out.folder <- file.path(out.folder, "bart2")
+  out.folder <- file.path(tmp.folder, "bart2")
   bart2.cmd <- paste(
     bart2.path, "geneset", "-i", bart2.gene.file, "-s", spe.anno,
     "--outdir", out.folder, "-o", projet.name
@@ -234,7 +234,7 @@ RunBART2 <- function(genes, species = c("Human", "Mouse"), bart2.path = NULL, pr
 RunTFEA <- function(genes, control.genes) {
   # cehck gene type
   # get org.db
-  spe.anno <- GetSpeciesAnno(species)
+  spe.anno <- GetSpeciesAnno("Human")
   org.db <- spe.anno[["OrgDb"]]
   # library orgdb
   if (!require(org.db, quietly = TRUE, character.only = TRUE)) {

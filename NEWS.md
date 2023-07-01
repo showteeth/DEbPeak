@@ -5,6 +5,7 @@
 
 ## Minor changes
 * Added `show.html` to `MotifDiscovery` and `MotifCompare` to control the pop-up window.
+* Fixed bug in `InferRegulator`.
 
 -------------
 

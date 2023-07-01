@@ -32,8 +32,8 @@ There are also **ATAC-seq datasets** available, users can compare the results ob
 
 ```{r motif_load_example}
 # library
-suppressWarnings(suppressMessages(library(DEbPeak)))
 suppressWarnings(suppressMessages(library(tidyverse)))
+suppressWarnings(suppressMessages(library(DEbPeak)))
 ```
 
 <hr />
@@ -55,18 +55,14 @@ rna.diff <- read.table(file = rna.diff.file, header = TRUE, sep = "\t")
 # up-regulated genes
 rna.up.sig.df = rna.diff %>%
   dplyr::filter(padj < 0.05 & log2FoldChange > 0)
-write.table(x = rownames(rna.up.sig.df), file = "/home/songyabing/R/learn/tmp/DEbPeak/RNAinfer/ATACDE_padj0.05_lfc0.txt",
-            quote = F, row.names = F, col.names = F)
 # non-differentially expressed genes
 rna.contorl.df = rna.diff %>%
   dplyr::filter(padj > 0.5 & abs(log2FoldChange) <0.25)
-write.table(x = rownames(rna.contorl.df), file = "/home/songyabing/R/learn/tmp/DEbPeak/RNAinfer/ATACDE_padj0.5_lfc0.25_contorl.txt",
-            quote = F, row.names = F, col.names = F)
 ```
 
 While [TFEA.ChIP](https://academic.oup.com/bioinformatics/article/35/24/5339/5538988) only support human genes, we need to convert the mouse genes to their human orthologs.
 
-```{r debatac_rna_deg_infer_convert}
+```{r debatac_rna_deg_infer_convert, eval=FALSE}
 # convert mouse gene symbol to human entrez id
 Mouse2HumanEntrez <- function(x){
   require("biomaRt")
@@ -78,8 +74,20 @@ Mouse2HumanEntrez <- function(x){
   return(m2h.ids)
 }
 # convert mouse gene symbol to human entrez id
-rna.upsig.ids = Mouse2HumanEntrez(rownames(rna.up.sig.df))
-rna.contorl.ids = Mouse2HumanEntrez(rownames(rna.contorl.df))
+rna.upsig.ids = Mouse2HumanEntrez(x = rownames(rna.up.sig.df))
+write.table(x = rna.upsig.ids, file = "/home/songyabing/R/learn/tmp/DEbPeak/RNAinfer/ATACDE_padj0.05_lfc0.txt",
+            quote = F, row.names = F, col.names = F)
+rna.contorl.ids = Mouse2HumanEntrez(x = rownames(rna.contorl.df))
+write.table(x = rna.contorl.ids, file = "/home/songyabing/R/learn/tmp/DEbPeak/RNAinfer/ATACDE_padj0.5_lfc0.25_contorl.txt",
+            quote = F, row.names = F, col.names = F)
+```
+
+The above codes are slow, we will load pre-run results:
+```{r debatac_rna_deg_infer_convert_load}
+rna.upsig.ids.df = read.table("/home/songyabing/R/learn/tmp/DEbPeak/RNAinfer/ATACDE_padj0.05_lfc0.txt")
+rna.upsig.ids = rna.upsig.ids.df$V1
+rna.contorl.ids.df = read.table("/home/songyabing/R/learn/tmp/DEbPeak/RNAinfer/ATACDE_padj0.5_lfc0.25_contorl.txt")
+rna.contorl.ids = rna.contorl.ids.df$V1
 ```
 
 <hr />
@@ -134,15 +142,3 @@ sessionInfo()
 ```
 
 <hr />
-
-
-
-
-
-
-
-
-
-
-
-

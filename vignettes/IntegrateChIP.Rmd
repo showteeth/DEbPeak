@@ -101,6 +101,20 @@ PeakAnnoPie(peak.anno$anno.obj)
 
 <hr />
 
+### Motif analysis
+Here, we will perform *de novo* motif discovery to illustrate the binding motif:
+
+```{r debchip_peak_denovo, eval = FALSE}
+# this step is time consuming!
+MotifDiscovery(peak.df = peak.df, genome = '/path/to/genome.fa',
+               streme.path = "~/data/software/meme-5.5.2/bin/streme",
+               samtools.path = "/home/songyabing/data/software/samtools-1.17/samtools",
+               out.folder = "/path/to/output", show.html = FALSE)
+# after running, there will be a browser pop-up window to show the results.
+```
+
+<hr />
+
 ## Integrate ChIP-seq and RNA-seq
 In this step, we will integrate ChIP-seq and RNA-seq to get plausible direct targets of TF (in this example, Runx).
 ### Integrate
