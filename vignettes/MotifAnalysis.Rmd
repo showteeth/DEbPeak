@@ -70,7 +70,7 @@ Here, we will perform *de novo* motif discovery with STREME. There are **three c
 MotifDiscovery(diff.peak = dds.peak.results.ordered, peak.motif.key = "Up_regulated",
                genome = '/path/to/genome.fa', streme.path = "~/data/software/meme-5.5.2/bin/streme",
                samtools.path = "/home/songyabing/data/software/samtools-1.17/samtools",
-               out.folder = "/home/songyabing/R/learn/tmp/DEbPeak/DAdenovo")
+               out.folder = "/home/songyabing/R/learn/tmp/DEbPeak/DAdenovo", show.html = FALSE)
 # after running, there will be a browser pop-up window to show the results.
 ```
 
@@ -85,7 +85,7 @@ verteb.motifs = system.file("extdata", "homer_verteb.motifs.meme", package = "DE
 motif.cmp = MotifCompare(motif.folder = "/home/songyabing/R/learn/tmp/DEbPeak/DAdenovo",
                          known.motif = verteb.motifs,
                          tomtom.path = '~/data/software/meme-5.5.2/bin/tomtom',
-                         out.folder = "/home/songyabing/R/learn/tmp/DEbPeak/DAdenovo")
+                         out.folder = "/home/songyabing/R/learn/tmp/DEbPeak/DAdenovo", show.html = FALSE)
 # after running, there will be a browser pop-up window to show the results.
 ```
 

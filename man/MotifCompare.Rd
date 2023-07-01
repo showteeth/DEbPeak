@@ -9,7 +9,8 @@ MotifCompare(
   known.motif,
   tomtom.path = NULL,
   tomtom.paras = "-no-ssc -min-overlap 5 -dist pearson -evalue -thresh 10.0",
-  out.folder = NULL
+  out.folder = NULL,
+  show.html = TRUE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ MotifCompare(
 \item{tomtom.paras}{Parameter for MEME's tomtom. Default: "-no-ssc -min-overlap 5 -dist pearson -evalue -thresh 10.0".}
 
 \item{out.folder}{Output folder. Default: NULL (current working directory).}
+
+\item{show.html}{Logical value, whether to show the results with pop-up window. Default: TRUE.}
 }
 \value{
 Dataframe contains motif mapping results.

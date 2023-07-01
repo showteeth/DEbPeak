@@ -112,6 +112,7 @@ MotifEnrich <- function(de.res, reg.type, signif = "padj", signif.threshold = 0.
 #' @param streme.paras Parameter for MEME's streme.
 #' Default: "--nmotifs 50 --minw 8 --maxw 15 --thresh 0.05 --align center".
 #' @param out.folder Output folder. Default: NULL (current working directory).
+#' @param show.html Logical value, whether to show the results with pop-up window. Default: TRUE.
 #'
 #' @return NULL.
 #' @importFrom magrittr %>%
@@ -140,7 +141,8 @@ MotifEnrich <- function(de.res, reg.type, signif = "padj", signif.threshold = 0.
 MotifDiscovery <- function(peak.df = NULL, diff.peak = NULL, inte.res = NULL, peak.motif.key = NULL, genome,
                            signif = "padj", signif.threshold = 0.05, l2fc.threshold = 0,
                            peak.mode = c("consensus", "diff"), samtools.path = NULL, streme.path = NULL,
-                           streme.paras = "--nmotifs 50 --minw 8 --maxw 15 --thresh 0.05 --align center", out.folder = NULL) {
+                           streme.paras = "--nmotifs 50 --minw 8 --maxw 15 --thresh 0.05 --align center",
+                           out.folder = NULL, show.html = TRUE) {
   # check prameters
   peak.mode <- match.arg(arg = peak.mode)
   # get samtools path
@@ -241,8 +243,10 @@ MotifDiscovery <- function(peak.df = NULL, diff.peak = NULL, inte.res = NULL, pe
   if (!is.null(streme.cmd.status.code)) {
     stop("Run streme error!")
   }
-  # open result html
-  browseURL(file.path(out.folder, "streme_denovo", "streme.html"))
+  if (show.html) {
+    # open result html
+    browseURL(file.path(out.folder, "streme_denovo", "streme.html"))
+  }
 }
 
 
@@ -253,6 +257,7 @@ MotifDiscovery <- function(peak.df = NULL, diff.peak = NULL, inte.res = NULL, pe
 #' @param tomtom.path The path to MEME's tomtom. Default: NULL (conduct automatic detection).
 #' @param tomtom.paras Parameter for MEME's tomtom. Default: "-no-ssc -min-overlap 5 -dist pearson -evalue -thresh 10.0".
 #' @param out.folder Output folder. Default: NULL (current working directory).
+#' @param show.html Logical value, whether to show the results with pop-up window. Default: TRUE.
 #'
 #' @return Dataframe contains motif mapping results.
 #' @export
@@ -262,7 +267,8 @@ MotifDiscovery <- function(peak.df = NULL, diff.peak = NULL, inte.res = NULL, pe
 #' # motif.cmp = MotifCompare(motif.folder = "/path/to/MotifDiscovery/out", known.motif = "/path/to/database.meme",
 #' #                          tomtom.path = '/path/to/tomtom', out.folder = "/path/to/output")
 MotifCompare <- function(motif.folder, known.motif, tomtom.path = NULL,
-                         tomtom.paras = "-no-ssc -min-overlap 5 -dist pearson -evalue -thresh 10.0", out.folder = NULL) {
+                         tomtom.paras = "-no-ssc -min-overlap 5 -dist pearson -evalue -thresh 10.0",
+                         out.folder = NULL, show.html = TRUE) {
   # get tomtom path
   if (is.null(tomtom.path)) {
     # detect tomtom path
@@ -294,7 +300,9 @@ MotifCompare <- function(motif.folder, known.motif, tomtom.path = NULL,
     stop("Run tomtom error!")
   }
   tomtom.res <- utils::read.table(file = file.path(out.folder, "tomtom", "tomtom.tsv"), header = TRUE)
-  # open result html
-  browseURL(file.path(out.folder, "tomtom", "tomtom.html"))
+  if (show.html) {
+    # open result html
+    browseURL(file.path(out.folder, "tomtom", "tomtom.html"))
+  }
   return(tomtom.res)
 }

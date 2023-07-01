@@ -17,7 +17,8 @@ MotifDiscovery(
   samtools.path = NULL,
   streme.path = NULL,
   streme.paras = "--nmotifs 50 --minw 8 --maxw 15 --thresh 0.05 --align center",
-  out.folder = NULL
+  out.folder = NULL,
+  show.html = TRUE
 )
 }
 \arguments{
@@ -52,6 +53,8 @@ Default: consensus.}
 Default: "--nmotifs 50 --minw 8 --maxw 15 --thresh 0.05 --align center".}
 
 \item{out.folder}{Output folder. Default: NULL (current working directory).}
+
+\item{show.html}{Logical value, whether to show the results with pop-up window. Default: TRUE.}
 }
 \value{
 NULL.

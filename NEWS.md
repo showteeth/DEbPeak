@@ -3,6 +3,9 @@
 * Added `MotifDiscovery` to perform *de novo* motif discovery with STREME.
 * Added `MotifCompare` to map motifs against a motif database.
 
+## Minor changes
+* Added `show.html` to `MotifDiscovery` and `MotifCompare` to control the pop-up window.
+
 -------------
 
 # DEbPeak 1.3.0
