@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Integrate Two Differential Expression Results. — DEbDE • DEbPeak</title>
+<title>Identify TFs from Gene Expression Reults. — InferRegulator • DEbPeak</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Integrate Two Differential Expression Results. — DEbDE" />
-<meta property="og:description" content="Integrate Two Differential Expression Results." />
+<meta property="og:title" content="Identify TFs from Gene Expression Reults. — InferRegulator" />
+<meta property="og:description" content="Identify TFs from Gene Expression Reults." />
 
 
 
@@ -171,78 +171,78 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Integrate Two Differential Expression Results.</h1>
+    <h1>Identify TFs from Gene Expression Reults.</h1>
     
-    <div class="hidden name"><code>DEbDE.Rd</code></div>
+    <div class="hidden name"><code>InferRegulator.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Integrate Two Differential Expression Results.</p>
+    <p>Identify TFs from Gene Expression Reults.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>DEbDE</span><span class='op'>(</span>
-  <span class='va'>de1.res</span>,
-  <span class='va'>de2.res</span>,
-  de1.signif <span class='op'>=</span> <span class='st'>"padj"</span>,
-  de1.signif.threshold <span class='op'>=</span> <span class='fl'>0.05</span>,
-  de1.l2fc.threshold <span class='op'>=</span> <span class='fl'>1</span>,
-  de2.signif <span class='op'>=</span> <span class='st'>"padj"</span>,
-  de2.signif.threshold <span class='op'>=</span> <span class='fl'>0.05</span>,
-  de2.l2fc.threshold <span class='op'>=</span> <span class='fl'>1</span>
+    <pre class="usage"><span class='fu'>InferRegulator</span><span class='op'>(</span>
+  <span class='va'>genes</span>,
+  <span class='va'>control.genes</span>,
+  method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ChEA3"</span>, <span class='st'>"BART2"</span>, <span class='st'>"TFEA.ChIP"</span><span class='op'>)</span>,
+  species <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Human"</span>, <span class='st'>"Mouse"</span><span class='op'>)</span>,
+  projet.name <span class='op'>=</span> <span class='cn'>NULL</span>,
+  library <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"meanRank"</span>, <span class='st'>"topRank"</span>, <span class='st'>"GTEx"</span>, <span class='st'>"ReMap"</span>, <span class='st'>"Enrichr"</span>, <span class='st'>"ENCODE"</span>, <span class='st'>"ARCHS4"</span>,
+    <span class='st'>"Literature"</span><span class='op'>)</span>,
+  bart2.path <span class='op'>=</span> <span class='cn'>NULL</span>,
+  filter.threshold <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>de1.res</th>
-      <td><p>DE1 dataframe contains all genes of differential expression analysis.</p></td>
+      <th>genes</th>
+      <td><p>Input genes, can be a set of differentially expressed genes. When <code>method</code> is "ChEA3" or "BART2",
+the genes should be SYMBOL of human or mouse. When <code>method</code> is "TFEA.ChIP", the genes can be
+SYMBOL/ENSEMBL/ENTREZ of human.</p></td>
     </tr>
     <tr>
-      <th>de2.res</th>
-      <td><p>DE2 dataframe contains all genes of differential expression analysis.</p></td>
+      <th>control.genes</th>
+      <td><p>Input genes of human, can be a set of non-differentially expressed genes.
+Used when <code>method</code> is "TFEA.ChIP".</p></td>
     </tr>
     <tr>
-      <th>de1.signif</th>
-      <td><p>Significance criterion for DE1. For DESeq2 results, can be chosen from padj, pvalue.
-For edgeR results, can be chosen from FDR, PValue. Default: padj.</p></td>
+      <th>method</th>
+      <td><p>The method used to identify TFs, choose from "ChEA3", "BART2", "TFEA.ChIP". Default: "ChEA3".</p></td>
     </tr>
     <tr>
-      <th>de1.signif.threshold</th>
-      <td><p>Significance threshold for DE1 to get differentially expressed genes. Default: 0.05.</p></td>
+      <th>species</th>
+      <td><p>The species of input gene set. Choose from "Human" and "Mouse" when <code>method</code> is "ChEA3" or "BART2",
+"Human" when <code>method</code> is "TFEA.ChIP". Default: "Human".</p></td>
     </tr>
     <tr>
-      <th>de1.l2fc.threshold</th>
-      <td><p>Log2 fold change threshold for DE1 to get differentially expressed genes. Default: 1.</p></td>
+      <th>projet.name</th>
+      <td><p>The name of the project used as Query Name. Default: NULL (DEbPeak).</p></td>
     </tr>
     <tr>
-      <th>de2.signif</th>
-      <td><p>Significance criterion for DE2. For DESeq2 results, can be chosen from padj, pvalue.
-For edgeR results, can be chosen from FDR, PValue. Default: padj.</p></td>
+      <th>library</th>
+      <td><p>The output library type, choose from "meanRank", "topRank", "GTEx", "ReMap",
+"Enrichr", "ENCODE", "ARCHS4", "Literature". Used when <code>method</code> is "ChEA3". Default: "meanRank".</p></td>
     </tr>
     <tr>
-      <th>de2.signif.threshold</th>
-      <td><p>Significance threshold for DE2 to get differentially expressed genes. Default: 0.05.</p></td>
+      <th>bart2.path</th>
+      <td><p>BART2 path. Default: NULL (conduct automatic detection).</p></td>
     </tr>
     <tr>
-      <th>de2.l2fc.threshold</th>
-      <td><p>Log2 fold change threshold for DE2 to get differentially expressed genes. Default: 1.</p></td>
+      <th>filter.threshold</th>
+      <td><p>The threshold used to filter the results. When <code>method</code> is "ChEA3", filter on Score column.
+When <code>method</code> is "BART2", filter on pvalue column. When <code>method</code> is "TFEA.ChIP", filter on pVal column.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Dataframe contains integration results, the 'Type' column contains "Down_Up", "Up_Up", "Down_Down", "Up_Down",
-"DE1_Up", "DE1_Down", "DE2_Up", "DE2_Down", "Not_Not".</p>
+    <p>Dataframe contains identified TFs.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>DEbPeak</span><span class='op'>)</span>
-<span class='va'>rna.diff.file</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"RA_RNA_diff.txt"</span>, package <span class='op'>=</span> <span class='st'>"DEbPeak"</span><span class='op'>)</span>
-<span class='va'>de1.res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/utils/read.table.html'>read.table</a></span><span class='op'>(</span>file <span class='op'>=</span> <span class='va'>rna.diff.file</span>, header <span class='op'>=</span> <span class='cn'>TRUE</span>, sep <span class='op'>=</span> <span class='st'>"\t"</span><span class='op'>)</span>
-<span class='va'>de2.res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/utils/read.table.html'>read.table</a></span><span class='op'>(</span>file <span class='op'>=</span> <span class='va'>rna.diff.file</span>, header <span class='op'>=</span> <span class='cn'>TRUE</span>, sep <span class='op'>=</span> <span class='st'>"\t"</span><span class='op'>)</span>
-<span class='co'># use same file as example</span>
-<span class='va'>de.de</span> <span class='op'>&lt;-</span> <span class='fu'>DEbDE</span><span class='op'>(</span>de1.res <span class='op'>=</span> <span class='va'>de1.res</span>, de2.res <span class='op'>=</span> <span class='va'>de2.res</span>, de1.l2fc.threshold <span class='op'>=</span> <span class='fl'>0.5</span>, de2.l2fc.threshold <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Differential expression analysis with DESeq2!</span></div><div class='output co'>#&gt; <span class='message'>Differential expression analysis with DESeq2!</span></div></pre>
+    <pre class="examples"><div class='input'><span class='co'># library(DEbPeak)</span>
+<span class='co'># InferRegulator(genes = c("SMAD9","FOXO1","MYC","STAT1",'STAT3',"SMAD3"), method = "ChEA3", species = "Human")</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

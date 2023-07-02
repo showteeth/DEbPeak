@@ -7,18 +7,19 @@ articles:
   DifferentialExpressionAnalysisPeak: DifferentialExpressionAnalysisPeak.html
   FunctionalEnrichmentAnalysis: FunctionalEnrichmentAnalysis.html
   FunctionalEnrichmentAnalysisPeak: FunctionalEnrichmentAnalysisPeak.html
+  IdentifyRegulator: IdentifyRegulator.html
   IntegrateATAC: IntegrateATAC.html
   IntegrateATACDE: IntegrateATACDE.html
   IntegrateChIP: IntegrateChIP.html
   IntegrateChIPATAC: IntegrateChIPATAC.html
   IntegrateChIPDE: IntegrateChIPDE.html
-  MotifEnrichment: MotifEnrichment.html
+  MotifAnalysis: MotifAnalysis.html
   ParseGEO: ParseGEO.html
   PrincipalComponentAnalysis: PrincipalComponentAnalysis.html
   PrincipalComponentAnalysisPeak: PrincipalComponentAnalysisPeak.html
   QualityControl: QualityControl.html
   Utils: Utils.html
-last_built: 2023-06-10T15:24Z
+last_built: 2023-07-01T14:50Z
 urls:
   reference: https://showteeth.github.io/DEbPeak//reference
   article: https://showteeth.github.io/DEbPeak//articles

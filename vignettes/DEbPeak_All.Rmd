@@ -515,6 +515,115 @@ tree /home/songyabing/R/learn/tmp/DEbPeak/AllInOne
 
 ---------------------
 
+# Predict TFs from RNA-seq
+
+Since there are many publicly available ChIP-seq datasets, many tools have been developed to identify TFs from these data. Here, `DEbPeak` provide three methods to identify TFs from gene expression data:
+
+* [BART](https://academic.oup.com/bioinformatics/article/34/16/2867/4956015?login=false): only supports human and mouse gene symbols.
+* [ChEA3](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6602523): only supports human and mouse gene symbols.
+* [TFEA.ChIP](https://academic.oup.com/bioinformatics/article/35/24/5339/5538988): only supports mouse.
+
+## Load data
+
+The data used here are from [In vivo CD8+ T cell CRISPR screening reveals control by Fli1 in infection and cancer](https://doi.org/10.1016/j.cell.2021.02.019):
+
+* **RNA-seq data**: the sgCtrl vs sgFli1 RNA sequencing at D8 Cl13 p.i., the raw data are stored in [GSE149838](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE149838)
+
+Load the DEGs:
+```{r debatac_rna_deg_infer}
+rna.diff.file <- system.file("extdata", "RA_RNA_diff.txt", package = "DEbPeak")
+rna.diff <- read.table(file = rna.diff.file, header = TRUE, sep = "\t")
+```
+
+---------------------
+
+## Prepare gene sets
+
+[BART](https://academic.oup.com/bioinformatics/article/34/16/2867/4956015?login=false) and [ChEA3](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6602523) require differentially expressed genes as input, [TFEA.ChIP](https://academic.oup.com/bioinformatics/article/35/24/5339/5538988) requires differentially expressed genes and non-differentially expressed genes (as background genes) as inputs.
+
+```{r debatac_rna_deg_infer_prepare}
+# up-regulated genes
+rna.up.sig.df = rna.diff %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange > 0)
+# non-differentially expressed genes
+rna.contorl.df = rna.diff %>%
+  dplyr::filter(padj > 0.5 & abs(log2FoldChange) <0.25)
+```
+
+While [TFEA.ChIP](https://academic.oup.com/bioinformatics/article/35/24/5339/5538988) only support human genes, we need to convert the mouse genes to their human orthologs.
+
+```{r debatac_rna_deg_infer_convert, eval=FALSE}
+# convert mouse gene symbol to human entrez id
+Mouse2HumanEntrez <- function(x){
+  require("biomaRt")
+  human = biomaRt::useMart("ensembl", dataset = "hsapiens_gene_ensembl", host = "https://dec2021.archive.ensembl.org/")
+  mouse = biomaRt::useMart("ensembl", dataset = "mmusculus_gene_ensembl", host = "https://dec2021.archive.ensembl.org/")
+  m2h = biomaRt::getLDS(attributes = c("mgi_symbol"), filters = "mgi_symbol", values = x ,
+                        mart = mouse, attributesL = c("entrezgene_id"), martL = human, uniqueRows=T)
+  m2h.ids <- unique(m2h[, 2])
+  return(m2h.ids)
+}
+# convert mouse gene symbol to human entrez id
+rna.upsig.ids = Mouse2HumanEntrez(x = rownames(rna.up.sig.df))
+write.table(x = rna.upsig.ids, file = "/home/songyabing/R/learn/tmp/DEbPeak/RNAinfer/ATACDE_padj0.05_lfc0.txt",
+            quote = F, row.names = F, col.names = F)
+rna.contorl.ids = Mouse2HumanEntrez(x = rownames(rna.contorl.df))
+write.table(x = rna.contorl.ids, file = "/home/songyabing/R/learn/tmp/DEbPeak/RNAinfer/ATACDE_padj0.5_lfc0.25_contorl.txt",
+            quote = F, row.names = F, col.names = F)
+```
+
+The above codes are slow, we will load pre-run results:
+```{r debatac_rna_deg_infer_convert_load}
+rna.upsig.ids.df = read.table("/home/songyabing/R/learn/tmp/DEbPeak/RNAinfer/ATACDE_padj0.05_lfc0.txt")
+rna.upsig.ids = rna.upsig.ids.df$V1
+rna.contorl.ids.df = read.table("/home/songyabing/R/learn/tmp/DEbPeak/RNAinfer/ATACDE_padj0.5_lfc0.25_contorl.txt")
+rna.contorl.ids = rna.contorl.ids.df$V1
+```
+
+<hr />
+
+## Identify TFs with ChEA3
+
+```{r debatac_rna_deg_infer_chea3}
+chea3.res = InferRegulator(genes = rownames(rna.up.sig.df), method = "ChEA3", species = "Mouse")
+head(chea3.res)
+```
+
+Visualize the results:
+```{r debatac_rna_deg_infer_chea3_viz, fig.height = 7, fig.width = 8, fig.align = "center", warning=FALSE}
+VizRegulator(infer.res = chea3.res, method = "ChEA3", label.gene = c("RUNX1", "RUNX2", "RUNX3"))
+```
+
+<hr />
+
+## Identify TFs with BART2
+
+```{r debatac_rna_deg_infer_bart2}
+bart2.res = InferRegulator(genes = rownames(rna.up.sig.df), method = "BART2", 
+                           species = "Mouse", bart2.path = "~/anaconda3/envs/bart2/bin/bart2")
+head(bart2.res)
+```
+
+Visualize the results:
+```{r debatac_rna_deg_infer_bart2_viz, fig.height = 7, fig.width = 8, fig.align = "center", warning=FALSE}
+VizRegulator(infer.res = bart2.res, method = "BART2", label.gene = c("RUNX1", "RUNX2", "RUNX3"))
+```
+
+<hr />
+
+## Identify TFs with TFEA.ChIP
+
+```{r debatac_rna_deg_infer_tfea}
+tfea.res = InferRegulator(genes = rna.upsig.ids, control.genes = rna.contorl.ids, method = "TFEA.ChIP")
+head(tfea.res)
+```
+
+Visualize the results:
+```{r debatac_rna_deg_infer_tfea_viz, fig.height = 7, fig.width = 8, fig.align = "center", warning=FALSE}
+VizRegulator(infer.res = tfea.res, method = "TFEA.ChIP", label.gene = c("RUNX1", "RUNX2", "RUNX3"))
+```
+
+
 # Integrate RNA-seq and ChIP-seq/ATAC-seq
 
 The data used here contains RNA-seq and ChIP-seq datasets from [RUNX represses Pmp22 to drive neurofibromagenesis](https://www.science.org/doi/10.1126/sciadv.aau8389): 

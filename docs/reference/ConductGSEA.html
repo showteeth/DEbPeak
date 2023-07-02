@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DEbPeak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
       </span>
     </div>
 
@@ -119,7 +119,10 @@
       <a href="../articles/FunctionalEnrichmentAnalysisPeak.html">Functional Enrichment Analysis (Peak-related)</a>
     </li>
     <li>
-      <a href="../articles/MotifEnrichment.html">Motif Enrichment (Peak-related)</a>
+      <a href="../articles/MotifAnalysis.html">Motif Analysis (Peak-related)</a>
+    </li>
+    <li>
+      <a href="../articles/IdentifyRegulator.html">Identify regulators (RNA-seq)</a>
     </li>
     <li>
       <a href="../articles/IntegrateChIP.html">Integrate RNA-seq with ChIP-seq (consensus peak)</a>
@@ -268,7 +271,7 @@
 <span class='va'>dds.results.ordered</span> <span class='op'>&lt;-</span> <span class='va'>dds.results</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/order.html'>order</a></span><span class='op'>(</span><span class='va'>dds.results</span><span class='op'>$</span><span class='va'>log2FoldChange</span>, decreasing <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>, <span class='op'>]</span>
 <span class='va'>h_t2g</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://igordot.github.io/msigdbr/reference/msigdbr.html'>msigdbr</a></span><span class='op'>(</span>species <span class='op'>=</span> <span class='st'>"Homo sapiens"</span>, category <span class='op'>=</span> <span class='st'>"C5"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>gs_name</span>, <span class='va'>entrez_gene</span><span class='op'>)</span>
 <span class='va'>gsea.results</span> <span class='op'>&lt;-</span> <span class='fu'>ConductGSEA</span><span class='op'>(</span>deres <span class='op'>=</span> <span class='va'>dds.results.ordered</span>, gmt.file <span class='op'>=</span> <span class='cn'>NULL</span>, gene.sets <span class='op'>=</span> <span class='va'>h_t2g</span>, org.db <span class='op'>=</span> <span class='st'>"org.Hs.eg.db"</span>, pvalue <span class='op'>=</span> <span class='fl'>0.05</span>, save <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Differential expression analysis with DESeq2!</span></div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>Convert ENSEMBL to ENTREZID!</span></div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:many mapping between keys and columns</span></div><div class='output co'>#&gt; <span class='warning'>Warning: 46.3% of input gene IDs are fail to map...</span></div><div class='output co'>#&gt; <span class='message'>conduct GSEA anaysis.</span></div><div class='output co'>#&gt; <span class='message'>preparing geneSet collections...</span></div><div class='output co'>#&gt; <span class='message'>GSEA analysis...</span></div><div class='output co'>#&gt; <span class='warning'>Warning: There are ties in the preranked stats (16.64% of the list).</span>
+</div><div class='output co'>#&gt; <span class='message'>Differential expression analysis with DESeq2!</span></div><div class='output co'>#&gt; <span class='message'>Convert ENSEMBL to ENTREZID!</span></div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:many mapping between keys and columns</span></div><div class='output co'>#&gt; <span class='warning'>Warning: 46.3% of input gene IDs are fail to map...</span></div><div class='output co'>#&gt; <span class='message'>conduct GSEA anaysis.</span></div><div class='output co'>#&gt; <span class='message'>preparing geneSet collections...</span></div><div class='output co'>#&gt; <span class='message'>GSEA analysis...</span></div><div class='output co'>#&gt; <span class='warning'>Warning: There are ties in the preranked stats (16.64% of the list).</span>
 #&gt; <span class='warning'>The order of those tied genes will be arbitrary, which may produce unexpected results.</span></div><div class='output co'>#&gt; <span class='message'>leading edge analysis...</span></div><div class='output co'>#&gt; <span class='message'>done...</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

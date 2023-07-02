@@ -85,6 +85,9 @@
     <loc>https://showteeth.github.io/DEbPeak//reference/IDConversion.html</loc>
   </url>
   <url>
+    <loc>https://showteeth.github.io/DEbPeak//reference/InferRegulator.html</loc>
+  </url>
+  <url>
     <loc>https://showteeth.github.io/DEbPeak//reference/InteDiffQuad.html</loc>
   </url>
   <url>
@@ -101,6 +104,12 @@
   </url>
   <url>
     <loc>https://showteeth.github.io/DEbPeak//reference/MAPlot.html</loc>
+  </url>
+  <url>
+    <loc>https://showteeth.github.io/DEbPeak//reference/MotifCompare.html</loc>
+  </url>
+  <url>
+    <loc>https://showteeth.github.io/DEbPeak//reference/MotifDiscovery.html</loc>
   </url>
   <url>
     <loc>https://showteeth.github.io/DEbPeak//reference/MotifEnrich.html</loc>
@@ -154,6 +163,18 @@
     <loc>https://showteeth.github.io/DEbPeak//reference/RankPlot.html</loc>
   </url>
   <url>
+    <loc>https://showteeth.github.io/DEbPeak//reference/ReadProfile.html</loc>
+  </url>
+  <url>
+    <loc>https://showteeth.github.io/DEbPeak//reference/RunBART2.html</loc>
+  </url>
+  <url>
+    <loc>https://showteeth.github.io/DEbPeak//reference/RunChEA3.html</loc>
+  </url>
+  <url>
+    <loc>https://showteeth.github.io/DEbPeak//reference/RunTFEA.html</loc>
+  </url>
+  <url>
     <loc>https://showteeth.github.io/DEbPeak//reference/SampleRelation.html</loc>
   </url>
   <url>
@@ -161,6 +182,9 @@
   </url>
   <url>
     <loc>https://showteeth.github.io/DEbPeak//reference/VisGSEA.html</loc>
+  </url>
+  <url>
+    <loc>https://showteeth.github.io/DEbPeak//reference/VizRegulator.html</loc>
   </url>
   <url>
     <loc>https://showteeth.github.io/DEbPeak//reference/VolcanoPlot.html</loc>
@@ -181,6 +205,9 @@
     <loc>https://showteeth.github.io/DEbPeak//articles/FunctionalEnrichmentAnalysisPeak.html</loc>
   </url>
   <url>
+    <loc>https://showteeth.github.io/DEbPeak//articles/IdentifyRegulator.html</loc>
+  </url>
+  <url>
     <loc>https://showteeth.github.io/DEbPeak//articles/IntegrateATAC.html</loc>
   </url>
   <url>
@@ -196,7 +223,7 @@
     <loc>https://showteeth.github.io/DEbPeak//articles/IntegrateChIPDE.html</loc>
   </url>
   <url>
-    <loc>https://showteeth.github.io/DEbPeak//articles/MotifEnrichment.html</loc>
+    <loc>https://showteeth.github.io/DEbPeak//articles/MotifAnalysis.html</loc>
   </url>
   <url>
     <loc>https://showteeth.github.io/DEbPeak//articles/ParseGEO.html</loc>

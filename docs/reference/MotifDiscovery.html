@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Integrate Two Differential Expression Results. — DEbDE • DEbPeak</title>
+<title>de novo Motif Discovery with STREME. — MotifDiscovery • DEbPeak</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Integrate Two Differential Expression Results. — DEbDE" />
-<meta property="og:description" content="Integrate Two Differential Expression Results." />
+<meta property="og:title" content="de novo Motif Discovery with STREME. — MotifDiscovery" />
+<meta property="og:description" content="de novo Motif Discovery with STREME." />
 
 
 
@@ -171,78 +171,119 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Integrate Two Differential Expression Results.</h1>
+    <h1>de novo Motif Discovery with STREME.</h1>
     
-    <div class="hidden name"><code>DEbDE.Rd</code></div>
+    <div class="hidden name"><code>MotifDiscovery.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Integrate Two Differential Expression Results.</p>
+    <p>de novo Motif Discovery with STREME.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>DEbDE</span><span class='op'>(</span>
-  <span class='va'>de1.res</span>,
-  <span class='va'>de2.res</span>,
-  de1.signif <span class='op'>=</span> <span class='st'>"padj"</span>,
-  de1.signif.threshold <span class='op'>=</span> <span class='fl'>0.05</span>,
-  de1.l2fc.threshold <span class='op'>=</span> <span class='fl'>1</span>,
-  de2.signif <span class='op'>=</span> <span class='st'>"padj"</span>,
-  de2.signif.threshold <span class='op'>=</span> <span class='fl'>0.05</span>,
-  de2.l2fc.threshold <span class='op'>=</span> <span class='fl'>1</span>
+    <pre class="usage"><span class='fu'>MotifDiscovery</span><span class='op'>(</span>
+  peak.df <span class='op'>=</span> <span class='cn'>NULL</span>,
+  diff.peak <span class='op'>=</span> <span class='cn'>NULL</span>,
+  inte.res <span class='op'>=</span> <span class='cn'>NULL</span>,
+  peak.motif.key <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>genome</span>,
+  signif <span class='op'>=</span> <span class='st'>"padj"</span>,
+  signif.threshold <span class='op'>=</span> <span class='fl'>0.05</span>,
+  l2fc.threshold <span class='op'>=</span> <span class='fl'>0</span>,
+  peak.mode <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"consensus"</span>, <span class='st'>"diff"</span><span class='op'>)</span>,
+  samtools.path <span class='op'>=</span> <span class='cn'>NULL</span>,
+  streme.path <span class='op'>=</span> <span class='cn'>NULL</span>,
+  streme.paras <span class='op'>=</span> <span class='st'>"--nmotifs 50 --minw 8 --maxw 15 --thresh 0.05 --align center"</span>,
+  out.folder <span class='op'>=</span> <span class='cn'>NULL</span>,
+  show.html <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>de1.res</th>
-      <td><p>DE1 dataframe contains all genes of differential expression analysis.</p></td>
+      <th>peak.df</th>
+      <td><p>Dataframe contains peaks, should contains chr, start, stop columns. Default: NULL.</p></td>
     </tr>
     <tr>
-      <th>de2.res</th>
-      <td><p>DE2 dataframe contains all genes of differential expression analysis.</p></td>
+      <th>diff.peak</th>
+      <td><p>Dataframe contains differential peaks, the rownames should be peak annotations results. Default: NULL.</p></td>
     </tr>
     <tr>
-      <th>de1.signif</th>
-      <td><p>Significance criterion for DE1. For DESeq2 results, can be chosen from padj, pvalue.
-For edgeR results, can be chosen from FDR, PValue. Default: padj.</p></td>
+      <th>inte.res</th>
+      <td><p>The Dataframe contains integrated results. <code>peak.df</code>, <code>diff.peak</code> and <code>inte.res</code>
+cannot be empty at the same time. Dafault: NULL.</p></td>
     </tr>
     <tr>
-      <th>de1.signif.threshold</th>
-      <td><p>Significance threshold for DE1 to get differentially expressed genes. Default: 0.05.</p></td>
+      <th>peak.motif.key</th>
+      <td><p>The key type of integrated results ("Type" column of <code>inte.res</code>) or
+regulation type of differential peaks (Up_regulated, Not_regulated, Down_regulated) to perfrom de novo motif discovery.
+Used when <code>inte.res</code> is not NULL. Dafault: NULL.</p></td>
     </tr>
     <tr>
-      <th>de1.l2fc.threshold</th>
-      <td><p>Log2 fold change threshold for DE1 to get differentially expressed genes. Default: 1.</p></td>
+      <th>genome</th>
+      <td><p>The genome fasta path.</p></td>
     </tr>
     <tr>
-      <th>de2.signif</th>
-      <td><p>Significance criterion for DE2. For DESeq2 results, can be chosen from padj, pvalue.
-For edgeR results, can be chosen from FDR, PValue. Default: padj.</p></td>
+      <th>signif</th>
+      <td><p>Significance criterion to get differential peaks. Used when <code>diff.peak</code> is not NULL.
+For DESeq2 results, can be chosen from padj, pvalue. For edgeR results, can be chosen from FDR, PValue. Default: padj.</p></td>
     </tr>
     <tr>
-      <th>de2.signif.threshold</th>
-      <td><p>Significance threshold for DE2 to get differentially expressed genes. Default: 0.05.</p></td>
+      <th>signif.threshold</th>
+      <td><p>Significance threshold to get differential peaks. Used when <code>diff.peak</code> is not NULL. Default: 0.05.</p></td>
     </tr>
     <tr>
-      <th>de2.l2fc.threshold</th>
-      <td><p>Log2 fold change threshold for DE2 to get differentially expressed genes. Default: 1.</p></td>
+      <th>l2fc.threshold</th>
+      <td><p>Log2 fold change threshold to get differential peaks. Used when <code>diff.peak</code> is not NULL. Default: 0.</p></td>
+    </tr>
+    <tr>
+      <th>peak.mode</th>
+      <td><p>The source of <code>inte.res</code> results, choose from consensus (consensus mode) and diff (differential analysis).
+Default: consensus.</p></td>
+    </tr>
+    <tr>
+      <th>samtools.path</th>
+      <td><p>The path to samtools (the version should &gt;=1.9). Default: NULL (conduct automatic detection).</p></td>
+    </tr>
+    <tr>
+      <th>streme.path</th>
+      <td><p>The path to MEME's streme. Default: NULL (conduct automatic detection).</p></td>
+    </tr>
+    <tr>
+      <th>streme.paras</th>
+      <td><p>Parameter for MEME's streme.
+Default: "--nmotifs 50 --minw 8 --maxw 15 --thresh 0.05 --align center".</p></td>
+    </tr>
+    <tr>
+      <th>out.folder</th>
+      <td><p>Output folder. Default: NULL (current working directory).</p></td>
+    </tr>
+    <tr>
+      <th>show.html</th>
+      <td><p>Logical value, whether to show the results with pop-up window. Default: TRUE.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Dataframe contains integration results, the 'Type' column contains "Down_Up", "Up_Up", "Down_Down", "Up_Down",
-"DE1_Up", "DE1_Down", "DE2_Up", "DE2_Down", "Not_Not".</p>
+    <p>NULL.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>DEbPeak</span><span class='op'>)</span>
-<span class='va'>rna.diff.file</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"RA_RNA_diff.txt"</span>, package <span class='op'>=</span> <span class='st'>"DEbPeak"</span><span class='op'>)</span>
-<span class='va'>de1.res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/utils/read.table.html'>read.table</a></span><span class='op'>(</span>file <span class='op'>=</span> <span class='va'>rna.diff.file</span>, header <span class='op'>=</span> <span class='cn'>TRUE</span>, sep <span class='op'>=</span> <span class='st'>"\t"</span><span class='op'>)</span>
-<span class='va'>de2.res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/utils/read.table.html'>read.table</a></span><span class='op'>(</span>file <span class='op'>=</span> <span class='va'>rna.diff.file</span>, header <span class='op'>=</span> <span class='cn'>TRUE</span>, sep <span class='op'>=</span> <span class='st'>"\t"</span><span class='op'>)</span>
-<span class='co'># use same file as example</span>
-<span class='va'>de.de</span> <span class='op'>&lt;-</span> <span class='fu'>DEbDE</span><span class='op'>(</span>de1.res <span class='op'>=</span> <span class='va'>de1.res</span>, de2.res <span class='op'>=</span> <span class='va'>de2.res</span>, de1.l2fc.threshold <span class='op'>=</span> <span class='fl'>0.5</span>, de2.l2fc.threshold <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Differential expression analysis with DESeq2!</span></div><div class='output co'>#&gt; <span class='message'>Differential expression analysis with DESeq2!</span></div></pre>
+    <pre class="examples"><div class='input'><span class='co'># library(DEbPeak)</span>
+<span class='co'># # de novo motif discovery with peak sets</span>
+<span class='co'># peak.file = system.file("extdata", "debchip_peaks.bed", package = "DEbPeak")</span>
+<span class='co'># peak.df = GetConsensusPeak(peak.file = peak.file)</span>
+<span class='co'># MotifDiscovery(peak.df = peak.df, genome = '/path/to/genome.fa',</span>
+<span class='co'>#                streme.path = "/path/to/streme", samtools.path = "/path/to/samtools", out.folder = "/path/to/output")</span>
+<span class='co'># # de novo motif discovery with differential peaks</span>
+<span class='co'># MotifDiscovery(diff.peak = dds.peak.results.ordered, peak.motif.key = "Up_regulated",</span>
+<span class='co'>#                genome = '/path/to/genome.fa', streme.path = "/path/to/streme",</span>
+<span class='co'>#                samtools.path = "/path/to/samtools", out.folder = "/path/to/output")</span>
+<span class='co'># # de novo motif discovery with integrated results</span>
+<span class='co'># MotifDiscovery(inte.res = debatac.res, peak.motif.key = "Up_Up",</span>
+<span class='co'>#                genome = '/path/to/genome.fa', peak.mode = "diff", streme.path = "/path/to/streme",</span>
+<span class='co'>#                samtools.path = "/path/to/samtools", out.folder = "/path/to/output")</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

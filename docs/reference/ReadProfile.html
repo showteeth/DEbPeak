@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Integrate Two Differential Expression Results. — DEbDE • DEbPeak</title>
+<title>Generate Reads Profile with deepTools. — ReadProfile • DEbPeak</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Integrate Two Differential Expression Results. — DEbDE" />
-<meta property="og:description" content="Integrate Two Differential Expression Results." />
+<meta property="og:title" content="Generate Reads Profile with deepTools. — ReadProfile" />
+<meta property="og:description" content="Generate Reads Profile with deepTools." />
 
 
 
@@ -171,78 +171,84 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Integrate Two Differential Expression Results.</h1>
+    <h1>Generate Reads Profile with deepTools.</h1>
     
-    <div class="hidden name"><code>DEbDE.Rd</code></div>
+    <div class="hidden name"><code>ReadProfile.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Integrate Two Differential Expression Results.</p>
+    <p>Generate Reads Profile with deepTools.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>DEbDE</span><span class='op'>(</span>
-  <span class='va'>de1.res</span>,
-  <span class='va'>de2.res</span>,
-  de1.signif <span class='op'>=</span> <span class='st'>"padj"</span>,
-  de1.signif.threshold <span class='op'>=</span> <span class='fl'>0.05</span>,
-  de1.l2fc.threshold <span class='op'>=</span> <span class='fl'>1</span>,
-  de2.signif <span class='op'>=</span> <span class='st'>"padj"</span>,
-  de2.signif.threshold <span class='op'>=</span> <span class='fl'>0.05</span>,
-  de2.l2fc.threshold <span class='op'>=</span> <span class='fl'>1</span>
+    <pre class="usage"><span class='fu'>ReadProfile</span><span class='op'>(</span>
+  <span class='va'>bw.folder</span>,
+  up.dist <span class='op'>=</span> <span class='fl'>3000</span>,
+  down.dist <span class='op'>=</span> <span class='fl'>3000</span>,
+  species <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Human"</span>, <span class='st'>"Mouse"</span>, <span class='st'>"Rat"</span>, <span class='st'>"Fly"</span>, <span class='st'>"Arabidopsis"</span>, <span class='st'>"Yeast"</span>, <span class='st'>"Zebrafish"</span>,
+    <span class='st'>"Worm"</span>, <span class='st'>"Bovine"</span>, <span class='st'>"Pig"</span>, <span class='st'>"Chicken"</span>, <span class='st'>"Rhesus"</span>, <span class='st'>"Canine"</span>, <span class='st'>"Xenopus"</span>, <span class='st'>"Anopheles"</span>,
+    <span class='st'>"Chimp"</span>, <span class='st'>"E coli strain Sakai"</span>, <span class='st'>"Myxococcus xanthus DK 1622"</span><span class='op'>)</span>,
+  gtf.file <span class='op'>=</span> <span class='cn'>NULL</span>,
+  compute.matrix.paras <span class='op'>=</span> <span class='st'>"-p 2"</span>,
+  plot.heatmap.paras <span class='op'>=</span> <span class='st'>"--whatToShow 'heatmap and colorbar'"</span>,
+  deeptools.path <span class='op'>=</span> <span class='cn'>NULL</span>,
+  out.folder <span class='op'>=</span> <span class='cn'>NULL</span>,
+  out.format <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"pdf"</span>, <span class='st'>"png"</span>, <span class='st'>"eps"</span>, <span class='st'>"svg"</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>de1.res</th>
-      <td><p>DE1 dataframe contains all genes of differential expression analysis.</p></td>
+      <th>bw.folder</th>
+      <td><p>Folder contains bigWig files.</p></td>
     </tr>
     <tr>
-      <th>de2.res</th>
-      <td><p>DE2 dataframe contains all genes of differential expression analysis.</p></td>
+      <th>up.dist</th>
+      <td><p>The upstream distance from the TSS. Default: 3000bp.</p></td>
     </tr>
     <tr>
-      <th>de1.signif</th>
-      <td><p>Significance criterion for DE1. For DESeq2 results, can be chosen from padj, pvalue.
-For edgeR results, can be chosen from FDR, PValue. Default: padj.</p></td>
+      <th>down.dist</th>
+      <td><p>The downstream distance from the TSS. Default: 3000bp.</p></td>
     </tr>
     <tr>
-      <th>de1.signif.threshold</th>
-      <td><p>Significance threshold for DE1 to get differentially expressed genes. Default: 0.05.</p></td>
+      <th>species</th>
+      <td><p>Species used, chosen from "Human","Mouse","Rat","Fly","Arabidopsis","Yeast","Zebrafish","Worm","Bovine","Pig","Chicken","Rhesus",
+"Canine","Xenopus","Anopheles","Chimp","E coli strain Sakai","Myxococcus xanthus DK 1622". Default: "Human".</p></td>
     </tr>
     <tr>
-      <th>de1.l2fc.threshold</th>
-      <td><p>Log2 fold change threshold for DE1 to get differentially expressed genes. Default: 1.</p></td>
+      <th>gtf.file</th>
+      <td><p>GTF file used to create TxDb object. Useful when specie you used is not available in <code>species</code>. Default: NULL.</p></td>
     </tr>
     <tr>
-      <th>de2.signif</th>
-      <td><p>Significance criterion for DE2. For DESeq2 results, can be chosen from padj, pvalue.
-For edgeR results, can be chosen from FDR, PValue. Default: padj.</p></td>
+      <th>compute.matrix.paras</th>
+      <td><p>Parameters for deepTools <code>computeMatrix</code>. Default: "-p 2".</p></td>
     </tr>
     <tr>
-      <th>de2.signif.threshold</th>
-      <td><p>Significance threshold for DE2 to get differentially expressed genes. Default: 0.05.</p></td>
+      <th>plot.heatmap.paras</th>
+      <td><p>Parameters for deepTools <code>plotHeatmap</code>. Default: "--whatToShow 'heatmap and colorbar'".</p></td>
     </tr>
     <tr>
-      <th>de2.l2fc.threshold</th>
-      <td><p>Log2 fold change threshold for DE2 to get differentially expressed genes. Default: 1.</p></td>
+      <th>deeptools.path</th>
+      <td><p>Path contains <code>computeMatrix</code> and <code>plotHeatmap</code>. Default: NULL (conduct automatic detection).</p></td>
+    </tr>
+    <tr>
+      <th>out.folder</th>
+      <td><p>Output folder. Default: NULL (current working directory).</p></td>
+    </tr>
+    <tr>
+      <th>out.format</th>
+      <td><p>Output heatmap format. Choose from pdf, png, eps and svg. Default: pdf.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Dataframe contains integration results, the 'Type' column contains "Down_Up", "Up_Up", "Down_Down", "Up_Down",
-"DE1_Up", "DE1_Down", "DE2_Up", "DE2_Down", "Not_Not".</p>
+    <p>NULL.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>DEbPeak</span><span class='op'>)</span>
-<span class='va'>rna.diff.file</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"RA_RNA_diff.txt"</span>, package <span class='op'>=</span> <span class='st'>"DEbPeak"</span><span class='op'>)</span>
-<span class='va'>de1.res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/utils/read.table.html'>read.table</a></span><span class='op'>(</span>file <span class='op'>=</span> <span class='va'>rna.diff.file</span>, header <span class='op'>=</span> <span class='cn'>TRUE</span>, sep <span class='op'>=</span> <span class='st'>"\t"</span><span class='op'>)</span>
-<span class='va'>de2.res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/utils/read.table.html'>read.table</a></span><span class='op'>(</span>file <span class='op'>=</span> <span class='va'>rna.diff.file</span>, header <span class='op'>=</span> <span class='cn'>TRUE</span>, sep <span class='op'>=</span> <span class='st'>"\t"</span><span class='op'>)</span>
-<span class='co'># use same file as example</span>
-<span class='va'>de.de</span> <span class='op'>&lt;-</span> <span class='fu'>DEbDE</span><span class='op'>(</span>de1.res <span class='op'>=</span> <span class='va'>de1.res</span>, de2.res <span class='op'>=</span> <span class='va'>de2.res</span>, de1.l2fc.threshold <span class='op'>=</span> <span class='fl'>0.5</span>, de2.l2fc.threshold <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Differential expression analysis with DESeq2!</span></div><div class='output co'>#&gt; <span class='message'>Differential expression analysis with DESeq2!</span></div></pre>
+    <pre class="examples"><div class='input'><span class='co'># library(DEbPeak)</span>
+<span class='co'># ReadProfile(bw.folder = path/to/bigWigs, species = "Mouse", deeptools.path = "~/anaconda3/bin")</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

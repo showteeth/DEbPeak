@@ -77,13 +77,14 @@ DEbCA <- function(de.res, chip.peak.res, atac.peak.res, peak.anno.key = c("Promo
   chip.peak.alt.valid <- intersect(colnames(chip.peak.res), peak.alt.columns)
   chip.peak.df <- chip.peak.res %>%
     dplyr::filter(anno == peak.anno.key) %>%
-    dplyr::select(c("geneId", "annotation", "anno", chip.peak.alt.valid)) %>%
+    dplyr::select(c("geneId", "annotation", "anno", "seqnames", "start", "end", chip.peak.alt.valid)) %>%
     dplyr::distinct(geneId, anno, .keep_all = TRUE)
   ## process atac results
   atac.peak.alt.valid <- intersect(colnames(atac.peak.res), peak.alt.columns)
   atac.peak.df <- atac.peak.res %>%
     dplyr::filter(anno == peak.anno.key) %>%
-    dplyr::select(c("geneId", "annotation", "anno", atac.peak.alt.valid)) %>%
+    dplyr::mutate(Peak = paste(seqnames, paste(start, end, sep = "-"), sep = ":")) %>%
+    dplyr::select(c("geneId", "Peak", "annotation", "anno", atac.peak.alt.valid)) %>%
     dplyr::distinct(geneId, anno, .keep_all = TRUE)
 
   # Integrate RNA-seq and ChIP-seq results
