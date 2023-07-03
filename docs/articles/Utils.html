@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">DEbPeak</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
       </span>
     </div>
 
@@ -78,7 +78,10 @@
       <a href="../articles/FunctionalEnrichmentAnalysisPeak.html">Functional Enrichment Analysis (Peak-related)</a>
     </li>
     <li>
-      <a href="../articles/MotifEnrichment.html">Motif Enrichment (Peak-related)</a>
+      <a href="../articles/MotifAnalysis.html">Motif Analysis (Peak-related)</a>
+    </li>
+    <li>
+      <a href="../articles/IdentifyRegulator.html">Identify regulators (RNA-seq)</a>
     </li>
     <li>
       <a href="../articles/IntegrateChIP.html">Integrate RNA-seq with ChIP-seq (consensus peak)</a>
@@ -399,7 +402,7 @@
 ## 
 ## other attached packages:
 ##  [1] org.Mm.eg.db_3.12.0         AnnotationDbi_1.52.0       
-##  [3] DEbPeak_1.2.0               DESeq2_1.30.1              
+##  [3] DEbPeak_1.4.0               DESeq2_1.30.1              
 ##  [5] SummarizedExperiment_1.20.0 Biobase_2.50.0             
 ##  [7] MatrixGenerics_1.2.1        matrixStats_0.58.0         
 ##  [9] GenomicRanges_1.42.0        GenomeInfoDb_1.26.7        
@@ -518,130 +521,135 @@
 ## [109] graph_1.68.0                           
 ## [110] carData_3.0-4                          
 ## [111] sparseMatrixStats_1.2.1                
-## [112] genefilter_1.72.1                      
-## [113] car_3.0-11                             
-## [114] doParallel_1.0.16                      
-## [115] latticeExtra_0.6-29                    
-## [116] brew_1.0-6                             
-## [117] checkmate_2.0.0                        
-## [118] rmarkdown_2.14                         
-## [119] openxlsx_4.2.3                         
-## [120] pkgdown_1.6.1                          
-## [121] cowplot_1.1.1                          
-## [122] textshaping_0.3.6                      
-## [123] forcats_1.0.0                          
-## [124] downloader_0.4                         
-## [125] BSgenome_1.58.0                        
-## [126] igraph_1.4.99.9024                     
-## [127] survival_3.2-10                        
-## [128] numDeriv_2016.8-1.1                    
-## [129] yaml_2.2.1                             
-## [130] plotrix_3.8-2                          
-## [131] systemfonts_1.0.4                      
-## [132] ashr_2.2-47                            
-## [133] SQUAREM_2021.1                         
-## [134] htmltools_0.5.2                        
-## [135] memoise_2.0.0                          
-## [136] VariantAnnotation_1.36.0               
-## [137] locfit_1.5-9.4                         
-## [138] graphlayouts_0.7.1                     
-## [139] batchtools_0.9.15                      
-## [140] PCAtools_2.2.0                         
-## [141] viridisLite_0.4.0                      
-## [142] digest_0.6.27                          
-## [143] rrcov_1.7-0                            
-## [144] assertthat_0.2.1                       
-## [145] rappdirs_0.3.3                         
-## [146] emdbook_1.3.12                         
-## [147] RSQLite_2.2.5                          
-## [148] amap_0.8-18                            
-## [149] yulab.utils_0.0.4                      
-## [150] debugme_1.1.0                          
-## [151] misc3d_0.9-1                           
-## [152] data.table_1.14.2                      
-## [153] blob_1.2.1                             
-## [154] ragg_0.4.0                             
-## [155] splines_4.0.3                          
-## [156] ggupset_0.3.0                          
-## [157] RCurl_1.98-1.3                         
-## [158] broom_1.0.4                            
-## [159] hms_1.1.3                              
-## [160] colorspace_2.0-0                       
-## [161] BiocManager_1.30.16                    
-## [162] shape_1.4.6                            
-## [163] sass_0.4.1                             
-## [164] GEOquery_2.58.0                        
-## [165] Rcpp_1.0.9                             
-## [166] mvtnorm_1.1-2                          
-## [167] circlize_0.4.15                        
-## [168] enrichplot_1.10.2                      
-## [169] fansi_0.4.2                            
-## [170] tzdb_0.3.0                             
-## [171] truncnorm_1.0-8                        
-## [172] ChIPseeker_1.33.0.900                  
-## [173] R6_2.5.0                               
-## [174] grid_4.0.3                             
-## [175] lifecycle_1.0.3                        
-## [176] ShortRead_1.48.0                       
-## [177] zip_2.1.1                              
-## [178] curl_4.3                               
-## [179] ggsignif_0.6.3                         
-## [180] jquerylib_0.1.3                        
-## [181] robustbase_0.95-0                      
-## [182] DO.db_2.9                              
-## [183] Matrix_1.5-4                           
-## [184] qvalue_2.22.0                          
-## [185] desc_1.3.0                             
-## [186] RColorBrewer_1.1-2                     
-## [187] iterators_1.0.13                       
-## [188] stringr_1.5.0                          
-## [189] DOT_0.1                                
-## [190] ggpie_0.2.5                            
-## [191] beachmat_2.6.4                         
-## [192] polyclip_1.10-0                        
-## [193] biomaRt_2.46.3                         
-## [194] purrr_1.0.1                            
-## [195] shadowtext_0.0.9                       
-## [196] gridGraphics_0.5-1                     
-## [197] mgcv_1.8-34                            
-## [198] ComplexHeatmap_2.13.1                  
-## [199] openssl_1.4.3                          
-## [200] patchwork_1.0.0                        
-## [201] bdsmatrix_1.3-4                        
-## [202] codetools_0.2-18                       
-## [203] invgamma_1.1                           
-## [204] GO.db_3.12.1                           
-## [205] gtools_3.8.2                           
-## [206] prettyunits_1.1.1                      
-## [207] dbplyr_2.3.2                           
-## [208] gtable_0.3.0                           
-## [209] DBI_1.1.1                              
-## [210] ggfun_0.0.6                            
-## [211] httr_1.4.5                             
-## [212] KernSmooth_2.23-18                     
-## [213] stringi_1.5.3                          
-## [214] progress_1.2.2                         
-## [215] reshape2_1.4.4                         
-## [216] farver_2.1.0                           
-## [217] annotate_1.68.0                        
-## [218] viridis_0.6.1                          
-## [219] Rgraphviz_2.34.0                       
-## [220] xml2_1.3.4                             
-## [221] bbmle_1.0.24                           
-## [222] systemPipeR_1.24.3                     
-## [223] boot_1.3-28                            
-## [224] readr_2.1.4                            
-## [225] geneplotter_1.68.0                     
-## [226] ggplotify_0.1.0                        
-## [227] Category_2.56.0                        
-## [228] DEoptimR_1.0-11                        
-## [229] bit_4.0.4                              
-## [230] scatterpie_0.1.7                       
-## [231] jpeg_0.1-8.1                           
-## [232] ggraph_2.0.5                           
-## [233] pkgconfig_2.0.3                        
-## [234] rstatix_0.7.0                          
-## [235] knitr_1.37</code></pre>
+## [112] TFEA.ChIP_1.10.0                       
+## [113] genefilter_1.72.1                      
+## [114] car_3.0-11                             
+## [115] doParallel_1.0.16                      
+## [116] latticeExtra_0.6-29                    
+## [117] R.utils_2.12.0                         
+## [118] brew_1.0-6                             
+## [119] checkmate_2.0.0                        
+## [120] rmarkdown_2.14                         
+## [121] openxlsx_4.2.3                         
+## [122] pkgdown_1.6.1                          
+## [123] cowplot_1.1.1                          
+## [124] textshaping_0.3.6                      
+## [125] forcats_1.0.0                          
+## [126] downloader_0.4                         
+## [127] BSgenome_1.58.0                        
+## [128] igraph_1.4.99.9024                     
+## [129] survival_3.2-10                        
+## [130] numDeriv_2016.8-1.1                    
+## [131] yaml_2.2.1                             
+## [132] plotrix_3.8-2                          
+## [133] systemfonts_1.0.4                      
+## [134] ashr_2.2-47                            
+## [135] SQUAREM_2021.1                         
+## [136] htmltools_0.5.2                        
+## [137] memoise_2.0.0                          
+## [138] VariantAnnotation_1.36.0               
+## [139] locfit_1.5-9.4                         
+## [140] graphlayouts_0.7.1                     
+## [141] batchtools_0.9.15                      
+## [142] PCAtools_2.2.0                         
+## [143] viridisLite_0.4.0                      
+## [144] rrcov_1.7-0                            
+## [145] digest_0.6.27                          
+## [146] assertthat_0.2.1                       
+## [147] rappdirs_0.3.3                         
+## [148] emdbook_1.3.12                         
+## [149] RSQLite_2.2.5                          
+## [150] amap_0.8-18                            
+## [151] yulab.utils_0.0.4                      
+## [152] debugme_1.1.0                          
+## [153] misc3d_0.9-1                           
+## [154] data.table_1.14.2                      
+## [155] blob_1.2.1                             
+## [156] R.oo_1.24.0                            
+## [157] ragg_0.4.0                             
+## [158] splines_4.0.3                          
+## [159] ggupset_0.3.0                          
+## [160] RCurl_1.98-1.3                         
+## [161] broom_1.0.4                            
+## [162] hms_1.1.3                              
+## [163] colorspace_2.0-0                       
+## [164] BiocManager_1.30.16                    
+## [165] shape_1.4.6                            
+## [166] sass_0.4.1                             
+## [167] GEOquery_2.58.0                        
+## [168] Rcpp_1.0.9                             
+## [169] mvtnorm_1.1-2                          
+## [170] circlize_0.4.15                        
+## [171] enrichplot_1.10.2                      
+## [172] fansi_0.4.2                            
+## [173] tzdb_0.3.0                             
+## [174] truncnorm_1.0-8                        
+## [175] ChIPseeker_1.33.0.900                  
+## [176] R6_2.5.0                               
+## [177] grid_4.0.3                             
+## [178] lifecycle_1.0.3                        
+## [179] ShortRead_1.48.0                       
+## [180] zip_2.1.1                              
+## [181] curl_4.3                               
+## [182] ggsignif_0.6.3                         
+## [183] jquerylib_0.1.3                        
+## [184] robustbase_0.95-0                      
+## [185] DO.db_2.9                              
+## [186] Matrix_1.5-4                           
+## [187] qvalue_2.22.0                          
+## [188] desc_1.3.0                             
+## [189] org.Hs.eg.db_3.12.0                    
+## [190] RColorBrewer_1.1-2                     
+## [191] iterators_1.0.13                       
+## [192] stringr_1.5.0                          
+## [193] DOT_0.1                                
+## [194] ggpie_0.2.5                            
+## [195] beachmat_2.6.4                         
+## [196] polyclip_1.10-0                        
+## [197] biomaRt_2.46.3                         
+## [198] purrr_1.0.1                            
+## [199] shadowtext_0.0.9                       
+## [200] gridGraphics_0.5-1                     
+## [201] mgcv_1.8-34                            
+## [202] ComplexHeatmap_2.13.1                  
+## [203] openssl_1.4.3                          
+## [204] patchwork_1.0.0                        
+## [205] bdsmatrix_1.3-4                        
+## [206] codetools_0.2-18                       
+## [207] invgamma_1.1                           
+## [208] GO.db_3.12.1                           
+## [209] gtools_3.8.2                           
+## [210] prettyunits_1.1.1                      
+## [211] dbplyr_2.3.2                           
+## [212] R.methodsS3_1.8.1                      
+## [213] gtable_0.3.0                           
+## [214] DBI_1.1.1                              
+## [215] ggfun_0.0.6                            
+## [216] httr_1.4.5                             
+## [217] KernSmooth_2.23-18                     
+## [218] stringi_1.5.3                          
+## [219] progress_1.2.2                         
+## [220] reshape2_1.4.4                         
+## [221] farver_2.1.0                           
+## [222] annotate_1.68.0                        
+## [223] viridis_0.6.1                          
+## [224] Rgraphviz_2.34.0                       
+## [225] xml2_1.3.4                             
+## [226] bbmle_1.0.24                           
+## [227] systemPipeR_1.24.3                     
+## [228] boot_1.3-28                            
+## [229] readr_2.1.4                            
+## [230] geneplotter_1.68.0                     
+## [231] ggplotify_0.1.0                        
+## [232] Category_2.56.0                        
+## [233] DEoptimR_1.0-11                        
+## [234] bit_4.0.4                              
+## [235] scatterpie_0.1.7                       
+## [236] jpeg_0.1-8.1                           
+## [237] ggraph_2.0.5                           
+## [238] pkgconfig_2.0.3                        
+## [239] rstatix_0.7.0                          
+## [240] knitr_1.37</code></pre>
 <hr>
 </div>
   </div>

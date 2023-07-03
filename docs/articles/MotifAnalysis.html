@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IntegrateATACDE • DEbPeak</title>
+<title>MotifAnalysis • DEbPeak</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="IntegrateATACDE">
+<script src="../pkgdown.js"></script><meta property="og:title" content="MotifAnalysis">
 <meta property="og:description" content="DEbPeak">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -127,14 +127,14 @@
 
       
 
-      </header><script src="IntegrateATACDE_files/header-attrs-2.14/header-attrs.js"></script><div class="row">
+      </header><script src="MotifAnalysis_files/header-attrs-2.14/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>IntegrateATACDE</h1>
+      <h1 data-toc-skip>MotifAnalysis</h1>
             
       
       
-      <div class="hidden name"><code>IntegrateATACDE.Rmd</code></div>
+      <div class="hidden name"><code>MotifAnalysis.Rmd</code></div>
 
     </div>
 
@@ -143,9 +143,14 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p><a href="https://epigeneticsandchromatin.biomedcentral.com/articles/10.1186/1756-8935-7-33">Eukaryotic chromatin is tightly packaged into nucleosomes, and the positioning of nucleosomes can regulate gene expression by changing the in vivo availability of binding sites to transcription factors (TFs)</a>. Assay of Transposase Accessible Chromatin sequencing (ATAC-seq) is a technique used to assess genome-wide chromatin accessibility. It is widely used to identify cis-regulatory regions (e.g. promoters and enhancers). Thus, combining ATAC-seq with RNA-seq can be used to understanding the role of cis-regulatory regions in regulating gene expression.</p>
-<p>Different from those in <a href="https://showteeth.github.io/DEbPeak/articles/IntegrateATAC.html">Integrate RNA-seq with ATAC-seq (intersection)</a>, we will integrate RNA-seq and ATAC-seq based on differential expression analysis results. In detail, <strong>integrating differentially expressed genes with differentially accessible peaks</strong>.</p>
-<p><strong>In this vignette, we will focus on promoter regions.</strong> For the enhancer regions, we will talk about in <a href="https://showteeth.github.io/DEbPeak/articles/IntegrateChIPDE.html">Integrate RNA-seq with ChIP-seq (differential analysis)</a>.</p>
+<p>For peak-related data, there are two levels of motif analysis:</p>
+<ul>
+<li>
+<strong><em>de novo</em> motif discovery</strong>: this can be used to find the specific binding motif of regulator.</li>
+<li>
+<strong>motif enrichment</strong>: this can be used to find the TFs involved in the gene regulation, especially for ATAC-seq (ATAC-seq can proflie global chromatin accessibility. Thus, the peaks of ATAC-seq may originate from hundreds of TFs.).</li>
+</ul>
+<p><code>DEbPeak</code> provides <code>MotifDiscovery</code> to perfrom <em>de novo</em> motif discovery with <a href="https://meme-suite.org/meme/tools/streme">STREME</a> and <code>MotifEnrich</code> to perform <em>de novo</em> motif discovery and motif enrichment with <a href="http://homer.ucsd.edu/homer/ngs/peakMotifs.html">Homer</a>. While <a href="http://homer.ucsd.edu/homer/ngs/peakMotifs.html">Homer</a> only supports human, mouse, rat, frog, zebrafish, fly, worm, yeast and arabidopsis, <code>DEbPeak</code> provides the <code>MotifCompare</code> to map motifs provided by users against <em>de novo</em> motif discovered by <code>MotifDiscovery</code>.</p>
 <hr>
 </div>
 <div id="example-data" class="section level2">
@@ -170,45 +175,12 @@
 <span class="fu"><a href="https://rdrr.io/r/base/warning.html">suppressWarnings</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">DEbPeak</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <hr>
 </div>
-<div id="prepare-atac-seq-counts" class="section level2">
+<div id="differential-expression-analysis" class="section level2">
 <h2 class="hasAnchor">
-<a href="#prepare-atac-seq-counts" class="anchor"></a>Prepare ATAC-seq counts</h2>
-<p>The following is an example with count matrix, if you only have bam files and peak files, please refer to <a href="https://showteeth.github.io/DEbPeak/articles/IntegrateChIPDE.html">Integrate RNA-seq with ChIP-seq (differential analysis)</a>.</p>
-<p>Format the count matrix:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># the GSE149836_combUnionReadsWithLabels.txt is downloaded from https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE149836</span>
-<span class="va">atac.counts</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"GSE149836_combUnionReadsWithLabels.txt"</span>, sep <span class="op">=</span> <span class="st">"\t"</span>, header <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
-<span class="co"># the first three columns should be "CHR", "START", "END"</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">atac.counts</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"CHR"</span>, <span class="st">"START"</span>, <span class="st">"END"</span>, <span class="st">"Fli1KO_1"</span>,<span class="st">"Fli1KO_2"</span>,<span class="st">"Fli1KO_3"</span>,<span class="st">"Fli1KO_4"</span>,<span class="st">"WT_1"</span>,<span class="st">"WT_2"</span><span class="op">)</span>
-<span class="co"># save file</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/write.table.html">write.table</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">atac.counts</span>, file <span class="op">=</span> <span class="st">"RA_ATAC_counts_raw.txt"</span>, sep <span class="op">=</span> <span class="st">"\t"</span>, quote <span class="op">=</span> <span class="cn">FALSE</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
-<p>Annotate the count matrix:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># this will save count matrix and annotated results to consensus_peak_matrix.txt and consensus_peak_anno.txt</span>
-<span class="fu"><a href="../reference/PeakMatrix.html">PeakMatrix</a></span><span class="op">(</span>meta.file <span class="op">=</span> <span class="st">"RA_ATAC_counts_raw.txt"</span>,
-           count.matrix <span class="op">=</span> <span class="cn">TRUE</span>, species <span class="op">=</span> <span class="st">"Mouse"</span>,  seq.style <span class="op">=</span> <span class="st">"UCSC"</span>,
-           up.dist <span class="op">=</span> <span class="fl">2000</span>, down.dist <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></code></pre></div>
-<p>Prepare metadata:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">atac.meta</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>SampleName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Fli1KO_1"</span>,<span class="st">"Fli1KO_2"</span>,<span class="st">"Fli1KO_3"</span>,<span class="st">"Fli1KO_4"</span>,<span class="st">"WT_1"</span>,<span class="st">"WT_2"</span><span class="op">)</span>,
-                       condition <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"KO"</span>, <span class="fl">4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"WT"</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">column_to_rownames</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"SampleName"</span><span class="op">)</span>
-<span class="co"># save file</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/write.table.html">write.table</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">atac.meta</span>, file <span class="op">=</span> <span class="st">"RA_ATAC_mata_raw.txt"</span>, sep <span class="op">=</span> <span class="st">"\t"</span>, quote <span class="op">=</span> <span class="cn">FALSE</span>, row.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<hr>
-</div>
-<div id="differential-analysis" class="section level2">
-<h2 class="hasAnchor">
-<a href="#differential-analysis" class="anchor"></a>Differential Analysis</h2>
+<a href="#differential-expression-analysis" class="anchor"></a>Differential Expression Analysis</h2>
 <p>To simplify the steps of obtaining differential expression analysis results, <code>DEbPeak</code> provides <code>ConductDESeq2</code> to perfrom all steps of differential expression analysis, including <strong>quality control</strong>, <strong>principal component analysis</strong>, <strong>differential expression analysis</strong> and <strong>functional enrichment analysis</strong>.</p>
-<div id="atac-seq" class="section level3">
-<h3 class="hasAnchor">
-<a href="#atac-seq" class="anchor"></a>ATAC-seq</h3>
-<p>With count matrix, we will perform differential analysis:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># RA_ATAC_count.txt is above consensus_peak_matrix.txt</span>
-<span class="va">peak.matrix.file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"RA_ATAC_count.txt"</span>, package <span class="op">=</span> <span class="st">"DEbPeak"</span><span class="op">)</span>
-<span class="co"># RA_ATAC_meta.txt is above RA_ATAC_mata_raw.txt</span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">peak.matrix.file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"RA_ATAC_count.txt"</span>, package <span class="op">=</span> <span class="st">"DEbPeak"</span><span class="op">)</span>
 <span class="va">peak.meta.file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"RA_ATAC_meta.txt"</span>, package <span class="op">=</span> <span class="st">"DEbPeak"</span><span class="op">)</span>
 <span class="fu"><a href="../reference/ConductDESeq2.html">ConductDESeq2</a></span><span class="op">(</span>count.matrix.file <span class="op">=</span> <span class="va">peak.matrix.file</span>, meta.file <span class="op">=</span> <span class="va">peak.meta.file</span>, data.type <span class="op">=</span> <span class="st">"ATAC"</span>,
               gene.type <span class="op">=</span> <span class="st">"SYMBOL"</span>, outlier.detection <span class="op">=</span> <span class="cn">F</span>, min.count <span class="op">=</span> <span class="fl">0</span>,
@@ -516,7 +488,7 @@
 ## Adding another scale for y, which will replace the existing scale.Gene Set Enrichment Analysis is not available for ChIP-seq or ATAC-seq data!
 ## All Analysis Done!</code></pre>
 <p>The structure of result directory:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tree</span> /home/songyabing/R/learn/tmp/DEbPeak/ATACDE</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tree</span> /home/songyabing/R/learn/tmp/DEbPeak/ATACDE</span></code></pre></div>
 <pre><code>## /home/songyabing/R/learn/tmp/DEbPeak/ATACDE
 ## ├── CountQC_CPM.pdf
 ## ├── CountQC_saturation.pdf
@@ -652,9 +624,9 @@
 ## └── SampleQC_dist_pcc.pdf
 ## 
 ## 19 directories, 113 files</code></pre>
-<p>Load the data:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dds.peak.results.ordered</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span> <span class="st">"/home/songyabing/R/learn/tmp/DEbPeak/ATACDE/DA/Condition_KO_WT_all.csv"</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
+<p>Read the results:</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dds.peak.results.ordered</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span> <span class="st">"/home/songyabing/R/learn/tmp/DEbPeak/ATACDE/DEG/Condition_KO_WT_all.csv"</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">dds.peak.results.ordered</span><span class="op">)</span></code></pre></div>
 <pre><code>##                                           baseMean log2FoldChange    lfcSE
 ## chr8:94825359-94825432|Ciapin1|P         12.106577       6.439216 1.527019
@@ -686,218 +658,53 @@
 ## chr11:20780454-20780545|Aftph|DI           216549</code></pre>
 <hr>
 </div>
-<div id="rna-seq" class="section level3">
-<h3 class="hasAnchor">
-<a href="#rna-seq" class="anchor"></a>RNA-seq</h3>
-<p><code>DEbPeak</code> has prepared the differential expression analysis results of RNA-seq:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">rna.diff.file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"RA_RNA_diff.txt"</span>, package <span class="op">=</span> <span class="st">"DEbPeak"</span><span class="op">)</span>
-<span class="va">rna.diff</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">rna.diff.file</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, sep <span class="op">=</span> <span class="st">"\t"</span><span class="op">)</span></code></pre></div>
-<hr>
-</div>
-</div>
-<div id="integrate-atac-seq-and-rna-seq" class="section level2">
+<div id="motif-analysis-with-meme" class="section level2">
 <h2 class="hasAnchor">
-<a href="#integrate-atac-seq-and-rna-seq" class="anchor"></a>Integrate ATAC-seq and RNA-seq</h2>
-<p>In this step, we will integrate ATAC-seq and RNA-seq to explore the role of chromatin structure of <strong>promoter region</strong> in regulating target gene expression.</p>
-<div id="integrate" class="section level3">
+<a href="#motif-analysis-with-meme" class="anchor"></a>Motif analysis with MEME</h2>
+<div id="de-novo-motif-discovery-with-streme" class="section level3">
 <h3 class="hasAnchor">
-<a href="#integrate" class="anchor"></a>Integrate</h3>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">debatac.res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/DEbPeak.html">DEbPeak</a></span><span class="op">(</span>de.res <span class="op">=</span> <span class="va">rna.diff</span>, peak.res <span class="op">=</span> <span class="va">dds.peak.results.ordered</span>, 
-                       peak.mode <span class="op">=</span> <span class="st">"diff"</span>, peak.anno.key <span class="op">=</span> <span class="st">"Promoter"</span>,
-                       l2fc.threshold <span class="op">=</span> <span class="fl">0</span>, peak.l2fc.threshold <span class="op">=</span> <span class="fl">0</span>, 
-                       species <span class="op">=</span> <span class="st">"Mouse"</span>, merge.key <span class="op">=</span> <span class="st">"SYMBOL"</span><span class="op">)</span></code></pre></div>
-<pre><code>## Differential expression analysis with DESeq2!
-## Differential expression analysis with DESeq2!</code></pre>
-<pre><code>## 'select()' returned 1:many mapping between keys and columns</code></pre>
-<pre><code>## Warning in clusterProfiler::bitr(de.df[, "Gene2Convert"], fromType =
-## gene.type, : 13.86% of input gene IDs are fail to map...</code></pre>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">debatac.res</span><span class="op">)</span></code></pre></div>
-<pre><code>##     Peak_SYMBOL                               Peak_Gene Peak_log2FoldChange
-## 1 0610012G03Rik                                    &lt;NA&gt;                  NA
-## 2 1110008P14Rik                                    &lt;NA&gt;                  NA
-## 3 1110038B12Rik                                    &lt;NA&gt;                  NA
-## 4 1190007I07Rik                                    &lt;NA&gt;                  NA
-## 5 1500009L16Rik                                    &lt;NA&gt;                  NA
-## 6 1500015L24Rik chr19:20409568-20410053|1500015L24Rik|P           0.8313949
-##   Peak_abundance Peak_signif Peak_regulation RNA_log2FoldChange RNA_abundance
-## 1             NA          NA            &lt;NA&gt;         -0.9030355      755.4293
-## 2             NA          NA            &lt;NA&gt;         -0.5990288      755.1468
-## 3             NA          NA            &lt;NA&gt;         -1.4727375      133.5649
-## 4             NA          NA            &lt;NA&gt;         -0.8460258      183.3374
-## 5             NA          NA            &lt;NA&gt;          1.0678110     1778.9745
-## 6       122.8101    3.151115    Up_regulated                 NA            NA
-##   RNA_signif RNA_regulation        RNA_ENSEMBL geneId    Type
-## 1   4.752130 Down_regulated ENSMUSG00000107002 106264 RNADown
-## 2   1.724792 Down_regulated ENSMUSG00000039195  73737 RNADown
-## 3   3.467581 Down_regulated ENSMUSG00000092203  68763 RNADown
-## 4   1.402928 Down_regulated ENSMUSG00000063320 544717 RNADown
-## 5   6.893316   Up_regulated ENSMUSG00000087651  69784   RNAUp
-## 6         NA           &lt;NA&gt;               &lt;NA&gt;   &lt;NA&gt;  PeakUp</code></pre>
-<hr>
-</div>
-<div id="integrate-summary" class="section level3">
-<h3 class="hasAnchor">
-<a href="#integrate-summary" class="anchor"></a>Integrate summary</h3>
-<div id="venn-plot" class="section level4">
-<h4 class="hasAnchor">
-<a href="#venn-plot" class="anchor"></a>Venn plot</h4>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># DE and ATAC venn plot</span>
-<span class="co"># debatac.plot = PlotDEbPeak(de.peak = debatac.res, peak.type = "ATAC", peak.mode = "diff", show_percentage = FALSE)</span>
-<span class="co"># debatac.plot</span>
-<span class="va">debatac.plot</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteVenn.html">InteVenn</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debatac.res</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>, peak.mode <span class="op">=</span> <span class="st">"diff"</span>,
-                        peak.type <span class="op">=</span> <span class="st">"ATAC"</span>, show_percentage <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="va">debatac.plot</span></code></pre></div>
-<p><img src="IntegrateATACDE_files/figure-html/debatac_integrate_plot-1.png" width="384" style="display: block; margin: auto;"></p>
-</div>
-<div id="quadrant-diagram" class="section level4">
-<h4 class="hasAnchor">
-<a href="#quadrant-diagram" class="anchor"></a>Quadrant diagram</h4>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">label.df</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>Gene <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Ccl3"</span>, <span class="st">"Ccl5"</span>, <span class="st">"Cd28"</span>, <span class="st">"Cx3cr1"</span>, <span class="st">"Prdm1"</span>, <span class="st">"Tcf7"</span>, <span class="st">"Slamf6"</span>, <span class="st">"Id3"</span>, <span class="st">"Cxcr5"</span><span class="op">)</span><span class="op">)</span>
-<span class="va">quad.plot</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteDiffQuad.html">InteDiffQuad</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debatac.res</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>, 
-                         label.df <span class="op">=</span> <span class="va">label.df</span>, label.color <span class="op">=</span> <span class="st">"green"</span><span class="op">)</span>
-<span class="va">quad.plot</span></code></pre></div>
-<p><img src="IntegrateATACDE_files/figure-html/debatac_integrate_quad_plot-1.png" width="576" style="display: block; margin: auto;"></p>
-<hr>
-</div>
-</div>
-</div>
-<div id="functional-enrichment" class="section level2">
-<h2 class="hasAnchor">
-<a href="#functional-enrichment" class="anchor"></a>Functional enrichment</h2>
-<p>There are <strong>eight categories</strong> for users to choose to perform functional enrichment: <code>Down_Up</code>, <code>Up_Up</code>, <code>Down_Down</code>, <code>Up_Down</code>, <code>RNAUp</code>, <code>RNADown</code>, <code>PeakUp</code>, <code>PeakDown</code>. Here, we will use <code>Up_Up</code> and <code>Down_Down</code> as examples.</p>
-<div id="both-up-regulated" class="section level3">
-<h3 class="hasAnchor">
-<a href="#both-up-regulated" class="anchor"></a>Both up-regulated</h3>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># debatac.up.fe.results = DEbPeakFE(de.peak = debatac.res, peak.fe.key = "Up_Up", </span>
-<span class="co">#                                   gene.type = "ENTREZID", species="Mouse",save = F)</span>
-<span class="va">debatac.up.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteFE.html">InteFE</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debatac.res</span>, fe.key <span class="op">=</span> <span class="st">"Up_Up"</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>,
-                               gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
-<pre><code>## conduct ALL GO enrichment analysis on: Up_Up</code></pre>
-<pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
-<pre><code>## Scale for y is already present.
-## Adding another scale for y, which will replace the existing scale.
-## wrong orderBy parameter; set to default `orderBy = "x"`
-## 
-## Scale for y is already present.
-## Adding another scale for y, which will replace the existing scale.</code></pre>
-<p>The results:</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">debatac.up.fe.results</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"table"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code>##            ONTOLOGY         ID
-## GO:0060326       BP GO:0060326
-## GO:0032652       BP GO:0032652
-## GO:0032102       BP GO:0032102
-## GO:0045639       BP GO:0045639
-## GO:0032612       BP GO:0032612
-## GO:0071346       BP GO:0071346
-##                                                     Description GeneRatio
-## GO:0060326                                      cell chemotaxis      8/66
-## GO:0032652               regulation of interleukin-1 production      5/66
-## GO:0032102 negative regulation of response to external stimulus      8/66
-## GO:0045639  positive regulation of myeloid cell differentiation      5/66
-## GO:0032612                             interleukin-1 production      5/66
-## GO:0071346                cellular response to interferon-gamma      5/66
-##              BgRatio       pvalue    p.adjust      qvalue
-## GO:0060326 303/23328 2.207004e-06 0.003261952 0.002425382
-## GO:0032652  98/23328 8.611721e-06 0.003832999 0.002849976
-## GO:0032102 384/23328 1.251477e-05 0.003832999 0.002849976
-## GO:0045639 108/23328 1.383104e-05 0.003832999 0.002849976
-## GO:0032612 110/23328 1.512035e-05 0.003832999 0.002849976
-## GO:0071346 114/23328 1.797906e-05 0.003832999 0.002849976
-##                                                       geneID Count
-## GO:0060326    Ccl3/Ccl5/Ccr9/Ccrl2/Cxcr6/Hmgb2/Nckap1l/Padi2     8
-## GO:0032652                     Casp8/Ccl3/Havcr2/Mndal/Nlrc3     5
-## GO:0032102 Abr/Cd109/Havcr2/Nfkb1/Nlrc3/Padi2/Prdm1/Serpinb9     8
-## GO:0045639                     Casp8/Ccl3/Ccl5/Hmgb2/Nckap1l     5
-## GO:0032612                     Casp8/Ccl3/Havcr2/Mndal/Nlrc3     5
-## GO:0071346                        Capg/Ccl3/Ccl5/Gbp3/Myo18a     5</code></pre>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">debatac.up.fe.results</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"plot"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
-<p><img src="IntegrateATACDE_files/figure-html/debatac_integrate_fe_up_show-1.png" width="768" style="display: block; margin: auto;"></p>
-<hr>
-</div>
-<div id="both-down-regulated" class="section level3">
-<h3 class="hasAnchor">
-<a href="#both-down-regulated" class="anchor"></a>Both down-regulated</h3>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># debatac.down.fe.results = DEbPeakFE(de.peak = debatac.res, peak.fe.key = "Down_Down", </span>
-<span class="co">#                                     gene.type = "ENTREZID", species="Mouse",save = F)</span>
-<span class="va">debatac.down.fe.results</span> <span class="op">=</span> <span class="fu"><a href="../reference/InteFE.html">InteFE</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debatac.res</span>, fe.key <span class="op">=</span> <span class="st">"Down_Down"</span>, inte.type <span class="op">=</span> <span class="st">"DEbPeak"</span>,
-                                 gene.type <span class="op">=</span> <span class="st">"ENTREZID"</span>, species<span class="op">=</span><span class="st">"Mouse"</span>,save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
-<pre><code>## conduct ALL GO enrichment analysis on: Down_Down</code></pre>
-<pre><code>## wrong orderBy parameter; set to default `orderBy = "x"`</code></pre>
-<pre><code>## Scale for y is already present.
-## Adding another scale for y, which will replace the existing scale.</code></pre>
-<p>The results:</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">debatac.down.fe.results</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"table"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code>##            ONTOLOGY         ID         Description GeneRatio  BgRatio
-## GO:0005771       CC GO:0005771 multivesicular body      3/57 51/23271
-## GO:0031985       CC GO:0031985      Golgi cisterna      3/57 62/23271
-## GO:0005795       CC GO:0005795         Golgi stack      3/57 87/23271
-##                  pvalue   p.adjust     qvalue          geneID Count
-## GO:0005771 0.0002669169 0.02734606 0.02102581  Acpp/Cd74/Nsg2     3
-## GO:0031985 0.0004755837 0.02734606 0.02102581 Acpp/Nsg2/Nucb2     3
-## GO:0005795 0.0012764071 0.04892894 0.03762042 Acpp/Nsg2/Nucb2     3</code></pre>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">debatac.down.fe.results</span><span class="op">[[</span><span class="st">"GO"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"plot"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
-<p><img src="IntegrateATACDE_files/figure-html/debatac_integrate_fe_down_show-1.png" width="768" style="display: block; margin: auto;"></p>
-<hr>
-</div>
-</div>
-<div id="motif-enrichment" class="section level2">
-<h2 class="hasAnchor">
-<a href="#motif-enrichment" class="anchor"></a>Motif enrichment</h2>
-<p><a href="https://link.springer.com/article/10.1186/s43556-020-00009-w">Different from ChIP-seq which profile specific protein–DNA interactions (depends on the antibody provided), ATAC-seq can proflie global chromatin accessibility</a>. Thus, the peaks of ATAC-seq may originate from hundreds of TFs. To reveal the possible TFs involved, motif enrichment analysis is a good solution.</p>
-<p>As pointed above, there are <strong>eight categories</strong> for users to choose to motif enrichment, we will use <code>Up_Up</code> as example.</p>
-<div id="motif-analysis-with-homer" class="section level3">
-<h3 class="hasAnchor">
-<a href="#motif-analysis-with-homer" class="anchor"></a>Motif analysis with Homer</h3>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># debatac.res: similar to debatac.res</span>
-<span class="co"># this step is time consuming!</span>
-<span class="fu"><a href="../reference/FindMotif.html">FindMotif</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debatac.res</span>, peak.motif.key <span class="op">=</span> <span class="st">"Up_Up"</span>, peak.mode <span class="op">=</span> <span class="st">"diff"</span>, 
-          homer.motif.path <span class="op">=</span> <span class="st">'~/anaconda3/bin/findMotifsGenome.pl'</span>,
-          out.folder <span class="op">=</span> <span class="st">"/path/to/out/folder"</span>, other.paras <span class="op">=</span> <span class="st">"-len 8,10,12 -size -100,50 -S 25"</span><span class="op">)</span></code></pre></div>
-<hr>
-</div>
-<div id="motif-analysis-with-meme" class="section level3">
-<h3 class="hasAnchor">
-<a href="#motif-analysis-with-meme" class="anchor"></a>Motif analysis with MEME</h3>
-<div id="de-novo-motif-discovery" class="section level4">
-<h4 class="hasAnchor">
-<a href="#de-novo-motif-discovery" class="anchor"></a>de novo motif discovery</h4>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<a href="#de-novo-motif-discovery-with-streme" class="anchor"></a><em>de novo</em> motif discovery with STREME</h3>
+<p>Here, we will perform <em>de novo</em> motif discovery with STREME. There are <strong>three categories</strong> for users to choose to perform <em>de novo</em> motif discovery: <code>Up_regulated</code>, <code>Down_regulated</code>, <code>Not_regulated</code>. Here, we will use <code>Up_regulated</code> as example.</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># this step is time consuming!</span>
-<span class="fu"><a href="../reference/MotifDiscovery.html">MotifDiscovery</a></span><span class="op">(</span>inte.res <span class="op">=</span> <span class="va">debatac.res</span>, peak.motif.key <span class="op">=</span> <span class="st">"Up_Up"</span>,
-               genome <span class="op">=</span> <span class="st">'/path/to/genome.fa'</span>, peak.mode <span class="op">=</span> <span class="st">"diff"</span>, 
-               streme.path <span class="op">=</span> <span class="st">"~/data/software/meme-5.5.2/bin/streme"</span>,
+<span class="fu"><a href="../reference/MotifDiscovery.html">MotifDiscovery</a></span><span class="op">(</span>diff.peak <span class="op">=</span> <span class="va">dds.peak.results.ordered</span>, peak.motif.key <span class="op">=</span> <span class="st">"Up_regulated"</span>,
+               genome <span class="op">=</span> <span class="st">'/path/to/genome.fa'</span>, streme.path <span class="op">=</span> <span class="st">"~/data/software/meme-5.5.2/bin/streme"</span>,
                samtools.path <span class="op">=</span> <span class="st">"/home/songyabing/data/software/samtools-1.17/samtools"</span>,
-               out.folder <span class="op">=</span> <span class="st">"/path/to/denovo/output"</span><span class="op">)</span></code></pre></div>
+               out.folder <span class="op">=</span> <span class="st">"/home/songyabing/R/learn/tmp/DEbPeak/DAdenovo"</span>, show.html <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="co"># after running, there will be a browser pop-up window to show the results.</span></code></pre></div>
+<hr>
 </div>
-<div id="motif-comparison" class="section level4">
-<h4 class="hasAnchor">
-<a href="#motif-comparison" class="anchor"></a>Motif comparison</h4>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div id="motif-comparison" class="section level3">
+<h3 class="hasAnchor">
+<a href="#motif-comparison" class="anchor"></a>Motif comparison</h3>
+<p>In this step, we will map <em>de novo</em> motifs against motifs provided by users (known motif database).</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">verteb.motifs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"homer_verteb.motifs.meme"</span>, package <span class="op">=</span> <span class="st">"DEbPeak"</span><span class="op">)</span>
-<span class="co"># this step is time consuming!</span>
-<span class="va">ATAC.denovo.motif</span> <span class="op">=</span> <span class="fu"><a href="../reference/MotifCompare.html">MotifCompare</a></span><span class="op">(</span>motif.folder <span class="op">=</span> <span class="st">"/path/to/denovo/output"</span>,
-                                 known.motif <span class="op">=</span> <span class="va">verteb.motifs</span>, tomtom.path <span class="op">=</span> <span class="st">'~/data/software/meme-5.5.2/bin/tomtom'</span>,
-                                 out.folder <span class="op">=</span> <span class="st">"/path/to/denovo/output"</span><span class="op">)</span></code></pre></div>
+<span class="va">motif.cmp</span> <span class="op">=</span> <span class="fu"><a href="../reference/MotifCompare.html">MotifCompare</a></span><span class="op">(</span>motif.folder <span class="op">=</span> <span class="st">"/home/songyabing/R/learn/tmp/DEbPeak/DAdenovo"</span>,
+                         known.motif <span class="op">=</span> <span class="va">verteb.motifs</span>,
+                         tomtom.path <span class="op">=</span> <span class="st">'~/data/software/meme-5.5.2/bin/tomtom'</span>,
+                         out.folder <span class="op">=</span> <span class="st">"/home/songyabing/R/learn/tmp/DEbPeak/DAdenovo"</span>, show.html <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="co"># after running, there will be a browser pop-up window to show the results.</span></code></pre></div>
 <hr>
 </div>
 </div>
+<div id="motif-analysis-with-homer" class="section level2">
+<h2 class="hasAnchor">
+<a href="#motif-analysis-with-homer" class="anchor"></a>Motif analysis with Homer</h2>
+<p>There are <strong>three categories</strong> for users to choose to perform motif enrichment: <code>Up_regulated</code>, <code>Down_regulated</code>, <code>Not_regulated</code>. Here, we will use <code>Up_regulated</code> as example.</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># this step is time consuming!</span>
+<span class="va">da.peak.motif</span> <span class="op">=</span> <span class="fu"><a href="../reference/MotifEnrich.html">MotifEnrich</a></span><span class="op">(</span>de.res <span class="op">=</span> <span class="va">dds.peak.results.ordered</span>, reg.type <span class="op">=</span> <span class="st">"Up_regulated"</span>,
+                            homer.motif.path <span class="op">=</span> <span class="st">'~/anaconda3/bin/findMotifsGenome.pl'</span>,
+                            out.folder <span class="op">=</span> <span class="st">"/home/songyabing/R/learn/tmp/DEbPeak/DAmotif"</span>,
+                            other.paras <span class="op">=</span> <span class="st">"-len 8,10,12 -size -100,50 -S 25"</span><span class="op">)</span></code></pre></div>
+<p>The results will contains <strong>de novo</strong> motif results and known motif enrichment analysis results.</p>
+<hr>
 </div>
 <div id="session-info" class="section level2">
 <h2 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session info</h2>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <pre><code>## R version 4.0.3 (2020-10-10)
 ## Platform: x86_64-conda-linux-gnu (64-bit)
@@ -1144,35 +951,34 @@
 ## [218] GenomeInfoDb_1.26.7                    
 ## [219] gtable_0.3.0                           
 ## [220] DBI_1.1.1                              
-## [221] highr_0.8                              
-## [222] ggfun_0.0.6                            
-## [223] httr_1.4.5                             
-## [224] KernSmooth_2.23-18                     
-## [225] stringi_1.5.3                          
-## [226] progress_1.2.2                         
-## [227] reshape2_1.4.4                         
-## [228] farver_2.1.0                           
-## [229] annotate_1.68.0                        
-## [230] viridis_0.6.1                          
-## [231] Rgraphviz_2.34.0                       
-## [232] xml2_1.3.4                             
-## [233] bbmle_1.0.24                           
-## [234] systemPipeR_1.24.3                     
-## [235] boot_1.3-28                            
-## [236] readr_2.1.4                            
-## [237] geneplotter_1.68.0                     
-## [238] ggplotify_0.1.0                        
-## [239] Category_2.56.0                        
-## [240] DEoptimR_1.0-11                        
-## [241] DESeq2_1.30.1                          
-## [242] bit_4.0.4                              
-## [243] scatterpie_0.1.7                       
-## [244] jpeg_0.1-8.1                           
-## [245] MatrixGenerics_1.2.1                   
-## [246] ggraph_2.0.5                           
-## [247] pkgconfig_2.0.3                        
-## [248] rstatix_0.7.0                          
-## [249] knitr_1.37</code></pre>
+## [221] ggfun_0.0.6                            
+## [222] httr_1.4.5                             
+## [223] KernSmooth_2.23-18                     
+## [224] stringi_1.5.3                          
+## [225] progress_1.2.2                         
+## [226] reshape2_1.4.4                         
+## [227] farver_2.1.0                           
+## [228] annotate_1.68.0                        
+## [229] viridis_0.6.1                          
+## [230] Rgraphviz_2.34.0                       
+## [231] xml2_1.3.4                             
+## [232] bbmle_1.0.24                           
+## [233] systemPipeR_1.24.3                     
+## [234] boot_1.3-28                            
+## [235] readr_2.1.4                            
+## [236] geneplotter_1.68.0                     
+## [237] ggplotify_0.1.0                        
+## [238] Category_2.56.0                        
+## [239] DEoptimR_1.0-11                        
+## [240] DESeq2_1.30.1                          
+## [241] bit_4.0.4                              
+## [242] scatterpie_0.1.7                       
+## [243] jpeg_0.1-8.1                           
+## [244] MatrixGenerics_1.2.1                   
+## [245] ggraph_2.0.5                           
+## [246] pkgconfig_2.0.3                        
+## [247] rstatix_0.7.0                          
+## [248] knitr_1.37</code></pre>
 <hr>
 </div>
   </div>
