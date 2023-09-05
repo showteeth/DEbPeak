@@ -210,6 +210,9 @@ RunBART2 <- function(genes, species = c("Human", "Mouse"), bart2.path = NULL, pr
     out.folder <- all.tmp.dirs[length(all.tmp.dirs)]
   }
   bart2.results.df <- read.table(file = bart2.results.file, sep = "\t", header = TRUE)
+  # add rank, default rank: average rank of Wilcoxon P-value, Z-score and the maximum AUC among datasets
+  # https://academic.oup.com/bioinformatics/article/34/16/2867/4956015?login=false
+  bart2.results.df$Rank <- 1:nrow(bart2.results.df)
   return(bart2.results.df)
 }
 
@@ -299,10 +302,10 @@ VizRegulator <- function(infer.res, method = c("ChEA3", "BART2", "TFEA.ChIP"), l
     infer.res$Score <- as.numeric(infer.res$Score)
   } else if (method == "BART2") {
     infer.res$Rank <- 1:nrow(infer.res)
-    mapping <- aes_string(x = "Rank", y = "max_auc")
-    label.mapping <- aes_string(x = "Rank", y = "max_auc", label = "TF")
+    mapping <- aes_string(x = "Rank", y = "re_rank")
+    label.mapping <- aes_string(x = "Rank", y = "re_rank", label = "TF")
     infer.res$Rank <- as.numeric(infer.res$Rank)
-    infer.res$max_auc <- as.numeric(infer.res$max_auc)
+    infer.res$re_rank <- as.numeric(infer.res$re_rank)
   } else if (method == "TFEA.ChIP") {
     infer.res$Rank <- 1:nrow(infer.res)
     mapping <- aes_string(x = "Rank", y = "ES")

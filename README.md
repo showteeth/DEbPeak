@@ -6,7 +6,7 @@
 [![CODE\_SIZE](https://img.shields.io/github/languages/code-size/showteeth/DEbPeak.svg)](https://github.com/showteeth/DEbPeak)
 
 ## Introduction
-`DEbPeak` aims to **explore**, **visualize**, **interpret** multi-omics data and **unravel the regulation of gene expression** by combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains **ten functional modules**:
+`DEbPeak` aims to **explore**, **visualize**, **interpret** multi-omics data and **unravel the regulation of gene expression** by combining RNA-seq with peak-related data (eg: ChIP-seq, ATAC-seq, m6a-seq et al.). It contains **eleven functional modules**:
 
 * **Parse GEO**: Extract study information, raw count matrix and metadata from GEO database.
 * **Quality Control (QC)**: QC on count matrix and samples. 
@@ -21,6 +21,9 @@
   - GO (Biological Process, Molecular Function, Cellular Component) and KEGG on differential expression genes or accessible/binding peaks.
   - GSEA on all genes (Notice: GSEA is not available for peak-related data)
 * **Predict transcription factors (PredictTFs)**: Identify transcription factors with differentially expressed genes, `DEbPeak` provides three methods ([BART](https://academic.oup.com/bioinformatics/article/34/16/2867/4956015?login=false), [ChEA3](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6602523) and [TFEA.ChIP](https://academic.oup.com/bioinformatics/article/35/24/5339/5538988)).
+* **Motif analysis**:
+  - *de novo* motif discovery
+  - motif enrichment
 * **Integrate RNA-seq with peak-related data**: 
   - Get consensus peaks: For multiple peak files, get consensus peaks; for single peak file, use it directly (used in consensus integration mode).
   - Peak profile plots: Heatmap of peak binding to TSS regions, Average Profile of ChIP peaks binding to TSS region, Profile of ChIP peaks binding to different regions (used in consensus integration mode).
@@ -74,14 +77,15 @@ Detailed usage is available in [here](https://showteeth.github.io/DEbPeak/). We 
   * [Principal Component Analysis (RNA-seq)](https://showteeth.github.io/DEbPeak/articles/PrincipalComponentAnalysis.html)
   * [Differential Expression Analysis (RNA-seq)](https://showteeth.github.io/DEbPeak/articles/DifferentialExpressionAnalysis.html)
   * [Functional Enrichment Analysis (RNA-seq)](https://showteeth.github.io/DEbPeak/articles/FunctionalEnrichmentAnalysis.html)
+  * [Predict Transcription Factors (RNA-seq)](https://showteeth.github.io/DEbPeak/articles/IdentifyRegulator.html)
   * [Utils](https://showteeth.github.io/DEbPeak/articles/Utils.html)
 
 * For analyzing **peak-related data**:
   * [Quality Control](https://showteeth.github.io/DEbPeak/articles/QualityControl.html)
   * [Principal Component Analysis (Peak-related)](https://showteeth.github.io/DEbPeak/articles/PrincipalComponentAnalysisPeak.html)
-  * [Differential Expression Analysis (Peak-related)](https://showteeth.github.io/DEbPeak/articles/DifferentialExpressionAnalysisPeak.html)
+  * [Differential Analysis (Peak-related)](https://showteeth.github.io/DEbPeak/articles/DifferentialExpressionAnalysisPeak.html)
   * [Functional Enrichment Analysis (Peak-related)](https://showteeth.github.io/DEbPeak/articles/FunctionalEnrichmentAnalysisPeak.html)
-  * [Motif enrichment (Peak-related)](https://showteeth.github.io/DEbPeak/articles/MotifEnrichment.html)
+  * [Motif Analysis (Peak-related)](https://showteeth.github.io/DEbPeak/articles/MotifEnrichment.html)
 
 * **Integrating RNA-seq (differential expression analysis) with peak-related data (consensus peak)**:
   * [Integrate RNA-seq with ChIP-seq (consensus peak)](https://showteeth.github.io/DEbPeak/articles/IntegrateChIP.html)
@@ -90,10 +94,11 @@ Detailed usage is available in [here](https://showteeth.github.io/DEbPeak/). We 
 
 * **Integrating RNA-seq (differential expression analysis) with peak-related data (differential accessible/binding analysis)**:
   * [Integrate RNA-seq with ATAC-seq (differential analysis)](https://showteeth.github.io/DEbPeak/articles/IntegrateATACDE.html)
-  * Integrate RNA-seq with ChIP-seq (differential analysis) is almost the same as [Integrate RNA-seq with ATAC-seq (differential analysis)](https://showteeth.github.io/DEbPeak/articles/IntegrateATACDE.html).
+  * [Integrate RNA-seq with ChIP-seq (differential analysis)](https://showteeth.github.io/DEbPeak/articles/IntegrateChIPDE.html).
 
 
 ### Function list
+
 <table>
 <thead>
   <tr>
@@ -163,7 +168,7 @@ Detailed usage is available in [here](https://showteeth.github.io/DEbPeak/). We 
     <td>plot3D</td>
   </tr>
   <tr>
-    <td rowspan="9">Differential Axpression Analysis</td>
+    <td rowspan="9">Differential Analysis</td>
     <td>ExtractDA</td>
     <td>Extract differential analysis results</td>
     <td>tidyverse</td>
@@ -225,7 +230,34 @@ Detailed usage is available in [here](https://showteeth.github.io/DEbPeak/). We 
     <td>enrichplot</td>
   </tr>
   <tr>
-    <td rowspan="6">Peak-related Analysis<br><br><br><br></td>
+    <td rowspan="2">Predict Transcription Factors</td>
+    <td>InferRegulator</td>
+    <td>Predict TFs&nbsp;&nbsp;&nbsp;from RNA-seq data with ChEA3, BART2 and TFEA.ChIP</td>
+    <td>ChEA3, BART2,&nbsp;&nbsp;&nbsp;TFEA.ChIP</td>
+  </tr>
+  <tr>
+    <td>VizRegulator</td>
+    <td>Visualize the&nbsp;&nbsp;&nbsp;Identified TFs</td>
+    <td>ggplot2</td>
+  </tr>
+  <tr>
+    <td rowspan="3">Motif Analysis</td>
+    <td>MotifEnrich</td>
+    <td>Motif enrichment for differentially accessible/binding peaks</td>
+    <td>HOMER</td>
+  </tr>
+  <tr>
+    <td>MotifDiscovery</td>
+    <td>de novo motif discovery with STREME</td>
+    <td>MEME</td>
+  </tr>
+  <tr>
+    <td>MotifCompare</td>
+    <td>Map motifs against a motif database with Tomtom</td>
+    <td>MEME</td>
+  </tr>
+  <tr>
+    <td rowspan="5">Peak-related Analysis</td>
     <td>PeakMatrix</td>
     <td>Prepare count matrix and sample metadata for peak-related data</td>
     <td>DiffBind, ChIPseeker</td>
@@ -251,40 +283,45 @@ Detailed usage is available in [here](https://showteeth.github.io/DEbPeak/). We 
     <td>ggpie</td>
   </tr>
   <tr>
-    <td>MotifEnrich</td>
-    <td>Motif enrichment for differentially accessible/binding peaks</td>
-    <td>HOMER</td>
-  </tr>
-  <tr>
-    <td rowspan="6">Integrate RNA-seq with Peak-related Data</td>
+    <td rowspan="8">Integrate RNA-seq with Peak-related Data</td>
     <td>DEbPeak</td>
-    <td>Integrate differential expression results and peak annotation/differential analysis results.</td>
+    <td>Integrate differential expression results and peak annotation/differential expression results.</td>
     <td>tidyverse</td>
   </tr>
   <tr>
-    <td>InteVenn</td>
-    <td>Create venn diagram for integration results (support <code>DEbPeak</code>, <code>DEbDE</code>, <code>PeakbPeak</code>)</td>
-    <td>ggvenn</td>
-  </tr>
-  <tr>
-    <td>InteDiffQuad</td>
-    <td>Create quadrant diagram for integration results (support <code>DEbPeak</code>, <code>DEbDE</code>, <code>PeakbPeak</code>)</td>
-    <td>ggplot2</td>
-  </tr>
-  <tr>
-    <td>InteFE</td>
-    <td>GO enrichment on integration results (support <code>DEbPeak</code>, <code>DEbDE</code>, <code>PeakbPeak</code>)</td>
+    <td>DEbPeakFE</td>
+    <td>GO enrichment on integrated results</td>
     <td>clusterProfiler</td>
-  </tr>
-  <tr>
-    <td>FindMotif</td>
-    <td>Find motif on integration results</td>
-    <td>HOMER</td>
   </tr>
   <tr>
     <td>DEbCA</td>
     <td>Integrate differential expression results and peak annotation results (two kinds of peak-related data)</td>
     <td>tidyverse</td>
+  </tr>
+  <tr>
+    <td>ProcessEnhancer</td>
+    <td>Get genes near differential peaks</td>
+    <td>IRanges</td>
+  </tr>
+  <tr>
+    <td>InteVenn</td>
+    <td>Create a Venn   diagram for integrated results (support DEbPeak, DEbDE, PeakbPeak)</td>
+    <td>ggvenn</td>
+  </tr>
+  <tr>
+    <td>InteDiffQuad</td>
+    <td>Create quadrant diagram for differential expression analysis of RNA-seq and peak-related data</td>
+    <td>ggplot2</td>
+  </tr>
+  <tr>
+    <td>NetViz</td>
+    <td>Visualize&nbsp;&nbsp;&nbsp;enhancer-gene network results</td>
+    <td>igraph,&nbsp;&nbsp;&nbsp;ggnetwork</td>
+  </tr>
+  <tr>
+    <td>FindMotif</td>
+    <td>Find motif on integrated results</td>
+    <td>HOMER</td>
   </tr>
   <tr>
     <td rowspan="2">Integrate RNA-seq with RNA-seq</td>
@@ -309,9 +346,9 @@ Detailed usage is available in [here](https://showteeth.github.io/DEbPeak/). We 
     <td>clusterProfiler</td>
   </tr>
   <tr>
-    <td rowspan="4">Utils</td>
+    <td rowspan="4">Utils<br><br></td>
     <td>EnrichPlot</td>
-    <td>Create bar or dot plot for selected functional enrichment analysis results (GO and KEGG)</td>
+    <td>Create a bar or&nbsp;&nbsp;&nbsp;dot plot for selected functional enrichment analysis results (GO and KEGG)</td>
     <td>ggplot2</td>
   </tr>
   <tr>

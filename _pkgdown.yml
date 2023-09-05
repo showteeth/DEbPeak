@@ -32,10 +32,10 @@ navbar:
         href: articles/FunctionalEnrichmentAnalysis.html
       - text: Functional Enrichment Analysis (Peak-related)
         href: articles/FunctionalEnrichmentAnalysisPeak.html
+      - text: Predict TFs (RNA-seq)
+        href: articles/IdentifyRegulator.html
       - text: Motif Analysis (Peak-related)
         href: articles/MotifAnalysis.html
-      - text: Identify regulators (RNA-seq)
-        href: articles/IdentifyRegulator.html
       - text: Integrate RNA-seq with ChIP-seq (consensus peak)
         href: articles/IntegrateChIP.html
       - text: Integrate RNA-seq with ChIP-seq (differential analysis)

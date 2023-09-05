@@ -2,7 +2,7 @@
 % Please edit documentation in R/Process_enhancer.R
 \name{ProcessEnhancer}
 \alias{ProcessEnhancer}
-\title{Get Near Genes of Differential Peaks.}
+\title{Get Genes Near Differential Peaks.}
 \usage{
 ProcessEnhancer(
   de.res,
@@ -48,7 +48,7 @@ to generate count matrix and peak files. Default: "UCSC".}
 Dataframe contains differential peaks and their near genes.
 }
 \description{
-Get Near Genes of Differential Peaks.
+Get Genes Near Differential Peaks.
 }
 \examples{
 # # multi-core (faster)

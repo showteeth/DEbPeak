@@ -7,6 +7,7 @@
 * Added `show.html` to `MotifDiscovery` and `MotifCompare` to control the pop-up window.
 * Fixed bug in `InferRegulator`.
 * Fixed bug in `DEbCA` (output ChIP-seq and ATAC-seq peak information).
+* Add `Rank` column to TFs obtained with `BART2`.
 
 -------------
 

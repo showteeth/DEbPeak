@@ -1,4 +1,4 @@
-#' Get Near Genes of Differential Peaks.
+#' Get Genes Near Differential Peaks.
 #'
 #' @param de.res Dataframe contains all differential analysis results of peak-related data.
 #' @param signif Significance criterion for RNA-seq results. For DESeq2 results, can be chosen from padj, pvalue.
