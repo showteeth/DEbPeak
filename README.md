@@ -48,9 +48,20 @@ By the way, all plots generated are **publication-ready** , and most of them are
 <hr />
 
 ## Framework
+
 <div align="center">
 <img src="man/figures/DEbPeak_outline.png"  title="DEbPeak_framework"  alt="DEbPeak_framework" />
 </div>
+
+<hr />
+
+## Application scenarios for multi-omics integration
+
+<div align="center">
+<img src="man/figures/DEbPeak_scenarios.png"  title="DEbPeak_scenarios"  alt="DEbPeak_scenarios" />
+</div>
+
+<hr />
 
 ## Installation
 You can install the package via the Github repository:
@@ -285,7 +296,7 @@ Detailed usage is available in [here](https://showteeth.github.io/DEbPeak/). We 
   <tr>
     <td rowspan="8">Integrate RNA-seq with Peak-related Data</td>
     <td>DEbPeak</td>
-    <td>Integrate differential expression results and peak annotation/differential expression results.</td>
+    <td>Integrate differential expression results and peak annotation/differential analysis results.</td>
     <td>tidyverse</td>
   </tr>
   <tr>
