@@ -12,7 +12,7 @@ Description: DEbPeak aims to explore, visualize, interpret multi-omics data and 
     Parse GEO, Quality Control (QC), Principal Component Analysis (PCA), Differential Analysis (DA), Functional Enrichment Analysis (FEA), 
     Integrate RNA-seq with peak-related data (support the simultaneous integration of two kinds of peak-related data), 
     Integrate RNA-seq with RNA-seq, Integrate peak-related data with peak-related data, Utils.
-License: MIT + file LICENSE
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 biocViews:

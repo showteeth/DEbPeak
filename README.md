@@ -2,7 +2,7 @@
 
 <img src = "man/figures/DEbPeak.png" align = "right" width = "200"/>
 
-![License](https://img.shields.io/badge/license-MIT-green) 
+![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg)
 [![CODE\_SIZE](https://img.shields.io/github/languages/code-size/showteeth/DEbPeak.svg)](https://github.com/showteeth/DEbPeak)
 
 ## Introduction
