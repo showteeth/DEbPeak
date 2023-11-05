@@ -67,11 +67,22 @@ By the way, all plots generated are **publication-ready** , and most of them are
 You can install the package via the Github repository:
 
 ``` r
-# install.package("remotes")   #In case you have not installed it.
-remotes::install_github("showteeth/DEbPeak")
+# install.packages("devtools")   #In case you have not installed it.
+
+# install prerequisites for enrichplot and ChIPseeker
+devtools::install_version("ggfun", version = "0.0.6", repos = "https://cran.r-project.org")
+devtools::install_version("aplot", version = "0.1.6", repos = "https://cran.r-project.org")
+devtools::install_version("scatterpie", version = "0.1.7", repos = "https://cran.r-project.org")
+
+# For mac, you may need to install xquartz: brew install --cask xquartz
+
+# install DEbPeak
+devtools::install_github("showteeth/DEbPeak")
 ```
 
 In general, it is **recommended** to install from [Github repository](https://github.com/showteeth/DEbPeak) (update more timely).
+
+For other issues about installation, please refer [Installation](https://github.com/showteeth/scfetch/blob/main/INSTALL.md#general-solution) guide.
 
 <hr />
 
