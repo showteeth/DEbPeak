@@ -64,6 +64,7 @@ By the way, all plots generated are **publication-ready** , and most of them are
 <hr />
 
 ## Installation
+### R package
 You can install the package via the Github repository:
 
 ``` r
@@ -84,7 +85,55 @@ In general, it is **recommended** to install from [Github repository](https://gi
 
 For other issues about installation, please refer [Installation](https://github.com/showteeth/scfetch/blob/main/INSTALL.md#general-solution) guide.
 
+Install additional tools:
+```bash
+# install MSPC --- consensus peak
+wget --quiet https://github.com/Genometric/MSPC/releases/latest/download/linux-x64.zip -O MSPC_linux_x64.zip && unzip -q MSPC_linux_x64.zip -d mspc && cd mspc && chmod +x mspc
+
+# install meme --- motif anaysis
+## install from source
+cd /opt && wget --quiet https://meme-suite.org/meme/meme-software/5.5.5/meme-5.5.5.tar.gz -O meme-5.5.5.tar.gz && tar -zxf meme-5.5.5.tar.gz && cd meme-5.5.5 && ./configure --prefix=`pwd`/meme-5.5.5/meme --enable-build-libxml2 --enable-build-libxslt && make && make install
+## install from conda: conda install -c bioconda meme
+
+# install homer --- motif enrichment
+## install from source
+mkdir homer && cd homer && wget --quiet http://homer.ucsd.edu/homer/configureHomer.pl -O configureHomer.pl && chmod +x configureHomer.pl && perl configureHomer.pl -install
+## install from conda: conda install -c bioconda homer
+## Downloading Homer Packages: http://homer.ucsd.edu/homer/introduction/install.html
+
+# install deeptools and bart
+pip install deeptools numpy pandas scipy tables scikit-learn matplotlib
+wget --quiet https://virginia.box.com/shared/static/031noe820hk888qzcxvw1cazol1gdhi0.gz -O bart_v2.0.tar.gz && tar -zxf bart_v2.0.tar.gz
+## Download the resources and setup the configuration file
+## https://zanglab.github.io/bart/index.htm#install
+```
+
 <hr />
+
+### Docker
+We also provide a [docker image](https://hub.docker.com/repository/docker/soyabean/debpeak) to use:
+
+```bash
+# pull the image
+dock pull soyabean/debpeak:1.6
+
+# run the image
+docker run --rm -p 8888:8787 -e PASSWORD=passwd -e ROOT=TRUE -it debpeak:1.6
+```
+
+**Notes**:
+
+* After running the above codes, open browser and enter `http://localhost:8888/`, the user name is `rstudio`, the password is `passwd` (set by `-e PASSWORD=passwd`)
+* If port `8888` is in use, change `-p 8888:8787`
+* The `meme suit` path: `/opt/meme-5.5.5/meme/bin`.
+* The `homer suit` path: `/opt/homer/bin`.
+* The `configureHomer.pl` path: `/opt/homer`.
+* The `bart` path: `/opt/bart_v2.0/bin`
+* You still need to **download the resources and setup the configuration file for [bart](https://zanglab.github.io/bart/index.htm#install)** and **download species packages for [homer](http://homer.ucsd.edu/homer/introduction/install.html)**.
+
+<hr />
+
+
 
 ## Usage
 ### Vignette

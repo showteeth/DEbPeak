@@ -64,6 +64,7 @@ Imports:
     data.table,
     scales,
     ggpie,
+    ggpubr,
     DiffBind,
     parallel,
     GEOquery,

@@ -404,6 +404,7 @@ PlotDEbPeak <- function(de.peak, peak.type = c("ChIP", "ATAC", "Peak"), peak.mod
                         gene.col = c("geneId", "ENSEMBL", "SYMBOL"), ...) {
   # check parameters
   peak.type <- match.arg(arg = peak.type)
+  peak.mode <- match.arg(arg = peak.mode)
 
   # get summary results
   # distinct Type and gene, show gene number instead of peak number
