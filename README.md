@@ -115,10 +115,10 @@ We also provide a [docker image](https://hub.docker.com/repository/docker/soyabe
 
 ```bash
 # pull the image
-dock pull soyabean/debpeak:1.6
+docker pull soyabean/debpeak:1.2
 
 # run the image
-docker run --rm -p 8888:8787 -e PASSWORD=passwd -e ROOT=TRUE -it debpeak:1.6
+docker run --rm -p 8888:8787 -e PASSWORD=passwd -e ROOT=TRUE -it soyabean/debpeak:1.2
 ```
 
 **Notes**:
