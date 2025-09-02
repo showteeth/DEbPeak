@@ -23,7 +23,7 @@
 #' # GPL28369 is consistent with first supplementary file
 #' # GSE147507.list = ParseGEO(acce = "GSE147507", platform = "GPL28369", supp.idx = 1)
 #' # GSE122774.list = ParseGEO(acce = "GSE122774", platform = "GPL17021")
-ParseGEO <- function(acce, platform, supp.idx = 1, down.supp = FALSE, ...) {
+ParseGEO <- function(acce, platform, supp.idx = 1, down.supp = FALSE, timeout = 3600, ...) {
 
   # get GEO object
   pf.obj <- GEOobj(acce = acce, platform = platform, ...)
@@ -134,7 +134,8 @@ ExtractGEOMeta <- function(pf.obj) {
   # extract sample detail information
   pf.info <- as.data.frame(Biobase::pData(Biobase::phenoData(pf.obj)))
   # select used basic cols
-  pf.info.used <- pf.info[c("title", "geo_accession", "source_name_ch1", "description")]
+  valid.cols <- intersect(colnames(pf.info), c(c("title", "geo_accession", "source_name_ch1", "description")))
+  pf.info.used <- pf.info[valid.cols]
   # process characteristics
   pf.info.charac <- pf.info[grep(pattern = "^characteristics", x = colnames(pf.info))]
   ## modify colnames

@@ -1,3 +1,10 @@
+# DEbPeak 1.4.1
+## Minor changes
+* Check valid columns in `ExtractGEOMeta`.
+
+
+-------------
+
 # DEbPeak 1.4.0
 ## New features
 * Added `MotifDiscovery` to perform *de novo* motif discovery with STREME.

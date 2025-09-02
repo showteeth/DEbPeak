@@ -4,7 +4,7 @@
 \alias{ParseGEO}
 \title{Parse GEO Data.}
 \usage{
-ParseGEO(acce, platform, supp.idx = 1, down.supp = FALSE, ...)
+ParseGEO(acce, platform, supp.idx = 1, down.supp = FALSE, timeout = 3600, ...)
 }
 \arguments{
 \item{acce}{GEO accession number.}
