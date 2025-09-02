@@ -4,7 +4,7 @@
 \alias{DownloadGEOSupp}
 \title{Download GEO Supplementary Files.}
 \usage{
-DownloadGEOSupp(acce, supp.idx = 1, out.folder = NULL)
+DownloadGEOSupp(acce, supp.idx = 1, out.folder = NULL, timeout = 3600)
 }
 \arguments{
 \item{acce}{GEO accession number.}
@@ -12,6 +12,8 @@ DownloadGEOSupp(acce, supp.idx = 1, out.folder = NULL)
 \item{supp.idx}{The index of supplementary files to download. If NULL, download all supplementary files. Default: 1.}
 
 \item{out.folder}{The output folder used to save downloaded results.}
+
+\item{timeout}{Timeout for \code{\link{download.file}}. Default: 3600.}
 }
 \value{
 A vector contains paths.

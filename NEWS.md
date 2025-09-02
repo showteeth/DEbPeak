@@ -1,6 +1,7 @@
 # DEbPeak 1.4.1
 ## Minor changes
 * Check valid columns in `ExtractGEOMeta`.
+* Add `timeout` to `ExtractGEOExpSupp` , `DownloadGEOSupp` and `ParseGEO`.
 
 
 -------------

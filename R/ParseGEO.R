@@ -6,6 +6,7 @@
 #' @param down.supp Logical value, whether to download supplementary files to create count matrix. If TRUE, always
 #' download supplementary files. If FALSE, use \code{ExpressionSet} (If contains non-integer or emoty,
 #' download supplementary files automatically). Default: FALSE.
+#' @param timeout Timeout for \code{\link{download.file}}. Default: 3600.
 #' @param ... Parameters for \code{\link{getGEO}}.
 #'
 #' @return List contains GEO object of platform, study information, raw count matrix and metadata.
@@ -24,13 +25,15 @@
 #' # GSE147507.list = ParseGEO(acce = "GSE147507", platform = "GPL28369", supp.idx = 1)
 #' # GSE122774.list = ParseGEO(acce = "GSE122774", platform = "GPL17021")
 ParseGEO <- function(acce, platform, supp.idx = 1, down.supp = FALSE, timeout = 3600, ...) {
-
   # get GEO object
   pf.obj <- GEOobj(acce = acce, platform = platform, ...)
   # extract general information
   pf.info <- ExtractGEOInfo(pf.obj = pf.obj, sample.wise = FALSE)
   # extract raw counts
-  pf.count <- ExtractGEOExp(pf.obj = pf.obj, acce = acce, supp.idx = supp.idx, down.supp = down.supp)
+  pf.count <- ExtractGEOExp(
+    pf.obj = pf.obj, acce = acce, supp.idx = supp.idx,
+    down.supp = down.supp, timeout = timeout
+  )
   # select meta data
   pf.meta <- ExtractGEOMeta(pf.obj = pf.obj)
   # return list
@@ -158,6 +161,7 @@ ExtractGEOMeta <- function(pf.obj) {
 #' Extract Raw Count Matrix from Supplementary Files.
 #'
 #' @param acce GEO accession number.
+#' @param timeout Timeout for \code{\link{download.file}}. Default: 3600.
 #' @param supp.idx The index of supplementary files to download. Default: 1.
 #'
 #' @return A dataframe.
@@ -167,9 +171,16 @@ ExtractGEOMeta <- function(pf.obj) {
 #' # count.mat = ExtractGEOExpSupp(acce = "GSE147507")
 #' # count.mat = ExtractGEOExpSupp(acce = "GSE147507", supp.idx = 2)
 #' # count.mat = ExtractGEOExpSupp(acce = "GSE122774")
-ExtractGEOExpSupp <- function(acce, supp.idx = 1) {
+ExtractGEOExpSupp <- function(acce, timeout = 3600, supp.idx = 1) {
   # create tmp folder
   tmp.folder <- tempdir()
+  # get current timeout
+  if (!is.null(timeout)) {
+    message("Change Timeout to: ", timeout)
+    env.timeout <- getOption("timeout")
+    on.exit(options(timeout = env.timeout)) # restore timeout
+    options(timeout = timeout)
+  }
   # download supplementary file
   supp.down.log <- GEOquery::getGEOSuppFiles(GEO = acce, baseDir = tmp.folder)
   if (supp.idx > nrow(supp.down.log)) {
@@ -236,27 +247,28 @@ ExtractGEOExpSupp <- function(acce, supp.idx = 1) {
 #' @param down.supp Logical value, whether to download supplementary files to create count matrix. If TRUE, always
 #' download supplementary files. If FALSE, use \code{ExpressionSet} (If contains non-integer or emoty,
 #' download supplementary files automatically). Default: FALSE.
+#' @param timeout Timeout for \code{\link{download.file}}. Default: 3600.
 #'
 #' @return A dataframe.
 #'
 #' @examples
 #' # pf.obj = GEOobj(acce = "GSE147507", platform = "GPL28369")
 #' # count.mat = ExtractGEOExp(pf.obj, acce = "GSE147507")
-ExtractGEOExp <- function(pf.obj, acce, supp.idx = 1, down.supp = FALSE) {
+ExtractGEOExp <- function(pf.obj, acce, supp.idx = 1, down.supp = FALSE, timeout = 3600) {
   # download supplementary files
   if (down.supp) {
-    count.mat <- ExtractGEOExpSupp(acce = acce, supp.idx = supp.idx)
+    count.mat <- ExtractGEOExpSupp(acce = acce, timeout = timeout, supp.idx = supp.idx)
   } else {
     expr.mat <- Biobase::exprs(pf.obj)
     if (nrow(expr.mat) == 0) {
       message("Matrix not available! Downloading supplementary files.")
-      count.mat <- ExtractGEOExpSupp(acce = acce, supp.idx = supp.idx)
+      count.mat <- ExtractGEOExpSupp(acce = acce, timeout = timeout, supp.idx = supp.idx)
     } else {
       if (all(expr.mat %% 1 == 0)) {
         count.mat <- expr.mat
       } else {
         message("Matrix contains non-integer values! Downloading supplementary files.")
-        count.mat <- ExtractGEOExpSupp(acce = acce, supp.idx = supp.idx)
+        count.mat <- ExtractGEOExpSupp(acce = acce, timeout = timeout, supp.idx = supp.idx)
       }
     }
   }
@@ -269,6 +281,7 @@ ExtractGEOExp <- function(pf.obj, acce, supp.idx = 1, down.supp = FALSE) {
 #' @param acce GEO accession number.
 #' @param supp.idx The index of supplementary files to download. If NULL, download all supplementary files. Default: 1.
 #' @param out.folder The output folder used to save downloaded results.
+#' @param timeout Timeout for \code{\link{download.file}}. Default: 3600.
 #'
 #' @return A vector contains paths.
 #' @importFrom GEOquery getGEOSuppFiles
@@ -276,10 +289,17 @@ ExtractGEOExp <- function(pf.obj, acce, supp.idx = 1, down.supp = FALSE) {
 #'
 #' @examples
 #' # DownloadGEOSupp(acce = "GSE149836", supp.idx = NULL, out.folder = "/path/to/suppfiles")
-DownloadGEOSupp <- function(acce, supp.idx = 1, out.folder = NULL) {
+DownloadGEOSupp <- function(acce, supp.idx = 1, out.folder = NULL, timeout = 3600) {
   # prepare output folder
   if (is.null(out.folder)) {
     out.folder <- getwd()
+  }
+  # get current timeout
+  if (!is.null(timeout)) {
+    message("Change Timeout to: ", timeout)
+    env.timeout <- getOption("timeout")
+    on.exit(options(timeout = env.timeout)) # restore timeout
+    options(timeout = timeout)
   }
   # download supplementary file
   supp.down.log <- GEOquery::getGEOSuppFiles(GEO = acce, baseDir = out.folder)

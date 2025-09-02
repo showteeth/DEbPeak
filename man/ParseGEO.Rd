@@ -17,6 +17,8 @@ ParseGEO(acce, platform, supp.idx = 1, down.supp = FALSE, timeout = 3600, ...)
 download supplementary files. If FALSE, use \code{ExpressionSet} (If contains non-integer or emoty,
 download supplementary files automatically). Default: FALSE.}
 
+\item{timeout}{Timeout for \code{\link{download.file}}. Default: 3600.}
+
 \item{...}{Parameters for \code{\link{getGEO}}.}
 }
 \value{

@@ -4,7 +4,7 @@
 \alias{ExtractGEOExp}
 \title{Extract Raw Count Matrix.}
 \usage{
-ExtractGEOExp(pf.obj, acce, supp.idx = 1, down.supp = FALSE)
+ExtractGEOExp(pf.obj, acce, supp.idx = 1, down.supp = FALSE, timeout = 3600)
 }
 \arguments{
 \item{pf.obj}{GEO object of platform.}
@@ -16,6 +16,8 @@ ExtractGEOExp(pf.obj, acce, supp.idx = 1, down.supp = FALSE)
 \item{down.supp}{Logical value, whether to download supplementary files to create count matrix. If TRUE, always
 download supplementary files. If FALSE, use \code{ExpressionSet} (If contains non-integer or emoty,
 download supplementary files automatically). Default: FALSE.}
+
+\item{timeout}{Timeout for \code{\link{download.file}}. Default: 3600.}
 }
 \value{
 A dataframe.
