@@ -182,7 +182,16 @@ ExtractGEOExpSupp <- function(acce, timeout = 3600, supp.idx = 1) {
     options(timeout = timeout)
   }
   # download supplementary file
-  supp.down.log <- GEOquery::getGEOSuppFiles(GEO = acce, baseDir = tmp.folder)
+  # supp.down.log <- GEOquery::getGEOSuppFiles(GEO = acce, baseDir = tmp.folder)
+  supp.down.log <- tryCatch(
+    expr = {
+      GEOquery::getGEOSuppFiles(GEO = acce, baseDir = tmp.folder)
+    },
+    error = function(e) {
+      print(e)
+      stop("You can change the timeout with a larger value.")
+    }
+  )
   if (supp.idx > nrow(supp.down.log)) {
     stop("Please provide valid supplementary file index.")
   }
@@ -302,7 +311,16 @@ DownloadGEOSupp <- function(acce, supp.idx = 1, out.folder = NULL, timeout = 360
     options(timeout = timeout)
   }
   # download supplementary file
-  supp.down.log <- GEOquery::getGEOSuppFiles(GEO = acce, baseDir = out.folder)
+  # supp.down.log <- GEOquery::getGEOSuppFiles(GEO = acce, baseDir = out.folder)
+  supp.down.log <- tryCatch(
+    expr = {
+      GEOquery::getGEOSuppFiles(GEO = acce, baseDir = tmp.folder)
+    },
+    error = function(e) {
+      print(e)
+      stop("You can change the timeout with a larger value.")
+    }
+  )
   if (is.null(supp.idx)) {
     supp.file.path <- rownames(supp.down.log)
   } else {
