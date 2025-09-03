@@ -21,7 +21,8 @@ Here, we will extract data from [GSE122774](https://www.ncbi.nlm.nih.gov/geo/que
 # library DEbPeak
 suppressWarnings(suppressMessages(library(DEbPeak)))
 # extract data from GEO
-GSE122774.list = ParseGEO(acce = "GSE122774", platform = "GPL17021")
+# the default timeout for downloading files is 3600s, for large files, you'd better increase the value
+GSE122774.list = ParseGEO(acce = "GSE122774", platform = "GPL17021", timeout = 3600)
 ```
 
 The GEO object:
