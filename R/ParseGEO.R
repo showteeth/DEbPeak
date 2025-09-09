@@ -1,3 +1,39 @@
+# gunzip a file
+# source: https://github.com/seandavi/GEOquery/blob/026c655561dbcf1b99551a8093642750c48ed038/R/getGEOfile.R
+Gunzip <- function(filename, destname = gsub("[.]gz$", "", filename), overwrite = FALSE, remove = TRUE, BFR.SIZE = 1e7) {
+  if (filename == destname) {
+    stop(sprintf("Argument 'filename' and 'destname' are identical: %s", filename))
+  }
+  if (!overwrite && file.exists(destname)) {
+    stop(sprintf("File already exists: %s", destname))
+  }
+
+  inn <- gzfile(filename, "rb")
+  on.exit(if (!is.null(inn)) close(inn))
+
+  out <- file(destname, "wb")
+  on.exit(close(out), add = TRUE)
+
+  nbytes <- 0
+  repeat {
+    bfr <- readBin(inn, what = raw(0), size = 1, n = BFR.SIZE)
+    n <- length(bfr)
+    if (n == 0) {
+      break
+    }
+    nbytes <- nbytes + n
+    writeBin(bfr, con = out, size = 1)
+  }
+
+  if (remove) {
+    close(inn)
+    inn <- NULL
+    file.remove(filename)
+  }
+
+  invisible(nbytes)
+}
+
 #' Parse GEO Data.
 #'
 #' @param acce GEO accession number.
@@ -11,7 +47,7 @@
 #'
 #' @return List contains GEO object of platform, study information, raw count matrix and metadata.
 #' @importFrom magrittr %>%
-#' @importFrom GEOquery getGEO getGEOSuppFiles gunzip
+#' @importFrom GEOquery getGEO getGEOSuppFiles
 #' @importFrom Biobase annotation experimentData pData phenoData notes sampleNames exprs
 #' @importFrom tools file_ext
 #' @importFrom utils untar
@@ -203,7 +239,7 @@ ExtractGEOExpSupp <- function(acce, timeout = 3600, supp.idx = 1) {
   file.ext <- tools::file_ext(supp.file.path)
   if (file.ext == "gz") {
     # gunzip file
-    GEOquery::gunzip(supp.file.path, overwrite = TRUE)
+    Gunzip(supp.file.path, overwrite = TRUE)
     supp.file.path <- gsub(pattern = "\\.gz", replacement = "", x = supp.file.path)
     # update file extension
     file.ext <- tools::file_ext(supp.file.path)
@@ -215,7 +251,7 @@ ExtractGEOExpSupp <- function(acce, timeout = 3600, supp.idx = 1) {
     unzip.log <- sapply(
       list.files(file.path(tmp.folder, acce, "sample"), full.names = TRUE, pattern = "gz$"),
       function(x) {
-        GEOquery::gunzip(x, overwrite = TRUE)
+        Gunzip(x, overwrite = TRUE)
       }
     )
     # read files

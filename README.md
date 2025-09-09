@@ -47,6 +47,14 @@ By the way, all plots generated are **publication-ready** , and most of them are
 
 <hr />
 
+## Citation
+
+If you use [DEbPeak](https://showteeth.github.io/DEbPeak/) in published research, please cite:
+
+* Hou J<sup>\#</sup>, **Song Y**<sup>\#</sup>, Xiao C<sup>\#</sup>, Sun Y, Shen J, Ma X, Zhou Q, Chiu SC, Xu Y, Huang Y, Chen YG, Zhu X<sup>\*</sup>, Wang J<sup>\*</sup>, Xiong JW<sup>\*</sup>. Cloche/Npas4l is a pro-regenerative platelet factor during zebrafish heart regeneration. **Dev Cell**. 2025 Jun 24:S1534-5807(25)00370-3. doi: 10.1016/j.devcel.2025.06.015. Epub ahead of print. PMID: 40602409.
+
+<hr />
+
 ## Framework
 
 <div align="center">

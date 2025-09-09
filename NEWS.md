@@ -3,7 +3,7 @@
 * Check valid columns in `ExtractGEOMeta`.
 * Add `timeout` to `ExtractGEOExpSupp` , `DownloadGEOSupp` and `ParseGEO`.
 * Add `tryCatch` in `ParseGEO` and `DownloadGEOSupp`.
-
+* Add `Gunzip` in deal with the removal of `gunzip` in GEOquery.
 
 -------------
 
